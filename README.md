@@ -1,5 +1,5 @@
 # tegrato
-Temporal Graph Tools - by William Hedley (wiheto)
+**Te**mporal **Gra**ph **To**ols - by William Hedley (wiheto)
 
 ## What is here? 
 
@@ -7,15 +7,25 @@ At the moment only one plotting tool to create temporal graphs. But more things 
 
 ## Slice Plots 
 
-Slice plots (pending better name) are useful at showing connections between small number of nodes and time-points. I have made some of these in the past and usually made
+Slice plots (pending better name) are useful at showing connections between small number of nodes and time-points. I have made some of these in the past and usually made them by hand (which takes time). So I made this tool using [Bézier curves](https://en.wikipedia.org/wiki/B%C3%A9zier_curve) to make the plots. Each point on the x-axis is a time-point. And each point on the y-axis is a node. Edges are drawn between nodes at a time-point indicating a connection at the time (it is possible to add between time-point lines if you wish (they look cool, I just don't know when they will be useful)).
 
-Taken from ex1.py. First off some importing of necessary stuff. 
+In the following exmaples, I'll explain why this is useful. 
 
 ### Example 1: friends
 
+Taken from ex1.py. First off some importing of necessary stuff. 
+
 In this example the aim is to show what information temporal graph theory tries to capture and also show it on a plot. 
 
-Scenario: Ashley were friends with Blake in 2014. Ashley becomes friends with in 2015. Blake and Casey meet (possibly through Ashley) and become friends in 2016. In standard graph theory this would be presented as a connectivity matrix with all three people (nodes) connected. However the temporal infomration for this is lost
+Scenario: Ashley were friends with Blake in 2014. Ashley becomes friends with in 2015. Blake and Casey meet (possibly through Ashley) and become friends in 2016. In standard graph theory this would be presented as a connectivity matrix with all three people (nodes) connected. 
+
+|              | **Ashley** | **Blake** | **Casey** |
+| --- | --- | --- | ---
+| **Ashley** | -    | 1   | 1 |
+| **Blake**  | 1   | -   | 1 |
+| **Casey**   | 1   |   1  | - |
+
+However the temporal infomration for this is lost. This is where having edges contexualized to time points is useful. 
 
 ```
 import numpy as np
@@ -54,7 +64,7 @@ This will generate the figure below:
 
 ![](./figures/ex1.png)
 
-Here we see graphs connecting by [Bézier curves](https://en.wikipedia.org/wiki/B%C3%A9zier_curve) (admittingly I took some of the functions for this from the plot.ly doccumentation).
+Here we see graphs connecting by Bézier curves (admittingly I took some of the functions for this from the plot.ly doccumentation).
 
 ### Example 2: different dynamics in the temporal graph
 
@@ -62,7 +72,7 @@ Here we see graphs connecting by [Bézier curves](https://en.wikipedia.org/wiki/
 
 ## Circle plots
 
-While not strictly necesarily part of temporal graph theory, a good circle plotting tool is good to have. From my experience they are usually embedded in graph software and not very accessible/customable. At the moment it can only create the node placement and curves. Plotting the labels is upcoming. 
+While not strictly necesarily part of temporal graph theory, a good circle plotting tool is good to have. From my experience they are usually embedded in graph software and not very accessible/customable. At the moment it can only create the node placement and curves. Plotting the labels automatically is next. 
 
 ![](./figures/ex3.png)
 
