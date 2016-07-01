@@ -1,9 +1,9 @@
-# tegrato
-**Te**mporal **Gra**ph **To**ols - by William Hedley (wiheto)
+# teneto
+**Te**mporal **Ne**twork **To**ols - by William Hedley (wiheto)
 
 ## What is here? 
 
-At the moment only one plotting tool to create temporal graphs. But more things are coming soon. This will be more complete but at the moment I wrote this text in about 15 minutes and is incomplete. 
+At the moment only one plotting tool to create temporal networks. But more things are coming soon. This will be more complete but at the moment I wrote this text in about 15 minutes and is incomplete. 
 
 ## Slice Plots 
 
@@ -15,7 +15,7 @@ In the following exmaples, I'll explain why this is useful.
 
 Taken from ex1.py. First off some importing of necessary stuff. 
 
-In this example the aim is to show what information temporal graph theory tries to capture and also show it on a plot. 
+In this example the aim is to show what information temporal network theory tries to capture and also show it on a plot. 
 
 Scenario: Ashley were friends with Blake in 2014. Ashley becomes friends with in 2015. Blake and Casey meet (possibly through Ashley) and become friends in 2016. In standard graph theory this would be presented as a connectivity matrix with all three people (nodes) connected. 
 
@@ -66,16 +66,16 @@ This will generate the figure below:
 
 Here we see graphs connecting by Bézier curves (admittingly I took some of the functions for this from the plot.ly doccumentation).
 
-### Example 2: different dynamics in the temporal graph
+### Example 2: different dynamics in the temporal networks
 
 ![](./figures/ex2.png)
 
 ## Circle plots
 
-While not strictly necesarily part of temporal graph theory, a good circle plotting tool is good to have. From my experience they are usually embedded in graph software and not very accessible/customable. At the moment it can only create the node placement and curves. Plotting the labels automatically is next. 
+While not strictly necesarily part of temporal network theory, a good circle plotting tool is good to have. From my experience they are usually embedded in graph software and not very accessible/customable. At the moment it can only create the node placement and curves. Plotting the labels automatically is next. 
 
 ![](./figures/ex3.png)
 
 ## This is just some basic plotting. Whats coming up next? 
 
-Metrics for temporal graph theory. They are cool! 
+Metrics for temporal network theory. They are cool! 
