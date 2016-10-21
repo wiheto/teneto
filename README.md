@@ -8,9 +8,9 @@ At the moment only one plotting tool to create temporal networks. The first vers
 
 Roadmap: 
 
-- [x] V0.1 - plotting tools ()
-- [ ] V0.2 - basic functions and plotting (November 2016)
-- [ ] V0.3 - integration with niilearn and nibabel (January 2017)
+- [x] V0.1 - basic plotting tools
+- [ ] V0.2 - basic metrics (November 2016). From static to temporal network paper. 
+- [ ] V0.3 - full integration with niilearn, nibabel and networkx (January 2017)
 - [ ] V0.4 - comprehensive functions and tutorials (Spring 2017)
 - [ ] V1.0 - teneto data class creation. Pip integration. (Summer 2017)
 
