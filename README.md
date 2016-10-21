@@ -3,11 +3,11 @@
 
 ## What is here? 
 
-At the moment only one plotting tool to create temporal networks. But more things are coming soon. This will be more complete but at the moment I wrote this text in about 15 minutes and is incomplete. 
+At the moment only one plotting tool to create temporal networks. The first version with functions for temporal networks will be released in November 2016. 
 
 ## Slice Plots 
 
-Slice plots (pending better name) are useful at showing connections between small number of nodes and time-points. I have made some of these in the past and usually made them by hand (which takes time). So I made this tool using [Bézier curves](https://en.wikipedia.org/wiki/B%C3%A9zier_curve) to make the plots. Each point on the x-axis is a time-point. And each point on the y-axis is a node. Edges are drawn between nodes at a time-point indicating a connection at the time (it is possible to add between time-point lines if you wish (they look cool, I just don't know when they will be useful)).
+Slice plots (pending better name) are useful at showing connections between small number of nodes and time-points. I have made some of these in the past and usually made them by hand (which takes time). So I made this tool using [Bézier curves](https://en.wikipedia.org/wiki/B%C3%A9zier_curve) to make the plots. Each point on the x-axis is a time-point. And each point on the y-axis is a node. Edges are drawn between nodes at a time-point indicating a connection at the time (it is possible to add Bézier lines between nodes of different time points, if you wish (they look cool, I just don't know when they will be useful)).
 
 In the following exmaples, I'll explain why this is useful. 
 
@@ -78,4 +78,11 @@ While not strictly necesarily part of temporal network theory, a good circle plo
 
 ## This is just some basic plotting. Whats coming up next? 
 
-Metrics for temporal network theory. They are cool! 
+Metrics for temporal network theory. 
+
+Roadmap: 
+
+V0.1 - basic functions and plotting (November 2016)
+V0.2 - integration with niilearn and nibabel (January 2017)
+V0.3 - comprehensive functions and tutorials (Spring 2017)
+V1   - teneto data class creation. Pip integration. (Summer 2017)
