@@ -8,7 +8,7 @@ At the moment only one plotting tool to create temporal networks. The first vers
 
 Roadmap: 
 
-- [ ] V0.1 - plotting tools ()
+- [x] V0.1 - plotting tools ()
 - [ ] V0.2 - basic functions and plotting (November 2016)
 - [ ] V0.3 - integration with niilearn and nibabel (January 2017)
 - [ ] V0.4 - comprehensive functions and tutorials (Spring 2017)
