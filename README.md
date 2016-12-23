@@ -1,6 +1,6 @@
 # Teneto
 
-**Te**mporal **ne**twork **to*ols. 
+**Te**mporal **ne**twork **to**ols. 
 
 By William Hedley Thompson (wiheto)
 
