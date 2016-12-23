@@ -1,91 +1,96 @@
-# teneto
-**Te**mporal **Ne**twork **To**ols - by William Hedley (wiheto)
+# Teneto
 
-## What is here? 
+**Te**mporal **ne**twork **to*ols. 
 
-At the moment only one plotting tool to create temporal networks. The first version with functions for temporal networks will be released in November 2016. 
+By William Hedley Thompson (wiheto)
+
+This is still a lot of work to go before this package is complete. However, it is built to be used now and should not break people's pipelines. 
+
+The first functions have now been uploaded. Some tutorial examples will be uploaded in the coming weeks, as too will network generation tools. 
+
+## Installation
+
+Clone this package and add to your python path.
+
+On the to do list is to make it pip-able for easier install. But this will be done once the package is a little more mature.  
+
+Requirements:
+
+- numpy
+- matplotlib
+- python3.x
+
+## Data formats (graphlets and contact).
+
+The two data formats of temporal networks. These are called *grahlet* representation or *contact* representation after what the temporal network literature refers to them as. In practice, this is a numpy or dictionary format.
+
+These formats can be converted between with `graphlet2contact()` and `contact2graphlet()` functions.
+
+### Graphlet representation
+
+The graphlet representation is just a 3D numpy array with the dimension order: node,node,time.
+
+Advantages: easy to work with, query. Disadvantages: takes up a lot of memory when large.
+
+### Contact representation
+
+The contact representation is a python dictionary with each non-zero edge expressed as (i,j,t). The name comes from contact sequences which generally report (i,j,(t_start,t_end)). At the moment teneto does not have the sequence part and each temporal edge must be expressed as a contact. The dictionary includes:
+
+- *contacts*: indexes of tuples expressing where and when a non-zero edge is. Tuple order is specified in dimord (but should always be node,node,time for now).
+- *values*: (only if non-binary network), list of weights. value[x] corresponds to the contact[x] tuple.
+- *netshape*: size of overall network. This is needed, especially if there is no edge present at the final time point.
+- *nettype*: either 'bu', 'wu', 'bd', 'wd' where w=weighted, b=binary, u=undirected, d=directed.
+-  *dimord*: dimensional order (should be node,node,time for now. But later updates may include more complex dimord).  
+- *diagonal*: diagonal is also removed from contacts (for space reasons). Diagonal is generally treated as 0. (Note, currently only one value, and not a vector for all self edges is possible. Doesn't feel like high priority, but if requested can be implemented.)
+- *timeunit*: default is ''. But will be used in plotting labeling functions if specified.
+- *timetype*: 'discrete'. Only discrete metrics are included at the moment. We may someday expand to continuous time (but this will require a lot of work) and timetype is here so that nothing breaks if I implement this. Also, for even more memoruy efficiency, I will make 'discreteseq' when I have time which is (i,j,(t_start,t_end)) for discrete time only.
+- *Fs*: sampling rate. Default = 1. If timeunit = 'seconds' and each time-point represents a 1 millisecond, then Fs should be 1000.  
+
+Any additional information can be added to the contact representation and is kept. However, if you convert to graphlet form, all this information is lost.
+
+Advantages: memory efficient, allows for more meta-information about graphs.
+
+Disadvantages: perhaps less intuitive.  
+
+Note: while the contact  is a more efficient way to store larger network data. A lot of the measures currently operate with graphlet representation *within functions*. The conversion from contact to graphlet is done within the functions, so nothing to worry about. But this can take up a more RAM for large graphs (as both contact and graphlet representations will exist when function is running). This will be removed when possible (but give me time).
+
+### Measures
+
+The following measures exist in the package:
+
+- temporal degree
+- temporal closeness
+- shortest temporal paths
+- bursty coefficient
+- fluctuability  
+- volatility
+- reachability latency
+- temporal efficiency
+
+All measures work for binary undirected networks. Some work for other types of networks as well. This will be updated with time.
+
+Found a measure in the literature that you would like included? Add to this issue with a reference to someone using it and I will try and implement it.
+
+### Plotting
+
+While note primarily a plotting package, there are some plotting tools included.
+
+Plotting networks in time is hard. Plotting connectivity matrices in static cases can be counter intuitive.
+
+### Outlook.
+
+This package is under active development.
+
+(1) Calculate based on contact sequence representations
+(2) Assist in creating temporal network representations.
+(3) integrate with python neuroimaging toolboxes.
+(4) Make a better package structure (i.e. not imports in every function), place on pip, generate full documentation.
+
+The time line is that all of these should be up over the next 6 months or so. If something is missing that you need now, let me know and I can try and prioritize getting that up and running (if requests are limited!).
 
 
-Roadmap: 
+## Cite
 
-- [x] V0.1 - basic plotting tools
-- [ ] V0.2 - basic metrics (December 2016). From static to temporal network paper. 
-- [ ] V0.3 - full integration with niilearn, nibabel and networkx (Spring 2017)
-- [ ] V1 - comprehensive functions and tutorials and pip install. (Summer 2017)
-- [ ] Beyond V1 - Methods for deriving connectivity time series, greater customization. 
+If using this, please cite us. At present we do not have a dedicated article about teneto, but teneto is introduced, a long with a considerable amount of the metrics:
 
-
-## Slice Plots 
-
-Slice plots (pending better name) are useful at showing connections between small number of nodes and time-points. I have made some of these in the past and usually made them by hand (which takes time). So I made this tool using [Bézier curves](https://en.wikipedia.org/wiki/B%C3%A9zier_curve) to make the plots. Each point on the x-axis is a time-point. And each point on the y-axis is a node. Edges are drawn between nodes at a time-point indicating a connection at the time (it is possible to add Bézier lines between nodes of different time points, if you wish (they look cool, I just don't know when they will be useful)).
-
-In the following exmaples, I'll explain why this is useful. 
-
-### Example 1: friends
-
-Taken from ex1.py. First off some importing of necessary stuff. 
-
-In this example the aim is to show what information temporal network theory tries to capture and also show it on a plot. 
-
-Scenario: Ashley were friends with Blake in 2014. Ashley becomes friends with in 2015. Blake and Casey meet (possibly through Ashley) and become friends in 2016. In standard graph theory this would be presented as a connectivity matrix with all three people (nodes) connected. 
-
-|              | **Ashley** | **Blake** | **Casey** |
-| --- | --- | --- | ---
-| **Ashley** | -    | 1   | 1 |
-| **Blake**  | 1   | -   | 1 |
-| **Casey**   | 1   |   1  | - |
-
-However the temporal infomration for this is lost. This is where having edges contexualized to time points is useful. 
-
-```
-import numpy as np
-import slice_graph as sg
-import matplotlib.pyplot as plt
-```
-
-Then create a 3D matrix of the shape node x node x time. 
-
-```
-#Creat the 3d matrix following the scenario given above
-A=np.zeros((3,3,3))
-A[0,1,:]=1
-A[0,2,1:]=1
-A[1,2,2]=1
-```
-
-Create the edge list. This is simply convert the easier to raw 3d connectivity matrix (usually how the data will be constructed) and makes it a list of tuples of connections. 
-
-```
-edgeList = sg.edgeListFromMatrix(A)
-```
-
-Then with the edle list we can use sg.plot_slice to plot. 
-
-```
-timeLabs=['2014','2015','2016']
-nodeLabs=['Ashley','Blake','Casey']
-plt.rcParams['image.cmap'] = 'gist_gray' #Gray colour scale (obviously anything is possible)
-fig, ax = plt.subplots(1,1)
-ax = sg.plot_slice(nodeLabs,timeLabs,ax,edgeList)
-ax.set_xlabel('time (years)')
-fig.show()
-```
-This will generate the figure below: 
-
-![](./figures/ex1.png)
-
-Here we see graphs connecting by Bézier curves (admittingly I took some of the functions for this from the plot.ly doccumentation).
-
-### Example 2: different dynamics in the temporal networks
-
-![](./figures/ex2.png)
-
-## Circle plots
-
-While not strictly necesarily part of temporal network theory, a good circle plotting tool is good to have. From my experience they are usually embedded in graph software and not very accessible/customable. At the moment it can only create the node placement and curves. Plotting the labels automatically is next. 
-
-![](./figures/ex3.png)
-
-## This is just some basic plotting. Whats coming up next? 
-
-Metrics for temporal network theory. 
+Thompson, WH, Brantefors, P, Fransson, P. From static to temporal network theory – applications to functional brain connectivity. http://biorxiv.org/content/early/2016/12/23/096461.article-metrics
