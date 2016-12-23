@@ -1,6 +1,6 @@
 # Teneto
 
-**Te**mporal **ne**twork **to**ols. 
+**Te**mporal **ne**twork **to**ols. Version 0.1 (Dec 23 2016)
 
 By William Hedley Thompson (wiheto)
 
