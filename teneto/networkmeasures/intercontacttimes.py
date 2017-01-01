@@ -3,30 +3,33 @@ from teneto.utils import *
 
 def intercontacttimes(netIn):
     """
-    Calculates the temporal degree
+    Calculates the intercontacttimes of each edge in a network
 
-    Parameters
-    ----------
-    netIn: Temporal graph of format (can be bd,bu):
-        (i) G: graphlet (3D numpy array).
-        (ii) C: contact (dictionary)
+    **PARAMETERS**
 
-    Returns
-    ----------
-    intercontact times
-    format: 1d numpy array
+    :netIn: Temporal network (craphlet or contact).
 
-    See Also
-    ----------
-    burstycoeff
+        :nettype: 'bu', 'bd'
 
-    NOTES
-    ----------
+    **OUTPUT**
+
+    :ICT: intercontact times as numpy array
+
+        :format: dictionary
+
+    **NOTES**
+
     Connections are assumed to be binary
 
-    History
-    ----------
-    Created - Nov 2016, WHT
+    **SEE ALSO**
+
+    *bursty_coeff*
+
+    **History**
+
+    :Modified: Dec 2016, WHT
+    :Created: Nov 2016, WHT
+
     """
 
 

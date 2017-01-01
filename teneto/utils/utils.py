@@ -8,54 +8,50 @@ Couple of utiltity functions for teneto for converting between graphlet and cont
 
 def graphlet2contact(G,cfg=None):
     """
-    Converts graphlet (sliced) representation of temporal network and converts it to contact representation representation of network.
 
-    Contact representation are more efficient for memory storing. Also includes metadata which can made it easier for plotting.
+    Converts graphlet (sliced) representation of temporal network and converts it to contact representation representation of network. Contact representation are more efficient for memory storing. Also includes metadata which can made it easier for plotting. Contact representation can also theoretically be used to apply continuous time. But teneto does not support this yet. A contact is considered to be all non-zero edges.
 
-    Contact representation can also theoretically be used to apply continuous time. But teneto does not support this yet.
+    **PARAMETERS**
 
-    A contact is considered to be all non-zero edges.
-
-    Parameters
-    ----------
-    G: Temporal graph, directed or weighted, as numpy array (graphlet representation):
-        (i) 3D numpy array of v x v x t (v=node d=time).
-    cfg: config files for contact representation, a dictionary of meta information about the graph.
+    :G: temporal network (graphlet)
+    :cfg: config files for contact representation, a dictionary of meta information about the graph.
         Can be left empty and the function will try and assign everything necessary
-        (i) Fs: sampling rate (number). default = 1.
-        (ii) timeunit (string): Default = ''.
-            What is the sampling rate in for units (e.g. seconds, minutes, years).
-        (iii) nettype (string). Automatic detection to be added:
-            'auto' (default) - detects automatically.
-            'wd' - weighted, directed
-            'bd' - binary, directed
-            'wu' - weighted, undirected
-            'bu' - binary, undirected.
-        (iv) diagonal (number). Default = 0.
-            What should the diagonal be.
-            (note: does could be expanded to take vector of unique diagonal values in the future, but not implemented now)
-        (v) timetype: 'discrete' (only available option at the moment. But more may be added)
-        The cfg file becomes the foundation of 'C'. Any other information in cfg, will added to C.
+
+        :Fs: sampling rate (number). default = 1.
+        :timeunit: (string): Default = ''. What is the sampling rate in for units (e.g. seconds, minutes, years).
+        :nettype: (string) can be:
+
+            :'auto': (default) detects automatically.
+            :'wd': weighted, directed
+            :'bd': binary, directed
+            :'wu': weighted, undirected
+            :'bu': binary, undirected.
+
+        :diagonal: (number). Default = 0. What should the diagonal be. (note: does could be expanded to take vector of unique diagonal values in the future, but not implemented now)
+        :timetype: 'discrete' (only available option at the moment. But more may be added). The cfg file becomes the foundation of 'C'. Any other information in cfg, will added to C.
+        :nLabs: node labels.
+        :t0: time label at first index.
 
 
-    Returns
-    ----------
-    C, Contact representation of temporal network.
-    Dictionary includes 'contacts', 'values' (if nettype[0]='w'),'nettype','netshape', 'Fs', 'dimord' and 'timeunit', 'timetype'.
+    **OUTPUT**
 
-    NOTES
-    ----------
-    Contact are more efficient for storing large sparse graphs to memory
-    However, until time permits to make code more efficient, many functions call contact2graphlet to make graphlets when calculating and this might not be ram efficient. This will be made better in later versions.
+    :C: Contact representation of temporal network.
+
+        :Format: Dictionary. Includes 'contacts', 'values' (if nettype[0]='w'),'nettype','netshape', 'Fs', 'dimord' and 'timeunit', 'timetype'.
+
+    **NOTES**
+
+    Until time permits to make code more efficient, many functions call contact2graphlet to make graphlets when calculating and this might not be ram efficient. This will be made better in later versions.
 
 
-    See Also
-    ----------
-    contact2graphlet
+    **SEE ALSO**
 
-    History
-    ----------
-    Created, November 2016, WHT
+    - *contact2graphlet*
+
+    **HISTORY**
+
+    :Modified: Dec 2016, WHT (documentaion, efficiency)
+    :Created: Nov 2016, WHT
 
     """
 
@@ -67,8 +63,17 @@ def graphlet2contact(G,cfg=None):
         raise ValueError('Input G (node x node x time), requires Rows and Columns to be the same size.')
     if len(G.shape)!=3:
         raise ValueError('Input G must be three dimensions (node x node x time)')
-
+    #Check number of nodes is correct, if specfied
+    if 'nLabs' in cfg.keys():
+        if len(cfg['nLabs']) != G.shape[0]:
+            raise ValueError('Specified list of node names has to be equal in length to number of nodes')
+    if 't0' in cfg.keys():
+        cfg['t0']=np.atleast_1d(np.array(cfg['t0']))
+        if len(cfg['t0'])!=1:
+            raise ValueError('t0 must be sigular be either integer representing time at first temporal index)')
+        cfg['t0']=np.squeeze(cfg['t0'])
     #Check that all inputs in cfg are correct.
+
 
     if 'nettype' not in cfg.keys() or cfg['nettype']=='auto':
         cfg['nettype'] = gen_nettype(G,1)
@@ -76,12 +81,15 @@ def graphlet2contact(G,cfg=None):
         raise ValueError('\'nettype\' (in cfg) must be a string \'wd\',\'bd\',\'wu\',\'bu\'). w: weighted network. b: binary network. u: undirected network. d: directed network')
     if 'Fs' not in cfg.keys():
         cfg['Fs']=1
-    if 'timeunits' not in cfg.keys():
-        cfg['timeunites'] = ''
+    if 'timeunit' not in cfg.keys():
+        cfg['timeunit'] = ''
         print('Warning, no sampling rate set. Assuming 1.')
     if 'diagonal' not in cfg.keys():
         cfg['diagonal'] = 0
-
+    if 'nLabs' not in cfg.keys():
+        cfg['nLabs'] = ''
+    if 't0' not in cfg.keys():
+        cfg['t0'] = 1
     nt=cfg['nettype']
 
     #Set diagonal to 0 to make contacts 0.
@@ -93,7 +101,7 @@ def graphlet2contact(G,cfg=None):
         G=np.transpose(G,[1,2,0])
     edg=np.where(np.abs(G)>0)
     sortTime = np.argsort(edg[2])
-    contacts = [tuple([edg[0][i],edg[1][i],edg[2][i]]) for i in sortTime]
+    contacts = np.array([tuple([edg[0][i],edg[1][i],edg[2][i]]) for i in sortTime])
     #Get each of the values if weighted matrix
     if nt[0]=='w':
         values = list(G[edg[0][sortTime],edg[1][sortTime],edg[2][sortTime]])
@@ -117,33 +125,36 @@ def graphlet2contact(G,cfg=None):
 
 def contact2graphlet(C):
     """
+
     Converts contact representation to graphlet (sliced) representation.
 
     Graphlet representation discards all meta information.
 
     NOTE this is called automatically in many metric functions.
 
-    Parameters
-    ----------
+    **PARAMETERS**
+
     C: A contact representation.
         Must include 'dimord', 'netshape', 'nettype', 'contacts' and, if weighted, 'values'.
 
-    Returns
-    ----------
-    3 dimensional numpy array that is of the graph.
+    **OUTPUT**
 
-    NOTES
-    ----------
+    :G: graphlet representation of temporal network.
+
+        :format: 3 dimensional numpy array that is of the graph.
+
+    **NOTES**
+
     Returning elements of G will be float, even if binary graph. Thus starting with G(integers) converting to C and then back to G with be float.
 
+    **SEE ALSO**
 
-    See Also
-    ----------
-    graphlet2contact
+    - *graphlet2contact*
 
-    History
-    ----------
-    Created, November 2016, WHT
+    **HISTORY**
+
+    :Modified: Dec 2016, WHT (documentation)
+    :Created: Nov 2016, WHT
 
     """
 
@@ -198,22 +209,23 @@ def contact2graphlet(C):
 
 def set_diagonal(G,val=0):
     """
+
     Generally diagonal is set to 0. This function helps set the diagonal across time.
 
 
-    Parameters
-    ----------
-    G: Temporal graph, directed or weighted, as numpy array (graphlet representation):
-        (i) 3D numpy array of v x v x t (v=node d=time).
-    val: value to set diagonal to (default 0).
+    **PARAMETERS**
 
-    Returns
-    ----------
-    Graphlet representation of G with new diagonal
+    :G: temporal network (graphlet)
+    :val: value to set diagonal to (default 0).
 
-    History
-    ----------
-    Created, November 2016, WHT
+    **OUTPUT**
+
+    :G: Graphlet representation of G with new diagonal
+
+    **HISTORY**
+
+    :Modified: Dec 2016, WHT (documentation)
+    :Created: Nov 2016, WHT
 
     """
 
@@ -224,18 +236,18 @@ def set_diagonal(G,val=0):
 
 def gen_nettype(G,printWarning=0):
     """
+
     Attempts to identify what nettype input graphlet G is.
     Diagonal is ignored.
 
-    Parameters
-    ----------
-    G: Temporal graph, directed or weighted, as numpy array (graphlet representation):
-        (i) 3D numpy array of v x v x t (v=node d=time).
-    printWarning = 0 (default) or 1. Prints warning in console so user knows assumption
+    **PARAMETERS**
 
-    History
-    ----------
-    Created, November 2016, WHT
+    :G: temporal network (graphlet)
+    :printWarning: 0 (default) or 1. Prints warning in console so user knows assumption
+
+    **HISTORY**
+
+    :Created: November 2016, WHT
 
     """
 
@@ -260,22 +272,22 @@ def gen_nettype(G,printWarning=0):
 
 def checkInput(netIn,raiseIfU=1,conMat=0):
     """
+
     This function checks that netIn input is either graphlet (G) or contact (C).
 
-    Parameters
-    -----------
-    netIn = temporal network, either graphlet or contact representation.
-    raiseIfU = 1 (default) or 0. Error is raised if not found to be G or C
-    conMat = 0 (default) or 1. If 1, input is allowed to be a 2 dimensional connectivity matrix.
+    **PARAMETERS**
 
-    Returns
-    -----------
-    String indicating input type.
-    'G','C' or 'U' (unknown)
+    :netIn: temporal network, either graphlet or contact representation.
+    :raiseIfU: 1 (default) or 0. Error is raised if not found to be G or C
+    :conMat: 0 (default) or 1. If 1, input is allowed to be a 2 dimensional connectivity matrix. Allows output to be 'M'
 
-    History
-    ----------
-    Created, November 2016, WHT
+    **OUTPUT**
+
+    :inputType: String indicating input type. 'G','C', 'M' or 'U' (unknown). M is special case only allowed when conMat=1 for a 2D connectivity matrix.
+
+    **HISTORY**
+
+    :Created: November 2016, WHT
 
     """
 
@@ -299,26 +311,28 @@ def checkInput(netIn,raiseIfU=1,conMat=0):
 
 def getDistanceFunction(requested_metric):
     """
+
     This function returns a specified distance function.
 
 
-    Parameters
-    -----------
-    'requested_metric' - can be 'hamming', 'eculidean', 'taxicab'
+    **PARAMETERS**
 
-    NOTE
-    ----------
+    :'requested_metric': can be 'hamming', 'eculidean'
+
+    **OUTPUT**
+
+    returns distance function (as function)
+
+    **NOTE**
+
     New distance functions can be added in ./teneto/misc/distancefunctions.py and can be called when requested_metric = 'myDinstanceMetricName'
 
-    Returns
-    -----------
-    Distance function
+    **HISTORY**
 
-    History
-    ----------
-    Created, December 2016, WHT
+    :Created: Dec 2016, WHT
 
     """
+
     from teneto.misc import distancefunctions as df
     if hasattr(df,requested_metric + '_distance'):
         return getattr(df,requested_metric + '_distance')

@@ -1,5 +1,5 @@
 import numpy as np
-from teneto.measures.shortesttemporalpath import temporalPaths
+from teneto.networkmeasures.shortest_temporal_path import shortest_temporal_path
 
 """
 
@@ -8,42 +8,48 @@ Reachability algorithem.
 """
 
 
-def reachabilityLatency(datIn,r=1,do='global'):
+def reachability_latency(datIn,r=1,do='global'):
     """
     returns global reachability latency.
     This is the r-th longest temporal path. Where r is the number of time If r=1,
 
-    Parameters
-    ----------
-    datIn: Variable input which can be
-        A) Temporal graph of format (can be bu):
-            (i) G: graphlet (3D numpy array).
-            (ii) C: contact (dictionary)
-        B) Dictionary of paths (output of temporalPath function).
+    **PARAMETERS**
 
-    r: reachability ratio that the latency is calculated in relation to.
+    :datIn: This is either:
+
+        :netIn: temporal network input (graphlet or contact).
+
+            :nettype: 'bu'
+
+        :paths: Dictionary of paths (output of shortest_temporal_path).
+
+    :r: reachability ratio that the latency is calculated in relation to.
         Value must be over 0 and up to 1.
         1 (default) - all nodes must be reached.
         Other values (e.g. .5 imply that 50% of nodes are reached)
         This is rounded to the nearest node inter.
         E.g. if there are 6 nodes [1,2,3,4,5,6], it will be node 4 (due to round upwards)
 
-    do: 'global' or 'nodes'
+    :do: what to calculate R for:
+        :'global': entire network.
+        :'nodes': each node.
 
 
-    Returns
-    ----------
-    R, readability latency
-    format: integer (numpy array)
+    **OUTPUT**
 
-    See Also
-    ----------
-    temporalEfficiency
-    shortesttemporalpath
+    :R: readability latency
+        :format: integer (numpy array)
 
-    History
-    ----------
-    Created - Dec 2016, WHT
+    **SEE ALSO**
+
+    - *temporal_efficiency*
+    - *shortest_temporal_path*
+
+    **HISTORY**
+
+    :Modified: Dec 2016, WHT (Documentation)
+    :Created: Dec 2016, WHT
+
     """
 
 

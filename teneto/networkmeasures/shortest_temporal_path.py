@@ -2,35 +2,41 @@ import numpy as np
 from teneto.utils import *
 
 
-def temporalPaths(netIn,q=1):
+def shortest_temporal_path(netIn,q=1):
     """
     Calculates the shortest temporal path when all possible routes cam be travelled at each time point.
     Currently only works for binary undirected edges (but can be expanded).
 
-    Parameters:
-    ----------
-    netIn: Temporal graph of format (can be bu only at present):
-        (i) G: graphlet (3D numpy array).
-        (ii) C: contact (dictionary)
-    q: quiet (default = 1). Turn to 0 if you want progree update.
+    **PARAMETERS**
 
-    Returns
-    ----------
-    temporal degree (centrality measure)
-    format: 1d numpy array
+    :netIn: temporal network input (graphlet or contact)
 
-    Note
-    ----------
+        :nettype: 'bu'
+
+    :q: quiet (default = 1). Turn to 0 if you want progree update.
+
+    **OUTPUT**
+
+    :paths: shortest temporal paths
+
+        :format: dictionary
+
+    **NOTE**
+
     This function assumes all paths can be taken per time point.
     In a future update, this function temporalPaths will allow for only a portion of edges to be travelled per time point.
     This will be implmeneted with no change to the funcitonality of calling this function as it is today, with the defaults being all edges can be travelled.
 
 
-    See Also
-    ----------
+    **SEE ALSO**
 
-    History
-    ----------
+    - *temporal_efficiency*
+    - *reachability_latency*
+    - *temporal_closeness_centrality*
+
+    **HISTORY**
+
+    Modified - Dec 2016, WHT (documentation)
     Created - Nov 2016, WHT
 
     """
@@ -71,10 +77,10 @@ def temporalPaths(netIn,q=1):
             P_last[v,v]=np.nan # make self connection nan regardless
         P[:,:,t]=P_last
     ## Return output
-    out = {}
+    paths = {}
     r=(P.size-np.sum(np.isnan(P)))/(P.size-(P.shape[0]*P.shape[2]))
-    out['percentReached']=r
-    out['paths']=P
-    out['nettype']=nettype
+    paths['percentReached']=r
+    paths['paths']=P
+    paths['nettype']=nettype
 
-    return out
+    return paths

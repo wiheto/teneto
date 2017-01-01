@@ -1,38 +1,37 @@
 import numpy as np
 from teneto.utils import *
 
-"""
-
-Temporal degree algorithems.
-
-"""
-
-
-def temporalDegree(netIn,d=0):
+def temporal_degree_centrality(netIn,d=0):
     """
-    temporal degree of network.
 
-    Parameters
-    ----------
-    netIn: Temporal graph of format (can be bd,bu,wu,wd):
-        (i) G: graphlet (3D numpy array).
-        (ii) C: contact (dictionary)
-    d: Dimension that is returned 0 or 1 (default 0).
+    temporal degree of network. Sum of all connections each node has through time.
+
+    **PARAMETERS**
+
+    :netIn: temporal network input (graphlet or contact).
+
+        :nettype: 'bu', 'bd', 'wu', 'wd'
+
+    :d: Dimension that is returned 0 or 1 (default 0).
         Note, only relevant for directed networks.
         i.e. if 0, node i has Aijt summed over j and t.
         and if 1, node j has Aijt summed over i and t.
 
-    Returns
-    ----------
-    temporal degree (centrality measure)
-    format: 1d numpy array
+    **OUTPUT**
 
-    See Also
-    ----------
+    :D: temporal degree centrality (nodal measure)
 
-    History
-    ----------
+        :format: 1d numpy array
+
+    **SEE ALSO**
+
+    - *temporal_closeness_centrality*
+
+    **HISTORY**
+
+    Modified - DEF 2016, WHT (docmentation)
     Created - Nov 2016, WHT
+
     """
 
     #Get input type (C or G)

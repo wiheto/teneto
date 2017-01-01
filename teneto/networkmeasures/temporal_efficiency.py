@@ -1,5 +1,5 @@
 import numpy as np
-from teneto.measures.shortesttemporalpath import temporalPaths
+from teneto.networkmeasures.shortest_temporal_path import shortest_temporal_path
 
 """
 
@@ -8,36 +8,41 @@ Temporal Efficiency
 """
 
 
-def temporalEfficiency(datIn):
+def temporal_efficiency(datIn):
     """
     returns temporal efficiency estimate.
 
 
-    Parameters
-    ----------
-    datIn: Variable input which can be
-        A) Temporal graph of format (can be bu):
-            (i) G: graphlet (3D numpy array).
-            (ii) C: contact (dictionary)
-        B) Dictionary of paths (output of temporalPath function).
+    **PARAMETERS**
+
+    :datIn: This is either:
+
+        :netIn: temporal network input (graphlet or contact).
+
+            :nettype: 'bu'
+
+        :paths: Dictionary of paths (output of shortest_temporal_path).
 
 
-    Returns
-    ----------
-    E, global temporal efficiency (global measure)
-    format: integer (numpy array)
+    **OUTPUT**
 
-    NOTES
-    ---------
+    :E: global temporal efficiency (global measure)
+
+        :format: integer (numpy array)
+
+    **NOTES**
+
     This can be implemented on a non-global level in the future.
 
-    See Also
-    ----------
-    shortesttemporalpath
+    **SEE ALSO**
 
-    History
-    ----------
+    - *shortesttemporalpath*
+
+    **HISTORY**
+
+    Modified - Jan 2016, WHT (documentation)
     Created - Dec 2016, WHT
+    
     """
 
     sp=0 #are shortest paths calculated

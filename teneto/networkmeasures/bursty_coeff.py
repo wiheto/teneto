@@ -1,46 +1,55 @@
 import numpy as np
 from teneto.utils import *
-from teneto.measures.intercontacttimes import intercontacttimes
+from teneto.networkmeasures.intercontacttimes import intercontacttimes
 from functools import reduce
 
-def burstycoeff(datIn,calcPer='edge',nodes='all'):
+def bursty_coeff(datIn,calcPer='edge',nodes='all'):
     """
     returns calculates the bursty coefficient. Value > 0 indicates bursty. Value < 0 periodic/tonic. Value = 0 implies random.
     As temporalPaths only works with binary undirected edges at the moment, weighted edges are assumed to be binary.
 
-    Parameters
-    ----------
-    datIn: Variable input which can be either:
-        A) Temporal graph of format (can be bu, bd):
-            (i) G: graphlet (3D numpy array).
-            (ii) C: contact (dictionary)
-        B) Dictionary of ICTs (output of intercontacttimes function).
-    calcPer: caclulate the bursty coeff for 'edge' (default), 'node' or 'meanEdgePerNode'.
-        'edge': calculate B on all icts between node i and j.
-        'node': caclulate B on all icts connected to node i.
-        'meanEdgePerNode': first calculate the icts between node i and j, then take the mean over all j.
-    nodes: which do to do.
-        'all' (default) - all nodes
-        List of indexes - do bursty between those nodes only.
+    **PARAMETERS**
+
+    :datIn: This is either:
+
+        :netIn: temporal network input (graphlet or contact).
+
+            :nettype: 'bu', 'bd'
+
+        :ICT: dictionary of ICTs (output of *intercontacttimes*).
+
+    :calcPer: caclulate the bursty coeff over what. Options include
+
+        :'edge': calculate B on all ICTs between node i and j. (Default)
+        :'node': caclulate B on all ICTs connected to node i.
+        :'meanEdgePerNode': first calculate the ICTs between node i and j, then take the mean over all j.
+
+    :nodes: which do to do. Options include:
+
+        :'all': do for all nodes (default)
+        :specify: list of node indexes to calculate.
 
 
-    Returns
-    ----------
-    burst coefficienct per (edge or node measure)
-    format: 1d numpy array
+    **OUTPUT**
 
-    See Also
-    ----------
+    :B: bursty coefficienct per (edge or node measure)
+
+        :format: 1d numpy array
+
+    **SEE ALSO**
+
     intercontacttimes
 
-    Origin of metric
-    ----------
+    **ORIGIN**
+
     Goh and Barabasi 2008
     Discrete formulation here from Holme 2012.
 
-    History
-    ----------
-    Created - Nov 2016, WHT
+    **HISTORY**
+
+    :Modified: Nov 2016, WHT (documentation)
+    :Created: Nov 2016, WHT
+
     """
 
     ict=0 #are ict present
@@ -50,7 +59,7 @@ def burstycoeff(datIn,calcPer='edge',nodes='all'):
             ict=1
     # if shortest paths are not calculated, calculate them
     if ict==0:
-        datIn = intercontacttimes(datIn)
+        datIn =     intercontacttimes(datIn)
 
     ictShape = datIn['intercontacttimes'].shape
 
