@@ -39,7 +39,7 @@ If a previous versions of Teneto has been installed, download the new version an
 [2. The plotting different networks](https://github.com/wiheto/teneto/blob/master/examples/02_plotting_temporalnetworks.ipynb)
 
 
-[2. Creating temporal networks ](https://github.com/wiheto/teneto/blob/master/examples/03_creating_temporalnetworks.ipynb)
+[3. Creating temporal networks ](https://github.com/wiheto/teneto/blob/master/examples/03_creating_temporalnetworks.ipynb)
 
 ### Documentation
 
