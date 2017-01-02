@@ -1,0 +1,754 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>teneto.networkmeasures package &mdash; Teneto 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Teneto 0.1.1 documentation" href="index.html" />
+    <link rel="up" title="teneto package" href="teneto.html" />
+    <link rel="next" title="teneto.plot package" href="teneto.plot.html" />
+    <link rel="prev" title="teneto.generatenetwork package" href="teneto.generatenetwork.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="teneto-networkmeasures-package">
+<h1>teneto.networkmeasures package<a class="headerlink" href="#teneto-networkmeasures-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-teneto.networkmeasures.bursty_coeff">
+<span id="teneto-networkmeasures-bursty-coeff-module"></span><h2>teneto.networkmeasures.bursty_coeff module<a class="headerlink" href="#module-teneto.networkmeasures.bursty_coeff" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="teneto.networkmeasures.bursty_coeff.bursty_coeff">
+<code class="descclassname">teneto.networkmeasures.bursty_coeff.</code><code class="descname">bursty_coeff</code><span class="sig-paren">(</span><em>datIn</em>, <em>calcPer='edge'</em>, <em>nodes='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/networkmeasures/bursty_coeff.html#bursty_coeff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.networkmeasures.bursty_coeff.bursty_coeff" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns calculates the bursty coefficient. Value &gt; 0 indicates bursty. Value &lt; 0 periodic/tonic. Value = 0 implies random.
+As temporalPaths only works with binary undirected edges at the moment, weighted edges are assumed to be binary.</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">DatIn:</th><td class="field-body"><p class="first">This is either:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">netIn:</th><td class="field-body"><p class="first">temporal network input (graphlet or contact).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nettype:</th><td class="field-body">&#8216;bu&#8217;, &#8216;bd&#8217;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ICT:</th><td class="field-body"><p class="first last">dictionary of ICTs (output of <em>intercontacttimes</em>).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">CalcPer:</th><td class="field-body"><p class="first">caclulate the bursty coeff over what. Options include</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">&#8216;edge&#8217;:</th><td class="field-body">calculate B on all ICTs between node i and j. (Default)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">&#8216;node&#8217;:</th><td class="field-body">caclulate B on all ICTs connected to node i.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">&#8216;meanEdgePerNode&#8217;:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">first calculate the ICTs between node i and j, then take the mean over all j.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Nodes:</th><td class="field-body"><p class="first">which do to do. Options include:</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">&#8216;all&#8217;:</th><td class="field-body">do for all nodes (default)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">specify:</th><td class="field-body">list of node indexes to calculate.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">B:</th><td class="field-body"><p class="first">bursty coefficienct per (edge or node measure)</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">format:</th><td class="field-body">1d numpy array</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>SEE ALSO</strong></p>
+<p>intercontacttimes</p>
+<p><strong>ORIGIN</strong></p>
+<p>Goh and Barabasi 2008
+Discrete formulation here from Holme 2012.</p>
+<p><strong>HISTORY</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Modified:</th><td class="field-body">Nov 2016, WHT (documentation)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Created:</th><td class="field-body">Nov 2016, WHT</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-teneto.networkmeasures.fluctuability">
+<span id="teneto-networkmeasures-fluctuability-module"></span><h2>teneto.networkmeasures.fluctuability module<a class="headerlink" href="#module-teneto.networkmeasures.fluctuability" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="teneto.networkmeasures.fluctuability.fluctuability">
+<code class="descclassname">teneto.networkmeasures.fluctuability.</code><code class="descname">fluctuability</code><span class="sig-paren">(</span><em>netIn</em>, <em>do='global'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/networkmeasures/fluctuability.html#fluctuability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.networkmeasures.fluctuability.fluctuability" title="Permalink to this definition">¶</a></dt>
+<dd><p>fluctuability of temporal networks.This is the variation in unique edges through time divided by the overall number of edges.</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">NetIn:</th><td class="field-body"><p class="first">temporal network input (graphlet or contact)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nettype:</th><td class="field-body">&#8216;bd&#8217;, &#8216;bu&#8217;, &#8216;wu&#8217;, &#8216;wd&#8217;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Do:</th><td class="field-body"><p class="first last">version of fluctuabiility to calcualte. &#8216;global&#8217; (i.e. average distance of all nodes for each consecutive time point). A nodal version may be added in future.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">F:</th><td class="field-body"><p class="first">Fluctuability</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">format:</th><td class="field-body">scalar (do=&#8217;global&#8217;)</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>SEE ALSO</strong>
+- <em>voalitility</em></p>
+<p><strong>HISTORY</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Modified:</th><td class="field-body">Jan 2016, WHT (documentation)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Created:</th><td class="field-body">Dec 2016, WHT</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="teneto-networkmeasures-hyperedge-module">
+<h2>teneto.networkmeasures.hyperedge module<a class="headerlink" href="#teneto-networkmeasures-hyperedge-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-teneto.networkmeasures.intercontacttimes">
+<span id="teneto-networkmeasures-intercontacttimes-module"></span><h2>teneto.networkmeasures.intercontacttimes module<a class="headerlink" href="#module-teneto.networkmeasures.intercontacttimes" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="teneto.networkmeasures.intercontacttimes.intercontacttimes">
+<code class="descclassname">teneto.networkmeasures.intercontacttimes.</code><code class="descname">intercontacttimes</code><span class="sig-paren">(</span><em>netIn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/networkmeasures/intercontacttimes.html#intercontacttimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.networkmeasures.intercontacttimes.intercontacttimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the intercontacttimes of each edge in a network</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">NetIn:</th><td class="field-body"><p class="first">Temporal network (craphlet or contact).</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nettype:</th><td class="field-body">&#8216;bu&#8217;, &#8216;bd&#8217;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ICT:</th><td class="field-body"><p class="first">intercontact times as numpy array</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">format:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NOTES</strong></p>
+<p>Connections are assumed to be binary</p>
+<p><strong>SEE ALSO</strong></p>
+<p><em>bursty_coeff</em></p>
+<p><strong>History</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Modified:</th><td class="field-body">Dec 2016, WHT</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Created:</th><td class="field-body">Nov 2016, WHT</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-teneto.networkmeasures.reachability_latency">
+<span id="teneto-networkmeasures-reachability-latency-module"></span><h2>teneto.networkmeasures.reachability_latency module<a class="headerlink" href="#module-teneto.networkmeasures.reachability_latency" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="teneto.networkmeasures.reachability_latency.reachability_latency">
+<code class="descclassname">teneto.networkmeasures.reachability_latency.</code><code class="descname">reachability_latency</code><span class="sig-paren">(</span><em>datIn</em>, <em>r=1</em>, <em>do='global'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/networkmeasures/reachability_latency.html#reachability_latency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.networkmeasures.reachability_latency.reachability_latency" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns global reachability latency.
+This is the r-th longest temporal path. Where r is the number of time If r=1,</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">DatIn:</th><td class="field-body"><p class="first">This is either:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">netIn:</th><td class="field-body"><p class="first">temporal network input (graphlet or contact).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nettype:</th><td class="field-body">&#8216;bu&#8217;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">paths:</th><td class="field-body"><p class="first last">Dictionary of paths (output of shortest_temporal_path).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">R:</th><td class="field-body"><p class="first">reachability ratio that the latency is calculated in relation to.
+Value must be over 0 and up to 1.
+1 (default) - all nodes must be reached.
+Other values (e.g. .5 imply that 50% of nodes are reached)
+This is rounded to the nearest node inter.
+E.g. if there are 6 nodes [1,2,3,4,5,6], it will be node 4 (due to round upwards)</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Do:</th><td class="field-body"><p class="first last">what to calculate R for:
+:&#8217;global&#8217;: entire network.
+:&#8217;nodes&#8217;: each node.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">R:</th><td class="field-body">readability latency
+:format: integer (numpy array)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>SEE ALSO</strong></p>
+<ul class="simple">
+<li><em>temporal_efficiency</em></li>
+<li><em>shortest_temporal_path</em></li>
+</ul>
+<p><strong>HISTORY</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Modified:</th><td class="field-body">Dec 2016, WHT (Documentation)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Created:</th><td class="field-body">Dec 2016, WHT</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-teneto.networkmeasures.shortest_temporal_path">
+<span id="teneto-networkmeasures-shortest-temporal-path-module"></span><h2>teneto.networkmeasures.shortest_temporal_path module<a class="headerlink" href="#module-teneto.networkmeasures.shortest_temporal_path" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="teneto.networkmeasures.shortest_temporal_path.shortest_temporal_path">
+<code class="descclassname">teneto.networkmeasures.shortest_temporal_path.</code><code class="descname">shortest_temporal_path</code><span class="sig-paren">(</span><em>netIn</em>, <em>q=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/networkmeasures/shortest_temporal_path.html#shortest_temporal_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.networkmeasures.shortest_temporal_path.shortest_temporal_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the shortest temporal path when all possible routes cam be travelled at each time point.
+Currently only works for binary undirected edges (but can be expanded).</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">NetIn:</th><td class="field-body"><p class="first">temporal network input (graphlet or contact)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nettype:</th><td class="field-body">&#8216;bu&#8217;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Q:</th><td class="field-body"><p class="first last">quiet (default = 1). Turn to 0 if you want progree update.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Paths:</th><td class="field-body"><p class="first">shortest temporal paths</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">format:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NOTE</strong></p>
+<p>This function assumes all paths can be taken per time point.
+In a future update, this function temporalPaths will allow for only a portion of edges to be travelled per time point.
+This will be implmeneted with no change to the funcitonality of calling this function as it is today, with the defaults being all edges can be travelled.</p>
+<p><strong>SEE ALSO</strong></p>
+<ul class="simple">
+<li><em>temporal_efficiency</em></li>
+<li><em>reachability_latency</em></li>
+<li><em>temporal_closeness_centrality</em></li>
+</ul>
+<p><strong>HISTORY</strong></p>
+<p>Modified - Dec 2016, WHT (documentation)
+Created - Nov 2016, WHT</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-teneto.networkmeasures.temporal_closeness_centrality">
+<span id="teneto-networkmeasures-temporal-closeness-centrality-module"></span><h2>teneto.networkmeasures.temporal_closeness_centrality module<a class="headerlink" href="#module-teneto.networkmeasures.temporal_closeness_centrality" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="teneto.networkmeasures.temporal_closeness_centrality.temporal_closeness_centrality">
+<code class="descclassname">teneto.networkmeasures.temporal_closeness_centrality.</code><code class="descname">temporal_closeness_centrality</code><span class="sig-paren">(</span><em>datIn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/networkmeasures/temporal_closeness_centrality.html#temporal_closeness_centrality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.networkmeasures.temporal_closeness_centrality.temporal_closeness_centrality" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns temporal closeness centrality per node.
+As temporalPaths only works with binary undirected edges at the moment, this is required for temporal closeness centrality.</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">DatIn:</th><td class="field-body"><p class="first">This is either:</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">netIn:</th><td class="field-body"><p class="first">temporal network input (graphlet or contact).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nettype:</th><td class="field-body">&#8216;bu&#8217;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">paths:</th><td class="field-body"><p class="first last">Dictionary of paths (output of shortest_temporal_path).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">C:</th><td class="field-body"><p class="first">temporal closness centrality (nodal measure)</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">format:</th><td class="field-body">1d numpy array</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>See Also</strong></p>
+<ul class="simple">
+<li><em>temporalPaths</em></li>
+<li><em>temporalDegree</em></li>
+</ul>
+<p><strong>History</strong></p>
+<p>Modified - Dec 2016, WHT (documentation, cleanup)
+Created - Nov 2016, WHT</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-teneto.networkmeasures.temporal_degree_centrality">
+<span id="teneto-networkmeasures-temporal-degree-centrality-module"></span><h2>teneto.networkmeasures.temporal_degree_centrality module<a class="headerlink" href="#module-teneto.networkmeasures.temporal_degree_centrality" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="teneto.networkmeasures.temporal_degree_centrality.temporal_degree_centrality">
+<code class="descclassname">teneto.networkmeasures.temporal_degree_centrality.</code><code class="descname">temporal_degree_centrality</code><span class="sig-paren">(</span><em>netIn</em>, <em>d=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/networkmeasures/temporal_degree_centrality.html#temporal_degree_centrality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.networkmeasures.temporal_degree_centrality.temporal_degree_centrality" title="Permalink to this definition">¶</a></dt>
+<dd><p>temporal degree of network. Sum of all connections each node has through time.</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">NetIn:</th><td class="field-body"><p class="first">temporal network input (graphlet or contact).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nettype:</th><td class="field-body">&#8216;bu&#8217;, &#8216;bd&#8217;, &#8216;wu&#8217;, &#8216;wd&#8217;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">D:</th><td class="field-body"><p class="first last">Dimension that is returned 0 or 1 (default 0).
+Note, only relevant for directed networks.
+i.e. if 0, node i has Aijt summed over j and t.
+and if 1, node j has Aijt summed over i and t.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">D:</th><td class="field-body"><p class="first">temporal degree centrality (nodal measure)</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">format:</th><td class="field-body">1d numpy array</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>SEE ALSO</strong></p>
+<ul class="simple">
+<li><em>temporal_closeness_centrality</em></li>
+</ul>
+<p><strong>HISTORY</strong></p>
+<p>Modified - DEF 2016, WHT (docmentation)
+Created - Nov 2016, WHT</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-teneto.networkmeasures.temporal_efficiency">
+<span id="teneto-networkmeasures-temporal-efficiency-module"></span><h2>teneto.networkmeasures.temporal_efficiency module<a class="headerlink" href="#module-teneto.networkmeasures.temporal_efficiency" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="teneto.networkmeasures.temporal_efficiency.temporal_efficiency">
+<code class="descclassname">teneto.networkmeasures.temporal_efficiency.</code><code class="descname">temporal_efficiency</code><span class="sig-paren">(</span><em>datIn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/networkmeasures/temporal_efficiency.html#temporal_efficiency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.networkmeasures.temporal_efficiency.temporal_efficiency" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns temporal efficiency estimate.</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">DatIn:</th><td class="field-body"><p class="first">This is either:</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">netIn:</th><td class="field-body"><p class="first">temporal network input (graphlet or contact).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nettype:</th><td class="field-body">&#8216;bu&#8217;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">paths:</th><td class="field-body"><p class="first last">Dictionary of paths (output of shortest_temporal_path).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">E:</th><td class="field-body"><p class="first">global temporal efficiency (global measure)</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">format:</th><td class="field-body">integer (numpy array)</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NOTES</strong></p>
+<p>This can be implemented on a non-global level in the future.</p>
+<p><strong>SEE ALSO</strong></p>
+<ul class="simple">
+<li><em>shortesttemporalpath</em></li>
+</ul>
+<p><strong>HISTORY</strong></p>
+<p>Modified - Jan 2016, WHT (documentation)
+Created - Dec 2016, WHT</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-teneto.networkmeasures.volatility">
+<span id="teneto-networkmeasures-volatility-module"></span><h2>teneto.networkmeasures.volatility module<a class="headerlink" href="#module-teneto.networkmeasures.volatility" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="teneto.networkmeasures.volatility.volatility">
+<code class="descclassname">teneto.networkmeasures.volatility.</code><code class="descname">volatility</code><span class="sig-paren">(</span><em>netIn</em>, <em>D='default'</em>, <em>do='global'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/networkmeasures/volatility.html#volatility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.networkmeasures.volatility.volatility" title="Permalink to this definition">¶</a></dt>
+<dd><p>volatility of temporal networks. This is the average distance between consecutive time points of graphlets (difference is caclualted either globally, per edge)</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">NetIn:</th><td class="field-body"><p class="first">temporal network input (graphlet or contact)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">netIn nettype:</th><td class="field-body">&#8216;bu&#8217;,&#8217;bd&#8217;,&#8217;wu&#8217;,&#8217;wd&#8217;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">D:</th><td class="field-body"><p class="first">distance function. Following options available: &#8216;default&#8217;, &#8216;hamming&#8217;, &#8216;euclidean&#8217;. (Default implies hamming for binary networks, euclidean for weighted).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Do:</th><td class="field-body"><p class="first">version of volaitility to caclulate. Possibilities include:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">&#8216;global&#8217;:</th><td class="field-body">(default): the average distance of all nodes for each consecutive time point).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">&#8216;edge&#8217;:</th><td class="field-body">average distance between consecutive time points for each edge). Takes considerably longer</td>
+</tr>
+</tbody>
+</table>
+<p class="last">:&#8217;node&#8217; (i.e. returns the average per node output when calculating volatility per &#8216;edge&#8217;).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">V:</th><td class="field-body"><p class="first">Volatility</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">format:</th><td class="field-body">scalar (do=&#8217;global&#8217;),
+1d numpy array (do=&#8217;node&#8217;),
+2d numpy array (do=&#8217;edge&#8217;)</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>SEE ALSO</strong>
+- <em>utils.getDistanceFunction</em></p>
+<p><strong>HISTORY</strong>
+Modified - Dec 2016, WHT (documentation, cleanup)
+Created - Dec 2016, WHT</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-teneto.networkmeasures">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-teneto.networkmeasures" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">teneto.networkmeasures package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-teneto.networkmeasures.bursty_coeff">teneto.networkmeasures.bursty_coeff module</a></li>
+<li><a class="reference internal" href="#module-teneto.networkmeasures.fluctuability">teneto.networkmeasures.fluctuability module</a></li>
+<li><a class="reference internal" href="#teneto-networkmeasures-hyperedge-module">teneto.networkmeasures.hyperedge module</a></li>
+<li><a class="reference internal" href="#module-teneto.networkmeasures.intercontacttimes">teneto.networkmeasures.intercontacttimes module</a></li>
+<li><a class="reference internal" href="#module-teneto.networkmeasures.reachability_latency">teneto.networkmeasures.reachability_latency module</a></li>
+<li><a class="reference internal" href="#module-teneto.networkmeasures.shortest_temporal_path">teneto.networkmeasures.shortest_temporal_path module</a></li>
+<li><a class="reference internal" href="#module-teneto.networkmeasures.temporal_closeness_centrality">teneto.networkmeasures.temporal_closeness_centrality module</a></li>
+<li><a class="reference internal" href="#module-teneto.networkmeasures.temporal_degree_centrality">teneto.networkmeasures.temporal_degree_centrality module</a></li>
+<li><a class="reference internal" href="#module-teneto.networkmeasures.temporal_efficiency">teneto.networkmeasures.temporal_efficiency module</a></li>
+<li><a class="reference internal" href="#module-teneto.networkmeasures.volatility">teneto.networkmeasures.volatility module</a></li>
+<li><a class="reference internal" href="#module-teneto.networkmeasures">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="teneto.html">teneto package</a><ul>
+      <li>Previous: <a href="teneto.generatenetwork.html" title="previous chapter">teneto.generatenetwork package</a></li>
+      <li>Next: <a href="teneto.plot.html" title="next chapter">teneto.plot package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/teneto.networkmeasures.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, William Hedley Thompson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/teneto.networkmeasures.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

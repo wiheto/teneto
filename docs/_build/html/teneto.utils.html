@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>teneto.utils package &mdash; Teneto 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Teneto 0.1.1 documentation" href="index.html" />
+    <link rel="up" title="teneto package" href="teneto.html" />
+    <link rel="prev" title="teneto.plot package" href="teneto.plot.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="teneto-utils-package">
+<h1>teneto.utils package<a class="headerlink" href="#teneto-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-teneto.utils.utils">
+<span id="teneto-utils-utils-module"></span><h2>teneto.utils.utils module<a class="headerlink" href="#module-teneto.utils.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="teneto.utils.utils.checkInput">
+<code class="descclassname">teneto.utils.utils.</code><code class="descname">checkInput</code><span class="sig-paren">(</span><em>netIn</em>, <em>raiseIfU=1</em>, <em>conMat=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/utils/utils.html#checkInput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.utils.utils.checkInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks that netIn input is either graphlet (G) or contact (C).</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">NetIn:</th><td class="field-body">temporal network, either graphlet or contact representation.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">RaiseIfU:</th><td class="field-body">1 (default) or 0. Error is raised if not found to be G or C</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">ConMat:</th><td class="field-body">0 (default) or 1. If 1, input is allowed to be a 2 dimensional connectivity matrix. Allows output to be &#8216;M&#8217;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">InputType:</th><td class="field-body">String indicating input type. &#8216;G&#8217;,&#8217;C&#8217;, &#8216;M&#8217; or &#8216;U&#8217; (unknown). M is special case only allowed when conMat=1 for a 2D connectivity matrix.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>HISTORY</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Created:</th><td class="field-body">November 2016, WHT</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="teneto.utils.utils.contact2graphlet">
+<code class="descclassname">teneto.utils.utils.</code><code class="descname">contact2graphlet</code><span class="sig-paren">(</span><em>C</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/utils/utils.html#contact2graphlet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.utils.utils.contact2graphlet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts contact representation to graphlet (sliced) representation.</p>
+<p>Graphlet representation discards all meta information.</p>
+<p>NOTE this is called automatically in many metric functions.</p>
+<p><strong>PARAMETERS</strong></p>
+<dl class="docutils">
+<dt>C: A contact representation.</dt>
+<dd>Must include &#8216;dimord&#8217;, &#8216;netshape&#8217;, &#8216;nettype&#8217;, &#8216;contacts&#8217; and, if weighted, &#8216;values&#8217;.</dd>
+</dl>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">G:</th><td class="field-body"><p class="first">graphlet representation of temporal network.</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">format:</th><td class="field-body">3 dimensional numpy array that is of the graph.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NOTES</strong></p>
+<p>Returning elements of G will be float, even if binary graph. Thus starting with G(integers) converting to C and then back to G with be float.</p>
+<p><strong>SEE ALSO</strong></p>
+<ul class="simple">
+<li><em>graphlet2contact</em></li>
+</ul>
+<p><strong>HISTORY</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Modified:</th><td class="field-body">Dec 2016, WHT (documentation)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Created:</th><td class="field-body">Nov 2016, WHT</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="teneto.utils.utils.gen_nettype">
+<code class="descclassname">teneto.utils.utils.</code><code class="descname">gen_nettype</code><span class="sig-paren">(</span><em>G</em>, <em>printWarning=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/utils/utils.html#gen_nettype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.utils.utils.gen_nettype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to identify what nettype input graphlet G is.
+Diagonal is ignored.</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">G:</th><td class="field-body">temporal network (graphlet)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">PrintWarning:</th><td class="field-body">0 (default) or 1. Prints warning in console so user knows assumption</td>
+</tr>
+</tbody>
+</table>
+<p><strong>HISTORY</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Created:</th><td class="field-body">November 2016, WHT</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="teneto.utils.utils.getDistanceFunction">
+<code class="descclassname">teneto.utils.utils.</code><code class="descname">getDistanceFunction</code><span class="sig-paren">(</span><em>requested_metric</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/utils/utils.html#getDistanceFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.utils.utils.getDistanceFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns a specified distance function.</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">&#8216;requested_metric&#8217;:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">can be &#8216;hamming&#8217;, &#8216;eculidean&#8217;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<p>returns distance function (as function)</p>
+<p><strong>NOTE</strong></p>
+<p>New distance functions can be added in ./teneto/misc/distancefunctions.py and can be called when requested_metric = &#8216;myDinstanceMetricName&#8217;</p>
+<p><strong>HISTORY</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Created:</th><td class="field-body">Dec 2016, WHT</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="teneto.utils.utils.graphlet2contact">
+<code class="descclassname">teneto.utils.utils.</code><code class="descname">graphlet2contact</code><span class="sig-paren">(</span><em>G</em>, <em>cfg=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/utils/utils.html#graphlet2contact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.utils.utils.graphlet2contact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts graphlet (sliced) representation of temporal network and converts it to contact representation representation of network. Contact representation are more efficient for memory storing. Also includes metadata which can made it easier for plotting. Contact representation can also theoretically be used to apply continuous time. But teneto does not support this yet. A contact is considered to be all non-zero edges.</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">G:</th><td class="field-body"><p class="first">temporal network (graphlet)</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Cfg:</th><td class="field-body"><p class="first">config files for contact representation, a dictionary of meta information about the graph.
+Can be left empty and the function will try and assign everything necessary</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Fs:</th><td class="field-body"><p class="first">sampling rate (number). default = 1.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">timeunit:</th><td class="field-body"><p class="first">(string): Default = &#8216;&#8217;. What is the sampling rate in for units (e.g. seconds, minutes, years).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">nettype:</th><td class="field-body"><p class="first">(string) can be:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">&#8216;auto&#8217;:</th><td class="field-body">(default) detects automatically.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">&#8216;wd&#8217;:</th><td class="field-body">weighted, directed</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">&#8216;bd&#8217;:</th><td class="field-body">binary, directed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">&#8216;wu&#8217;:</th><td class="field-body">weighted, undirected</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">&#8216;bu&#8217;:</th><td class="field-body">binary, undirected.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">diagonal:</th><td class="field-body"><p class="first">(number). Default = 0. What should the diagonal be. (note: does could be expanded to take vector of unique diagonal values in the future, but not implemented now)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">timetype:</th><td class="field-body"><p class="first">&#8216;discrete&#8217; (only available option at the moment. But more may be added). The cfg file becomes the foundation of &#8216;C&#8217;. Any other information in cfg, will added to C.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">nLabs:</th><td class="field-body"><p class="first">node labels.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">t0:</th><td class="field-body"><p class="first last">time label at first index.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">C:</th><td class="field-body"><p class="first">Contact representation of temporal network.</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Format:</th><td class="field-body">Dictionary. Includes &#8216;contacts&#8217;, &#8216;values&#8217; (if nettype[0]=&#8217;w&#8217;),&#8217;nettype&#8217;,&#8217;netshape&#8217;, &#8216;Fs&#8217;, &#8216;dimord&#8217; and &#8216;timeunit&#8217;, &#8216;timetype&#8217;.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NOTES</strong></p>
+<p>Until time permits to make code more efficient, many functions call contact2graphlet to make graphlets when calculating and this might not be ram efficient. This will be made better in later versions.</p>
+<p><strong>SEE ALSO</strong></p>
+<ul class="simple">
+<li><em>contact2graphlet</em></li>
+</ul>
+<p><strong>HISTORY</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Modified:</th><td class="field-body">Dec 2016, WHT (documentaion, efficiency)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Created:</th><td class="field-body">Nov 2016, WHT</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="teneto.utils.utils.set_diagonal">
+<code class="descclassname">teneto.utils.utils.</code><code class="descname">set_diagonal</code><span class="sig-paren">(</span><em>G</em>, <em>val=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/teneto/utils/utils.html#set_diagonal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#teneto.utils.utils.set_diagonal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generally diagonal is set to 0. This function helps set the diagonal across time.</p>
+<p><strong>PARAMETERS</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">G:</th><td class="field-body">temporal network (graphlet)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Val:</th><td class="field-body">value to set diagonal to (default 0).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>OUTPUT</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">G:</th><td class="field-body">Graphlet representation of G with new diagonal</td>
+</tr>
+</tbody>
+</table>
+<p><strong>HISTORY</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Modified:</th><td class="field-body">Dec 2016, WHT (documentation)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Created:</th><td class="field-body">Nov 2016, WHT</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-teneto.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-teneto.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">teneto.utils package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-teneto.utils.utils">teneto.utils.utils module</a></li>
+<li><a class="reference internal" href="#module-teneto.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="teneto.html">teneto package</a><ul>
+      <li>Previous: <a href="teneto.plot.html" title="previous chapter">teneto.plot package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/teneto.utils.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, William Hedley Thompson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/teneto.utils.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

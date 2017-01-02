@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>teneto.networkmeasures.bursty_coeff &mdash; Teneto 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Teneto 0.1.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for teneto.networkmeasures.bursty_coeff</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">teneto.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">teneto.networkmeasures.intercontacttimes</span> <span class="kn">import</span> <span class="n">intercontacttimes</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="nb">reduce</span>
+
+<div class="viewcode-block" id="bursty_coeff"><a class="viewcode-back" href="../../../teneto.networkmeasures.html#teneto.networkmeasures.bursty_coeff.bursty_coeff">[docs]</a><span class="k">def</span> <span class="nf">bursty_coeff</span><span class="p">(</span><span class="n">datIn</span><span class="p">,</span><span class="n">calcPer</span><span class="o">=</span><span class="s1">&#39;edge&#39;</span><span class="p">,</span><span class="n">nodes</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    returns calculates the bursty coefficient. Value &gt; 0 indicates bursty. Value &lt; 0 periodic/tonic. Value = 0 implies random.</span>
+<span class="sd">    As temporalPaths only works with binary undirected edges at the moment, weighted edges are assumed to be binary.</span>
+
+<span class="sd">    **PARAMETERS**</span>
+
+<span class="sd">    :datIn: This is either:</span>
+
+<span class="sd">        :netIn: temporal network input (graphlet or contact).</span>
+
+<span class="sd">            :nettype: &#39;bu&#39;, &#39;bd&#39;</span>
+
+<span class="sd">        :ICT: dictionary of ICTs (output of *intercontacttimes*).</span>
+
+<span class="sd">    :calcPer: caclulate the bursty coeff over what. Options include</span>
+
+<span class="sd">        :&#39;edge&#39;: calculate B on all ICTs between node i and j. (Default)</span>
+<span class="sd">        :&#39;node&#39;: caclulate B on all ICTs connected to node i.</span>
+<span class="sd">        :&#39;meanEdgePerNode&#39;: first calculate the ICTs between node i and j, then take the mean over all j.</span>
+
+<span class="sd">    :nodes: which do to do. Options include:</span>
+
+<span class="sd">        :&#39;all&#39;: do for all nodes (default)</span>
+<span class="sd">        :specify: list of node indexes to calculate.</span>
+
+
+<span class="sd">    **OUTPUT**</span>
+
+<span class="sd">    :B: bursty coefficienct per (edge or node measure)</span>
+
+<span class="sd">        :format: 1d numpy array</span>
+
+<span class="sd">    **SEE ALSO**</span>
+
+<span class="sd">    intercontacttimes</span>
+
+<span class="sd">    **ORIGIN**</span>
+
+<span class="sd">    Goh and Barabasi 2008</span>
+<span class="sd">    Discrete formulation here from Holme 2012.</span>
+
+<span class="sd">    **HISTORY**</span>
+
+<span class="sd">    :Modified: Nov 2016, WHT (documentation)</span>
+<span class="sd">    :Created: Nov 2016, WHT</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ict</span><span class="o">=</span><span class="mi">0</span> <span class="c1">#are ict present</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datIn</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+        <span class="c1">#This could be done better</span>
+        <span class="k">if</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">datIn</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">k</span><span class="o">==</span><span class="s1">&#39;intercontacttimes&#39;</span><span class="p">]</span><span class="o">==</span><span class="p">[</span><span class="s1">&#39;intercontacttimes&#39;</span><span class="p">]:</span>
+            <span class="n">ict</span><span class="o">=</span><span class="mi">1</span>
+    <span class="c1"># if shortest paths are not calculated, calculate them</span>
+    <span class="k">if</span> <span class="n">ict</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">datIn</span> <span class="o">=</span>     <span class="n">intercontacttimes</span><span class="p">(</span><span class="n">datIn</span><span class="p">)</span>
+
+    <span class="n">ictShape</span> <span class="o">=</span> <span class="n">datIn</span><span class="p">[</span><span class="s1">&#39;intercontacttimes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ictShape</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">ictShape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">ictShape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">ictShape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;more than two dimensions of intercontacttimes&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ictShape</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">nodeCombinations</span><span class="o">=</span><span class="p">[[</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">nodes</span><span class="p">))[</span><span class="n">t</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">nodes</span><span class="p">))[</span><span class="n">tt</span><span class="p">]]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span> <span class="k">for</span> <span class="n">tt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span> <span class="k">if</span> <span class="n">t</span><span class="o">!=</span><span class="n">tt</span><span class="p">]</span>
+        <span class="n">doNodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ravel_multi_index</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">ictShape</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodeCombinations</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">doNodes</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">l</span><span class="p">)</span>
+
+    <span class="c1">#Reshae ICTs</span>
+    <span class="k">if</span> <span class="n">calcPer</span> <span class="o">==</span> <span class="s1">&#39;node&#39;</span><span class="p">:</span>
+        <span class="n">ict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">datIn</span><span class="p">[</span><span class="s1">&#39;intercontacttimes&#39;</span><span class="p">][</span><span class="n">doNodex</span><span class="p">,</span><span class="n">doNodex</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ictShape</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">ict</span><span class="o">=</span><span class="n">datIn</span><span class="p">[</span><span class="s1">&#39;intercontacttimes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ictShape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">ictShape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">B</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ict</span><span class="p">))</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">B</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">ict</span><span class="o">=</span><span class="p">[</span><span class="n">datIn</span><span class="p">[</span><span class="s1">&#39;intercontacttimes&#39;</span><span class="p">]]</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">doNodes</span><span class="p">:</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ict</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ict</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+        <span class="n">B</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">sigma</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">sigma</span><span class="o">+</span><span class="n">mu</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ictShape</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">B</span><span class="o">=</span><span class="n">B</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ictShape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">B</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, William Hedley Thompson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

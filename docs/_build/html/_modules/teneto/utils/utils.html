@@ -1,0 +1,426 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>teneto.utils.utils &mdash; Teneto 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Teneto 0.1.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for teneto.utils.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">Couple of utiltity functions for teneto for converting between graphlet and contact sequence representations</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="graphlet2contact"><a class="viewcode-back" href="../../../teneto.utils.html#teneto.utils.utils.graphlet2contact">[docs]</a><span class="k">def</span> <span class="nf">graphlet2contact</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">cfg</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Converts graphlet (sliced) representation of temporal network and converts it to contact representation representation of network. Contact representation are more efficient for memory storing. Also includes metadata which can made it easier for plotting. Contact representation can also theoretically be used to apply continuous time. But teneto does not support this yet. A contact is considered to be all non-zero edges.</span>
+
+<span class="sd">    **PARAMETERS**</span>
+
+<span class="sd">    :G: temporal network (graphlet)</span>
+<span class="sd">    :cfg: config files for contact representation, a dictionary of meta information about the graph.</span>
+<span class="sd">        Can be left empty and the function will try and assign everything necessary</span>
+
+<span class="sd">        :Fs: sampling rate (number). default = 1.</span>
+<span class="sd">        :timeunit: (string): Default = &#39;&#39;. What is the sampling rate in for units (e.g. seconds, minutes, years).</span>
+<span class="sd">        :nettype: (string) can be:</span>
+
+<span class="sd">            :&#39;auto&#39;: (default) detects automatically.</span>
+<span class="sd">            :&#39;wd&#39;: weighted, directed</span>
+<span class="sd">            :&#39;bd&#39;: binary, directed</span>
+<span class="sd">            :&#39;wu&#39;: weighted, undirected</span>
+<span class="sd">            :&#39;bu&#39;: binary, undirected.</span>
+
+<span class="sd">        :diagonal: (number). Default = 0. What should the diagonal be. (note: does could be expanded to take vector of unique diagonal values in the future, but not implemented now)</span>
+<span class="sd">        :timetype: &#39;discrete&#39; (only available option at the moment. But more may be added). The cfg file becomes the foundation of &#39;C&#39;. Any other information in cfg, will added to C.</span>
+<span class="sd">        :nLabs: node labels.</span>
+<span class="sd">        :t0: time label at first index.</span>
+
+
+<span class="sd">    **OUTPUT**</span>
+
+<span class="sd">    :C: Contact representation of temporal network.</span>
+
+<span class="sd">        :Format: Dictionary. Includes &#39;contacts&#39;, &#39;values&#39; (if nettype[0]=&#39;w&#39;),&#39;nettype&#39;,&#39;netshape&#39;, &#39;Fs&#39;, &#39;dimord&#39; and &#39;timeunit&#39;, &#39;timetype&#39;.</span>
+
+<span class="sd">    **NOTES**</span>
+
+<span class="sd">    Until time permits to make code more efficient, many functions call contact2graphlet to make graphlets when calculating and this might not be ram efficient. This will be made better in later versions.</span>
+
+
+<span class="sd">    **SEE ALSO**</span>
+
+<span class="sd">    - *contact2graphlet*</span>
+
+<span class="sd">    **HISTORY**</span>
+
+<span class="sd">    :Modified: Dec 2016, WHT (documentaion, efficiency)</span>
+<span class="sd">    :Created: Nov 2016, WHT</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#Create config dictionary if missing</span>
+    <span class="k">if</span> <span class="n">cfg</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+        <span class="n">cfg</span><span class="o">=</span><span class="p">{}</span>
+    <span class="c1">#Check that temporal network is vald input.</span>
+    <span class="k">if</span> <span class="n">G</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="n">G</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input G (node x node x time), requires Rows and Columns to be the same size.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">!=</span><span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input G must be three dimensions (node x node x time)&#39;</span><span class="p">)</span>
+    <span class="c1">#Check number of nodes is correct, if specfied</span>
+    <span class="k">if</span> <span class="s1">&#39;nLabs&#39;</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;nLabs&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">G</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Specified list of node names has to be equal in length to number of nodes&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;t0&#39;</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;t0&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;t0&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;t0&#39;</span><span class="p">])</span><span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;t0 must be sigular be either integer representing time at first temporal index)&#39;</span><span class="p">)</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;t0&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;t0&#39;</span><span class="p">])</span>
+    <span class="c1">#Check that all inputs in cfg are correct.</span>
+
+
+    <span class="k">if</span> <span class="s1">&#39;nettype&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">or</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;nettype&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;nettype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gen_nettype</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;nettype&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;bd&#39;</span><span class="p">,</span><span class="s1">&#39;bu&#39;</span><span class="p">,</span><span class="s1">&#39;wd&#39;</span><span class="p">,</span><span class="s1">&#39;wu&#39;</span><span class="p">,</span><span class="s1">&#39;auto&#39;</span><span class="p">}:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">nettype</span><span class="se">\&#39;</span><span class="s1"> (in cfg) must be a string </span><span class="se">\&#39;</span><span class="s1">wd</span><span class="se">\&#39;</span><span class="s1">,</span><span class="se">\&#39;</span><span class="s1">bd</span><span class="se">\&#39;</span><span class="s1">,</span><span class="se">\&#39;</span><span class="s1">wu</span><span class="se">\&#39;</span><span class="s1">,</span><span class="se">\&#39;</span><span class="s1">bu</span><span class="se">\&#39;</span><span class="s1">). w: weighted network. b: binary network. u: undirected network. d: directed network&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;Fs&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;Fs&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="s1">&#39;timeunit&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;timeunit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Warning, no sampling rate set. Assuming 1.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;diagonal&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;diagonal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="s1">&#39;nLabs&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;nLabs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;t0&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;t0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">nt</span><span class="o">=</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;nettype&#39;</span><span class="p">]</span>
+
+    <span class="c1">#Set diagonal to 0 to make contacts 0.</span>
+    <span class="n">G</span><span class="o">=</span><span class="n">set_diagonal</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1">#Very convoluted way to get all the indexes into a tuple, ordered by time</span>
+    <span class="k">if</span> <span class="n">nt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;u&#39;</span><span class="p">:</span>
+        <span class="n">G</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">G</span><span class="p">[:,:,</span><span class="n">t</span><span class="p">],</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">G</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span>
+        <span class="n">G</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">G</span><span class="p">,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">edg</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">G</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sortTime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">edg</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">contacts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">tuple</span><span class="p">([</span><span class="n">edg</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">edg</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">edg</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">i</span><span class="p">]])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sortTime</span><span class="p">])</span>
+    <span class="c1">#Get each of the values if weighted matrix</span>
+    <span class="k">if</span> <span class="n">nt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;w&#39;</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="p">[</span><span class="n">edg</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">sortTime</span><span class="p">],</span><span class="n">edg</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">sortTime</span><span class="p">],</span><span class="n">edg</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">sortTime</span><span class="p">]])</span>
+
+
+    <span class="c1">#build output dictionary</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">cfg</span>
+    <span class="n">C</span><span class="p">[</span><span class="s1">&#39;contacts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">contacts</span>
+    <span class="n">C</span><span class="p">[</span><span class="s1">&#39;netshape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">C</span><span class="p">[</span><span class="s1">&#39;dimord&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;node,node,time&#39;</span>
+    <span class="c1">#Obviously this needs to change</span>
+    <span class="n">C</span><span class="p">[</span><span class="s1">&#39;timetype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;discrete&#39;</span>
+    <span class="k">if</span> <span class="n">nt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;w&#39;</span><span class="p">:</span>
+        <span class="n">C</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+
+    <span class="k">return</span> <span class="n">C</span></div>
+
+
+
+
+
+<div class="viewcode-block" id="contact2graphlet"><a class="viewcode-back" href="../../../teneto.utils.html#teneto.utils.utils.contact2graphlet">[docs]</a><span class="k">def</span> <span class="nf">contact2graphlet</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Converts contact representation to graphlet (sliced) representation.</span>
+
+<span class="sd">    Graphlet representation discards all meta information.</span>
+
+<span class="sd">    NOTE this is called automatically in many metric functions.</span>
+
+<span class="sd">    **PARAMETERS**</span>
+
+<span class="sd">    C: A contact representation.</span>
+<span class="sd">        Must include &#39;dimord&#39;, &#39;netshape&#39;, &#39;nettype&#39;, &#39;contacts&#39; and, if weighted, &#39;values&#39;.</span>
+
+<span class="sd">    **OUTPUT**</span>
+
+<span class="sd">    :G: graphlet representation of temporal network.</span>
+
+<span class="sd">        :format: 3 dimensional numpy array that is of the graph.</span>
+
+<span class="sd">    **NOTES**</span>
+
+<span class="sd">    Returning elements of G will be float, even if binary graph. Thus starting with G(integers) converting to C and then back to G with be float.</span>
+
+<span class="sd">    **SEE ALSO**</span>
+
+<span class="sd">    - *graphlet2contact*</span>
+
+<span class="sd">    **HISTORY**</span>
+
+<span class="sd">    :Modified: Dec 2016, WHT (documentation)</span>
+<span class="sd">    :Created: Nov 2016, WHT</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#Check that contact sequence is vald input.</span>
+    <span class="k">if</span> <span class="s1">&#39;dimord&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">C</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">dimord</span><span class="se">\&#39;</span><span class="s1"> must be present in C.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">C</span><span class="p">[</span><span class="s1">&#39;dimord&#39;</span><span class="p">]</span><span class="o">!=</span><span class="s1">&#39;node,node,time&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">dimord</span><span class="se">\&#39;</span><span class="s1"> must be string </span><span class="se">\&#39;</span><span class="s1">node,node,time</span><span class="se">\&#39;</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;dimord&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">C</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">dimord</span><span class="se">\&#39;</span><span class="s1"> must be present in C.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">C</span><span class="p">[</span><span class="s1">&#39;dimord&#39;</span><span class="p">]</span><span class="o">!=</span><span class="s1">&#39;node,node,time&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">dimord</span><span class="se">\&#39;</span><span class="s1"> must be string </span><span class="se">\&#39;</span><span class="s1">node,node,time</span><span class="se">\&#39;</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;nettype&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">C</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;C must include parameter </span><span class="se">\&#39;</span><span class="s1">nettype</span><span class="se">\&#39;</span><span class="s1"> (wd,bd,wu,bu). w: weighted network. b: binary network. u: undirected network. d: directed network&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">C</span><span class="p">[</span><span class="s1">&#39;nettype&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;bd&#39;</span><span class="p">,</span><span class="s1">&#39;bu&#39;</span><span class="p">,</span><span class="s1">&#39;wd&#39;</span><span class="p">,</span><span class="s1">&#39;wu&#39;</span><span class="p">}:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">nettype</span><span class="se">\&#39;</span><span class="s1"> in (C) must be a string </span><span class="se">\&#39;</span><span class="s1">wd</span><span class="se">\&#39;</span><span class="s1">,</span><span class="se">\&#39;</span><span class="s1">bd</span><span class="se">\&#39;</span><span class="s1">,</span><span class="se">\&#39;</span><span class="s1">wu</span><span class="se">\&#39;</span><span class="s1">,</span><span class="se">\&#39;</span><span class="s1">bu</span><span class="se">\&#39;</span><span class="s1">). w: weighted network. b: binary network. u: undirected network. d: directed network&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;netshape&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">C</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;C must include netshape expressing size of target network (tuple)&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;netshape&#39;</span><span class="p">],</span><span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">netshape</span><span class="se">\&#39;</span><span class="s1"> (in C) should be a tuple&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;netshape&#39;</span><span class="p">])</span><span class="o">!=</span><span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">netshape</span><span class="se">\&#39;</span><span class="s1"> tuple should be of 3 dimensions&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">C</span><span class="p">[</span><span class="s1">&#39;nettype&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;w&#39;</span> <span class="ow">and</span> <span class="s1">&#39;values &#39;</span><span class="ow">not</span> <span class="ow">in</span> <span class="n">C</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;values not in C and asked for weighted network&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;contacts&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">C</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;contacts must be expressed (list of tuples)&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">C</span><span class="p">[</span><span class="s1">&#39;timetype&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;discrete&#39;</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Warning: timetype is not discrete. In future updates timetype in dictionary should be </span><span class="se">\&#39;</span><span class="s1">discrete</span><span class="se">\&#39;</span><span class="s1"> to be converted to grpahlets&#39;</span><span class="p">)</span>
+
+    <span class="n">nt</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="s1">&#39;nettype&#39;</span><span class="p">]</span>
+
+    <span class="c1">#Preallocate</span>
+    <span class="n">G</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;netshape&#39;</span><span class="p">])</span>
+
+    <span class="c1">#Convert indexes of C to numpy friend idx list</span>
+    <span class="n">idx</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;contacts&#39;</span><span class="p">])))</span>
+    <span class="k">if</span> <span class="n">nt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span>
+        <span class="n">G</span><span class="p">[</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]]</span><span class="o">=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">nt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;u&#39;</span><span class="p">:</span>
+            <span class="n">G</span><span class="p">[</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]]</span><span class="o">=</span><span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">nt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span>
+        <span class="n">G</span><span class="p">[</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]]</span><span class="o">=</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">nt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;u&#39;</span><span class="p">:</span>
+            <span class="n">G</span><span class="p">[</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">idx</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]]</span><span class="o">=</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span>
+    <span class="c1">#If diagonal is not 0, fill it to whatever it is set to</span>
+    <span class="k">if</span> <span class="n">C</span><span class="p">[</span><span class="s1">&#39;diagonal&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">G</span><span class="o">=</span><span class="n">set_diagonal</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;diagonal&#39;</span><span class="p">])</span>
+
+
+    <span class="k">return</span> <span class="n">G</span></div>
+
+
+<div class="viewcode-block" id="set_diagonal"><a class="viewcode-back" href="../../../teneto.utils.html#teneto.utils.utils.set_diagonal">[docs]</a><span class="k">def</span> <span class="nf">set_diagonal</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Generally diagonal is set to 0. This function helps set the diagonal across time.</span>
+
+
+<span class="sd">    **PARAMETERS**</span>
+
+<span class="sd">    :G: temporal network (graphlet)</span>
+<span class="sd">    :val: value to set diagonal to (default 0).</span>
+
+<span class="sd">    **OUTPUT**</span>
+
+<span class="sd">    :G: Graphlet representation of G with new diagonal</span>
+
+<span class="sd">    **HISTORY**</span>
+
+<span class="sd">    :Modified: Dec 2016, WHT (documentation)</span>
+<span class="sd">    :Created: Nov 2016, WHT</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">G</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">G</span><span class="p">[:,:,</span><span class="n">t</span><span class="p">],</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">G</span></div>
+
+
+<div class="viewcode-block" id="gen_nettype"><a class="viewcode-back" href="../../../teneto.utils.html#teneto.utils.utils.gen_nettype">[docs]</a><span class="k">def</span> <span class="nf">gen_nettype</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">printWarning</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Attempts to identify what nettype input graphlet G is.</span>
+<span class="sd">    Diagonal is ignored.</span>
+
+<span class="sd">    **PARAMETERS**</span>
+
+<span class="sd">    :G: temporal network (graphlet)</span>
+<span class="sd">    :printWarning: 0 (default) or 1. Prints warning in console so user knows assumption</span>
+
+<span class="sd">    **HISTORY**</span>
+
+<span class="sd">    :Created: November 2016, WHT</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">G</span><span class="p">))</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;b&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;w&#39;</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">G</span><span class="p">):</span>
+        <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;u&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;d&#39;</span>
+
+    <span class="n">nettype</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">+</span> <span class="n">direction</span>
+
+    <span class="k">if</span> <span class="n">printWarning</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">netNames</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span><span class="s1">&#39;weighted&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="s1">&#39;binary&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">:</span><span class="s1">&#39;undirected&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">:</span><span class="s1">&#39;directed&#39;</span><span class="p">}</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Assuming network is &#39;</span> <span class="o">+</span> <span class="n">netNames</span><span class="p">[</span><span class="n">nettype</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="s1">&#39; and &#39;</span> <span class="o">+</span> <span class="n">netNames</span><span class="p">[</span><span class="n">nettype</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">nettype</span></div>
+
+
+<div class="viewcode-block" id="checkInput"><a class="viewcode-back" href="../../../teneto.utils.html#teneto.utils.utils.checkInput">[docs]</a><span class="k">def</span> <span class="nf">checkInput</span><span class="p">(</span><span class="n">netIn</span><span class="p">,</span><span class="n">raiseIfU</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">conMat</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    This function checks that netIn input is either graphlet (G) or contact (C).</span>
+
+<span class="sd">    **PARAMETERS**</span>
+
+<span class="sd">    :netIn: temporal network, either graphlet or contact representation.</span>
+<span class="sd">    :raiseIfU: 1 (default) or 0. Error is raised if not found to be G or C</span>
+<span class="sd">    :conMat: 0 (default) or 1. If 1, input is allowed to be a 2 dimensional connectivity matrix. Allows output to be &#39;M&#39;</span>
+
+<span class="sd">    **OUTPUT**</span>
+
+<span class="sd">    :inputType: String indicating input type. &#39;G&#39;,&#39;C&#39;, &#39;M&#39; or &#39;U&#39; (unknown). M is special case only allowed when conMat=1 for a 2D connectivity matrix.</span>
+
+<span class="sd">    **HISTORY**</span>
+
+<span class="sd">    :Created: November 2016, WHT</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">inputIs</span><span class="o">=</span><span class="s1">&#39;U&#39;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">netIn</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">netShape</span><span class="o">=</span><span class="n">netIn</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">netShape</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">netShape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">netShape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">inputIs</span> <span class="o">=</span> <span class="s1">&#39;G&#39;</span>
+        <span class="k">if</span> <span class="n">netShape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">netShape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">conMat</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">inputIs</span> <span class="o">=</span> <span class="s1">&#39;M&#39;</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">netIn</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;nettype&#39;</span> <span class="ow">in</span> <span class="n">netIn</span> <span class="ow">and</span> <span class="s1">&#39;contacts&#39;</span> <span class="ow">in</span> <span class="n">netIn</span> <span class="ow">and</span> <span class="s1">&#39;dimord&#39;</span> <span class="ow">in</span> <span class="n">netIn</span>  <span class="ow">and</span> <span class="s1">&#39;timetype&#39;</span> <span class="ow">in</span> <span class="n">netIn</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">netIn</span><span class="p">[</span><span class="s1">&#39;nettype&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;bd&#39;</span><span class="p">,</span><span class="s1">&#39;bu&#39;</span><span class="p">,</span><span class="s1">&#39;wd&#39;</span><span class="p">,</span><span class="s1">&#39;wu&#39;</span><span class="p">}</span> <span class="ow">and</span> <span class="n">netIn</span><span class="p">[</span><span class="s1">&#39;timetype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;discrete&#39;</span> <span class="ow">and</span> <span class="n">netIn</span><span class="p">[</span><span class="s1">&#39;dimord&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;node,node,time&#39;</span><span class="p">:</span>
+                <span class="n">inputIs</span> <span class="o">=</span> <span class="s1">&#39;C&#39;</span>
+
+    <span class="k">if</span> <span class="n">raiseIfU</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">inputIs</span><span class="o">==</span><span class="s1">&#39;U&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input cannot be identified as graphlet or contact representation&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">inputIs</span></div>
+
+<div class="viewcode-block" id="getDistanceFunction"><a class="viewcode-back" href="../../../teneto.utils.html#teneto.utils.utils.getDistanceFunction">[docs]</a><span class="k">def</span> <span class="nf">getDistanceFunction</span><span class="p">(</span><span class="n">requested_metric</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    This function returns a specified distance function.</span>
+
+
+<span class="sd">    **PARAMETERS**</span>
+
+<span class="sd">    :&#39;requested_metric&#39;: can be &#39;hamming&#39;, &#39;eculidean&#39;</span>
+
+<span class="sd">    **OUTPUT**</span>
+
+<span class="sd">    returns distance function (as function)</span>
+
+<span class="sd">    **NOTE**</span>
+
+<span class="sd">    New distance functions can be added in ./teneto/misc/distancefunctions.py and can be called when requested_metric = &#39;myDinstanceMetricName&#39;</span>
+
+<span class="sd">    **HISTORY**</span>
+
+<span class="sd">    :Created: Dec 2016, WHT</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">teneto.misc</span> <span class="kn">import</span> <span class="n">distancefunctions</span> <span class="k">as</span> <span class="n">df</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">requested_metric</span> <span class="o">+</span> <span class="s1">&#39;_distance&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">requested_metric</span> <span class="o">+</span> <span class="s1">&#39;_distance&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Distance function cannot be found. Check if your input distance funciton name is spelt correctly. Then check if it supported. If not supported you can add it in ./teneto/misc/distancefunctions.py or request that it gets added on github.&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, William Hedley Thompson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

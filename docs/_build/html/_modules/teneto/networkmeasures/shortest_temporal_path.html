@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>teneto.networkmeasures.shortest_temporal_path &mdash; Teneto 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Teneto 0.1.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for teneto.networkmeasures.shortest_temporal_path</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">teneto.utils</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="shortest_temporal_path"><a class="viewcode-back" href="../../../teneto.networkmeasures.html#teneto.networkmeasures.shortest_temporal_path.shortest_temporal_path">[docs]</a><span class="k">def</span> <span class="nf">shortest_temporal_path</span><span class="p">(</span><span class="n">netIn</span><span class="p">,</span><span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the shortest temporal path when all possible routes cam be travelled at each time point.</span>
+<span class="sd">    Currently only works for binary undirected edges (but can be expanded).</span>
+
+<span class="sd">    **PARAMETERS**</span>
+
+<span class="sd">    :netIn: temporal network input (graphlet or contact)</span>
+
+<span class="sd">        :nettype: &#39;bu&#39;</span>
+
+<span class="sd">    :q: quiet (default = 1). Turn to 0 if you want progree update.</span>
+
+<span class="sd">    **OUTPUT**</span>
+
+<span class="sd">    :paths: shortest temporal paths</span>
+
+<span class="sd">        :format: dictionary</span>
+
+<span class="sd">    **NOTE**</span>
+
+<span class="sd">    This function assumes all paths can be taken per time point.</span>
+<span class="sd">    In a future update, this function temporalPaths will allow for only a portion of edges to be travelled per time point.</span>
+<span class="sd">    This will be implmeneted with no change to the funcitonality of calling this function as it is today, with the defaults being all edges can be travelled.</span>
+
+
+<span class="sd">    **SEE ALSO**</span>
+
+<span class="sd">    - *temporal_efficiency*</span>
+<span class="sd">    - *reachability_latency*</span>
+<span class="sd">    - *temporal_closeness_centrality*</span>
+
+<span class="sd">    **HISTORY**</span>
+
+<span class="sd">    Modified - Dec 2016, WHT (documentation)</span>
+<span class="sd">    Created - Nov 2016, WHT</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#Get input type (C or G)</span>
+    <span class="n">inputType</span><span class="o">=</span><span class="n">checkInput</span><span class="p">(</span><span class="n">netIn</span><span class="p">)</span>
+    <span class="n">nettype</span> <span class="o">=</span> <span class="s1">&#39;xx&#39;</span>
+    <span class="c1">#Convert C representation to G</span>
+    <span class="k">if</span> <span class="n">inputType</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+        <span class="n">nettype</span> <span class="o">=</span> <span class="n">netIn</span><span class="p">[</span><span class="s1">&#39;nettype&#39;</span><span class="p">]</span>
+        <span class="n">netIn</span> <span class="o">=</span> <span class="n">contact2graphlet</span><span class="p">(</span><span class="n">netIn</span><span class="p">)</span>
+    <span class="c1">#Get network type if not set yet</span>
+    <span class="k">if</span> <span class="n">nettype</span> <span class="o">==</span> <span class="s1">&#39;xx&#39;</span><span class="p">:</span>
+        <span class="n">nettype</span> <span class="o">=</span> <span class="n">gen_nettype</span><span class="p">(</span><span class="n">netIn</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nettype</span> <span class="o">!=</span> <span class="s1">&#39;bu&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;It looks like your graph is not binary and undirected. Shortest temporal paths can only be calculated for binary undirected networks in Teneto at the moment. If another type is required, please create an issue at github.com/wiheto/teneto and I will try and prioritize this.&#39;</span><span class="p">)</span>
+
+
+    <span class="c1">#Preallocate output</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">netIn</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="c1">#Go backwards in time and see if something is reached</span>
+    <span class="n">P_last</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">netIn</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">netIn</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">netIn</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))):</span>
+        <span class="k">if</span> <span class="n">q</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;--- Running for time: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; ---&#39;</span><span class="p">)</span>
+        <span class="n">fid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">netIn</span><span class="p">[:,:,</span><span class="n">t</span><span class="p">]</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1">#Update time step</span>
+        <span class="c1">#Note to self: And a conditional to prevent nan warning that can pop out if no path is there straight away.</span>
+        <span class="n">P_last</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#Reset connections present to 1</span>
+        <span class="n">P_last</span><span class="p">[</span><span class="n">fid</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">fid</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">=</span><span class="mi">1</span>
+        <span class="c1"># Update nodes with no connections</span>
+        <span class="c1"># Nodes to update are nodes with an edge present at the time point</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fid</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">P_last</span><span class="p">[</span><span class="n">v</span><span class="p">,:]</span><span class="o">==</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">P_last</span><span class="p">[</span><span class="n">v</span><span class="p">,:]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">P_last</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">v</span><span class="p">]),:],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">P_last</span><span class="p">[</span><span class="n">v</span><span class="p">,</span><span class="n">v</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="c1"># make self connection nan regardless</span>
+        <span class="n">P</span><span class="p">[:,:,</span><span class="n">t</span><span class="p">]</span><span class="o">=</span><span class="n">P_last</span>
+    <span class="c1">## Return output</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">r</span><span class="o">=</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">P</span><span class="p">)))</span><span class="o">/</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;percentReached&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">r</span>
+    <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;paths&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">P</span>
+    <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;nettype&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">nettype</span>
+
+    <span class="k">return</span> <span class="n">paths</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, William Hedley Thompson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
