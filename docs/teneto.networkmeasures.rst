@@ -20,13 +20,6 @@ teneto.networkmeasures.fluctuability module
     :undoc-members:
     :show-inheritance:
 
-teneto.networkmeasures.hyperedge module
----------------------------------------
-
-.. automodule:: teneto.networkmeasures.hyperedge
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 teneto.networkmeasures.intercontacttimes module
 -----------------------------------------------
