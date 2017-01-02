@@ -81,9 +81,9 @@ def graphlet2contact(G,cfg=None):
         raise ValueError('\'nettype\' (in cfg) must be a string \'wd\',\'bd\',\'wu\',\'bu\'). w: weighted network. b: binary network. u: undirected network. d: directed network')
     if 'Fs' not in cfg.keys():
         cfg['Fs']=1
+        print('Warning, no sampling rate set. Assuming 1.')
     if 'timeunit' not in cfg.keys():
         cfg['timeunit'] = ''
-        print('Warning, no sampling rate set. Assuming 1.')
     if 'diagonal' not in cfg.keys():
         cfg['diagonal'] = 0
     if 'nLabs' not in cfg.keys():
