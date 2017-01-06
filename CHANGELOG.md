@@ -1,3 +1,14 @@
+### V0.1.2 - (2016) - Released  Jan 2017
+
+- Fixed bug in `graphlet_stack_plot` which made white colours have black smudges on them. (Also multiple background colours *should* theoretically be possible now.)
+
+- Added option to remove sharpening filter in `graphlet_stack_plot`
+
+- Added `misc` and `distance_functions` (fixing `volatility`)
+
+- Fixed naming of call to `temporal_shortest_path` in `temporal_efficiency`,`reachability_latency` and `temporal_closeness_centrality`
+
+- Added `process_input` function to cut down on repeating code at beginning of networkmeasures
 
 ### v0.1.1 - ( 2016) - Released 2nd Jan 2017
 

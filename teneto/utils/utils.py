@@ -1,5 +1,6 @@
 import numpy as np
-
+import teneto
+from teneto.misc import distance_functions
 """
 
 Couple of utiltity functions for teneto for converting between graphlet and contact sequence representations
@@ -61,6 +62,8 @@ def graphlet2contact(G,cfg=None):
     #Check that temporal network is vald input.
     if G.shape[0]!=G.shape[1]:
         raise ValueError('Input G (node x node x time), requires Rows and Columns to be the same size.')
+    if len(G.shape)==2:
+        G=np.atleast_3d(G)
     if len(G.shape)!=3:
         raise ValueError('Input G must be three dimensions (node x node x time)')
     #Check number of nodes is correct, if specfied
@@ -88,6 +91,9 @@ def graphlet2contact(G,cfg=None):
         cfg['diagonal'] = 0
     if 'nLabs' not in cfg.keys():
         cfg['nLabs'] = ''
+    else:
+        cfg['nLabs']=list(cfg['nLabs'])
+
     if 't0' not in cfg.keys():
         cfg['t0'] = 1
     nt=cfg['nettype']
@@ -177,7 +183,7 @@ def contact2graphlet(C):
         raise ValueError('\'netshape\' (in C) should be a tuple')
     if len(C['netshape'])!=3:
             raise ValueError('\'netshape\' tuple should be of 3 dimensions')
-    if C['nettype'][0]=='w' and 'values 'not in C.keys():
+    if C['nettype'][0]=='w' and 'values' not in C.keys():
         raise ValueError('values not in C and asked for weighted network')
     if 'contacts' not in C.keys():
         raise ValueError('contacts must be expressed (list of tuples)')
@@ -304,6 +310,12 @@ def checkInput(netIn,raiseIfU=1,conMat=0):
             if netIn['nettype'] in {'bd','bu','wd','wu'} and netIn['timetype'] == 'discrete' and netIn['dimord'] == 'node,node,time':
                 inputIs = 'C'
 
+    elif isinstance(netIn,object):
+        if isinstance(netIn.contact,dict):
+            if 'nettype' in netIn.contact and 'contacts' in netIn.contact and 'dimord' in netIn.contact  and 'timetype' in netIn.contact:
+                if netIn.contact['nettype'] in {'bd','bu','wd','wu'} and netIn.contact['timetype'] == 'discrete' and netIn.contact['dimord'] == 'node,node,time':
+                    inputIs = 'TO'
+
     if raiseIfU == 1 and inputIs=='U':
         raise ValueError('Input cannot be identified as graphlet or contact representation')
 
@@ -333,8 +345,61 @@ def getDistanceFunction(requested_metric):
 
     """
 
-    from teneto.misc import distancefunctions as df
-    if hasattr(df,requested_metric + '_distance'):
-        return getattr(df,requested_metric + '_distance')
+    if hasattr(distance_functions,requested_metric + '_distance'):
+        return getattr(distance_functions,requested_metric + '_distance')
     else:
         raise ValueError('Distance function cannot be found. Check if your input distance funciton name is spelt correctly. Then check if it supported. If not supported you can add it in ./teneto/misc/distancefunctions.py or request that it gets added on github.')
+
+
+
+
+
+def process_input(netIn,allowedformats,outputformat='G'):
+    """
+    Takes input, check what input is
+
+    **PARAMETERS**
+
+    :netIn: input network
+    :allowedformats: list containing any of 'C', 'TO', 'G'
+    :outputformat: target output format.
+
+    **OUTPUT**
+
+    :G: Graphlet representatoin
+    :netInfo: Information about graphlet
+
+
+    **HISTORY**
+
+    *Created* - Jan17, WHT
+
+    """
+    inputType=teneto.utils.checkInput(netIn)
+    #Convert TO to C representation
+    if inputType == 'TO' and 'TO' in allowedformats:
+        G = netIn.get_graphlet_representation()
+        netInfo = dict(netIn.contact)
+        netInfo.pop('contacts')
+    #Convert C representation to G
+    elif inputType == 'C' and 'C' in allowedformats and outputformat != 'C':
+        G = teneto.utils.contact2graphlet(netIn)
+        netInfo = dict(netIn)
+        netInfo.pop('contacts')
+        nettype = netIn['nettype']
+    #Get network type if not set yet
+    elif inputType == 'G' and 'G' in allowedformats:
+        netInfo = {}
+        netInfo['netshape'] = netIn.shape
+        netInfo['nettype'] = teneto.utils.gen_nettype(netIn)
+        G = netIn
+    elif inputType == 'C' and outputformat == 'C':
+        pass
+    else:
+        raise ValueError('Input invalid.')
+    if inputType != 'C' and outputformat == 'C':
+        C = teneto.utils.graphlet2contact(netIn,netInfo)
+    if outputformat == 'G':
+        return G,netInfo
+    elif outputformat == 'C':
+        return C

@@ -1,8 +1,6 @@
 # Teneto
 
-**Te**mporal **ne**twork **to**ols. Version 0.1.1 (Jan 2, 2016)
-
-By William Hedley Thompson (wiheto)
+**Te**mporal **ne**twork **to**ols. Version 0.1.2 (Jan 6, 2016)
 
 This is still a lot of work to go before this package is complete. However, it is built to be used now and future updates *should* not break people's pipelines.
 
@@ -10,23 +8,18 @@ Package includes: temporal network generation (only one function at the moment),
 
 ## Installation
 
-Clone this package and add to your python path.
+Requires: Python 3.x and pip.
 
-On the to do list is to make it pip-able for easier install. But this will be done once the package is a little more mature.  
-
-Requirements:
-
+Package dependencies:
 - numpy
 - scipy
 - matplotlib
-- python3.x
-- pip (for installation)
 
 ### Installation
 
 At the moment the easiest way to install is the following:
 
-1. Download the package manually [https://github.com/wiheto/teneto/archive/master.zip](here) or clone by `git clone  https://github.com/wiheto/teneto.git`
+1. Download the package manually [here](https://github.com/wiheto/teneto/archive/master.zip) or clone by `git clone  https://github.com/wiheto/teneto.git`
 2. With pip install by `pip install /path/to/teneto/`
 
 If a previous versions of Teneto has been installed, download the new version and  `pip install /path/to/teneto/ -U`
@@ -43,7 +36,7 @@ If a previous versions of Teneto has been installed, download the new version an
 
 ### Documentation
 
-Documentation can be found at teneto.readthedocs.io
+Documentation for the functions can be found at  [teneto.readthedocs.io](https://teneto.readthedocs.io),  At some point the tutorials and documentation will merge.
 
 
 ### Measures

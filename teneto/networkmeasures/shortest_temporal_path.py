@@ -42,25 +42,19 @@ def shortest_temporal_path(netIn,q=1):
     """
 
     #Get input type (C or G)
-    inputType=checkInput(netIn)
-    nettype = 'xx'
-    #Convert C representation to G
-    if inputType == 'C':
-        nettype = netIn['nettype']
-        netIn = contact2graphlet(netIn)
-    #Get network type if not set yet
-    if nettype == 'xx':
-        nettype = gen_nettype(netIn)
+    #Process input
+    netIn,netInfo = process_input(netIn,['C','G','TO'])
 
-    if nettype != 'bu':
+
+    if netInfo['nettype'] != 'bu':
         raise ValueError('It looks like your graph is not binary and undirected. Shortest temporal paths can only be calculated for binary undirected networks in Teneto at the moment. If another type is required, please create an issue at github.com/wiheto/teneto and I will try and prioritize this.')
 
 
     #Preallocate output
-    P = np.zeros(netIn.shape)*np.nan
+    P = np.zeros(netInfo['netshape'])*np.nan
     #Go backwards in time and see if something is reached
-    P_last = np.zeros([netIn.shape[0],netIn.shape[1]])*np.nan
-    for t in list(reversed(range(0,netIn.shape[2]))):
+    P_last = np.zeros([netInfo['netshape'][0],netInfo['netshape'][1]])*np.nan
+    for t in list(reversed(range(0,netInfo['netshape'][2]))):
         if q==0:
             print('--- Running for time: ' + str(t) + ' ---')
         fid = np.where(netIn[:,:,t]>=1)
@@ -81,6 +75,6 @@ def shortest_temporal_path(netIn,q=1):
     r=(P.size-np.sum(np.isnan(P)))/(P.size-(P.shape[0]*P.shape[2]))
     paths['percentReached']=r
     paths['paths']=P
-    paths['nettype']=nettype
+    paths['nettype']=netInfo['nettype']
 
     return paths

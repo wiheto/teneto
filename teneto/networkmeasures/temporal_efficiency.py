@@ -42,7 +42,7 @@ def temporal_efficiency(datIn):
 
     Modified - Jan 2016, WHT (documentation)
     Created - Dec 2016, WHT
-    
+
     """
 
     sp=0 #are shortest paths calculated
@@ -52,7 +52,7 @@ def temporal_efficiency(datIn):
             sp=1
     # if shortest paths are not calculated, calculate them
     if sp==0:
-        datIn = temporalPaths(datIn)
+        datIn = shortest_temporal_path(datIn)
 
     # Calculate efficiency which is 1 over the mean path.
     E=1/np.nanmean(datIn['paths'])

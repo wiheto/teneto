@@ -34,16 +34,9 @@ def temporal_degree_centrality(netIn,d=0):
 
     """
 
-    #Get input type (C or G)
-    inputType=checkInput(netIn)
-    nettype = 'xx'
-    #Convert C representation to G
-    if inputType == 'C':
-        nettype = netIn['nettype']
-        netIn = contact2graphlet(netIn)
-    #Get network type if not set yet
-    if nettype == 'xx':
-        nettype = gen_nettype(netIn)
+    #Get input in right format
+    netIn,netInfo = process_input(netIn,['C','G','TO'])
+
     #Set the nodal dimension to sum over to 0, if d==1 and nettype is '.d', this gets changes to 0.
     sumOverDim = 1
     #set sumDimension to 0 if nettype is d and user specifcies d=1

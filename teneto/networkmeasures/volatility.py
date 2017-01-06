@@ -34,22 +34,14 @@ def volatility(netIn,D='default',do='global'):
     Created - Dec 2016, WHT
     """
 
-    #Get input type (C or G)
-    inputType=checkInput(netIn)
-    nettype = 'xx'
-    #Convert C representation to G
-    if inputType == 'C':
-        nettype = netIn['nettype']
-        netIn = contact2graphlet(netIn)
-    #Get network type if not set yet
-    if nettype == 'xx':
-        nettype = gen_nettype(netIn)
+    #Get input (C or G)
+    netIn,netInfo = process_input(netIn,['C','G','TO'])
 
 
-    if D=='default' and nettype[0] == 'b':
+    if D=='default' and netInfo['nettype'][0] == 'b':
         print('Default distance funciton specified. As network is binary, using Hamming')
         D='hamming'
-    elif D=='default' and nettype[0] == 'w':
+    elif D=='default' and netInfo['nettype'][0] == 'w':
         D='euclidean'
         print('Default distance funciton specified. As network is weighted, using Euclidean')
 
@@ -57,9 +49,9 @@ def volatility(netIn,D='default',do='global'):
         raise ValueError('Distance metric must be a string')
 
     #If not directional, only do on the uppertriangle
-    if nettype[1] == 'd':
+    if netInfo['nettype'][1] == 'd':
         ind=np.triu_indices(netIn.shape[0],k=-netIn.shape[0])
-    elif nettype[1] == 'u':
+    elif netInfo['nettype'][1] == 'u':
         ind=np.triu_indices(netIn.shape[0],k=1)
 
     #Get chosen distance metric fucntion
@@ -73,7 +65,7 @@ def volatility(netIn,D='default',do='global'):
         for i in ind[0]:
             for j in ind[1]:
                 V[i,j]=np.mean([distanceMetric(netIn[i,j,t],netIn[i,j,t+1]) for t in range(0,netIn.shape[-1]-1)])
-        if nettype[1] == 'u':
+        if netInfo['nettype'][1] == 'u':
             V = V + np.transpose(V)
         if do=='node':
             V = np.sum(V,axis=1)

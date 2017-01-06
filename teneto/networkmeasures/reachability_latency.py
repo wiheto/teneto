@@ -60,7 +60,7 @@ def reachability_latency(datIn,r=1,do='global'):
             sp=1
     # if shortest paths are not calculated, calculate them
     if sp==0:
-        datIn = temporalPaths(datIn)
+        datIn = shortest_temporal_path(datIn)
 
     netShape = datIn['paths'].shape
 

@@ -7,7 +7,7 @@ from scipy import ndimage
 
 plt.rcParams['axes.facecolor'] = 'white'
 
-def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1):
+def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1,sharpen='yes'):
 
     '''
 
@@ -48,9 +48,13 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1):
 
     '''
 
-    #Get input type (C or G)
+    #Get input type (C, G, TO)
     inputType=checkInput(netIn)
 
+    #Convert TO to C representation
+    if inputType == 'TO':
+        netIn = netIn.contact
+        inputType = 'C'
     #Convert C representation to G
     if inputType == 'C':
         nettype = netIn['nettype']
@@ -122,7 +126,7 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1):
         #apply affine transformation
         figmattmp=ndimage.affine_transform(figmattmp_withborder,sheer*(scale),offset=[-35*q,0,0],cval=255)
 
-        #At the moment the alpha part does not work if the background colour is anything but white or black.
+        #At the moment the alpha part does not work if the background colour is anything but white.
         #Also used for detecting where the graphlets are in the image.
         trans=np.where(np.sum(figmattmp,axis=2)==255*3)
         alphamat=np.ones([figmattmp.shape[0],figmattmp.shape[0]])
@@ -139,10 +143,29 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1):
     figmat[:,:,0:3]=figmat[:,:,0:3]/255
     # Cut end of matrix off that isn't need
     figmat=figmat[:,:-int((q/2)*80),:]
+    fid=np.where(figmat[:,:,-1]>0)
+    fargmin=np.argmin(fid[0])
+    ymax=np.max(fid[0])
+    yright=np.max(np.where(figmat[:,fid[1][fargmin],-1]>0))
+    xtickloc = np.where(figmat[ymax,:,-1]>0)[0]
+
+    fid=np.where(figmat[:,:,-1]>0)
+    ymin=np.min(fid[0])
+    topfig = np.where(figmat[ymin,:,-1]>0)[0]
+    topfig = topfig[0:len(topfig):int(len(topfig)/netIn.shape[-1])]
+
+    #Make squares of non transparency around each figure (this fixes transparency issues when white is in the colormap)
+    #for n in range(0,len(topfig)):
+        #fid=np.where(figmat[ymin:ymax,xtickloc[n]:topfig[n],-1]==0)
+        #figmat[ymin:ymax,xtickloc[n]:topfig[n],:3][fid[0],fid[1]]=1
+        #figmat[ymin+q:ymax-q,xtickloc[n]+q:topfig[n]-q,-1]=1
+
+
     # Create figure
     #Sharped edges of figure with median filter
-    figmat[:,:,:-1] =  ndimage.median_filter(figmat[:,:,:-1], 3)
-    ax.imshow(figmat,zorder=10)
+    if sharpen == 'yes':
+        figmat[:,:,:-1] =  ndimage.median_filter(figmat[:,:,:-1], 3)
+    ax.imshow(figmat[:,:,:-1],zorder=1)
     ax.spines['left'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
@@ -151,16 +174,12 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1):
     ax.set_yticklabels('')
     ax.set_xticks([])
     ax.set_yticks([])
-    fid=np.where(figmat[:,:,-1]>0)
-    fargmin=np.argmin(fid[0])
-    ymax=np.max(fid[0])
-    yright=np.max(np.where(figmat[:,fid[1][fargmin],-1]>0))
-    xtickloc = np.where(figmat[ymax,:,-1]>0)[0]
+
 
     L=int((((netIn.shape[-1]-3)+1)*(80*q)+(q*2))-((netIn.shape[-1]-3)*q*80)/2-q)
-    ax.plot(range(0,L),np.zeros(L)+yright,color='k',linestyle=':',zorder=1)
-    ax.plot(range(0,L),np.zeros(L)+ymax,color='k',linestyle=':',zorder=1)
-    [ax.plot(np.zeros(q*10)+xt,np.arange(ymax,ymax+q*10),color='k',linestyle=':',zorder=1) for xt in xtickloc]
+    [ax.plot(range(topfig[i],xt),np.zeros(len(range(topfig[i],xt)))+yright,color='k',linestyle=':',zorder=2) for i,xt in enumerate(xtickloc[1:])]
+    ax.plot(range(0,L),np.zeros(L)+ymax,color='k',linestyle=':',zorder=2)
+    [ax.plot(np.zeros(q*10)+xt,np.arange(ymax,ymax+q*10),color='k',linestyle=':',zorder=2) for xt in xtickloc]
     [ax.text(xt,ymax+q*20,str(round((i+t0)*Fs,5)),horizontalalignment='center',) for i,xt in enumerate(xtickloc)]
 
 

@@ -31,15 +31,7 @@ def fluctuability(netIn,do='global'):
     """
 
     #Get input type (C or G)
-    inputType=checkInput(netIn)
-    nettype = 'xx'
-    #Convert C representation to G
-    if inputType == 'C':
-        nettype = netIn['nettype']
-        netIn = contact2graphlet(netIn)
-    #Get network type if not set yet
-    if nettype == 'xx':
-        nettype = gen_nettype(netIn)
+    netIn,netInfo = process_input(netIn,['C','G','TO'])
 
     netIn[netIn!=0]=1
     U=np.sum(netIn,axis=2)

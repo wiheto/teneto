@@ -33,37 +33,29 @@ def intercontacttimes(netIn):
     """
 
 
-    #Get input type (C or G)
-    inputType=checkInput(netIn)
-    nettype = 'xx'
-    #Convert C representation to G
-    if inputType == 'C':
-        nettype = netIn['nettype']
-        netIn = contact2graphlet(netIn)
+    #Process input
+    netIn,netInfo = process_input(netIn,['C','G','TO'])
 
-    #Get network type if not set yet
-    if nettype == 'xx':
-        nettype = gen_nettype(netIn)
 
-    if nettype[0]=='d':
+    if netInfo['nettype'][0]=='d':
         print('WARNING: assuming connections to be binary when computing intercontacttimes')
 
     #Each time series is padded with a 0 at the start and end. Then t[0:-1]-[t:]. Then discard the noninformative ones (done automatically)
     #Finally return back as np array
-    ICT=np.array([[None]*netIn.shape[0]]*netIn.shape[1])
+    ICT=np.array([[None]*netInfo['netshape'][0]]*netInfo['netshape'][1])
 
-    if nettype[1] == 'u':
-        for i in range(0,netIn.shape[0]):
-            for j in range(i+1,netIn.shape[0]):
+    if netInfo['nettype'][1] == 'u':
+        for i in range(0,netInfo['netshape'][0]):
+            for j in range(i+1,netInfo['netshape'][0]):
                 Aon=np.where(netIn[i,j,:]>0)[0]
                 Aon=np.append(0,Aon)
                 Aon=np.append(Aon,0)
                 Aon_diff=Aon[2:-1]-Aon[1:-2]
                 ICT[i,j]=np.array(Aon_diff)
                 ICT[j,i]=np.array(Aon_diff)
-    elif nettype[1] == 'd':
-        for i in range(0,netIn.shape[0]):
-            for j in range(0,netIn.shape[0]):
+    elif netInfo['nettype'][1] == 'd':
+        for i in range(0,netInfo['netshape'][0]):
+            for j in range(0,netInfo['netshape'][0]):
                 Aon=np.where(netIn[i,j,:]>0)[0]
                 Aon=np.append(0,Aon)
                 Aon=np.append(Aon,0)
@@ -72,5 +64,5 @@ def intercontacttimes(netIn):
 
     out={}
     out['intercontacttimes'] = ICT
-    out['nettype'] = nettype
+    out['nettype'] = netInfo['nettype']
     return out
