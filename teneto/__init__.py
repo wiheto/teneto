@@ -14,7 +14,7 @@ import teneto.generatenetwork as generatenetwork
 import teneto.misc as misc
 #import teneto.communitydetection as communitydetection
 #from teneto.classes import NewTemporalNetwork
-del misc.teneto
+#del misc.teneto
 #del communitydetection.static.modularity_based_clustering
 
 #del measures
