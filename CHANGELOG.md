@@ -1,4 +1,4 @@
-### V0.1.2 - (2016) - Released  Jan 2017
+### V0.1.2 - Released Jan 6 2017
 
 - Fixed bug in `graphlet_stack_plot` which made white colours have black smudges on them. (Also multiple background colours *should* theoretically be possible now.)
 
@@ -10,7 +10,7 @@
 
 - Added `process_input` function to cut down on repeating code at beginning of networkmeasures
 
-### v0.1.1 - ( 2016) - Released 2nd Jan 2017
+### v0.1.1 - Released Jan 2 2017
 
 *The changes in v0.1.1 make some functions obsolete in v0.1*
 
@@ -46,7 +46,7 @@
 
 - restructured the `__init__.py` files for better import of teneto.  
 
-### v0.1 - Released 23rd Jan 2016
+### v0.1 - Released Dec 23 2016
 
 - Measures, misc, plot, utils folders added.
 
