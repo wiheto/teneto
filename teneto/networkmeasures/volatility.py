@@ -16,7 +16,8 @@ def volatility(netIn,D='default',do='global'):
 
         :'global': (default): the average distance of all nodes for each consecutive time point).
         :'edge': average distance between consecutive time points for each edge). Takes considerably longer
-        :'node' (i.e. returns the average per node output when calculating volatility per 'edge').
+        :'node': (i.e. returns the average per node output when calculating volatility per 'edge').
+        : 'time': returns volatility per time point
 
     **OUTPUT**
 
@@ -59,6 +60,8 @@ def volatility(netIn,D='default',do='global'):
 
     if do=='global':
         V=np.mean([distanceMetric(netIn[ind[0],ind[1],t],netIn[ind[0],ind[1],t+1]) for t in range(0,netIn.shape[-1]-1)])
+    if do=='time':
+        V=[distanceMetric(netIn[ind[0],ind[1],t],netIn[ind[0],ind[1],t+1]) for t in range(0,netIn.shape[-1]-1)]
     #This takes quite a bit of time to loop through. When calculating per edge/node.
     if do=='edge' or do=='node':
         V = np.zeros([netIn.shape[0],netIn.shape[1]])

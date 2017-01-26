@@ -1,3 +1,17 @@
+### V0.1.3 - Released Jan 26 2017
+
+- Provided clearer documentation in `shortest_temporal_path`
+
+- Add possibility of calculating per time point (or per edge/node - but this takes a tone of time) in `volatility`
+
+- Added possibility of calculating `temporal_efficiency` per node (either "\_from" to "\_to")
+
+- Improved documentation and added references to `rand_binomial`. 
+
+
+
+
+
 ### V0.1.2 - Released Jan 6 2017
 
 - Fixed bug in `graphlet_stack_plot` which made white colours have black smudges on them. (Also multiple background colours *should* theoretically be possible now.)
@@ -9,6 +23,8 @@
 - Fixed naming of call to `temporal_shortest_path` in `temporal_efficiency`,`reachability_latency` and `temporal_closeness_centrality`
 
 - Added `process_input` function to cut down on repeating code at beginning of networkmeasures
+
+
 
 ### v0.1.1 - Released Jan 2 2017
 

@@ -8,7 +8,7 @@ Temporal Efficiency
 """
 
 
-def temporal_efficiency(datIn):
+def temporal_efficiency(datIn,do='global'):
     """
     returns temporal efficiency estimate.
 
@@ -22,6 +22,11 @@ def temporal_efficiency(datIn):
             :nettype: 'bu'
 
         :paths: Dictionary of paths (output of shortest_temporal_path).
+
+
+    :do: 'global' (default) - measure averages over time and nodes.
+        'node' or 'node_from' average over nodes (i) and time. Giving average efficiency for i to j.
+        'node_to' measure average over nodes j and time. Giving average efficiency using paths to j from  i.
 
 
     **OUTPUT**
@@ -55,6 +60,11 @@ def temporal_efficiency(datIn):
         datIn = shortest_temporal_path(datIn)
 
     # Calculate efficiency which is 1 over the mean path.
-    E=1/np.nanmean(datIn['paths'])
+    if do == 'global':
+        E=1/np.nanmean(datIn['paths'])
+    elif do == 'node' or do == 'node_from':
+        E=1/np.nanmean(np.nanmean(datIn['paths'],axis=2),axis=1)
+    elif do == 'node_to':
+        E=1/np.nanmean(np.nanmean(datIn['paths'],axis=2),axis=0)
 
     return E

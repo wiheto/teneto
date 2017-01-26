@@ -21,6 +21,8 @@ def shortest_temporal_path(netIn,q=1):
 
         :format: dictionary
 
+    Paths are of the struction, path['paths'][i,j,t] - shortest path for i to reach j, starting at time t. 
+
     **NOTE**
 
     This function assumes all paths can be taken per time point.

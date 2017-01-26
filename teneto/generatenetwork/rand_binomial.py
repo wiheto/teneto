@@ -15,7 +15,11 @@ def rand_binomial(size,p,netrep='graphlet',nettype='bu',initialize='zero',netinf
     :p: Probability of edge present. Two possibilities.
 
         :integer: the same probabability for each node becoming active (equal for all nodes).
-        :tuple/list of size 2: different probabilities for active and inactive edges. The first value indicates the probability of an absent connection becoming present.The second value dictates the probability of an edge present remaining present.
+        :tuple/list of size 2: different probabilities for edges to become active/inactive.
+
+            The first value is "birth rate". The probability of an absent connection becoming present.
+
+            The second value is the "death rate". This dictates the probability of an edge present remaining present.
 
             :example: (40,60) means there is a 40% chance that a 0 will become a 1 and a 60% chance that a 1 stays a 1.
 
@@ -39,6 +43,9 @@ def rand_binomial(size,p,netrep='graphlet',nettype='bu',initialize='zero',netinf
     Option 2 of the p parameter can be used to create a small autocorrelaiton or make sure that, once an edge has been present, it never disapears.
 
     **SEE ALSO**
+
+    **READ MORE**
+    There is some work on the properties on the graphs with birth/death rates (called edge-Markovian Dynamic graphs) as described here. Clementi et al (2008) Flooding Time in edge-Markovian Dynamic Graphs* *PODC*
 
     **HISTORY**
 

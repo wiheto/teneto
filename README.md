@@ -1,6 +1,6 @@
 # Teneto
 
-**Te**mporal **ne**twork **to**ols. Version 0.1.2 (Jan 6, 2016)
+**Te**mporal **ne**twork **to**ols. Version 0.1.3 (Jan 26, 2016)
 
 This is still a lot of work to go before this package is complete. However, it is built to be used now and future updates *should* not break people's pipelines.
 
