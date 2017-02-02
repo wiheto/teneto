@@ -11,5 +11,5 @@ def hamming_distance(x1, x2):
 def euclidean_distance(x1,x2):
     return np.sqrt(np.sum(np.power(np.subtract(x1,x2),2)))
 
-#def taxicab_distance(x1,x2):
-#    return np.sum(np.abs(np.subtract(x1,x2)))
+def taxicab_distance(x1,x2):
+    return np.sum(np.abs(np.subtract(x1,x2)))

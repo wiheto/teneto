@@ -1,7 +1,7 @@
 from teneto.utils import *
 import numpy as np
 
-def volatility(netIn,D='default',do='global'):
+def volatility(netIn,D='default',do='global',subnetworkID=[]):
     """
     volatility of temporal networks. This is the average distance between consecutive time points of graphlets (difference is caclualted either globally, per edge)
 
@@ -17,7 +17,12 @@ def volatility(netIn,D='default',do='global'):
         :'global': (default): the average distance of all nodes for each consecutive time point).
         :'edge': average distance between consecutive time points for each edge). Takes considerably longer
         :'node': (i.e. returns the average per node output when calculating volatility per 'edge').
-        : 'time': returns volatility per time point
+        :'time': returns volatility per time point
+        :'subnetwork': returns volatility per subnetwork id (see subnetworkID). Also is returned per time-point and this may be changed in the future (with additional options)
+	:'subnetworkID': vector of integers.
+        :Note: Index of subnetworks are returned "as is" with a shape of [max(subnetworks)+1,max(subnetworks)+1]. So if the indexes used are [1,2,3,5], V.shape==(6,6). The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns). If this behaviour is unwanted, call clean_subnetwork_indexes first.
+
+    :network:
 
     **OUTPUT**
 
@@ -55,15 +60,25 @@ def volatility(netIn,D='default',do='global'):
     elif netInfo['nettype'][1] == 'u':
         ind=np.triu_indices(netIn.shape[0],k=1)
 
+    if do=='subnetwork':
+        #Make sure subnetworkID is np array for indexing later on.
+        subnetworkID = np.array(subnetworkID)
+        if len(subnetworkID)!=netInfo['netshape'][0]:
+            raise ValueError('When processing per network, subnetworkID vector must equal the number of nodes')
+        if subnetworkID.min()<0:
+            raise ValueError('Subnetwork assignments must be positive integers')
+
+
     #Get chosen distance metric fucntion
     distanceMetric=getDistanceFunction(D)
 
+
     if do=='global':
         V=np.mean([distanceMetric(netIn[ind[0],ind[1],t],netIn[ind[0],ind[1],t+1]) for t in range(0,netIn.shape[-1]-1)])
-    if do=='time':
+    elif do=='time':
         V=[distanceMetric(netIn[ind[0],ind[1],t],netIn[ind[0],ind[1],t+1]) for t in range(0,netIn.shape[-1]-1)]
     #This takes quite a bit of time to loop through. When calculating per edge/node.
-    if do=='edge' or do=='node':
+    elif do=='edge' or do=='node':
         V = np.zeros([netIn.shape[0],netIn.shape[1]])
         for i in ind[0]:
             for j in ind[1]:
@@ -72,4 +87,13 @@ def volatility(netIn,D='default',do='global'):
             V = V + np.transpose(V)
         if do=='node':
             V = np.sum(V,axis=1)
+    elif do == 'subnetwork':
+        netIDs = set(subnetworkID)
+
+        V = np.zeros([max(netIDs)+1,max(netIDs)+1,netInfo['netshape'][-1]-1])
+        for net1 in netIDs:
+            print(net1)
+            for net2 in netIDs:
+                Vtmp=[distanceMetric(netIn[subnetworkID==net1][:,subnetworkID==net2,t   ],netIn[subnetworkID==net1][:,subnetworkID==net2,t+1]) for t in range(0,netIn.shape[-1]-1)]
+                V[net1,net2,:]=Vtmp
     return V

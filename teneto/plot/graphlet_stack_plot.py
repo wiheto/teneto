@@ -7,7 +7,7 @@ from scipy import ndimage
 
 plt.rcParams['axes.facecolor'] = 'white'
 
-def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1,sharpen='yes'):
+def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',gridcolor='k',borderwidth=2,bordercolor=[0,0,0],Fs=1,timeunit='',t0=1,sharpen='yes'):
 
     '''
 
@@ -23,6 +23,9 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1,sharpen=
     :Fs: sampling rate. Same as contact-representation (if netIn is contact, and input is unset, contact dictionary is used)
     :timeunit: for plotting. Same as contact-representation (if netIn is contact, and input is unset, contact dictionary is used)
     :t0: what should the first time point be called. Should be integer. Default 1.
+    :gridcolor: The color of the grid section of the graphlets. Set to 'none' if not wanted.
+    :borderwidth: Integer that scales the size of border. (at the moment it cannot be set to 0.)
+    :bordorcolor: color of the border (at the moment it must be in RGB values between 0 and 1 -> this will be changed sometime in the future)
 
 
 
@@ -34,6 +37,7 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1,sharpen=
     **NOTE**
 
     This function can require a lot of RAM with larger networks.
+    At the momenet bordercolor cannot be set to zero. To remove border, set bordorwidth=1 and bordercolor=[1,1,1] for temporay workaround.
 
 
     **SEE ALSO**
@@ -69,18 +73,22 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1,sharpen=
     if timeunit != '':
         timeunit = ' (' + timeunit + ')'
 
+    if not isinstance(borderwidth,int):
+        borderwidth = int(borderwidth)
+        print('Warning: borderwidth should be an integer. Converting to integer.')
+
 
     #x and y ranges for each of the graphlet plots
     v=range(0,netIn.shape[0]+1)
     vr=range(netIn.shape[0],-1,-1)
     #Preallocatie matrix
 
-
-    figmat=np.zeros([80*q+(q*2),int(((netIn.shape[-1])*(80*q)+(q*2))-((netIn.shape[-1]-1)*q*80)/2),4])
+    qb=q*borderwidth
+    figmat=np.zeros([80*q+(qb*2),int(((netIn.shape[-1])*(80*q)+(qb*2))-((netIn.shape[-1]-1)*q*80)/2),4])
     for n in range(0,netIn.shape[-1]):
         #Create graphlet
-        figtmp,axtmp = plt.subplots(1,facecolor='white',figsize=(q,q))
-        axtmp.pcolormesh(v,vr,netIn[:,:,n],cmap=cmap,edgecolor='k',linewidth=q*2)
+        figtmp,axtmp = plt.subplots(1,facecolor='white',figsize=(q,q),dpi=80)
+        axtmp.pcolormesh(v,vr,netIn[:,:,n],cmap=cmap,edgecolor=gridcolor,linewidth=q*2)
         axtmp.set_xticklabels('')
         axtmp.set_yticklabels('')
         axtmp.set_xticks([])
@@ -102,22 +110,23 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1,sharpen=
         #Close figure for memory
         plt.close(figtmp)
 
-        #Manually add a black border
-        figmattmp_withborder=np.zeros([figmattmp.shape[0]+(q*2),figmattmp.shape[1]+(q*2),3])
-        figmattmp_withborder[q:-q,q:-q,:]=figmattmp
+        #Manually add a border
 
-        #Make corners rounded
-        y,x = np.ogrid[-q: q+1, -q: q+1]
-        mask = x*x + y*y <= q*q
+        figmattmp_withborder=np.zeros([figmattmp.shape[0]+(qb*2),figmattmp.shape[1]+(qb*2),3])+(np.array(bordercolor)*255)
+        figmattmp_withborder[qb:-qb,qb:-qb,:]=figmattmp
+
+        #Make corners rounded. First make a circle and then take the relevant quarter for each corner.
+        y,x = np.ogrid[-qb: qb+1, -qb: qb+1]
+        mask = x*x + y*y <= qb*qb
         #A little clumsy. Should improve
-        Mq1=np.vstack([[mask[:q,:q]==0],[mask[:q,:q]==0],[mask[:q,:q]==0]]).transpose([1,2,0])
-        figmattmp_withborder[:q,:q,:][Mq1]=255
-        Mq1=np.vstack([[mask[:q,-q:]==0],[mask[:q,-q:]==0],[mask[:q,-q:]==0]]).transpose([1,2,0])
-        figmattmp_withborder[:q,-q:,:][Mq1]=255
-        Mq1=np.vstack([[mask[-q:,:q]==0],[mask[-q:,:q]==0],[mask[-q:,:q]==0]]).transpose([1,2,0])
-        figmattmp_withborder[-q:,:q,:][Mq1]=255
-        Mq1=np.vstack([[mask[-q:,-q:]==0],[mask[-q:,-q:]==0],[mask[-q:,-q:]==0]]).transpose([1,2,0])
-        figmattmp_withborder[-q:,-q:,:][Mq1]=255
+        Mq1=np.vstack([[mask[:qb,:qb]==0],[mask[:qb,:qb]==0],[mask[:qb,:qb]==0]]).transpose([1,2,0])
+        figmattmp_withborder[:qb,:qb,:][Mq1]=255
+        Mq1=np.vstack([[mask[:qb,-qb:]==0],[mask[:qb,-qb:]==0],[mask[:qb,-qb:]==0]]).transpose([1,2,0])
+        figmattmp_withborder[:qb,-qb:,:][Mq1]=255
+        Mq1=np.vstack([[mask[-qb:,:qb]==0],[mask[-qb:,:qb]==0],[mask[-qb:,:qb]==0]]).transpose([1,2,0])
+        figmattmp_withborder[-qb:,:qb,:][Mq1]=255
+        Mq1=np.vstack([[mask[-qb:,-qb:]==0],[mask[-qb:,-qb:]==0],[mask[-qb:,-qb:]==0]]).transpose([1,2,0])
+        figmattmp_withborder[-qb:,-qb:,:][Mq1]=255
 
         #scale and sheer
         scale = np.matrix([[1.5,0,0],[0,3,0],[0,0,1]])
@@ -135,9 +144,9 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1,sharpen=
 
         #Add graphlet to matrix
         if n == 0:
-            figmat[:,n*(80*q):((n+1)*(80*q)+(q*2))]=figmattmp
+            figmat[:,n*(80*q):((n+1)*(80*q)+(qb*2))]=figmattmp
         else:
-            figmat[:,n*(80*q)-int((n*q*80)/2):int(((n+1)*(80*q)+(q*2))-(n*q*80)/2)]=figmattmp
+            figmat[:,n*(80*q)-int((n*q*80)/2):int(((n+1)*(80*q)+(qb*2))-(n*q*80)/2)]=figmattmp
 
     # Fix colours - due to imshows weirdness when taking nxnx3
     figmat[:,:,0:3]=figmat[:,:,0:3]/255
@@ -148,6 +157,9 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1,sharpen=
     ymax=np.max(fid[0])
     yright=np.max(np.where(figmat[:,fid[1][fargmin],-1]>0))
     xtickloc = np.where(figmat[ymax,:,-1]>0)[0]
+    # In case there are multiple cases of xtickloc in same graphlet (i.e. they all have the same lowest value)
+    xtickloc = np.delete(xtickloc,np.where(np.diff(xtickloc)==1)[0]+1)
+
 
     fid=np.where(figmat[:,:,-1]>0)
     ymin=np.min(fid[0])
@@ -176,7 +188,7 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',Fs=1,timeunit='',t0=1,sharpen=
     ax.set_yticks([])
 
 
-    L=int((((netIn.shape[-1]-3)+1)*(80*q)+(q*2))-((netIn.shape[-1]-3)*q*80)/2-q)
+    L=int((((netIn.shape[-1]-3)+1)*(80*q)+(qb*2))-((netIn.shape[-1]-3)*q*80)/2-q)
     [ax.plot(range(topfig[i],xt),np.zeros(len(range(topfig[i],xt)))+yright,color='k',linestyle=':',zorder=2) for i,xt in enumerate(xtickloc[1:])]
     ax.plot(range(0,L),np.zeros(L)+ymax,color='k',linestyle=':',zorder=2)
     [ax.plot(np.zeros(q*10)+xt,np.arange(ymax,ymax+q*10),color='k',linestyle=':',zorder=2) for xt in xtickloc]

@@ -1,6 +1,6 @@
 # Teneto
 
-**Te**mporal **ne**twork **to**ols. Version 0.1.3 (Jan 26, 2016)
+**Te**mporal **ne**twork **to**ols. Version 0.1.4 (Feb 2, 2016)
 
 This is still a lot of work to go before this package is complete. However, it is built to be used now and future updates *should* not break people's pipelines.
 
@@ -33,6 +33,8 @@ If a previous versions of Teneto has been installed, download the new version an
 
 
 [3. Creating temporal networks ](https://github.com/wiheto/teneto/blob/master/examples/03_creating_temporalnetworks.ipynb)
+
+*More tutorials will be written when I have time (and the above will be improved). Until then, check out our overview of the metrics here: http://biorxiv.org/content/early/2016/12/24/096461*
 
 ### Documentation
 
@@ -71,4 +73,4 @@ The time line is that all of these should be up over the next 6 months or so. If
 
 If using this, please cite us. At present we do not have a dedicated article about teneto, but teneto is introduced, a long with a considerable amount of the metrics:
 
-Thompson, WH, Brantefors, P, Fransson, P. From static to temporal network theory – applications to functional brain connectivity. http://biorxiv.org/content/early/2016/12/23/096461.article-metrics
+Thompson, WH, Brantefors, P, Fransson, P. From static to temporal network theory – applications to functional brain connectivity. http://biorxiv.org/content/early/2016/12/24/096461

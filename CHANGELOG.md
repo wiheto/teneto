@@ -1,3 +1,19 @@
+### V0.1.4 - Released  Feb 2 2017
+
+- Changed some types in `rand_binomial ` documentation
+
+- Added some more customizeable options to `graphlets_stack_plot` (border width, grid color, bordercolor etc.)
+
+-  Added possibility to call "subnetwork" option in `volatility`
+
+- Added function, `clean_subnetwork_indexes` which network index assignment to range between 0 and max(NrSubnetwork)-1.
+
+- Updated some of the examples. Also added a ./examples/previous/vx.x.x where previous versions of examples are listed (examples are not created with every new update).  
+
+- Added (uncommented) the `taxicab_distance` in `misc.distance_functions` option. Won't be added to the documentation of distance functions until I check there is no reason why I commented it. But preliminary testing says it gives the correct answer.  
+
+- Functions `misc.correct_pvalues_for_multiple_testing` and `misc.corrcoef_matrix` are added but not yet implemented in any of the main functions.   
+
 ### V0.1.3 - Released Jan 26 2017
 
 - Provided clearer documentation in `shortest_temporal_path`
@@ -6,10 +22,7 @@
 
 - Added possibility of calculating `temporal_efficiency` per node (either "\_from" to "\_to")
 
-- Improved documentation and added references to `rand_binomial`. 
-
-
-
+- Improved documentation and added references to `rand_binomial`.
 
 
 ### V0.1.2 - Released Jan 6 2017

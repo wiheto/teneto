@@ -45,7 +45,7 @@ def rand_binomial(size,p,netrep='graphlet',nettype='bu',initialize='zero',netinf
     **SEE ALSO**
 
     **READ MORE**
-    There is some work on the properties on the graphs with birth/death rates (called edge-Markovian Dynamic graphs) as described here. Clementi et al (2008) Flooding Time in edge-Markovian Dynamic Graphs* *PODC*
+    There is some work on the properties on the graphs with birth/death rates (called edge-Markovian Dynamic graphs) as described here. Clementi et al (2008) Flooding Time in edge-Markovian Dynamic Graphs *PODC*
 
     **HISTORY**
 

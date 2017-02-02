@@ -403,3 +403,29 @@ def process_input(netIn,allowedformats,outputformat='G'):
         return G,netInfo
     elif outputformat == 'C':
         return C
+
+
+def clean_subnetwork_indexes(subnetworkID):
+    """
+    Takes input, check what input is
+
+    **PARAMETERS**
+
+    :subnetworkID: list or numpy array of integers.
+
+    **OUTPUT**
+
+    :new_subnetworkID: cleaned list going from 0 to numberOfSubnetworks-1
+        :format: numpy array of intergers
+        :behaviour: the lowest subnetwork integer in subnetworkID will recieve the lowest integer in new_subnetworkID. 
+
+    **HISTORY**
+
+    *Created* - Feb17, WHT
+
+    """
+    np.array(subnetworkID)
+    new_subnetworkID = np.zeros(len(subnetworkID))
+    for i,n in enumerate(np.unique(subnetworkID)):
+        new_subnetworkID[subnetworkID==n]=i
+    return new_subnetworkID
