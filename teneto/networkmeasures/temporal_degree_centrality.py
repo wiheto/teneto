@@ -1,7 +1,7 @@
 import numpy as np
 from teneto.utils import *
 
-def temporal_degree_centrality(netIn,d=0):
+def temporal_degree_centrality(netIn,d=0,do='avg'):
     """
 
     temporal degree of network. Sum of all connections each node has through time.
@@ -17,11 +17,13 @@ def temporal_degree_centrality(netIn,d=0):
         i.e. if 0, node i has Aijt summed over j and t.
         and if 1, node j has Aijt summed over i and t.
 
+    :do: either 'avg' (returns temporal degree centrality (a 1xnode vector)) or 'time' (returns a node x time matrix). i.e. 'time' returns static degree centrality per time-point
+
     **OUTPUT**
 
     :D: temporal degree centrality (nodal measure)
 
-        :format: 1d numpy array
+        :format: 1d numpy array (or 2d if do = 'time')
 
     **SEE ALSO**
 
@@ -29,7 +31,8 @@ def temporal_degree_centrality(netIn,d=0):
 
     **HISTORY**
 
-    Modified - DEF 2016, WHT (docmentation)
+    Modified - Mar 2017, WHT (do='time')
+    Modified - Dec 2016, WHT (docmentation)
     Created - Nov 2016, WHT
 
     """
@@ -43,5 +46,8 @@ def temporal_degree_centrality(netIn,d=0):
     if d==1:
         sumOverDim = 0
     #sum sum netIn
-    td=np.sum(np.sum(netIn,axis=2),axis=sumOverDim)
+    if do == 'time':
+        td = np.squeeze(np.sum(netIn,axis=sumOverDim))
+    else:
+        td=np.sum(np.sum(netIn,axis=2),axis=sumOverDim)
     return td

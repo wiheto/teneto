@@ -1,4 +1,3 @@
-
 import matplotlib.pyplot as plt
 import numpy as np
 from teneto.utils import contact2graphlet, checkInput
@@ -7,15 +6,11 @@ from scipy import ndimage
 
 plt.rcParams['axes.facecolor'] = 'white'
 
-def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',gridcolor='k',borderwidth=2,bordercolor=[0,0,0],Fs=1,timeunit='',t0=1,sharpen='yes'):
+def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',gridcolor='k',borderwidth=2,bordercolor=[0,0,0],Fs=1,timeunit='',t0=1,sharpen='yes',vminmax='maxabs'):
 
     '''
-
     Returns matplotlib axis handle for graphlet_stack_plot. This is a row of transformed connectivity matrices to look like a 3D stack.
-
-
     **PARAMETERS**
-
     :netIn: network input (graphlet or contact)
     :ax: matplotlib ax handles.
     :q: quality. Increaseing this will lead to smoother axis but take up more memory.
@@ -26,30 +21,17 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',gridcolor='k',borderwidth=2,bo
     :gridcolor: The color of the grid section of the graphlets. Set to 'none' if not wanted.
     :borderwidth: Integer that scales the size of border. (at the moment it cannot be set to 0.)
     :bordorcolor: color of the border (at the moment it must be in RGB values between 0 and 1 -> this will be changed sometime in the future)
-
-
-
+    :vmaxmin: 'maxabs' (default), 'maxmin', or list/array with length of 2. Specifies the min and max colormap value of graphlets. Maxabs entails [-max(abs(G)),max(abs(G))], minmax entails [min(G), max(G)].
     **OUTPUT**
-
     :ax: matplotlib ax handle
-
-
     **NOTE**
-
     This function can require a lot of RAM with larger networks.
     At the momenet bordercolor cannot be set to zero. To remove border, set bordorwidth=1 and bordercolor=[1,1,1] for temporay workaround.
-
-
     **SEE ALSO**
-
     - *circle_plot*
     - *slice_plot*
-
-
     **HISTORY**
-
     :Created: Dec 2016, WHT
-
     '''
 
     #Get input type (C, G, TO)
@@ -83,12 +65,17 @@ def graphlet_stack_plot(netIn,ax,q=10,cmap='Reds',gridcolor='k',borderwidth=2,bo
     vr=range(netIn.shape[0],-1,-1)
     #Preallocatie matrix
 
+    if vminmax == '' or vminmax == 'absmax':
+        vminmax == [-np.nanmax(np.abs(netIn)), np.nanmax(np.abs(netIn))]
+    elif vminmax == 'minmax':
+        vminmax == [np.nanmin(netIn), np.nanmax(netIn)]
+
     qb=q*borderwidth
     figmat=np.zeros([80*q+(qb*2),int(((netIn.shape[-1])*(80*q)+(qb*2))-((netIn.shape[-1]-1)*q*80)/2),4])
     for n in range(0,netIn.shape[-1]):
         #Create graphlet
         figtmp,axtmp = plt.subplots(1,facecolor='white',figsize=(q,q),dpi=80)
-        axtmp.pcolormesh(v,vr,netIn[:,:,n],cmap=cmap,edgecolor=gridcolor,linewidth=q*2)
+        axtmp.pcolormesh(v,vr,netIn[:,:,n],cmap=cmap,edgecolor=gridcolor,linewidth=q*2,vmin=vminmax[0],vmax=vminmax[1])
         axtmp.set_xticklabels('')
         axtmp.set_yticklabels('')
         axtmp.set_xticks([])

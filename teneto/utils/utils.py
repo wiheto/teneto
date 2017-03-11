@@ -1,6 +1,8 @@
 import numpy as np
 import teneto
 from teneto.misc import distance_functions
+import collections
+
 """
 
 Couple of utiltity functions for teneto for converting between graphlet and contact sequence representations
@@ -417,7 +419,7 @@ def clean_subnetwork_indexes(subnetworkID):
 
     :new_subnetworkID: cleaned list going from 0 to numberOfSubnetworks-1
         :format: numpy array of intergers
-        :behaviour: the lowest subnetwork integer in subnetworkID will recieve the lowest integer in new_subnetworkID. 
+        :behaviour: the lowest subnetwork integer in subnetworkID will recieve the lowest integer in new_subnetworkID.
 
     **HISTORY**
 
@@ -429,3 +431,40 @@ def clean_subnetwork_indexes(subnetworkID):
     for i,n in enumerate(np.unique(subnetworkID)):
         new_subnetworkID[subnetworkID==n]=i
     return new_subnetworkID
+
+
+
+def multiple_contacts_get_values(C):
+    """
+    Given an contact representation with repeated contacts, this function removes duplicates and creates a value
+
+    **PARAMETERS**
+
+    :C: contact representation with multiple repeated contacts.
+
+    **OUTPUT**
+
+    :C_out: contact representation with duplicates removed and the number of repeated contacts are now in the 'values' field.
+
+    **HISTORY**
+
+    *Created* - Feb17, WHT
+
+    """
+    d = collections.OrderedDict()
+    for c in C['contacts']:
+        ct = tuple(c)
+        if ct in d:
+            d[ct] += 1
+        else:
+            d[ct] = 1
+
+    new_contacts = []
+    new_values = []
+    for (key, value) in d.items():
+        new_values.append(value)
+        new_contacts.append(key)
+    C_out = C
+    C_out['contacts']=new_contacts
+    C_out['values']=new_values
+    return C_out

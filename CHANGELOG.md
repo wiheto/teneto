@@ -1,3 +1,18 @@
+### Upcoming V0.1.5 - develop branch
+
+Added the function `utils.multiple_contacts_get_values`
+
+Added the module `teneto.derive` with `teneto.derive.postpro_pipeline`
+which inclues: fisher transform, box cox transform and z transform. Can be configured to which ones are used. `teneto.derive.derive_with_weighted_pearson` as main functions which includes sliding window, tapered sliding window, spatial distance.
+
+Added report generation for derivation. `teneto.derive.report`
+
+Added possibility to get degree centrality per time point in. `teneto.networkmeasures.temporal_degree_centrality`
+
+Tested derive functions against matlab code and appears to give same results except for rounding differences in Euclidean distance and Lambda estimation of box cox.
+
+Added the ability to specify vmax and vmin in graphlet_stack_plot
+
 ### V0.1.4 - Released  Feb 2 2017
 
 - Changed some types in `rand_binomial ` documentation
