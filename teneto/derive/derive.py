@@ -15,7 +15,7 @@ def derive_with_weighted_pearson(data,method,postpro,params={},dimord='node,time
 
     Derive a weight vector for each time point and then the corrrelation coefficient for each time point.
 
-    A report is saved in ./report/[analysis_id]/derivation_report.html 
+    A report is saved in ./report/[analysis_id]/derivation_report.html
 
     :PARAMETERS:
 
@@ -161,8 +161,7 @@ def weightfun_spatial_distance(data,params,report):
     w=np.array([distance(data[n,:],data[t,:]) for n in np.arange(0,data.shape[0])  for t in np.arange(0,data.shape[0])])
     w=np.reshape(w,[data.shape[0],data.shape[0]])
     np.fill_diagonal(w,np.nan)
-    if params['equation'] == '1/D':
-        w=1/w
+    w=1/w
     w=(w-np.nanmin(w))/(np.nanmax(w)-np.nanmin(w))
     np.fill_diagonal(w,1)
     return w, report
