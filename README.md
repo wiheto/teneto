@@ -1,28 +1,28 @@
 # Teneto
 
-**Te**mporal **ne**twork **to**ols. Version 0.1.4 (Feb 2, 2016)
+**Te**mporal **ne**twork **to**ols. Version 0.1.5 (Developer Branch)
 
 This is still a lot of work to go before this package is complete. However, it is built to be used now and future updates *should* not break people's pipelines.
 
-Package includes: temporal network generation (only one function at the moment), temporal network measures, plotting functions.
+Package includes: temporal network generation (only one function at the moment), derivation of dynamic connectivity, temporal network measures, plotting functions.
 
 ## Installation
 
-Requires: Python 3.x and pip.
+Requires: Python 3.5 or python 3.6 and pip.
 
 Package dependencies:
 - numpy
 - scipy
 - matplotlib
+- statsmodels
+
+(Other versions of python (2.7 and <3.5) may work, but not tested.)
 
 ### Installation
 
 At the moment the easiest way to install is the following:
 
-1. Download the package manually [here](https://github.com/wiheto/teneto/archive/master.zip) or clone by `git clone  https://github.com/wiheto/teneto.git`
-2. With pip install by `pip install /path/to/teneto/`
-
-If a previous versions of Teneto has been installed, download the new version and  `pip install /path/to/teneto/ -U`
+__Will be released on pypi in 0.1.5 (edit this before it leaves developer branch)__
 
 ### Tutorials
 
