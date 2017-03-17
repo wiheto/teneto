@@ -3,12 +3,13 @@ import scipy as sp
 import teneto
 
 def postpro_fisher(R,report={}):
-    # Make diagonal 0
-    np.fill_diagonal(R,0)
+    # Due to rounding errors
+    R[R<-0.99999999999999]=-1
+    R[R>0.99999999999999]=1
     R_z= 0.5*np.log((1+R)/(1-R))
     report['fisher']={}
     report['fisher']['performed'] = 'yes'
-    report['fisher']['diagonal'] = 'zeroed'
+    #report['fisher']['diagonal'] = 'zeroed'
     return R_z,report
 
 def postpro_boxcox(R,report={}):
