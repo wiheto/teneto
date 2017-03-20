@@ -13,6 +13,8 @@ which inclues: fisher transform, box cox transform and z transform. Can be confi
 
 - Added the ability to specify vmax and vmin in `graphlet_stack_plot`
 
+- renamed `clean_subnetwork_indexes` to `clean_community_indexes` (and now included in initializatin)
+
 ### V0.1.4 - Released  Feb 2 2017
 
 - Changed some types in `rand_binomial ` documentation

@@ -407,30 +407,30 @@ def process_input(netIn,allowedformats,outputformat='G'):
         return C
 
 
-def clean_subnetwork_indexes(subnetworkID):
+def clean_community_indexes(communityID):
     """
-    Takes input, check what input is
+    Takes input of community assignments. Returns reindexed community assignment by using minimal amount of numbers.
 
     **PARAMETERS**
 
-    :subnetworkID: list or numpy array of integers.
+    :communityID: list or numpy array of integers.
 
     **OUTPUT**
 
-    :new_subnetworkID: cleaned list going from 0 to numberOfSubnetworks-1
+    :new_communityID: cleaned list going from 0 to numberOfSubnetworks-1
         :format: numpy array of intergers
-        :behaviour: the lowest subnetwork integer in subnetworkID will recieve the lowest integer in new_subnetworkID.
+        :behaviour: the lowest community integer in communityID will recieve the lowest integer in new_communityID.
 
     **HISTORY**
 
     *Created* - Feb17, WHT
 
     """
-    np.array(subnetworkID)
-    new_subnetworkID = np.zeros(len(subnetworkID))
-    for i,n in enumerate(np.unique(subnetworkID)):
-        new_subnetworkID[subnetworkID==n]=i
-    return new_subnetworkID
+    np.array(communityID)
+    new_communityID = np.zeros(len(communityID))
+    for i,n in enumerate(np.unique(communityID)):
+        new_communityID[communityID==n]=i
+    return new_communityID
 
 
 
