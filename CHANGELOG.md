@@ -15,6 +15,8 @@ which inclues: fisher transform, box cox transform and z transform. Can be confi
 
 - renamed `clean_subnetwork_indexes` to `clean_community_indexes` (and now included in initializatin)
 
+- added warning message to `derive.postpro_boxcox` if one edge fails to be normal. 
+
 ### V0.1.4 - Released  Feb 2 2017
 
 - Changed some types in `rand_binomial ` documentation

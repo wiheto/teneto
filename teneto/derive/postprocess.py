@@ -20,9 +20,17 @@ def postpro_boxcox(R,report={}):
 
     bc = np.array([sp.stats.boxcox(np.squeeze(R[ind[0][n],ind[1][n],:])) for n in range(0,len(ind[0]))])
 
+
     R_bc = np.zeros(R.shape)
     R_bc[ind[0],ind[1],:]=np.vstack(bc[:,0])
     R_bc[ind[1],ind[0],:]=np.vstack(bc[:,0])
+
+
+    bccheck = np.array(np.transpose(R_bc[0],[2,0,1]))
+    bccheck = (bccheck - bccheck.mean(axis=0)) / bccheck.std(axis=0)
+    bccheck = np.squeeze(np.mean(bccheck,axis=0))
+    np.fill_diagonal(bccheck,0)
+
 
     report['boxcox']={}
     report['boxcox']['performed'] = 'yes'
@@ -30,7 +38,17 @@ def postpro_boxcox(R,report={}):
     report['boxcox']['shift']=minR
     report['boxcox']['shited_to']=1
 
-    return R_bc,report
+    if np.sum(isnan(bccheck))>0:
+        report['boxcox']={}
+        report['boxcox']['performed'] = 'FAILED'
+        report['boxcox']['failure_reason']='Box cox transform is returning edges with uniform values through time. This is probabaly due to one or more outliers or a very skewed distribution. Have you corrected for all possible sources of noise (e.g. movement)? If yes, then this time-series might not be able to make Gaussian without additional transformations beforehand.'
+        report['boxcox']['failure_consequence']='Box cox transform was skipped from the postprocess pipeline.'
+
+        raise ("TENETO WARNING: Box Cox transform fauked to make normal distribution of the data. Probabaly due to outliers in the connectivity time series. Have all different artefacts been corrected for? See report for more details. \n Box Cox transform not performed.")
+
+
+
+    return R,report
 
 def postpro_ztransform(R,report={}):
     # First make trailing dimension nodal.
