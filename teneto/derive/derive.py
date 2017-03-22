@@ -21,7 +21,7 @@ def derive_with_weighted_pearson(data,method,postpro,params={},dimord='node,time
 
     :data: input data. Default nodes=rows, time=columns. Change dimord if you want it the other way.
     :method: "distance","slidingwindow", "taperedslidingwindow". Alternatively, method can be a weight matrix of size time x time.
-    :postpro: "no" (default). Other alternatives are: "all","fisher+boxcox+ztransform", "fischer","fisher+boxcox","boxcox", and more. See postpro_pipeline for more information.
+    :postpro: "no" (default). Other alternatives are: "all","fisher+boxcox+ztransform", "fisher","fisher+boxcox","boxcox", and more. See postpro_pipeline for more information.
     :params: dictionary of parameters for each method (see below).
     :data_dimord: can be 'node,time' or 'time,node'. People like to represent their data differently and this is an easy way to be sure that you are inputing the data in the correct way.
     :analysis_id: add to identify specfic analysis. Generated report will be placed in './report/' + analysis_id + '/derivation_report.html
