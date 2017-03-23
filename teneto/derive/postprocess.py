@@ -43,12 +43,12 @@ def postpro_boxcox(R,report={}):
         report['boxcox']['performed'] = 'FAILED'
         report['boxcox']['failure_reason']='Box cox transform is returning edges with uniform values through time. This is probabaly due to one or more outliers or a very skewed distribution. Have you corrected for all possible sources of noise (e.g. movement)? If yes, then this time-series might not be able to make Gaussian without additional transformations beforehand.'
         report['boxcox']['failure_consequence']='Box cox transform was skipped from the postprocess pipeline.'
-
+        R_bc = R - minR
         print("TENETO WARNING: Box Cox transform fauked to make normal distribution of the data. Probabaly due to outliers in the connectivity time series. Have all different artefacts been corrected for? See report for more details. \n Box Cox transform not performed.")
 
 
 
-    return R,report
+    return R_bc,report
 
 def postpro_ztransform(R,report={}):
     # First make trailing dimension nodal.
