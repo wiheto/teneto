@@ -38,7 +38,7 @@ def postpro_boxcox(R,report={}):
     report['boxcox']['shift']=minR
     report['boxcox']['shited_to']=1
 
-    if np.sum(isnan(bccheck))>0:
+    if np.sum(np.isnan(bccheck))>0:
         report['boxcox']={}
         report['boxcox']['performed'] = 'FAILED'
         report['boxcox']['failure_reason']='Box cox transform is returning edges with uniform values through time. This is probabaly due to one or more outliers or a very skewed distribution. Have you corrected for all possible sources of noise (e.g. movement)? If yes, then this time-series might not be able to make Gaussian without additional transformations beforehand.'
