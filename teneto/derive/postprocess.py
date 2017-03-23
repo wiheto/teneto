@@ -26,7 +26,7 @@ def postpro_boxcox(R,report={}):
     R_bc[ind[1],ind[0],:]=np.vstack(bc[:,0])
 
 
-    bccheck = np.array(np.transpose(R_bc[0],[2,0,1]))
+    bccheck = np.array(np.transpose(R_bc,[2,0,1]))
     bccheck = (bccheck - bccheck.mean(axis=0)) / bccheck.std(axis=0)
     bccheck = np.squeeze(np.mean(bccheck,axis=0))
     np.fill_diagonal(bccheck,0)
