@@ -4,7 +4,7 @@ from statsmodels.stats.weightstats import DescrStatsW
 import teneto
 import scipy.stats as sps
 
-def derive_with_weighted_pearson(data,method,postpro,params={},dimord='node,time',analysis_id=''):
+def weighted_pearson(data,method,postpro,params={},dimord='node,time',analysis_id=''):
 
     """
 
@@ -165,3 +165,28 @@ def weightfun_spatial_distance(data,params,report):
     w=(w-np.nanmin(w))/(np.nanmax(w)-np.nanmin(w))
     np.fill_diagonal(w,1)
     return w, report
+
+
+
+def temporal_derivatives(data,window,analysis_id=''):
+    #Data should be timexnode
+    report = {}
+
+    #Derivative
+    tdat = dat[:-1,:]-dat[1:,:]
+    #Normalize
+    tdat = tdat/np.std(tdat,axis=0)
+    #Coupling
+    coupling = np.array([tdat[:,i]*tdat[:,j] for i in np.arange(0,tdat.shape[1]) for j in np.arange(0,tdat.shape[1])])
+    coupling=np.reshape(coupling,[tdat.shape[1],tdat.shape[1],tdat.shape[0]])
+    #Average over window using strides
+    shape = coupling.shape[:-1] + (coupling.shape[-1] - window + 1, window)
+    strides = coupling.strides + (coupling.strides[-1],)
+    coupling_windowed = np.mean(np.lib.stride_tricks.as_strided(coupling, shape=shape, strides=strides),-1)
+
+    report = {}
+    report['method'] = 'temporalderivative'
+    report['temporalderivative']['window'] = window
+
+    teneto.derive.gen_report(report,'./report/' + analysis_id)
+    return coupling_windowed
