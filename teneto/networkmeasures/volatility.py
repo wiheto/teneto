@@ -89,11 +89,16 @@ def volatility(netIn,D='default',do='global',subnetworkID=[]):
             V = np.sum(V,axis=1)
     elif do == 'subnetwork':
         netIDs = set(subnetworkID)
-
         V = np.zeros([max(netIDs)+1,max(netIDs)+1,netInfo['netshape'][-1]-1])
         for net1 in netIDs:
-            print(net1)
             for net2 in netIDs:
                 Vtmp=[distanceMetric(netIn[subnetworkID==net1][:,subnetworkID==net2,t   ],netIn[subnetworkID==net1][:,subnetworkID==net2,t+1]) for t in range(0,netIn.shape[-1]-1)]
                 V[net1,net2,:]=Vtmp
+    elif do == 'withinsubnetwork':
+        within_ind = np.array([[ind[0][n], ind[1][n]] for n in range(0,len(ind[0])) if subnetworkID[ind[0][n]] == subnetworkID[ind[1][n]]])
+        V=[distanceMetric(netIn[within_ind[:,0],within_ind[:,1],t],netIn[within_ind[:,0],within_ind[:,1],t+1]) for t in range(0,netIn.shape[-1]-1)]
+    elif do == 'betweensubnetwork':
+        between_ind = np.array([[ind[0][n], ind[1][n]] for n in range(0,len(ind[0])) if subnetworkID[ind[0][n]] != subnetworkID[ind[1][n]]])
+        V=[distanceMetric(netIn[between_ind[:,0],between_ind[:,1],t],netIn[between_ind[:,0],between_ind[:,1],t+1]) for t in range(0,netIn.shape[-1]-1)]
+
     return V

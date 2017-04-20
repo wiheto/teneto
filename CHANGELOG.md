@@ -1,5 +1,9 @@
 ### Upcoming V0.1.5 - develop branch
 
+- Added `withinsubnetwork` and `betweensubnetwork` options for volatility
+
+- Optimized `shortest_temporal_path` to dramatically increase speed (was looping the same node multiple times in line 70)
+
 - Added the function `utils.multiple_contacts_get_values`
 
 - Added the module `teneto.derive` with `teneto.derive.postpro_pipeline`
@@ -15,7 +19,7 @@ which inclues: fisher transform, box cox transform and z transform. Can be confi
 
 - renamed `clean_subnetwork_indexes` to `clean_community_indexes` (and now included in initializatin)
 
-- added warning message to `derive.postpro_boxcox` if one edge fails to be normal. 
+- added warning message to `derive.postpro_boxcox` if one edge fails to be normal.
 
 ### V0.1.4 - Released  Feb 2 2017
 

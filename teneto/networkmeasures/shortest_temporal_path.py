@@ -21,7 +21,7 @@ def shortest_temporal_path(netIn,q=1):
 
         :format: dictionary
 
-    Paths are of the struction, path['paths'][i,j,t] - shortest path for i to reach j, starting at time t. 
+    Paths are of the struction, path['paths'][i,j,t] - shortest path for i to reach j, starting at time t.
 
     **NOTE**
 
@@ -61,15 +61,20 @@ def shortest_temporal_path(netIn,q=1):
             print('--- Running for time: ' + str(t) + ' ---')
         fid = np.where(netIn[:,:,t]>=1)
         #Update time step
-        #Note to self: And a conditional to prevent nan warning that can pop out if no path is there straight away.
+        #Note to self: Add a conditional to prevent nan warning that can pop out if no path is there straight away.
         P_last+=1
-        #Reset connections present to 1
+        #Reset connections present to 1s
         P_last[fid[0],fid[1]]=1
         # Update nodes with no connections
         # Nodes to update are nodes with an edge present at the time point
-        for v in fid[0]:
+        for v in np.unique(fid[0]):
             a=np.where(P_last[v,:]==1)[0]
+            #P_last_preupdate = np.array(P_last[v,:])
             P_last[v,:]=np.nanmin(P_last[np.hstack([a,v]),:],axis=0)
+            # P_last[np.hstack([a,v]),:][:,np.where(P_last[v,:]<P_last_preupdate)[0]]
+            # for n in np.where(P_last[v,:]<P_last_preupdate)[0]: #These nodes are updated.
+            #
+            #np.where(P_last[np.hstack([a,v]),:]<=np.nanmin(P_last[np.hstack([a,v]),:],axis=0))[0]
             P_last[v,v]=np.nan # make self connection nan regardless
         P[:,:,t]=P_last
     ## Return output
