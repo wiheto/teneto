@@ -1,19 +1,20 @@
 import teneto
 import scipy as sp
 import numpy as np
+
 def louvain(G,randomseed=None):
 
     #Inititialization
     np.random.seed(randomseed)
-    C = teneto.communitydetection.phase1(G)
+    C = teneto.communitydetection._louvain_phase1(G)
     Cnew = np.array(C)
     # If Cnew is not improved phase1 returns 'optimized', ending the while loop.
     while isinstance(Cnew,list):
-        Gnew = teneto.communitydetection.phase2(Cnew)
-        Cnew,C = teneto.communitydetection.phase1(Gnew,C)
+        Gnew = teneto.communitydetection._louvain_phase2(Cnew)
+        Cnew,C = teneto.communitydetection._louvain_phase1(Gnew,C)
     return C
 
-def phase2(C):
+def _louvain_phase2(C):
     Gnew = np.array([np.sum(G[C==i,:][:,C==j]) for i in np.unique(C) for j in np.unique(C)])
     Gnew=Gnew.reshape([int(np.sqrt(len(Gnew))),int(np.sqrt(len(Gnew)))])
     diagonalindex = np.arange(Gnew.shape[0])
@@ -22,7 +23,7 @@ def phase2(C):
     return Gnew
 
 
-def phase1(G,Ckeep=[]):
+def _louvain_phase1(G,Ckeep=[]):
     #Phase 1
     N = G.shape[0]
     C = np.arange(0,N)
