@@ -1,4 +1,6 @@
-### Upcoming V0.1.5 - develop branch
+### Upcoming V0.2.0- develop branch
+
+- Added `louvain` in `communitydetection`
 
 - Added `withinsubnetwork` and `betweensubnetwork` options for volatility
 

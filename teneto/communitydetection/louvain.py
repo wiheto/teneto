@@ -1,6 +1,6 @@
 import teneto
 import scipy as sp
-
+import numpy as np
 def louvain(G,randomseed=None):
 
     #Inititialization
