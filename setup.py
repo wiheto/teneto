@@ -1,6 +1,6 @@
 from setuptools import setup,find_packages
 setup(name='Teneto',
-      version='0.1.4',
+      version='0.2.0',
       description='Temporal network tools',
       packages=find_packages(),
       author='William Hedley Thompson',

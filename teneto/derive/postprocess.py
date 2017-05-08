@@ -50,17 +50,17 @@ def postpro_boxcox(R,report={}):
 
     return R_bc,report
 
-def postpro_ztransform(R,report={}):
+def postpro_standardize(R,report={}):
     # First make trailing dimension nodal.
     R = np.transpose(R,[2,0,1])
     Z = (R - R.mean(axis=0)) / R.std(axis=0)
     Z = np.transpose(Z,[1,2,0])
-    report['ztransform']={}
-    report['ztransform']['performed'] = 'yes'
-    report['ztransform']['method'] = 'starndard score'
+    report['standardize']={}
+    report['standardize']['performed'] = 'yes'
+    report['standardize']['method'] = 'starndard score'
     return Z,report
 
-def postpro_pipeline(R,pipeline,report={}):
+def postpro_pipeline(R,pipeline,report=None):
 
     """
 
@@ -69,11 +69,11 @@ def postpro_pipeline(R,pipeline,report={}):
     :R: pearson correlation value in temporal matrix form (node,node,time)
     :pipeline: list or string (if string, each steps seperated by + sign).
 
-        :options: 'fischer','boxcox','ztransform'
+        :options: 'fischer','boxcox','standardize'
 
-        Each of the above 3 can be specified. If fischer is used, it must be before boxcox. If ztransform is used it must be after boxcox and fischer.
+        Each of the above 3 can be specified. If fischer is used, it must be before boxcox. If standardize is used it must be after boxcox and fischer.
 
-    :report: default is empyt. If non-empty, appended to report.
+    :report: default is empty. If non-empty, appended to report.
 
     :OUTPUT:
 
@@ -82,9 +82,10 @@ def postpro_pipeline(R,pipeline,report={}):
 
     """
 
+    if report == None:
+        report={}
+
     if isinstance(pipeline,str):
-        if pipeline == "all":
-            pipeline = "fisher+boxcox+ztransform"
         pipeline=pipeline.split('+')
 
     report['postprocess'] = []

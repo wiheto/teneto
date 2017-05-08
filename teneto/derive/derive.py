@@ -4,7 +4,7 @@ from statsmodels.stats.weightstats import DescrStatsW
 import teneto
 import scipy.stats as sps
 
-def weighted_pearson(data,method,postpro,params={},dimord='node,time',analysis_id=''):
+def weighted_pearson(data,params):
 
     """
 
@@ -15,16 +15,22 @@ def weighted_pearson(data,method,postpro,params={},dimord='node,time',analysis_i
 
     Derive a weight vector for each time point and then the corrrelation coefficient for each time point.
 
-    A report is saved in ./report/[analysis_id]/derivation_report.html
-
     :PARAMETERS:
 
-    :data: input data. Default nodes=rows, time=columns. Change dimord if you want it the other way.
-    :method: "distance","slidingwindow", "taperedslidingwindow". Alternatively, method can be a weight matrix of size time x time.
-    :postpro: "no" (default). Other alternatives are: "all","fisher+boxcox+ztransform", "fisher","fisher+boxcox","boxcox", and more. See postpro_pipeline for more information.
+    :data: input data. (Default: time times are rows, nodes are columns). Change params{'dimord'} if you want it the other way (see below).
     :params: dictionary of parameters for each method (see below).
-    :data_dimord: can be 'node,time' or 'time,node'. People like to represent their data differently and this is an easy way to be sure that you are inputing the data in the correct way.
+
+    *params for all methods (necessary)*
+
+    :method: "distance","slidingwindow", "taperedslidingwindow". Alternatively, method can be a weight matrix of size time x time.
+
+    *params for all methods (optional)*
+
+    :postpro: "no" (default). Other alternatives are: "fisher", "boxcox", "standardize" and any combination seperated by a + (e,g, "fisher+boxcox"). See postpro_pipeline for more information.
+    :data_dimord: 'node,time' (default) or 'time,node'. People like to represent their data differently and this is an easy way to be sure that you are inputing the data in the correct way.
     :analysis_id: add to identify specfic analysis. Generated report will be placed in './report/' + analysis_id + '/derivation_report.html
+    :report: "yes" (default) or "no". A report is saved in ./report/[analysis_id]/derivation_report.html if "yes"
+
 
     *When method = "distance"*
 
@@ -78,20 +84,32 @@ def weighted_pearson(data,method,postpro,params={},dimord='node,time',analysis_i
     """
     report={}
 
-    if dimord == 'node,time':
+    if 'dimord' not in params.keys():
+        params['dimord']='time,node'
+
+    if 'report' not in params.keys():
+        params['report']='yes'
+
+    if 'analysis_id' not in params.keys():
+        params['analysis_id']=''
+
+    if 'postpro' not in params.keys():
+        params['postpro']='no'
+
+    if params['dimord'] == 'node,time':
         data=data.transpose()
 
-    if isinstance(method,str):
-        if method == 'jackknife':
+    if isinstance(params['method'],str):
+        if params['method'] == 'jackknife':
             w,report = weightfun_jackknife(data.shape[0],report)
 
-        elif method == 'sliding window' or method == 'slidingwindow':
+        elif params['method'] == 'sliding window' or params['method'] == 'slidingwindow':
             w,report = weightfun_sliding_window(data.shape[0],params,report)
 
-        elif method == 'tapered sliding window' or method == 'taperedslidingwindow':
+        elif params['method'] == 'tapered sliding window' or params['method'] == 'taperedslidingwindow':
             w,report = weightfun_tapered_sliding_window(data.shape[0],params,report)
 
-        elif method == 'distance' or method == "spatial distance" or method == "node distance" or method == "nodedistance" or method == "spatialdistance":
+        elif params['method'] == 'distance' or params['method'] == "spatial distance" or params['method'] == "node distance" or params['method'] == "nodedistance" or params['method'] == "spatialdistance":
             w,report = weightfun_spatial_distance(data,params,report)
         else:
             raise ValueError('Unrecognoized method. See derive_with_weighted_pearson documentation for predefined methods or enter own weight matrix')
@@ -105,7 +123,6 @@ def weighted_pearson(data,method,postpro,params={},dimord='node,time',analysis_i
         if w.shape[0] != data.shape[0]:
             raise ValueError("weight matrix must equal number of time points")
 
-
     # Loop over each weight vector and calculate pearson correlation.
     # Note, should see if this can be made quicker in future.
     R = np.array([DescrStatsW(data,w[i,:]).corrcoef for i in range(0,w.shape[0])])
@@ -115,20 +132,20 @@ def weighted_pearson(data,method,postpro,params={},dimord='node,time',analysis_i
     # Correct jackknife direction
     if method == 'jackknife':
         R = R*-1
-        R = R*-1
 
     if postpro != 'no':
-        R,report=teneto.derive.postpro_pipeline(R,postpro,report)
+        R,report=teneto.derive.postpro_pipeline(R,params['postpro'],report)
         R[np.isinf(R)]=0
 
-    teneto.derive.gen_report(report,'./report/' + analysis_id)
+    if params['report']==yes:
+        teneto.derive.gen_report(report,'./report/' + params['analysis_id'])
     return R
 
-#def weightfun_upcoming(T,report):
+def weightfun_jackknife(T,report):
 
-#    w=np.ones([T,T])
-#    np.fill_diagonal(w,0)
-#    return w, report
+    w=np.ones([T,T])
+    np.fill_diagonal(w,0)
+    return w, report
 
 def weightfun_sliding_window(T,params,report):
 
@@ -173,7 +190,7 @@ def temporal_derivatives(data,window,analysis_id=''):
     report = {}
 
     #Derivative
-    tdat = dat[:-1,:]-dat[1:,:]
+    tdat = data[:-1,:]-data[1:,:]
     #Normalize
     tdat = tdat/np.std(tdat,axis=0)
     #Coupling
@@ -186,6 +203,7 @@ def temporal_derivatives(data,window,analysis_id=''):
 
     report = {}
     report['method'] = 'temporalderivative'
+    report['temporalderivative']={}
     report['temporalderivative']['window'] = window
 
     teneto.derive.gen_report(report,'./report/' + analysis_id)
