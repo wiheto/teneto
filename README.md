@@ -1,6 +1,6 @@
 # Teneto
 
-**Te**mporal **ne**twork **to**ols. Version 0.1.5 (Developer Branch)
+**Te**mporal **ne**twork **to**ols. Version 0.2.0 
 
 This is still a lot of work to go before this package is complete. However, it is built to be used now and future updates *should* not break people's pipelines.
 
