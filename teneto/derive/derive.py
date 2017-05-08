@@ -148,7 +148,7 @@ def derive(data,params):
         R,report=teneto.derive.postpro_pipeline(R,params['postpro'],report)
         R[np.isinf(R)]=0
 
-    if params['report']==yes:
+    if params['report']=='yes':
         teneto.derive.gen_report(report,'./report/' + params['analysis_id'])
     return R
 
@@ -202,7 +202,7 @@ def temporal_derivatives(data,params):
     report = {}
 
     #Derivative
-    tdat = data[:-1,:]-data[1:,:]
+    tdat = data[1:,:]-data[:-1,:]
     #Normalize
     tdat = tdat/np.std(tdat,axis=0)
     #Coupling
