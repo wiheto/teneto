@@ -4,7 +4,7 @@ from statsmodels.stats.weightstats import DescrStatsW
 import teneto
 import scipy.stats as sps
 
-def weighted_pearson(data,params):
+def derive(data,params):
 
     """
 
@@ -22,7 +22,7 @@ def weighted_pearson(data,params):
 
     *params for all methods (necessary)*
 
-    :method: "distance","slidingwindow", "taperedslidingwindow". Alternatively, method can be a weight matrix of size time x time.
+    :method: "distance","slidingwindow", "taperedslidingwindow", "jackknife", "temporalderivative". Alternatively, method can be a weight matrix of size time x time.
 
     *params for all methods (optional)*
 
@@ -32,18 +32,17 @@ def weighted_pearson(data,params):
     :report: "yes" (default) or "no". A report is saved in ./report/[analysis_id]/derivation_report.html if "yes"
 
 
-    *When method = "distance"*
+    *When method == "distance"*
 
         Distance metric calculates 1/Distance metric weights, and scales between 0 and 1. W[t,t] is excluded from the scaling and then set to 1.
 
         params['distance'] = 'euclidean', 'hamming'. See teneto.utils.getDistanceFunction
 
-    *When method = "cluster"* (not yet implemented)
+    *When method == "slidingwindow"*
 
-        :params['cluster']: = 'kmean' (default). More will probabaly be added be made
-        :params['k']: = integer or range of intergers. Needed when cluster='kmean'
+        :params['windowsize']: = integer. Size of window.
 
-    *When method = "taperedslidingwindow"*
+    *When method == "taperedslidingwindow"*
 
         :params['windowsize']: = integer. Size of window.
         :params['distribution']: = Scipy distribution (e.g. 'norm','expon'). Any distribution here: https://docs.scipy.org/doc/scipy/reference/stats.html
@@ -58,9 +57,14 @@ def weighted_pearson(data,params):
 
         Instead, if we set params['distribution_params'] is [10,5] this will lead to a half gaussian with its peak at the final time point with a standard deviation of 5.
 
-    *When method = "slidingwindow"*
+    *When method == "temporalderivative"*
 
         :params['windowsize']: = integer. Size of window.
+
+    *When method == "jackknife"*
+
+        No extra parameters needed.
+
 
     :RETURNS:
 
@@ -102,20 +106,25 @@ def weighted_pearson(data,params):
     if isinstance(params['method'],str):
         if params['method'] == 'jackknife':
             w,report = weightfun_jackknife(data.shape[0],report)
-
+            relation = 'weight'
         elif params['method'] == 'sliding window' or params['method'] == 'slidingwindow':
             w,report = weightfun_sliding_window(data.shape[0],params,report)
-
+            relation = 'weight'
         elif params['method'] == 'tapered sliding window' or params['method'] == 'taperedslidingwindow':
             w,report = weightfun_tapered_sliding_window(data.shape[0],params,report)
-
+            relation = 'weight'
         elif params['method'] == 'distance' or params['method'] == "spatial distance" or params['method'] == "node distance" or params['method'] == "nodedistance" or params['method'] == "spatialdistance":
             w,report = weightfun_spatial_distance(data,params,report)
+            relation = 'weight'
+        elif params['method'] == 'temporal derivative' or params['method'] == "temporalderivative":
+            R,report = temporal_derivative(data,params,report)
+            relation = 'coupling'
         else:
             raise ValueError('Unrecognoized method. See derive_with_weighted_pearson documentation for predefined methods or enter own weight matrix')
     else:
         try:
             w=np.array(method)
+            relation = 'weight'
         except:
             raise ValueError('Unrecognoized method. See derive_with_weighted_pearson documentation for predefined methods or enter own weight matrix')
         if w.shape[0] != w.shape[1]:
@@ -123,17 +132,19 @@ def weighted_pearson(data,params):
         if w.shape[0] != data.shape[0]:
             raise ValueError("weight matrix must equal number of time points")
 
-    # Loop over each weight vector and calculate pearson correlation.
-    # Note, should see if this can be made quicker in future.
-    R = np.array([DescrStatsW(data,w[i,:]).corrcoef for i in range(0,w.shape[0])])
-    # Make node,node,time
-    R = R.transpose([1, 2, 0])
+
+    if relation == 'weight':
+        # Loop over each weight vector and calculate pearson correlation.
+        # Note, should see if this can be made quicker in future.
+        R = np.array([DescrStatsW(data,w[i,:]).corrcoef for i in range(0,w.shape[0])])
+        # Make node,node,time
+        R = R.transpose([1, 2, 0])
 
     # Correct jackknife direction
-    if method == 'jackknife':
+    if params['method'] == 'jackknife':
         R = R*-1
 
-    if postpro != 'no':
+    if params['postpro'] != 'no':
         R,report=teneto.derive.postpro_pipeline(R,params['postpro'],report)
         R[np.isinf(R)]=0
 
@@ -185,7 +196,8 @@ def weightfun_spatial_distance(data,params,report):
 
 
 
-def temporal_derivatives(data,window,analysis_id=''):
+def temporal_derivatives(data,params):
+
     #Data should be timexnode
     report = {}
 
@@ -197,14 +209,13 @@ def temporal_derivatives(data,window,analysis_id=''):
     coupling = np.array([tdat[:,i]*tdat[:,j] for i in np.arange(0,tdat.shape[1]) for j in np.arange(0,tdat.shape[1])])
     coupling=np.reshape(coupling,[tdat.shape[1],tdat.shape[1],tdat.shape[0]])
     #Average over window using strides
-    shape = coupling.shape[:-1] + (coupling.shape[-1] - window + 1, window)
+    shape = coupling.shape[:-1] + (coupling.shape[-1] - params['windowsize'] + 1, params['windowsize'])
     strides = coupling.strides + (coupling.strides[-1],)
     coupling_windowed = np.mean(np.lib.stride_tricks.as_strided(coupling, shape=shape, strides=strides),-1)
 
     report = {}
     report['method'] = 'temporalderivative'
     report['temporalderivative']={}
-    report['temporalderivative']['window'] = window
+    report['temporalderivative']['windowsize'] = params['windowsize']
 
-    teneto.derive.gen_report(report,'./report/' + analysis_id)
-    return coupling_windowed
+    return coupling_windowed,report
