@@ -196,7 +196,7 @@ def weightfun_spatial_distance(data,params,report):
 
 
 
-def temporal_derivative(data,params):
+def temporal_derivative(data,params,report):
 
     #Data should be timexnode
     report = {}
