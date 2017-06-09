@@ -21,6 +21,8 @@ which inclues: fisher transform, box cox transform and z transform. Can be confi
 
 - renamed `clean_subnetwork_indexes` to `clean_community_indexes` (and now included in initializatin)
 
+- Added subnetwork option to ´temporal_degree_centrality` when do='time'
+ 
 ### V0.1.4 - Released  Feb 2 2017
 
 - Changed some types in `rand_binomial ` documentation
