@@ -58,9 +58,9 @@ def slice_plot(netIn,ax,nLabs='',tLabs='',timeunit='',linestyle='k-',nodesize=10
     else:
         nLabs = netIn['nLabs']
 
-    if tLabs != '' and len(nLabs)==netIn['netshape'][-1]:
+    if tLabs != '' and len(tLabs)==netIn['netshape'][-1]:
         pass
-    elif tLabs != '' and len(nLabs)!=netIn['netshape'][-1]:
+    elif tLabs != '' and len(tLabs)!=netIn['netshape'][-1]:
         raise ValueError('specified time label length does not match netshape')
     elif tLabs == '' and str(netIn['t0']) == '':
         tLabs = np.arange(1,netIn['netshape'][-1]+1)

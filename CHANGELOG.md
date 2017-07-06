@@ -23,6 +23,8 @@ which inclues: fisher transform, box cox transform and z transform. Can be confi
 
 - added warning message to `derive.postpro_boxcox` if one edge fails to be normal.
 
+- fixed nLabs/tLabs bug in slice_plot
+
 ### V0.1.4 - Released  Feb 2 2017
 
 - Changed some types in `rand_binomial ` documentation
