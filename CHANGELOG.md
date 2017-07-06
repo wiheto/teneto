@@ -1,5 +1,12 @@
 ### Upcoming V0.2.0- develop branch
 
+- Added the module `teneto.derive.derive` with `teneto.derive.postpro_pipeline`
+which inclues: fisher transform, box cox transform and z transform. Can be configured to which ones are used. 5 methods of deriving temporal networks.
+
+- Report generation implemented in derive.
+
+- Code made more readable in places.
+
 - Added `louvain` in `communitydetection`
 
 - Added `withinsubnetwork` and `betweensubnetwork` options for volatility
@@ -8,14 +15,7 @@
 
 - Added the function `utils.multiple_contacts_get_values`
 
-- Added the module `teneto.derive` with `teneto.derive.postpro_pipeline`
-which inclues: fisher transform, box cox transform and z transform. Can be configured to which ones are used. `teneto.derive.derive_with_weighted_pearson` as main functions which includes sliding window, tapered sliding window, spatial distance.
-
-- Added report generation for derivation. `teneto.derive.report`
-
 - Added possibility to get degree centrality per time point in. `teneto.networkmeasures.temporal_degree_centrality`
-
-- Tested derive functions against matlab code and appears to give same results except for rounding differences in Euclidean distance and Lambda estimation of box cox.
 
 - Added the ability to specify vmax and vmin in `graphlet_stack_plot`
 
@@ -24,6 +24,8 @@ which inclues: fisher transform, box cox transform and z transform. Can be confi
 - added warning message to `derive.postpro_boxcox` if one edge fails to be normal.
 
 - fixed nLabs/tLabs bug in slice_plot
+
+- Added subnetwork option to `temporal_degree_centrality` when do='time''
 
 ### V0.1.4 - Released  Feb 2 2017
 
