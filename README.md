@@ -20,9 +20,14 @@ Package dependencies:
 
 ### Installation
 
-At the moment the easiest way to install is the following:
+With pip installed: 
 
-__Will be released on pypi in 0.1.5 (edit this before it leaves developer branch)__
+`pip install teneto`
+
+to upgrade teneto 
+
+`pip install teneto -U` 
+
 
 ### Tutorials
 
@@ -73,4 +78,4 @@ The time line is that all of these should be up over the next 6 months or so. If
 
 If using this, please cite us. At present we do not have a dedicated article about teneto, but teneto is introduced, a long with a considerable amount of the metrics:
 
-Thompson, WH, Brantefors, P, Fransson, P. From static to temporal network theory – applications to functional brain connectivity. http://biorxiv.org/content/early/2016/12/24/096461
+Thompson, William Hedley, Per Brantefors, and Peter Fransson. "From static to temporal network theory applications to functional brain connectivity." Network Neuroscience (2017).
