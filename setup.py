@@ -5,4 +5,5 @@ setup(name='Teneto',
       packages=find_packages(),
       author='William Hedley Thompson',
       url='https://www.github.com/wiheto/teneto',
+      download_url='https://github.com/wiheto/teneto/archive/0.2.tar.gz'
       )
