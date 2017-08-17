@@ -12,7 +12,7 @@ import teneto.plot as plot
 import teneto.generatenetwork as generatenetwork
 import teneto.derive as derive
 import teneto.misc as misc
-import teneto.communitydetection as communitydetection
+#import teneto.communitydetection as communitydetection
 #from teneto.classes import NewTemporalNetwork
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering
