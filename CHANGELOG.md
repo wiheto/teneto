@@ -7,8 +7,6 @@ which inclues: fisher transform, box cox transform and z transform. Can be confi
 
 - Code made more readable in places.
 
-- Added `louvain` in `communitydetection`
-
 - Added `withinsubnetwork` and `betweensubnetwork` options for volatility
 
 - Optimized `shortest_temporal_path` to dramatically increase speed (was looping the same node multiple times in line 70)
