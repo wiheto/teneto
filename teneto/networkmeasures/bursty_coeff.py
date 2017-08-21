@@ -18,7 +18,7 @@ def bursty_coeff(data, calc='edge', nodes='all'):
 
     :data: This is either:
 
-        :netIn: temporal network input (graphlet or contact).
+        :netin: temporal network input (graphlet or contact).
 
             :nettype: 'bu', 'bd'
 
