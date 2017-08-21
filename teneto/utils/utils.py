@@ -490,3 +490,21 @@ def multiple_contacts_get_values(C):
     C_out['contacts'] = new_contacts
     C_out['values'] = new_values
     return C_out
+
+
+
+def check_distance_funciton_input(distance_func_name,netinfo): 
+    """
+    Funciton returns distance_func_name given netinfo. 
+    """
+
+    if distance_func_name == 'default' and netinfo['nettype'][0] == 'b':
+        print('Default distance funciton specified. As network is binary, using Hamming')
+        distance_func_name = 'hamming'
+    elif distance_func_name == 'default' and netinfo['nettype'][0] == 'w':
+        distance_func_name = 'euclidean'
+        print(
+            'Default distance funciton specified. '
+            'As network is weighted, using Euclidean')
+    
+    return distance_func_name    

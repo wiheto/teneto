@@ -11,3 +11,4 @@ from teneto.utils.utils import graphlet2contact
 from teneto.utils.utils import process_input
 from teneto.utils.utils import clean_community_indexes
 from teneto.utils.utils import multiple_contacts_get_values
+from teneto.utils.utils import check_distance_funciton_input
