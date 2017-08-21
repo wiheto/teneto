@@ -1,33 +1,51 @@
+"""
+File contains functions for postprocessing derivation of connectivity estimates
+"""
+
 import numpy as np
 import scipy as sp
 import teneto
 
 
-def postpro_fisher(R, report={}):
+def postpro_fisher(data, report=None):
+    """
+    Performs fisher transform on everything in data.
+
+    If report variable is passed, this is added to the report.
+    """
+    if not report:
+        report = {}
     # Due to rounding errors
-    R[R < -0.99999999999999] = -1
-    R[R > 0.99999999999999] = 1
-    R_z = 0.5 * np.log((1 + R) / (1 - R))
+    data[data < -0.99999999999999] = -1
+    data[data > 0.99999999999999] = 1
+    fisher_data = 0.5 * np.log((1 + data) / (1 - data))
     report['fisher'] = {}
     report['fisher']['performed'] = 'yes'
     #report['fisher']['diagonal'] = 'zeroed'
-    return R_z, report
+    return fisher_data, report
 
 
-def postpro_boxcox(R, report={}):
-    # Note the min value of all time series will now be at least 1. Making the magnitude based metrics hard.
-    minR = 1 - np.nanmin(R)
-    R = R + minR
-    ind = np.triu_indices(R.shape[0], k=1)
+def postpro_boxcox(data, report=None):
+    """
+    Performs box cox transform on everything in data.
 
-    bc = np.array([sp.stats.boxcox(np.squeeze(R[ind[0][n], ind[1][n], :]))
-                   for n in range(0, len(ind[0]))])
+    If report variable is passed, this is added to the report.
+    """
+    if not report:
+        report = {}
+    # Note the min value of all time series will now be at least 1.
+    mindata = 1 - np.nanmin(data)
+    data = data + mindata
+    ind = np.triu_indices(data.shape[0], k=1)
 
-    R_bc = np.zeros(R.shape)
-    R_bc[ind[0], ind[1], :] = np.vstack(bc[:, 0])
-    R_bc[ind[1], ind[0], :] = np.vstack(bc[:, 0])
+    boxcox_list = np.array([sp.stats.boxcox(np.squeeze(
+        data[ind[0][n], ind[1][n], :])) for n in range(0, len(ind[0]))])
 
-    bccheck = np.array(np.transpose(R_bc, [2, 0, 1]))
+    boxcox_data = np.zeros(data.shape)
+    boxcox_data[ind[0], ind[1], :] = np.vstack(boxcox_list[:, 0])
+    boxcox_data[ind[1], ind[0], :] = np.vstack(boxcox_list[:, 0])
+
+    bccheck = np.array(np.transpose(boxcox_data, [2, 0, 1]))
     bccheck = (bccheck - bccheck.mean(axis=0)) / bccheck.std(axis=0)
     bccheck = np.squeeze(np.mean(bccheck, axis=0))
     np.fill_diagonal(bccheck, 0)
@@ -35,62 +53,86 @@ def postpro_boxcox(R, report={}):
     report['boxcox'] = {}
     report['boxcox']['performed'] = 'yes'
     report['boxcox']['lambda'] = [
-        tuple([ind[0][n], ind[1][n], bc[n, -1]]) for n in range(0, len(ind[0]))]
-    report['boxcox']['shift'] = minR
+        tuple([ind[0][n], ind[1][n], boxcox_list[n, -1]]) for n in range(0, len(ind[0]))]
+    report['boxcox']['shift'] = mindata
     report['boxcox']['shited_to'] = 1
 
     if np.sum(np.isnan(bccheck)) > 0:
         report['boxcox'] = {}
         report['boxcox']['performed'] = 'FAILED'
-        report['boxcox'][
-            'failure_reason'] = 'Box cox transform is returning edges with uniform values through time. This is probabaly due to one or more outliers or a very skewed distribution. Have you corrected for all possible sources of noise (e.g. movement)? If yes, then this time-series might not be able to make Gaussian without additional transformations beforehand.'
-        report['boxcox']['failure_consequence'] = 'Box cox transform was skipped from the postprocess pipeline.'
-        R_bc = R - minR
-        print("TENETO WARNING: Box Cox transform fauked to make normal distribution of the data. Probabaly due to outliers in the connectivity time series. Have all different artefacts been corrected for? See report for more details. \n Box Cox transform not performed.")
+        report['boxcox']['failure_reason'] = (
+            'Box cox transform is returning edges with uniform values through time. '
+            'This is probabaly due to one or more outliers or a very skewed distribution. '
+            'Have you corrected for sources of noise (e.g. movement)? '
+            'If yes, some time-series might need additional transforms to approximate to Gaussian.'
+        )
+        report['boxcox']['failure_consequence'] = (
+            'Box cox transform was skipped from the postprocess pipeline.'
+        )
+        boxcox_data = data - mindata
+        error_msg = ('TENETO WARNING: Box Cox transform problem. \n'
+                     'Box Cox transform not performed. \n'
+                     'See report for more details.')
+        print(error_msg)
 
-    return R_bc, report
+    return boxcox_data, report
 
 
-def postpro_standardize(R, report={}):
+def postpro_standardize(data, report=None):
+    """
+    Standardizes everything in data (along axis 0).
+
+    If report variable is passed, this is added to the report.
+    """
+    if not report:
+        report = {}
     # First make trailing dimension nodal.
-    R = np.transpose(R, [2, 0, 1])
-    Z = (R - R.mean(axis=0)) / R.std(axis=0)
-    Z = np.transpose(Z, [1, 2, 0])
+    data = np.transpose(data, [2, 0, 1])
+    standardized_data = (data - data.mean(axis=0)) / data.std(axis=0)
+    standardized_data = np.transpose(standardized_data, [1, 2, 0])
     report['standardize'] = {}
     report['standardize']['performed'] = 'yes'
     report['standardize']['method'] = 'starndard score'
-    return Z, report
+    return standardized_data, report
 
 
-def postpro_pipeline(R, pipeline, report=None):
+def postpro_pipeline(data, pipeline, report=None):
     """
 
     :PARAMETERS:
 
-    :R: pearson correlation value in temporal matrix form (node,node,time)
+    :data: pearson correlation values in temporal matrix form (node,node,time)
     :pipeline: list or string (if string, each steps seperated by + sign).
 
-        :options: 'fischer','boxcox','standardize'
+        :options: 'fisher','boxcox','standardize'
 
-        Each of the above 3 can be specified. If fischer is used, it must be before boxcox. If standardize is used it must be after boxcox and fischer.
+        Each of the above 3 can be specified. If fisher is used, it must be before boxcox.
+        If standardize is used it must be after boxcox and fisher.
 
     :report: default is empty. If non-empty, appended to report.
 
     :OUTPUT:
 
-    :dataOut: postprocessed data
-    :postprocessing_info: dictionary of information about postprocessing (e.g lambda parameters for boxcox)
+    :prepro_data: postprocessed data
+    :postprocessing_info: dictionary of information about postprocessing
+     (e.g lambda parameters for boxcox)
 
     """
 
-    if report == None:
+    postpro_functions = {
+        'fisher': teneto.derive.postpro_fisher,
+        'boxcox': teneto.derive.postpro_boxcox,
+        'standardize': teneto.derive.postpro_standardize
+    }
+
+    if not report:
         report = {}
 
     if isinstance(pipeline, str):
         pipeline = pipeline.split('+')
 
     report['postprocess'] = []
-    for p in pipeline:
-        report['postprocess'].append(p)
-        R, report = eval('teneto.derive.postpro_' + p + '(R,report)')
-    return R, report
+    for postpro_step in pipeline:
+        report['postprocess'].append(postpro_step)
+        prepro_data, report = postpro_functions[postpro_step](data, report)
+    return prepro_data, report
