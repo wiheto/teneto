@@ -1,6 +1,6 @@
 # Teneto
 
-**Te**mporal **ne**twork **to**ols. Version 0.2.0 
+**Te**mporal **ne**twork **to**ols. Version 0.2.1 
 
 This is still a lot of work to go before this package is complete. However, it is built to be used now and future updates *should* not break people's pipelines.
 
@@ -30,6 +30,8 @@ to upgrade teneto
 
 
 ### Tutorials
+
+__These will be updated__
 
 [1. The different formats of temporal networks in teneto](https://github.com/wiheto/teneto/blob/master/examples/01_network_representations.ipynb)
 
