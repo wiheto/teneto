@@ -4,14 +4,14 @@ from teneto.networkmeasures.intercontacttimes import intercontacttimes
 from functools import reduce
 
 
-def bursty_coeff(datIn, calcPer='edge', nodes='all'):
+def bursty_coeff(data, calc='edge', nodes='all'):
     """
     returns calculates the bursty coefficient. Value > 0 indicates bursty. Value < 0 periodic/tonic. Value = 0 implies random.
     As temporalPaths only works with binary undirected edges at the moment, weighted edges are assumed to be binary.
 
     **PARAMETERS**
 
-    :datIn: This is either:
+    :data: This is either:
 
         :netIn: temporal network input (graphlet or contact).
 
@@ -19,7 +19,7 @@ def bursty_coeff(datIn, calcPer='edge', nodes='all'):
 
         :ICT: dictionary of ICTs (output of *intercontacttimes*).
 
-    :calcPer: caclulate the bursty coeff over what. Options include
+    :calc: caclulate the bursty coeff over what. Options include
 
         :'edge': calculate B on all ICTs between node i and j. (Default)
         :'node': caclulate B on all ICTs connected to node i.
@@ -54,15 +54,15 @@ def bursty_coeff(datIn, calcPer='edge', nodes='all'):
     """
 
     ict = 0  # are ict present
-    if isinstance(datIn, dict):
+    if isinstance(data, dict):
         # This could be done better
-        if [k for k in list(datIn.keys()) if k == 'intercontacttimes'] == ['intercontacttimes']:
+        if [k for k in list(data.keys()) if k == 'intercontacttimes'] == ['intercontacttimes']:
             ict = 1
     # if shortest paths are not calculated, calculate them
     if ict == 0:
-        datIn = intercontacttimes(datIn)
+        data = intercontacttimes(data)
 
-    ictShape = datIn['intercontacttimes'].shape
+    ictShape = data['intercontacttimes'].shape
 
     if len(ictShape) == 2:
         l = ictShape[0] * ictShape[1]
@@ -79,16 +79,16 @@ def bursty_coeff(datIn, calcPer='edge', nodes='all'):
         doNodes = range(0, l)
 
     # Reshae ICTs
-    if calcPer == 'node':
-        ict = np.concatenate(datIn['intercontacttimes']
+    if calc == 'node':
+        ict = np.concatenate(data['intercontacttimes']
                              [doNodex, doNodex], axis=1)
 
     if len(ictShape) > 1:
-        ict = datIn['intercontacttimes'].reshape(ictShape[0] * ictShape[1])
+        ict = data['intercontacttimes'].reshape(ictShape[0] * ictShape[1])
         B = np.zeros(len(ict)) * np.nan
     else:
         B = np.zeros(1) * np.nan
-        ict = [datIn['intercontacttimes']]
+        ict = [data['intercontacttimes']]
 
     for n in doNodes:
         mu = np.mean(ict[n])

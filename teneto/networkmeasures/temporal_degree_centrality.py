@@ -6,14 +6,14 @@ import numpy as np
 import teneto.utils as utils
 
 
-def temporal_degree_centrality(net_in, axis=0, calc='avg', subnet=None):
+def temporal_degree_centrality(net, axis=0, calc='avg', subnet=None):
     """
 
     temporal degree of network. Sum of all connections each node has through time.
 
     **PARAMETERS**
 
-    :net_in: temporal network input (graphlet or contact).
+    :net: temporal network input (graphlet or contact).
 
         :nettype: 'bu', 'bd', 'wu', 'wd'
 
@@ -48,22 +48,22 @@ def temporal_degree_centrality(net_in, axis=0, calc='avg', subnet=None):
     """
 
     # Get input in right format
-    net_in, netinfo = utils.process_input(
-        net_in, ['C', 'G', 'TO'])
+    net, netfo = utils.process_input(
+        net, ['C', 'G', 'TO'])
 
-    # sum sum net_in
+    # sum sum net
     if calc == 'time' and not subnet:
-        tdeg = np.squeeze(np.sum(net_in, axis=axis))
+        tdeg = np.squeeze(np.sum(net, axis=axis))
     elif calc != 'time' and not subnet:
         tdeg = np.sum(
-            np.sum(net_in, axis=2), axis=axis)
+            np.sum(net, axis=2), axis=axis)
     elif calc == 'time' and subnet:
         unique_subnet = np.unique(subnet)
-        tdeg_subnet = [np.sum(np.sum(net_in[subnet == s1, :, :][:, subnet == s2, :], axis=1), axis=0)
+        tdeg_subnet = [np.sum(np.sum(net[subnet == s1, :, :][:, subnet == s2, :], axis=1), axis=0)
                        for s1 in unique_subnet for s2 in unique_subnet]
         tdeg = np.array(tdeg_subnet)
         tdeg = np.reshape(tdeg, [len(np.unique(subnet)), len(
-            np.unique(subnet)), net_in.shape[-1]])
+            np.unique(subnet)), net.shape[-1]])
     else:
         raise ValueError("invalid calc argument")
 

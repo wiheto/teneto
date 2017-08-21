@@ -10,6 +10,12 @@
 
 - All distance funcitons are now through `scipy.spatial.distance`
 
+- Renamed the argument "do" in `networkmeasures` to "calc".
+
+- Renamed the argument "sumOverDim" in `networkmeasures.temporal_degree_centrality` to "axis".
+
+- added function `utils.check_distance_funciton_input`
+ 
 ## V0.2.0
 
 - Added the module `teneto.derive.derive` with `teneto.derive.postpro_pipeline` which inclues: fisher transform, box cox transform and z transform. Can be configured to which ones are used. 5 methods of deriving temporal networks.

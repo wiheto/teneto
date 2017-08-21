@@ -3,23 +3,23 @@ import numpy as np
 from teneto.utils import *
 
 
-def fluctuability(netIn, do='global'):
+def fluctuability(netin, calc='global'):
     """
     fluctuability of temporal networks.This is the variation in unique edges through time divided by the overall number of edges.
 
     **PARAMETERS**
 
-    :netIn: temporal network input (graphlet or contact)
+    :netin: temporal network input (graphlet or contact)
 
         :nettype: 'bd', 'bu', 'wu', 'wd'
 
-    :do: version of fluctuabiility to calcualte. 'global' (i.e. average distance of all nodes for each consecutive time point). A nodal version may be added in future.
+    :calc: version of fluctuabiility to calcualte. 'global' (i.e. average distance of all nodes for each consecutive time point). A nodal version may be added in future.
 
     **OUTPUT**
 
     :F: Fluctuability
 
-        :format: scalar (do='global')
+        :format: scalar (calc='global')
 
     **SEE ALSO**
     - *voalitility*
@@ -32,12 +32,12 @@ def fluctuability(netIn, do='global'):
     """
 
     # Get input type (C or G)
-    netIn, netInfo = process_input(netIn, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
 
-    netIn[netIn != 0] = 1
-    U = np.sum(netIn, axis=2)
-    U[U > 0] = 1
-    U[U == 0] = 0
+    netin[netin != 0] = 1
+    unique_edges = np.sum(netin, axis=2)
+    unique_edges[unique_edges > 0] = 1
+    unique_edges[unique_edges == 0] = 0
 
-    F = (np.sum(U)) / np.sum(netIn)
-    return F
+    fluct = (np.sum(unique_edges)) / np.sum(netin)
+    return fluct
