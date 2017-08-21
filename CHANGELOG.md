@@ -2,6 +2,8 @@
 
 - Code now follows PEP8
 
+- Fixed somwe variable names in `stats/shufflegroups`
+
 ### V0.2.0
 
 - Added the module `teneto.derive.derive` with `teneto.derive.postpro_pipeline`

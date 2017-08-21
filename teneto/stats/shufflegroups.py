@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def shufflegroups(dat1, dat2, pnum=1000, exchange='subjects', tail=2):
     """Dat1, dat2 are of equal length.
     They get shuffled p number of times with permuted groups equalling the len of
@@ -12,24 +11,24 @@ def shufflegroups(dat1, dat2, pnum=1000, exchange='subjects', tail=2):
         if len(dat1) != len(dat2):
             raise ValueError("dat vectros must be of same length")
         permdist = np.zeros(pnum)
-        for p in range(0, pnum):
+        for i in range(0, pnum):
             porder = np.random.randint(1, 3, len(dat1))
-            p1 = np.concatenate(
+            permutation_group1 = np.concatenate(
                 (dat1[np.where(porder == 1)], dat2[np.where(porder == 2)]))
-            p2 = np.concatenate(
+            permutation_group2 = np.concatenate(
                 (dat1[np.where(porder == 2)], dat2[np.where(porder == 1)]))
             if tail == 2:
-                permdist[p] = abs(np.mean(p1) - np.mean(p2))
+                permdist[i] = abs(np.mean(permutation_group1) - np.mean(permutation_group2))
             elif tail == 1:
-                permdist[p] = np.mean(p1) - np.mean(p2)
+                permdist[i] = np.mean(permutation_group1) - np.mean(permutation_group2)
 
         permdist = np.sort(permdist)
         if tail == 2:
             empdiff = abs(dat1.mean() - dat2.mean())
         elif tail == 1:
             empdiff = dat1.mean() - dat2.mean()
-        p = sum(empdiff < permdist) / (pnum + 1)
-        return p, permdist
+        p_value = sum(empdiff < permdist) / (pnum + 1)
+        return p_value, permdist
 
-    if exchangeblocks == 'all':
+    if exchange == 'all':
         raise ValueError('Non-subject exchange blocks still have to be made')
