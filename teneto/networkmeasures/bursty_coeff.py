@@ -81,7 +81,7 @@ def bursty_coeff(data, calc='edge', nodes='all'):
     # Reshae ICTs
     if calc == 'node':
         ict = np.concatenate(data['intercontacttimes']
-                             [doNodex, doNodex], axis=1)
+                             [doNodes, doNodes], axis=1)
 
     if len(ictShape) > 1:
         ict = data['intercontacttimes'].reshape(ictShape[0] * ictShape[1])
