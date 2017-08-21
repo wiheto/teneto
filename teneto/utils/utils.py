@@ -1,7 +1,7 @@
 import numpy as np
 import teneto
-from teneto.misc import distance_functions
 import collections
+import scipy.spatial.distance as distance
 
 """
 
@@ -339,26 +339,44 @@ def getDistanceFunction(requested_metric):
 
     **PARAMETERS**
 
-    :'requested_metric': can be 'hamming', 'eculidean'
+    :'requested_metric': can be 'hamming', 'eculidean' or any of the functions in https://docs.scipy.org/doc/scipy/reference/spatial.distance.html which only require u and v as input. 
 
     **OUTPUT**
 
     returns distance function (as function)
 
-    **NOTE**
-
-    New distance functions can be added in ./teneto/misc/distancefunctions.py and can be called when requested_metric = 'myDinstanceMetricName'
-
     **HISTORY**
 
     :Created: Dec 2016, WHT
+    :Updated (v0.2.1): Aug 2017, WHT. Changed from distance functions being in misc to using scipy. 
 
     """
 
-    if hasattr(distance_functions, requested_metric + '_distance'):
-        return getattr(distance_functions, requested_metric + '_distance')
+    distance_options = {
+        'braycurtis': distance.braycurtis,
+        'canberra': distance.canberra,
+        'chebyshev': distance.chebyshev,
+        'cityblock': distance.cityblock,
+        'correlation': distance.correlation,
+        'cosine': distance.cosine,
+        'euclidean': distance.euclidean,
+        'sqeuclidean': distance.sqeuclidean,
+        'dice': distance.dice,
+        'hamming': distance.hamming,
+        'jaccard': distance.jaccard,
+        'kulsinski': distance.kulsinski,
+        'matching': distance.matching,
+        'rogerstanimoto': distance.rogerstanimoto,
+        'russellrao': distance.russellrao,
+        'sokalmichener': distance.sokalmichener,
+        'sokalsneath': distance.sokalsneath,
+        'yule': distance.yule,
+    }
+
+    if requested_metric in distance_options: 
+        return distance_options[requested_metric]
     else:
-        raise ValueError('Distance function cannot be found. Check if your input distance funciton name is spelt correctly. Then check if it supported. If not supported you can add it in ./teneto/misc/distancefunctions.py or request that it gets added on github.')
+        raise ValueError('Distance function cannot be found.')
 
 
 def process_input(netIn, allowedformats, outputformat='G'):
