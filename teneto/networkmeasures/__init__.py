@@ -1,3 +1,7 @@
+"""
+Imports when importing networkmeasures
+"""
+
 from teneto.networkmeasures.temporal_degree_centrality import temporal_degree_centrality
 from teneto.networkmeasures.shortest_temporal_path import shortest_temporal_path
 from teneto.networkmeasures.temporal_closeness_centrality import temporal_closeness_centrality
