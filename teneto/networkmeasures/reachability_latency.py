@@ -1,14 +1,12 @@
+"""
+networkmeasures.reachability_latency
+"""
+
 import numpy as np
 from teneto.networkmeasures.shortest_temporal_path import shortest_temporal_path
 
-"""
 
-Reachability algorithem.
-
-"""
-
-
-def reachability_latency(data, r=1, calc='global'):
+def reachability_latency(data, rratio=1, calc='global'):
     """
     returns global reachability latency.
     This is the r-th longest temporal path. Where r is the number of time If r=1,
@@ -23,7 +21,7 @@ def reachability_latency(data, r=1, calc='global'):
 
         :paths: Dictionary of paths (output of shortest_temporal_path).
 
-    :r: reachability ratio that the latency is calculated in relation to.
+    :rratio: reachability ratio that the latency is calculated in relation to.
         Value must be over 0 and up to 1.
         1 (default) - all nodes must be reached.
         Other values (e.g. .5 imply that 50% of nodes are reached)
@@ -61,18 +59,18 @@ def reachability_latency(data, r=1, calc='global'):
     if pathdata == 0:
         data = shortest_temporal_path(data)
 
-    netShape = data['paths'].shape
+    netshape = data['paths'].shape
 
-    rArg = netShape[0] - np.round(netShape[0] * r)
+    edges_to_reach = netshape[0] - np.round(netshape[0] * rratio)
 
-    R = np.zeros([netShape[1], netShape[2]]) * np.nan
-    for t in range(0, netShape[2]):
-        s = -np.sort(-data['paths'][:, :, t], axis=1)
-        R[:, t] = s[:, rArg]
+    reach_lat = np.zeros([netshape[1], netshape[2]]) * np.nan
+    for t_ind in range(0, netshape[2]):
+        paths_sort = -np.sort(-data['paths'][:, :, t_ind], axis=1)
+        reach_lat[:, t_ind] = paths_sort[:, edges_to_reach]
     if calc == 'global':
-        R = np.nansum(R)
-        R = R / ((netShape[0]) * netShape[2])
+        reach_lat = np.nansum(reach_lat)
+        reach_lat = reach_lat / ((netshape[0]) * netshape[2])
     elif calc == 'nodes':
-        R = np.nansum(R, axis=1)
-        R = R / (netShape[2])
-    return R
+        reach_lat = np.nansum(reach_lat, axis=1)
+        reach_lat = reach_lat / (netshape[2])
+    return reach_lat

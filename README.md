@@ -8,6 +8,14 @@ Package includes: temporal network generation (only one function at the moment),
 
 ## Installation
 
+With pip installed:
+
+`pip install teneto`
+
+to upgrade teneto:
+
+`pip install teneto -U`
+
 Requires: Python 3.5 or python 3.6 and pip.
 
 Package dependencies:
@@ -16,18 +24,7 @@ Package dependencies:
 - matplotlib
 - statsmodels
 
-(Other versions of python (2.7 and <3.5) may work, but not tested.)
-
-### Installation
-
-With pip installed: 
-
-`pip install teneto`
-
-to upgrade teneto 
-
-`pip install teneto -U` 
-
+Other versions of python (2.7 and <3.5) may work, but not tested.
 
 ### Tutorials
 
