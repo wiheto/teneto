@@ -1,8 +1,12 @@
+"""
+generatenetwork.rand_binomial
+"""
+
 import numpy as np
 from teneto.utils import graphlet2contact
 
 
-def rand_binomial(size, p, netrep='graphlet', nettype='bu', initialize='zero', netinfo=None):
+def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero', netinfo=None):
     """
 
     Creates a random binary network following a binomial distribution.
@@ -13,7 +17,7 @@ def rand_binomial(size, p, netrep='graphlet', nettype='bu', initialize='zero', n
 
         :format: 2-tuple, list of size 2 or array of size 2. Can also be of length 3 (node x node x time) but number of nodes in 3-tuple must be identical.
 
-    :p: Probability of edge present. Two possibilities.
+    :prob: Probability of edge present. Two possibilities.
 
         :integer: the same probabability for each node becoming active (equal for all nodes).
         :tuple/list of size 2: different probabilities for edges to become active/inactive.
@@ -26,7 +30,7 @@ def rand_binomial(size, p, netrep='graphlet', nettype='bu', initialize='zero', n
 
     :netrep: network representation: 'graphlet' or 'contact'.
     :nettype: string 'bu' or 'bd' (accepts 'u' and 'd' as well as b is implicit)
-    :initialize: optional variable for option2 of p. Follwoing options:
+    :initialize: optional variable for option2 of prob. Follwoing options:
 
         :'zero': all nodes start deactivated
         :integer: states percentage of nodes that should active when t=1 (determined randomly).
@@ -41,7 +45,7 @@ def rand_binomial(size, p, netrep='graphlet', nettype='bu', initialize='zero', n
 
     **NOTES**
 
-    Option 2 of the p parameter can be used to create a small autocorrelaiton or make sure that, once an edge has been present, it never disapears.
+    Option 2 of the "prob" parameter can be used to create a small autocorrelaiton or make sure that, once an edge has been present, it never disapears.
 
     **SEE ALSO**
 
@@ -55,55 +59,56 @@ def rand_binomial(size, p, netrep='graphlet', nettype='bu', initialize='zero', n
     """
 
     size = np.atleast_1d(size)
-    p = np.atleast_1d(p)
-    if len(size) == 2 or (len(size == 3) and size[0] == size[1]):
-        ok = 1
+    prob = np.atleast_1d(prob)
+    if len(size) == 2 or (len(size) == 3 and size[0] == size[1]):
+        pass
     else:
         raise ValueError('size input should be [numberOfNodes,Time]')
-    if len(p) > 2:
-        raise ValueError('input: p must be of len 1 or len 2')
-    if p.min() < 0 or p.max() > 1:
-        raise ValueError('input: p should be probability between 0 and 1')
+    if len(prob) > 2:
+        raise ValueError('input: prob must be of len 1 or len 2')
+    if prob.min() < 0 or prob.max() > 1:
+        raise ValueError('input: prob should be probability between 0 and 1')
     if nettype[-1] == 'u' or nettype[-1] == 'd':
-        ok = 1
+        pass
     else:
         raise ValueError('nettype must be u or d')
 
-    N = size[0]
-    T = size[-1]
-    cm = N * N
-    if len(p) == 1:
-        net = np.random.binomial(1, p, cm * T)
-        net = net.reshape(N * N, T)
-    if len(p) == 2:
-        net = np.zeros([cm, T])
+    network_size = size[0]
+    nr_time_points = size[-1]
+    connmat = network_size * network_size
+    if len(prob) == 1:
+        net = np.random.binomial(1, prob, connmat * nr_time_points)
+        net = net.reshape(network_size * network_size, nr_time_points)
+    if len(prob) == 2:
+        net = np.zeros([connmat, nr_time_points])
         if initialize == 'zero':
-            t_start = 0
+            pass
         else:
-            edgesAt0 = np.random.randint(
-                0, cm, int(np.round(initialize * (cm))))
-            net[edgesAt0, 0] = 1
-        for t in range(0, T - 1):
-            e0 = np.where(net[:, t] == 0)[0]
-            e1 = np.where(net[:, t] == 1)[0]
-            ue0 = np.random.binomial(1, p[0], len(e0))
-            ue1 = np.random.binomial(1, p[1], len(e1))
-            net[e0, t + 1] = ue0
-            net[e1, t + 1] = ue1
+            edgesat0 = np.random.randint(
+                0, connmat, int(np.round(initialize * (connmat))))
+            net[edgesat0, 0] = 1
+        for t_ind in range(0, nr_time_points - 1):
+            edges_off = np.where(net[:, t_ind] == 0)[0]
+            edges_on = np.where(net[:, t_ind] == 1)[0]
+            update_edges_on = np.random.binomial(1, prob[0], len(edges_off))
+            update_edge_off = np.random.binomial(1, prob[1], len(edges_on))
+            net[edges_off, t_ind + 1] = update_edges_on
+            net[edges_on, t_ind + 1] = update_edge_off
     # Set diagonal to 0
-    net[np.arange(0, N * N, N + 1), :] = 0
+    net[np.arange(0, network_size * network_size, network_size + 1), :] = 0
     # Reshape to graphlet
-    net = net.reshape([N, N, T])
+    net = net.reshape([network_size, network_size, nr_time_points])
     # only keep upper left if nettype = u
-    # Note this could be made more efficient by only doing (N*N/2-N) nodes in cm and inserted directly into upper triangular.
+    # Note this could be made more efficient by only doing (network_size*network_size/2-network_size) nodes
+    # in connmat and inserted directly into upper triangular.
     if nettype[-1] == 'u':
         unet = np.zeros(net.shape)
-        ind = np.triu_indices(N)
+        ind = np.triu_indices(network_size)
         unet[ind[0], ind[1], :] = np.array(net[ind[0], ind[1], :])
         unet = unet + np.transpose(unet, [1, 0, 2])
         net = unet
     if netrep == 'contact':
-        if netinfo == None:
+        if not netinfo:
             netinfo = {}
         netinfo['nettype'] = 'b' + nettype[-1]
         net = graphlet2contact(net, netinfo)
