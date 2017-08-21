@@ -1,32 +1,35 @@
 import numpy as np
 
-def shufflegroups(dat1,dat2,pnum=1000,exchange='subjects',tail=2):
+
+def shufflegroups(dat1, dat2, pnum=1000, exchange='subjects', tail=2):
     """Dat1, dat2 are of equal length.
     They get shuffled p number of times with permuted groups equalling the len of
     inpput data. exchangeblocks = subjects (then len(dat1)==len(dat2)) and shuffling
     only occurs by making sure that dat1(s1) and dat2(s1) end up in opposite permute groups
     Returns permutation distirbution of avg(perm(len(dat1))-avg(perm(len(dat2))
     """
-    if exchange=='subjects':
+    if exchange == 'subjects':
         if len(dat1) != len(dat2):
             raise ValueError("dat vectros must be of same length")
-        permdist=np.zeros(pnum)
-        for p in range(0,pnum):
-            porder=np.random.randint(1,3,len(dat1))
-            p1 = np.concatenate((dat1[np.where(porder==1)], dat2[np.where(porder==2)]))
-            p2 = np.concatenate((dat1[np.where(porder==2)], dat2[np.where(porder==1)]))
-            if tail==2:
-                permdist[p]=abs(np.mean(p1)-np.mean(p2))
-            elif tail==1:
-                permdist[p]=np.mean(p1)-np.mean(p2)
+        permdist = np.zeros(pnum)
+        for p in range(0, pnum):
+            porder = np.random.randint(1, 3, len(dat1))
+            p1 = np.concatenate(
+                (dat1[np.where(porder == 1)], dat2[np.where(porder == 2)]))
+            p2 = np.concatenate(
+                (dat1[np.where(porder == 2)], dat2[np.where(porder == 1)]))
+            if tail == 2:
+                permdist[p] = abs(np.mean(p1) - np.mean(p2))
+            elif tail == 1:
+                permdist[p] = np.mean(p1) - np.mean(p2)
 
-        permdist=np.sort(permdist)
+        permdist = np.sort(permdist)
         if tail == 2:
-            empdiff = abs(dat1.mean()-dat2.mean())
+            empdiff = abs(dat1.mean() - dat2.mean())
         elif tail == 1:
-            empdiff = dat1.mean()-dat2.mean()
-        p= sum(empdiff<permdist)/(pnum+1)
+            empdiff = dat1.mean() - dat2.mean()
+        p = sum(empdiff < permdist) / (pnum + 1)
         return p, permdist
 
-    if exchangeblocks=='all':
+    if exchangeblocks == 'all':
         raise ValueError('Non-subject exchange blocks still have to be made')

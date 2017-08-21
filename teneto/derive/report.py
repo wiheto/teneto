@@ -3,9 +3,10 @@ import os
 import numpy as np
 import csv
 
-def gen_report(report,sdir='./'):
 
-    #Create report directory
+def gen_report(report, sdir='./'):
+
+    # Create report directory
     if not os.path.exists(sdir):
         os.makedirs(sdir)
 
@@ -23,17 +24,20 @@ def gen_report(report,sdir='./'):
 
             if i == 'taper_window':
 
-                fig,ax = plt.subplots(1)
-                ax.plot(report[report['method']]['taper_window'],report[report['method']]['taper'])
+                fig, ax = plt.subplots(1)
+                ax.plot(report[report['method']]['taper_window'],
+                        report[report['method']]['taper'])
                 ax.set_xlabel('Window (time). 0 in middle of window.')
-                ax.set_title('Taper from ' + report[report['method']]['distribution'] + ' distribution (PDF).')
+                ax.set_title(
+                    'Taper from ' + report[report['method']]['distribution'] + ' distribution (PDF).')
                 fig.savefig(sdir + 'taper.png')
 
                 report_html += "<img src='./taper.png' width=500>" + "<p>"
 
             else:
 
-                report_html += "- <b>" + i + "</b>: " + str(report[report['method']][i]) + "<br>"
+                report_html += "- <b>" + i + "</b>: " + \
+                    str(report[report['method']][i]) + "<br>"
 
     if 'postprocess' in report.keys():
 
@@ -45,7 +49,6 @@ def gen_report(report,sdir='./'):
 
             report_html += " " + i + ","
 
-
         for i in report['postprocess']:
 
             report_html += "<p><h3>" + i + "</h3><p>"
@@ -56,9 +59,9 @@ def gen_report(report,sdir='./'):
 
                     report_html += "- <b>" + ii + "</b>: " + "<br>"
 
-                    l=np.array(report['boxcox']['lambda'])
-                    fig,ax = plt.subplots(1)
-                    ax.hist(l[:,-1])
+                    l = np.array(report['boxcox']['lambda'])
+                    fig, ax = plt.subplots(1)
+                    ax.hist(l[:, -1])
                     ax.set_xlabel('lambda')
                     ax.set_ylabel('frequency')
                     ax.set_title('Histogram of lambda parameter')
@@ -71,10 +74,10 @@ def gen_report(report,sdir='./'):
 
                 else:
 
-                    report_html += "- <b>" + ii + "</b>: " + str(report[i][ii]) + "<br>"
+                    report_html += "- <b>" + ii + "</b>: " + \
+                        str(report[i][ii]) + "<br>"
 
     report_html += '</body></html>'
-
 
     with open(sdir + 'derivation_report.html', 'w') as f:
         f.write(report_html)

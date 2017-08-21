@@ -1,7 +1,8 @@
 import numpy as np
 from teneto.utils import graphlet2contact
-def rand_binomial(size,p,netrep='graphlet',nettype='bu',initialize='zero',netinfo=None):
 
+
+def rand_binomial(size, p, netrep='graphlet', nettype='bu', initialize='zero', netinfo=None):
     """
 
     Creates a random binary network following a binomial distribution.
@@ -53,15 +54,15 @@ def rand_binomial(size,p,netrep='graphlet',nettype='bu',initialize='zero',netinf
 
     """
 
-    size=np.atleast_1d(size)
+    size = np.atleast_1d(size)
     p = np.atleast_1d(p)
-    if len(size)==2 or (len(size==3) and size[0]==size[1]):
-        ok=1
+    if len(size) == 2 or (len(size == 3) and size[0] == size[1]):
+        ok = 1
     else:
         raise ValueError('size input should be [numberOfNodes,Time]')
-    if len(p)>2:
+    if len(p) > 2:
         raise ValueError('input: p must be of len 1 or len 2')
-    if p.min()<0 or p.max()>1:
+    if p.min() < 0 or p.max() > 1:
         raise ValueError('input: p should be probability between 0 and 1')
     if nettype[-1] == 'u' or nettype[-1] == 'd':
         ok = 1
@@ -70,39 +71,40 @@ def rand_binomial(size,p,netrep='graphlet',nettype='bu',initialize='zero',netinf
 
     N = size[0]
     T = size[-1]
-    cm = N*N
-    if len(p)==1:
-        net=np.random.binomial(1,p,cm*T)
-        net=net.reshape(N*N,T)
-    if len(p)==2:
-        net=np.zeros([cm,T])
-        if initialize=='zero':
-            t_start=0
+    cm = N * N
+    if len(p) == 1:
+        net = np.random.binomial(1, p, cm * T)
+        net = net.reshape(N * N, T)
+    if len(p) == 2:
+        net = np.zeros([cm, T])
+        if initialize == 'zero':
+            t_start = 0
         else:
-            edgesAt0=np.random.randint(0,cm,int(np.round(initialize*(cm))))
-            net[edgesAt0,0]=1
-        for t in range(0,T-1):
-            e0 = np.where(net[:,t]==0)[0]
-            e1 = np.where(net[:,t]==1)[0]
-            ue0=np.random.binomial(1,p[0],len(e0))
-            ue1=np.random.binomial(1,p[1],len(e1))
-            net[e0,t+1]=ue0
-            net[e1,t+1]=ue1
-    #Set diagonal to 0
-    net[np.arange(0,N*N,N+1),:]=0
-    #Reshape to graphlet
-    net=net.reshape([N,N,T])
-    #only keep upper left if nettype = u
-    #Note this could be made more efficient by only doing (N*N/2-N) nodes in cm and inserted directly into upper triangular.
-    if nettype[-1]=='u':
-        unet=np.zeros(net.shape)
-        ind=np.triu_indices(N)
-        unet[ind[0],ind[1],:] = np.array(net[ind[0],ind[1],:])
-        unet = unet + np.transpose(unet,[1,0,2])
+            edgesAt0 = np.random.randint(
+                0, cm, int(np.round(initialize * (cm))))
+            net[edgesAt0, 0] = 1
+        for t in range(0, T - 1):
+            e0 = np.where(net[:, t] == 0)[0]
+            e1 = np.where(net[:, t] == 1)[0]
+            ue0 = np.random.binomial(1, p[0], len(e0))
+            ue1 = np.random.binomial(1, p[1], len(e1))
+            net[e0, t + 1] = ue0
+            net[e1, t + 1] = ue1
+    # Set diagonal to 0
+    net[np.arange(0, N * N, N + 1), :] = 0
+    # Reshape to graphlet
+    net = net.reshape([N, N, T])
+    # only keep upper left if nettype = u
+    # Note this could be made more efficient by only doing (N*N/2-N) nodes in cm and inserted directly into upper triangular.
+    if nettype[-1] == 'u':
+        unet = np.zeros(net.shape)
+        ind = np.triu_indices(N)
+        unet[ind[0], ind[1], :] = np.array(net[ind[0], ind[1], :])
+        unet = unet + np.transpose(unet, [1, 0, 2])
         net = unet
     if netrep == 'contact':
         if netinfo == None:
-            netinfo={}
+            netinfo = {}
         netinfo['nettype'] = 'b' + nettype[-1]
-        net=graphlet2contact(net,netinfo)
+        net = graphlet2contact(net, netinfo)
     return net

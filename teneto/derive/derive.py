@@ -4,8 +4,8 @@ from statsmodels.stats.weightstats import DescrStatsW
 import teneto
 import scipy.stats as sps
 
-def derive(data,params):
 
+def derive(data, params):
     """
 
     Derives connectivity from the data. A lot of data is inherently built with edges (e.g. communication between two individuals).
@@ -86,136 +86,150 @@ def derive(data,params):
 
 
     """
-    report={}
+    report = {}
 
     if 'dimord' not in params.keys():
-        params['dimord']='time,node'
+        params['dimord'] = 'time,node'
 
     if 'report' not in params.keys():
-        params['report']='yes'
+        params['report'] = 'yes'
 
     if 'analysis_id' not in params.keys():
-        params['analysis_id']=''
+        params['analysis_id'] = ''
 
     if 'postpro' not in params.keys():
-        params['postpro']='no'
+        params['postpro'] = 'no'
 
     if params['dimord'] == 'node,time':
-        data=data.transpose()
+        data = data.transpose()
 
-    if isinstance(params['method'],str):
+    if isinstance(params['method'], str):
         if params['method'] == 'jackknife':
-            w,report = weightfun_jackknife(data.shape[0],report)
+            w, report = weightfun_jackknife(data.shape[0], report)
             relation = 'weight'
         elif params['method'] == 'sliding window' or params['method'] == 'slidingwindow':
-            w,report = weightfun_sliding_window(data.shape[0],params,report)
+            w, report = weightfun_sliding_window(data.shape[0], params, report)
             relation = 'weight'
         elif params['method'] == 'tapered sliding window' or params['method'] == 'taperedslidingwindow':
-            w,report = weightfun_tapered_sliding_window(data.shape[0],params,report)
+            w, report = weightfun_tapered_sliding_window(
+                data.shape[0], params, report)
             relation = 'weight'
         elif params['method'] == 'distance' or params['method'] == "spatial distance" or params['method'] == "node distance" or params['method'] == "nodedistance" or params['method'] == "spatialdistance":
-            w,report = weightfun_spatial_distance(data,params,report)
+            w, report = weightfun_spatial_distance(data, params, report)
             relation = 'weight'
         elif params['method'] == 'temporal derivative' or params['method'] == "temporalderivative":
-            R,report = temporal_derivative(data,params,report)
+            R, report = temporal_derivative(data, params, report)
             relation = 'coupling'
         else:
-            raise ValueError('Unrecognoized method. See derive_with_weighted_pearson documentation for predefined methods or enter own weight matrix')
+            raise ValueError(
+                'Unrecognoized method. See derive_with_weighted_pearson documentation for predefined methods or enter own weight matrix')
     else:
         try:
-            w=np.array(method)
+            w = np.array(method)
             relation = 'weight'
         except:
-            raise ValueError('Unrecognoized method. See derive_with_weighted_pearson documentation for predefined methods or enter own weight matrix')
+            raise ValueError(
+                'Unrecognoized method. See derive_with_weighted_pearson documentation for predefined methods or enter own weight matrix')
         if w.shape[0] != w.shape[1]:
             raise ValueError("weight matrix should be square")
         if w.shape[0] != data.shape[0]:
             raise ValueError("weight matrix must equal number of time points")
 
-
     if relation == 'weight':
         # Loop over each weight vector and calculate pearson correlation.
         # Note, should see if this can be made quicker in future.
-        R = np.array([DescrStatsW(data,w[i,:]).corrcoef for i in range(0,w.shape[0])])
+        R = np.array(
+            [DescrStatsW(data, w[i, :]).corrcoef for i in range(0, w.shape[0])])
         # Make node,node,time
         R = R.transpose([1, 2, 0])
 
     # Correct jackknife direction
     if params['method'] == 'jackknife':
-        R = R*-1
+        R = R * -1
 
     if params['postpro'] != 'no':
-        R,report=teneto.derive.postpro_pipeline(R,params['postpro'],report)
-        R[np.isinf(R)]=0
+        R, report = teneto.derive.postpro_pipeline(
+            R, params['postpro'], report)
+        R[np.isinf(R)] = 0
 
-    if params['report']=='yes':
-        teneto.derive.gen_report(report,'./report/' + params['analysis_id'])
+    if params['report'] == 'yes':
+        teneto.derive.gen_report(report, './report/' + params['analysis_id'])
     return R
 
-def weightfun_jackknife(T,report):
 
-    w=np.ones([T,T])
-    np.fill_diagonal(w,0)
+def weightfun_jackknife(T, report):
+
+    w = np.ones([T, T])
+    np.fill_diagonal(w, 0)
     return w, report
 
-def weightfun_sliding_window(T,params,report):
 
-    w0=np.zeros(T)
+def weightfun_sliding_window(T, params, report):
+
+    w0 = np.zeros(T)
     w0[0:params['windowsize']] = np.ones(params['windowsize'])
-    w = np.array([np.roll(w0,i) for i in range(0,T+1-params['windowsize'])])
+    w = np.array([np.roll(w0, i)
+                  for i in range(0, T + 1 - params['windowsize'])])
     report['method'] = 'slidingwindow'
     report['slidingwindow'] = params
     report['slidingwindow']['taper'] = 'untapered/uniform'
     return w, report
 
-def weightfun_tapered_sliding_window(T,params,report):
 
+def weightfun_tapered_sliding_window(T, params, report):
 
-    x=np.arange(-(params['windowsize']-1)/2,(params['windowsize'])/2)
-    distribution_parameters = ','.join(map(str,params['distribution_params']))
-    taper = eval('sps.' + params['distribution'] + '.pdf(x,' + distribution_parameters + ')')
+    x = np.arange(-(params['windowsize'] - 1) / 2, (params['windowsize']) / 2)
+    distribution_parameters = ','.join(map(str, params['distribution_params']))
+    taper = eval('sps.' + params['distribution'] +
+                 '.pdf(x,' + distribution_parameters + ')')
 
-    w0=np.zeros(T)
+    w0 = np.zeros(T)
     w0[0:params['windowsize']] = taper
-    w = np.array([np.roll(w0,i) for i in range(0,T+1-params['windowsize'])])
+    w = np.array([np.roll(w0, i)
+                  for i in range(0, T + 1 - params['windowsize'])])
     report['method'] = 'slidingwindow'
     report['slidingwindow'] = params
     report['slidingwindow']['taper'] = taper
     report['slidingwindow']['taper_window'] = x
     return w, report
 
-def weightfun_spatial_distance(data,params,report):
+
+def weightfun_spatial_distance(data, params, report):
     distance = teneto.utils.getDistanceFunction(params['distance'])
-    w=np.array([distance(data[n,:],data[t,:]) for n in np.arange(0,data.shape[0])  for t in np.arange(0,data.shape[0])])
-    w=np.reshape(w,[data.shape[0],data.shape[0]])
-    np.fill_diagonal(w,np.nan)
-    w=1/w
-    w=(w-np.nanmin(w))/(np.nanmax(w)-np.nanmin(w))
-    np.fill_diagonal(w,1)
+    w = np.array([distance(data[n, :], data[t, :]) for n in np.arange(
+        0, data.shape[0]) for t in np.arange(0, data.shape[0])])
+    w = np.reshape(w, [data.shape[0], data.shape[0]])
+    np.fill_diagonal(w, np.nan)
+    w = 1 / w
+    w = (w - np.nanmin(w)) / (np.nanmax(w) - np.nanmin(w))
+    np.fill_diagonal(w, 1)
     return w, report
 
 
+def temporal_derivative(data, params, report):
 
-def temporal_derivative(data,params,report):
-
-    #Data should be timexnode
+    # Data should be timexnode
     report = {}
 
-    #Derivative
-    tdat = data[1:,:]-data[:-1,:]
-    #Normalize
-    tdat = tdat/np.std(tdat,axis=0)
-    #Coupling
-    coupling = np.array([tdat[:,i]*tdat[:,j] for i in np.arange(0,tdat.shape[1]) for j in np.arange(0,tdat.shape[1])])
-    coupling=np.reshape(coupling,[tdat.shape[1],tdat.shape[1],tdat.shape[0]])
-    #Average over window using strides
-    shape = coupling.shape[:-1] + (coupling.shape[-1] - params['windowsize'] + 1, params['windowsize'])
+    # Derivative
+    tdat = data[1:, :] - data[:-1, :]
+    # Normalize
+    tdat = tdat / np.std(tdat, axis=0)
+    # Coupling
+    coupling = np.array([tdat[:, i] * tdat[:, j] for i in np.arange(0,
+                                                                    tdat.shape[1]) for j in np.arange(0, tdat.shape[1])])
+    coupling = np.reshape(
+        coupling, [tdat.shape[1], tdat.shape[1], tdat.shape[0]])
+    # Average over window using strides
+    shape = coupling.shape[:-1] + (coupling.shape[-1] -
+                                   params['windowsize'] + 1, params['windowsize'])
     strides = coupling.strides + (coupling.strides[-1],)
-    coupling_windowed = np.mean(np.lib.stride_tricks.as_strided(coupling, shape=shape, strides=strides),-1)
+    coupling_windowed = np.mean(np.lib.stride_tricks.as_strided(
+        coupling, shape=shape, strides=strides), -1)
 
     report = {}
     report['method'] = 'temporalderivative'
-    report['temporalderivative']={}
+    report['temporalderivative'] = {}
     report['temporalderivative']['windowsize'] = params['windowsize']
 
-    return coupling_windowed,report
+    return coupling_windowed, report

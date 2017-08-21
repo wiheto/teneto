@@ -2,7 +2,8 @@
 import numpy as np
 from teneto.utils import *
 
-def fluctuability(netIn,do='global'):
+
+def fluctuability(netIn, do='global'):
     """
     fluctuability of temporal networks.This is the variation in unique edges through time divided by the overall number of edges.
 
@@ -30,13 +31,13 @@ def fluctuability(netIn,do='global'):
 
     """
 
-    #Get input type (C or G)
-    netIn,netInfo = process_input(netIn,['C','G','TO'])
+    # Get input type (C or G)
+    netIn, netInfo = process_input(netIn, ['C', 'G', 'TO'])
 
-    netIn[netIn!=0]=1
-    U=np.sum(netIn,axis=2)
-    U[U>0]=1
-    U[U==0]=0
+    netIn[netIn != 0] = 1
+    U = np.sum(netIn, axis=2)
+    U[U > 0] = 1
+    U[U == 0] = 0
 
     F = (np.sum(U)) / np.sum(netIn)
     return F

@@ -1,4 +1,8 @@
-### Upcoming V0.2.0- develop branch
+### V0.2.1 
+
+- Code now follows PEP8
+
+### V0.2.0
 
 - Added the module `teneto.derive.derive` with `teneto.derive.postpro_pipeline`
 which inclues: fisher transform, box cox transform and z transform. Can be configured to which ones are used. 5 methods of deriving temporal networks.

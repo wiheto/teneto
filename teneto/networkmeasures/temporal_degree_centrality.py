@@ -1,6 +1,7 @@
 import numpy as np
 from teneto.utils import *
 
+
 def temporal_degree_centrality(netIn, d=0, do='avg', subnetworks=None):
     """
 
@@ -39,22 +40,24 @@ def temporal_degree_centrality(netIn, d=0, do='avg', subnetworks=None):
 
     """
 
-    #Get input in right format
-    netIn,netInfo = process_input(netIn, ['C','G','TO'])
+    # Get input in right format
+    netIn, netInfo = process_input(netIn, ['C', 'G', 'TO'])
 
-    #Set the nodal dimension to sum over to 0, if d==1 and nettype is '.d', this gets changes to 0.
+    # Set the nodal dimension to sum over to 0, if d==1 and nettype is '.d', this gets changes to 0.
     sumOverDim = 1
-    #set sumDimension to 0 if nettype is d and user specifcies d=1
-    if d==1:
+    # set sumDimension to 0 if nettype is d and user specifcies d=1
+    if d == 1:
         sumOverDim = 0
-    #sum sum netIn
+    # sum sum netIn
     if do == 'time' and subnetworks == None:
         tDeg = np.squeeze(np.sum(netIn, axis=sumOverDim))
     elif do != 'time' and subnetworks == None:
         tDeg = np.sum(np.sum(netIn, axis=2), axis=sumOverDim)
     elif do == 'time' and subnetworks != None:
 
-        tDeg = np.array([np.sum(np.sum(netIn[subnetworks==sn1,:,:][:,subnetworks==sn2,:], axis=1),axis=0) for sn1 in np.unique(subnetworks)  for sn2 in np.unique(subnetworks)])
-        tDeg = np.reshape(tDeg,[len(np.unique(subnetworks)), len(np.unique(subnetworks)),netIn.shape[-1]])
+        tDeg = np.array([np.sum(np.sum(netIn[subnetworks == sn1, :, :][:, subnetworks == sn2, :], axis=1), axis=0)
+                         for sn1 in np.unique(subnetworks) for sn2 in np.unique(subnetworks)])
+        tDeg = np.reshape(tDeg, [len(np.unique(subnetworks)), len(
+            np.unique(subnetworks)), netIn.shape[-1]])
 
     return tDeg

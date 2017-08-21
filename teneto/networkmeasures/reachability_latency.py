@@ -8,7 +8,7 @@ Reachability algorithem.
 """
 
 
-def reachability_latency(datIn,r=1,do='global'):
+def reachability_latency(datIn, r=1, do='global'):
     """
     returns global reachability latency.
     This is the r-th longest temporal path. Where r is the number of time If r=1,
@@ -52,29 +52,27 @@ def reachability_latency(datIn,r=1,do='global'):
 
     """
 
-
-    sp=0 #are shortest paths calculated
-    if isinstance(datIn,dict):
-        #This could be done better
-        if [k for k in list(datIn.keys()) if k=='paths']==['paths']:
-            sp=1
+    sp = 0  # are shortest paths calculated
+    if isinstance(datIn, dict):
+        # This could be done better
+        if [k for k in list(datIn.keys()) if k == 'paths'] == ['paths']:
+            sp = 1
     # if shortest paths are not calculated, calculate them
-    if sp==0:
+    if sp == 0:
         datIn = shortest_temporal_path(datIn)
 
     netShape = datIn['paths'].shape
 
+    rArg = netShape[0] - np.round(netShape[0] * r)
 
-    rArg=netShape[0]-np.round(netShape[0]*r)
-
-    R = np.zeros([netShape[1],netShape[2]])*np.nan
-    for t in range(0,netShape[2]):
-        s=-np.sort(-datIn['paths'][:,:,t],axis=1)
-        R[:,t] = s[:,rArg]
+    R = np.zeros([netShape[1], netShape[2]]) * np.nan
+    for t in range(0, netShape[2]):
+        s = -np.sort(-datIn['paths'][:, :, t], axis=1)
+        R[:, t] = s[:, rArg]
     if do == 'global':
         R = np.nansum(R)
-        R = R/((netShape[0])*netShape[2])
+        R = R / ((netShape[0]) * netShape[2])
     elif do == 'nodes':
-        R = np.nansum(R,axis=1)
-        R = R/(netShape[2])
+        R = np.nansum(R, axis=1)
+        R = R / (netShape[2])
     return R

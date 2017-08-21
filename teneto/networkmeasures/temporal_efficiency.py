@@ -8,7 +8,7 @@ Temporal Efficiency
 """
 
 
-def temporal_efficiency(datIn,do='global'):
+def temporal_efficiency(datIn, do='global'):
     """
     returns temporal efficiency estimate.
 
@@ -50,21 +50,21 @@ def temporal_efficiency(datIn,do='global'):
 
     """
 
-    sp=0 #are shortest paths calculated
-    if isinstance(datIn,dict):
-        #This could be done better
-        if [k for k in list(datIn.keys()) if k=='paths']==['paths']:
-            sp=1
+    sp = 0  # are shortest paths calculated
+    if isinstance(datIn, dict):
+        # This could be done better
+        if [k for k in list(datIn.keys()) if k == 'paths'] == ['paths']:
+            sp = 1
     # if shortest paths are not calculated, calculate them
-    if sp==0:
+    if sp == 0:
         datIn = shortest_temporal_path(datIn)
 
     # Calculate efficiency which is 1 over the mean path.
     if do == 'global':
-        E=1/np.nanmean(datIn['paths'])
+        E = 1 / np.nanmean(datIn['paths'])
     elif do == 'node' or do == 'node_from':
-        E=1/np.nanmean(np.nanmean(datIn['paths'],axis=2),axis=1)
+        E = 1 / np.nanmean(np.nanmean(datIn['paths'], axis=2), axis=1)
     elif do == 'node_to':
-        E=1/np.nanmean(np.nanmean(datIn['paths'],axis=2),axis=0)
+        E = 1 / np.nanmean(np.nanmean(datIn['paths'], axis=2), axis=0)
 
     return E
