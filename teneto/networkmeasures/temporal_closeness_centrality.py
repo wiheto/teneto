@@ -1,3 +1,7 @@
+"""
+networkmeasures.temporal_closeness_centrality
+"""
+
 import numpy as np
 from teneto.networkmeasures.shortest_temporal_path import shortest_temporal_path
 
@@ -5,7 +9,8 @@ from teneto.networkmeasures.shortest_temporal_path import shortest_temporal_path
 def temporal_closeness_centrality(data):
     '''
     returns temporal closeness centrality per node.
-    As temporalPaths only works with binary undirected edges at the moment, this is required for temporal closeness centrality.
+    As temporalPaths only works with binary undirected edges at the moment,
+     this is required for temporal closeness centrality.
 
     **PARAMETERS**
 
@@ -36,18 +41,16 @@ def temporal_closeness_centrality(data):
 
     '''
 
-    sp = 0  # are shortest paths calculated
+    pathdata = 0  # are shortest paths calculated
     if isinstance(data, dict):
         # This could be done better
         if [k for k in list(data.keys()) if k == 'paths'] == ['paths']:
-            sp = 1
+            pathdata = 1
     # if shortest paths are not calculated, calculate them
-    if sp == 0:
+    if pathdata == 0:
         data = shortest_temporal_path(data)
 
-    netShape = data['paths'].shape
-
-    C = np.nansum(
+    closeness = np.nansum(
         1 / np.nanmean(data['paths'], axis=2), axis=1) / (data['paths'].shape[1] - 1)
 
-    return C
+    return closeness
