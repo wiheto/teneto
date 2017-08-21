@@ -48,7 +48,7 @@ def temporal_degree_centrality(net_in, axis=0, calc='avg', subnet=None):
     """
 
     # Get input in right format
-    net_in, network_info = utils.process_input(
+    net_in, netinfo = utils.process_input(
         net_in, ['C', 'G', 'TO'])
 
     # sum sum net_in
