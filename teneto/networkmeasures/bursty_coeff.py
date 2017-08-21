@@ -1,13 +1,18 @@
+"""
+networkmeasures.bursty_coeff
+"""
+
 import numpy as np
-from teneto.utils import *
 from teneto.networkmeasures.intercontacttimes import intercontacttimes
-from functools import reduce
 
 
 def bursty_coeff(data, calc='edge', nodes='all'):
     """
-    returns calculates the bursty coefficient. Value > 0 indicates bursty. Value < 0 periodic/tonic. Value = 0 implies random.
-    As temporalPaths only works with binary undirected edges at the moment, weighted edges are assumed to be binary.
+    returns calculates the bursty coefficient. Value > 0
+     indicates bursty. Value < 0 periodic/tonic. Value = 0
+      implies random.
+    As temporalPaths only works with binary undirected edges
+     at the moment, weighted edges are assumed to be binary.
 
     **PARAMETERS**
 
@@ -21,9 +26,10 @@ def bursty_coeff(data, calc='edge', nodes='all'):
 
     :calc: caclulate the bursty coeff over what. Options include
 
-        :'edge': calculate B on all ICTs between node i and j. (Default)
-        :'node': caclulate B on all ICTs connected to node i.
-        :'meanEdgePerNode': first calculate the ICTs between node i and j, then take the mean over all j.
+        :'edge': calculate b_coeff on all ICTs between node i and j. (Default)
+        :'node': caclulate b_coeff on all ICTs connected to node i.
+        :'meanEdgePerNode': first calculate the ICTs between node i and j,
+         then take the mean over all j.
 
     :nodes: which do to do. Options include:
 
@@ -33,7 +39,7 @@ def bursty_coeff(data, calc='edge', nodes='all'):
 
     **OUTPUT**
 
-    :B: bursty coefficienct per (edge or node measure)
+    :b_coeff: bursty coefficienct per (edge or node measure)
 
         :format: 1d numpy array
 
@@ -43,7 +49,7 @@ def bursty_coeff(data, calc='edge', nodes='all'):
 
     **ORIGIN**
 
-    Goh and Barabasi 2008
+    Goh and b_coeffarabasi 2008
     Discrete formulation here from Holme 2012.
 
     **HISTORY**
@@ -62,38 +68,38 @@ def bursty_coeff(data, calc='edge', nodes='all'):
     if ict == 0:
         data = intercontacttimes(data)
 
-    ictShape = data['intercontacttimes'].shape
+    ict_shape = data['intercontacttimes'].shape
 
-    if len(ictShape) == 2:
-        l = ictShape[0] * ictShape[1]
-    elif len(ictShape) == 1:
-        l = 1
+    if len(ict_shape) == 2:
+        node_len = ict_shape[0] * ict_shape[1]
+    elif len(ict_shape) == 1:
+        node_len = 1
     else:
         raise ValueError('more than two dimensions of intercontacttimes')
 
-    if isinstance(nodes, list) and len(ictShape) > 1:
-        nodeCombinations = [[list(set(nodes))[t], list(set(nodes))[tt]] for t in range(
+    if isinstance(nodes, list) and len(ict_shape) > 1:
+        node_combinations = [[list(set(nodes))[t], list(set(nodes))[tt]] for t in range(
             0, len(nodes)) for tt in range(0, len(nodes)) if t != tt]
-        doNodes = [np.ravel_multi_index(n, ictShape) for n in nodeCombinations]
+        do_nodes = [np.ravel_multi_index(n, ict_shape) for n in node_combinations]
     else:
-        doNodes = range(0, l)
+        do_nodes = range(0, node_len)
 
     # Reshae ICTs
     if calc == 'node':
         ict = np.concatenate(data['intercontacttimes']
-                             [doNodes, doNodes], axis=1)
+                             [do_nodes, do_nodes], axis=1)
 
-    if len(ictShape) > 1:
-        ict = data['intercontacttimes'].reshape(ictShape[0] * ictShape[1])
-        B = np.zeros(len(ict)) * np.nan
+    if len(ict_shape) > 1:
+        ict = data['intercontacttimes'].reshape(ict_shape[0] * ict_shape[1])
+        b_coeff = np.zeros(len(ict)) * np.nan
     else:
-        B = np.zeros(1) * np.nan
+        b_coeff = np.zeros(1) * np.nan
         ict = [data['intercontacttimes']]
 
-    for n in doNodes:
-        mu = np.mean(ict[n])
-        sigma = np.std(ict[n])
-        B[n] = (sigma - mu) / (sigma + mu)
-    if len(ictShape) > 1:
-        B = B.reshape(ictShape)
-    return B
+    for i in do_nodes:
+        mu_ict = np.mean(ict[i])
+        sigma_ict = np.std(ict[i])
+        b_coeff[i] = (sigma_ict - mu_ict) / (sigma_ict + mu_ict)
+    if len(ict_shape) > 1:
+        b_coeff = b_coeff.reshape(ict_shape)
+    return b_coeff
