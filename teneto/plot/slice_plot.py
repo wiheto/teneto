@@ -4,7 +4,7 @@ import numpy as np
 from teneto.utils import *
 
 
-def slice_plot(netIn, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', nodesize=100):
+def slice_plot(netIn, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=None, nodesize=100):
     '''
 
     Fuction draws "slice graph" and exports axis handles
@@ -78,6 +78,11 @@ def slice_plot(netIn, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', nodes
     posy = np.tile(list(range(0, nodeNum)), timeNum)
     posx = np.repeat(list(range(0, timeNum)), nodeNum)
 
+    node_plot_attr = {}
+    if cmap:
+        node_plot_attr['cmap'] = cmap
+
+
     # plt.plot(points)
     # Draw Bezier vectors around egde positions
     for edge in edgeList:
@@ -96,7 +101,7 @@ def slice_plot(netIn, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', nodes
     ax.get_yaxis().tick_left()
     ax.set_xlim([min(posx) - 1, max(posx) + 1])
     ax.set_ylim([min(posy) - 1, max(posy) + 1])
-    ax.scatter(posx, posy, s=nodesize, c=posy, zorder=10)
+    ax.scatter(posx, posy, s=nodesize, c=posy, zorder=10, **node_plot_attr)
     if timeunit != '':
         timeunit = ' (' + timeunit + ')'
     ax.set_xlabel('Time' + timeunit)

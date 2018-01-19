@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def gen_report(report, sdir='./'):
+def gen_report(report, sdir='./', report_name = 'report.html'):
 
     """
     Generates report of derivation and postprocess steps in teneto.derive
@@ -87,6 +87,6 @@ def gen_report(report, sdir='./'):
 
     report_html += '</body></html>'
 
-    with open(sdir + 'derivation_report.html', 'w') as file:
+    with open(sdir + report_name, 'w') as file:
         file.write(report_html)
     file.close()

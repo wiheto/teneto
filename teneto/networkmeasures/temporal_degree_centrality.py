@@ -6,7 +6,7 @@ import numpy as np
 import teneto.utils as utils
 
 
-def temporal_degree_centrality(net, axis=0, calc='avg', subnet=None):
+def temporal_degree_centrality(net, axis=0, calc='avg', subnet=None, decay=None):
     """
 
     temporal degree of network. Sum of all connections each node has through time.
@@ -29,6 +29,12 @@ def temporal_degree_centrality(net, axis=0, calc='avg', subnet=None):
     :subnet: None (default) or Nx1 vector of subnetwork assignment.
     This returns a "centrality" per subnetwork instead of per node.
 
+    :decay: if calc = 'time', then decay is possible where the centrality of
+    the previous time point is carried over to the next time point but decays
+    at a value of $e^decay$ such that $D_d(t+1) = e^{-decay}D_d(t) + D(t+1)$. If
+    decay is 0 then the final D will equal D when calc='avg', if decay = inf
+    then this will equal calc='time'.
+
     **OUTPUT**
 
     :D: temporal degree centrality (nodal measure)
@@ -41,8 +47,9 @@ def temporal_degree_centrality(net, axis=0, calc='avg', subnet=None):
 
     **HISTORY**
 
+    Modified - Mar 2017, WHT (decay added)
     Modified - Mar 2017, WHT (calc='time')
-    Modified - Dec 2016, WHT (calccmentation)
+    Modified - Dec 2016, WHT (docmentation)
     Created - Nov 2016, WHT
 
     """
@@ -66,5 +73,10 @@ def temporal_degree_centrality(net, axis=0, calc='avg', subnet=None):
             np.unique(subnet)), net.shape[-1]])
     else:
         raise ValueError("invalid calc argument")
+    if decay and calc=='time':
+        for n in range(1,tdeg.shape[-1]):
+            tdeg[:,n] = np.exp(-decay)*tdeg[:,n-1] + tdeg[:,n]
+    elif decay:
+        print('WARNING: decay cannot be applied unless calc=time, ignoring decay')
 
     return tdeg

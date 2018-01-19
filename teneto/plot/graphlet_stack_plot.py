@@ -7,7 +7,7 @@ from scipy import ndimage
 plt.rcParams['axes.facecolor'] = 'white'
 
 
-def graphlet_stack_plot(netIn, ax, q=10, cmap='Reds', gridcolor='k', borderwidth=2, bordercolor=[0, 0, 0], Fs=1, timeunit='', t0=1, sharpen='yes', vminmax='maxabs'):
+def graphlet_stack_plot(netIn, ax, q=10, cmap='Reds', gridcolor='k', borderwidth=2, bordercolor=[0, 0, 0], Fs=1, timeunit='', t0=1, sharpen='yes', vminmax='minmax'):
     '''
     Returns matplotlib axis handle for graphlet_stack_plot. This is a row of transformed connectivity matrices to look like a 3D stack.
     **PARAMETERS**
@@ -21,7 +21,7 @@ def graphlet_stack_plot(netIn, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     :gridcolor: The color of the grid section of the graphlets. Set to 'none' if not wanted.
     :borderwidth: Integer that scales the size of border. (at the moment it cannot be set to 0.)
     :bordorcolor: color of the border (at the moment it must be in RGB values between 0 and 1 -> this will be changed sometime in the future)
-    :vmaxmin: 'maxabs' (default), 'maxmin', or list/array with length of 2. Specifies the min and max colormap value of graphlets. Maxabs entails [-max(abs(G)),max(abs(G))], minmax entails [min(G), max(G)].
+    :vminmax: 'maxabs', 'minmax' (default), or list/array with length of 2. Specifies the min and max colormap value of graphlets. Maxabs entails [-max(abs(G)),max(abs(G))], minmax entails [min(G), max(G)].
     **OUTPUT**
     :ax: matplotlib ax handle
     **NOTE**
@@ -60,22 +60,21 @@ def graphlet_stack_plot(netIn, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         print('Warning: borderwidth should be an integer. Converting to integer.')
 
     # x and y ranges for each of the graphlet plots
-    v = range(0, netIn.shape[0] + 1)
-    vr = range(netIn.shape[0], -1, -1)
+    v = np.arange(0, netIn.shape[0] + 1)
+    vr = np.arange(netIn.shape[0], -1, -1)
     # Preallocatie matrix
 
-    if vminmax == '' or vminmax == 'absmax':
-        vminmax == [-np.nanmax(np.abs(netIn)), np.nanmax(np.abs(netIn))]
+    if vminmax == '' or vminmax == 'absmax' or vminmax == 'maxabs':
+        vminmax = [-np.nanmax(np.abs(netIn)), np.nanmax(np.abs(netIn))]
     elif vminmax == 'minmax':
-        vminmax == [np.nanmin(netIn), np.nanmax(netIn)]
+        vminmax = [np.nanmin(netIn), np.nanmax(netIn)]
 
     qb = q * borderwidth
     figmat = np.zeros([80 * q + (qb * 2), int(((netIn.shape[-1]) *
                                                (80 * q) + (qb * 2)) - ((netIn.shape[-1] - 1) * q * 80) / 2), 4])
     for n in range(0, netIn.shape[-1]):
         # Create graphlet
-        figtmp, axtmp = plt.subplots(
-            1, facecolor='white', figsize=(q, q), dpi=80)
+        figtmp, axtmp = plt.subplots(1, facecolor='white', figsize=(q, q), dpi=80)
         axtmp.pcolormesh(v, vr, netIn[:, :, n], cmap=cmap, edgecolor=gridcolor,
                          linewidth=q * 2, vmin=vminmax[0], vmax=vminmax[1])
         axtmp.set_xticklabels('')

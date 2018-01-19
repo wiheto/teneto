@@ -1,5 +1,45 @@
 # Changelog
 
+## V0.2.2
+
+- Corrected vminmax error in `plot.graphlet_stack_plot` when specifying a string.
+
+- Changed the default of vminmax in `plot.graphlet_stack_plot` to minmax
+
+- Fixed documentation error in vminma in `plot.graphlet_stack_plot`
+
+- Correct cmap bug in `plot.slice_plot`
+
+- Added `utils.load_parcellation`
+
+- Folder ./data is also included with teneto, at the moment shen2013_tal parcellation is included there. (This is currently under development). And may change name to specify that this has to do with brain research.
+
+- Added decay parameter to degree_centrality
+
+- Added additional names to 'multiple temporal derivative' method
+
+- corrected bug in `bursty_coeff` when specifying `nodes='all'` (previously an error was raised).
+
+- Added `utils.binarize` wiith 'binarize_rdp', 'binarize_percent', and 'binarize_rdp' as options
+
+- Added a inputtype item in netinfo dictionary returned by `utils.process_input`
+
+- Modified `utils.contact2graphlet` to ignore an empty nLabs list.
+
+- Added `utils.create_traj_ranges`
+
+- Added the module `trajectory` with `rdp` compression.
+
+- Added subnet argument to `networkmeasures.bursty_coeff` so that B is calculated per module.  
+
+- Changed default of `params['report']` in `derive.derive` to 'no'
+
+- Added `params['report_path']` to `derive.derive`.
+
+- Corrected default dimension order of `derive.derive` to  'node,time'
+
+- Made report_name parameter to `derive.report.gen_report()`
+
 ## V0.2.1
 
 - Code now follows PEP8
@@ -15,7 +55,7 @@
 - Renamed the argument "sumOverDim" in `networkmeasures.temporal_degree_centrality` to "axis".
 
 - added function `utils.check_distance_funciton_input`
- 
+
 ## V0.2.0
 
 - Added the module `teneto.derive.derive` with `teneto.derive.postpro_pipeline` which inclues: fisher transform, box cox transform and z transform. Can be configured to which ones are used. 5 methods of deriving temporal networks.

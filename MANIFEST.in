@@ -1,0 +1,2 @@
+include teneto/data/parcellation/*
+include teneto/data/parcellation_defaults/*

@@ -6,7 +6,7 @@ import numpy as np
 from teneto.networkmeasures.intercontacttimes import intercontacttimes
 
 
-def bursty_coeff(data, calc='edge', nodes='all'):
+def bursty_coeff(data, calc='edge', nodes='all', subnet=None):
     """
     returns calculates the bursty coefficient. Value > 0
      indicates bursty. Value < 0 periodic/tonic. Value = 0
@@ -28,6 +28,8 @@ def bursty_coeff(data, calc='edge', nodes='all'):
 
         :'edge': calculate b_coeff on all ICTs between node i and j. (Default)
         :'node': caclulate b_coeff on all ICTs connected to node i.
+        :'subnet': calculate b_coeff for each subnetwork (argument subnet then required)
+
         :'meanEdgePerNode': first calculate the ICTs between node i and j,
          then take the mean over all j.
 
@@ -35,6 +37,9 @@ def bursty_coeff(data, calc='edge', nodes='all'):
 
         :'all': do for all nodes (default)
         :specify: list of node indexes to calculate.
+
+    :subnet: None (default) or Nx1 vector of subnetwork assignment.
+    This returns a "centrality" per subnetwork instead of per node.
 
 
     **OUTPUT**
@@ -59,6 +64,9 @@ def bursty_coeff(data, calc='edge', nodes='all'):
 
     """
 
+    if calc == 'subnet' and not subnet:
+        raise ValueError("Specified calc='subnet' but no subnet argument provided (list of clusters/modules)")
+
     ict = 0  # are ict present
     if isinstance(data, dict):
         # This could be done better
@@ -82,12 +90,25 @@ def bursty_coeff(data, calc='edge', nodes='all'):
             0, len(nodes)) for tt in range(0, len(nodes)) if t != tt]
         do_nodes = [np.ravel_multi_index(n, ict_shape) for n in node_combinations]
     else:
-        do_nodes = range(0, node_len)
+        do_nodes = np.arange(0, node_len)
 
     # Reshae ICTs
     if calc == 'node':
-        ict = np.concatenate(data['intercontacttimes']
-                             [do_nodes, do_nodes], axis=1)
+        ict = np.concatenate(data['intercontacttimes'][do_nodes, do_nodes], axis=1)
+    elif calc == 'subnet':
+        unique_subnet = np.unique(subnet)
+        ict_shape = (len(unique_subnet),len(unique_subnet))
+        ict = np.array([[None] * ict_shape[0]] * ict_shape[1])
+        for i, s1 in enumerate(unique_subnet):
+            for j, s2 in enumerate(unique_subnet):
+                if s1 == s2:
+                    ind = np.triu_indices(sum(subnet==s1),k=1)
+                    ict[i,j] = np.concatenate(data['intercontacttimes'][ind[0],ind[1]])
+                else:
+                    ict[i,j] = np.concatenate(np.concatenate(data['intercontacttimes'][subnet==s1,:][:,subnet==s2]))
+        # Quick fix, but could be better
+        data['intercontacttimes'] = ict
+        do_nodes = np.arange(0,ict_shape[0]*ict_shape[1])
 
     if len(ict_shape) > 1:
         ict = data['intercontacttimes'].reshape(ict_shape[0] * ict_shape[1])
@@ -100,6 +121,7 @@ def bursty_coeff(data, calc='edge', nodes='all'):
         mu_ict = np.mean(ict[i])
         sigma_ict = np.std(ict[i])
         b_coeff[i] = (sigma_ict - mu_ict) / (sigma_ict + mu_ict)
+
     if len(ict_shape) > 1:
         b_coeff = b_coeff.reshape(ict_shape)
     return b_coeff

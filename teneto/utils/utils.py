@@ -2,6 +2,8 @@ import numpy as np
 import teneto
 import collections
 import scipy.spatial.distance as distance
+from nilearn.input_data import NiftiSpheresMasker
+import json
 
 """
 
@@ -45,7 +47,7 @@ def graphlet2contact(G, cfg=None):
 
     **NOTES**
 
-    Until time permits to make code more efficient, many functions call contact2graphlet to make graphlets when calculating and this might not be ram efficient. This will be made better in later versions.
+    Until time permits to make code more efficient, many functions call contact2graphlet to make graphlets when calculating and this might not be ram efficient.
 
 
     **SEE ALSO**
@@ -73,9 +75,10 @@ def graphlet2contact(G, cfg=None):
             'Input G must be three dimensions (node x node x time)')
     # Check number of nodes is correct, if specfied
     if 'nLabs' in cfg.keys():
-        if len(cfg['nLabs']) != G.shape[0]:
-            raise ValueError(
-                'Specified list of node names has to be equal in length to number of nodes')
+        if cfg['nLabs']:
+            if len(cfg['nLabs']) != G.shape[0]:
+                raise ValueError(
+                    'Specified list of node names has to be equal in length to number of nodes')
     if 't0' in cfg.keys():
         cfg['t0'] = np.atleast_1d(np.array(cfg['t0']))
         if len(cfg['t0']) != 1:
@@ -219,6 +222,171 @@ def contact2graphlet(C):
     return G
 
 
+def binarize_percent(netin, level, sign='pos', axis='time'):
+    """
+    Binarizes a network proprtionally. When axis='time' (only one available at the moment) then the top values for each edge time series are considered.
+
+    **PARAMETERS**
+    :netin: network (graphlet or contact),
+    :level: percent to keep (expressed as decimal, e.g. 0.1 = top 10%)
+    :sign: 'pos', 'neg' or 'both'. This states the sign of the thresholding. If "neg", only negative values are thresholded and vice versa.
+    :axis: 'time' (graphlet and global may be added with time).
+        :'time': The top values for each edge time series are considered.
+
+    **OUTPUT**
+    :netout: binarized network (graphlet or contact, dependning on input)
+
+    :SEE ALSO:
+    utils.binarize, utils.binarize_magnitude, utils.binarize_rdp
+
+    """
+    netin, netinfo = teneto.utils.process_input(netin, ['C', 'G', 'TO'])
+    if sign == 'both':
+        net_sorted = np.argsort(np.abs(netin),axis=-1)
+    elif sign == 'pos':
+        net_sorted = np.argsort(netin,axis=-1)
+    elif sign == 'neg':
+        net_sorted = np.argsort(-1*netin,axis=-1)
+    else:
+        raise ValueError('Unknown value for parameter: sign')
+    # Predefine
+    netout = np.zeros(netinfo['netshape'])
+    # These for loops can probabaly be removed for speed
+    for i in range(netinfo['netshape'][0]):
+        for j in range(netinfo['netshape'][1]):
+            netout[i,j,net_sorted[i,j,-int(round(net_sorted.shape[-1])*level):]] = 1
+    # Set diagonal to 0
+    netout = teneto.utils.set_diagonal(netout,0)
+
+    # If input is contact, output contact
+    if netinfo['inputtype'] == 'C':
+        netinfo['nettype'] = 'b' + netinfo['nettype'][1]
+        netout = teneto.utils.graphlet2contact(netout,netinfo)
+        netout.pop('inputtype')
+        netout.pop('values')
+        netout['diagonal'] = 0
+
+    return netout
+
+
+# To do: set diagonal to 0.
+def binarize_rdp(netin, level, sign='pos', axis='time'):
+    """
+    Binarizes a network based on RDP compression.
+
+    **PARAMETERS**
+    :netin: network (graphlet or contact),
+    :level: delta parameter which is the tolorated error in RDP compression (float) or
+    :sign: 'pos', 'neg' or 'both'. This states the sign of the thresholding. If "neg", only negative values are thresholded and vice versa.
+
+
+    **OUTPUT**
+    :netout: binarized network (graphlet or contact, dependning on input)
+
+    :SEE ALSO:
+    trajectory.rdp, utils.binarize, utils.binarize_magnitude, utils.binarize_percent
+
+    :SOURCE:
+
+    """
+    netin, netinfo = teneto.utils.process_input(netin, ['C', 'G', 'TO'])
+    trajectory = teneto.trajectory.rdp(netin,level)
+
+    contacts = []
+    # Use the trajectory points as threshold
+    for n in range(trajectory['index'].shape[0]):
+        if sign == 'pos':
+            sel = trajectory['trajectory_points'][n][trajectory['trajectory'][n][trajectory['trajectory_points'][n]]>0]
+        elif sign == 'neg':
+            sel = trajectory['trajectory_points'][n][trajectory['trajectory'][n][trajectory['trajectory_points'][n]]<0]
+        else:
+            sel = trajectory['trajectory_points']
+        i_ind = np.repeat(trajectory['index'][n,0],len(sel))
+        j_ind = np.repeat(trajectory['index'][n,1],len(sel))
+        contacts.append(np.array([i_ind,j_ind,sel]).transpose())
+    contacts = np.concatenate(contacts)
+
+    # Create output dictionary
+    netout = dict(netinfo)
+    netout['contacts'] = contacts
+    netout['nettype'] = 'b' + netout['nettype'][1]
+    netout['dimord'] = 'node,node,time'
+    netout['timetype'] = 'discrete'
+    netout['diagonal'] = 0
+    # If input is graphlet, output graphlet
+    if netinfo['inputtype'] == 'G':
+        netout = teneto.utils.contact2graphlet(netout)
+    else:
+        netout.pop('inputtype')
+
+    return netout
+
+def binarize_magnitude(netin, level, sign='pos'):
+    """
+    Binarizes a network based on the magnitude/amplitude of the signal.
+
+    **PARAMETERS**
+    :netin: network (graphlet or contact),
+    :level: percent to keep (expressed as decimal, e.g. 0.1 = top 10%)
+    :sign: 'pos', 'neg' or 'both'. This states the sign of the thresholding. If "neg", only negative values are thresholded and vice versa.
+
+    **OUTPUT**
+    :netout: binarized network (graphlet or contact, dependning on input)
+
+    :SEE ALSO:
+    utils.binarize, utils.binarize_percent, utils.binarize_rdp
+    """
+    netin, netinfo = teneto.utils.process_input(netin, ['C', 'G', 'TO'])
+    # Predefine
+    netout = np.zeros(netinfo['netshape'])
+
+    if sign == 'pos' or sign == 'both':
+        netout[netin>level] = 1
+    if sign == 'neg' or sign == 'both':
+        netout[netin<level] = 1
+
+    # Set diagonal to 0
+    netout = teneto.utils.set_diagonal(netout,0)
+
+    # If input is contact, output contact
+    if netinfo['inputtype'] == 'C':
+        netinfo['nettype'] = 'b' + netinfo['nettype'][1]
+        netout = teneto.utils.graphlet2contact(netout,netinfo)
+        netout.pop('inputtype')
+        netout.pop('values')
+        netout['diagonal'] = 0
+
+    return netout
+
+def binarize(netin, threshold_type, threshold_level, sign='pos'):
+    """
+    Binarizes a network, returning the network. General wrapper function for different binarization functions.
+
+    **PARAMETERS**
+    :netin: network (graphlet or contact),
+    :threshold_type:
+    :threshold_level: paramter dependent on threshold type.
+        if 'rdp', it is the delta (i.e. error allowed in compression)
+        if 'percent', it is the percentage to keep (e.g. 0.1, means keep 10% of signal)
+        if 'magnitude', it is the amplitude of signal to keep
+    :sign: 'pos', 'neg' or 'both'. This states the sign of the thresholding. If "neg", only negative values are thresholded and vice versa.
+
+    **OUTPUT**
+    :netout: binarized network (graphlet or contact, dependning on input)
+
+    :SEE ALSO:
+    utils.binarize_magnitude, utils.binarize_percent, utils.binarize_rdp, trajectory.rdp
+    """
+    if threshold_type == 'percent':
+        netout = teneto.utils.binarize_percent(netin,threshold_level,sign)
+    elif threshold_type == 'magnitude':
+        netout = teneto.utils.binarize_magnitude(netin,threshold_level,sign)
+    elif threshold_type == 'rdp':
+        netout = teneto.utils.binarize_rdp(netin,threshold_level,sign)
+    else:
+        raise ValueError('Unknown value to parameter: threshold_type.')
+    return netout
+
 def set_diagonal(G, val=0):
     """
 
@@ -339,7 +507,7 @@ def getDistanceFunction(requested_metric):
 
     **PARAMETERS**
 
-    :'requested_metric': can be 'hamming', 'eculidean' or any of the functions in https://docs.scipy.org/doc/scipy/reference/spatial.distance.html which only require u and v as input. 
+    :'requested_metric': can be 'hamming', 'eculidean' or any of the functions in https://docs.scipy.org/doc/scipy/reference/spatial.distance.html which only require u and v as input.
 
     **OUTPUT**
 
@@ -348,7 +516,7 @@ def getDistanceFunction(requested_metric):
     **HISTORY**
 
     :Created: Dec 2016, WHT
-    :Updated (v0.2.1): Aug 2017, WHT. Changed from distance functions being in misc to using scipy. 
+    :Updated (v0.2.1): Aug 2017, WHT. Changed from distance functions being in misc to using scipy.
 
     """
 
@@ -373,7 +541,7 @@ def getDistanceFunction(requested_metric):
         'yule': distance.yule,
     }
 
-    if requested_metric in distance_options: 
+    if requested_metric in distance_options:
         return distance_options[requested_metric]
     else:
         raise ValueError('Distance function cannot be found.')
@@ -422,6 +590,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
         pass
     else:
         raise ValueError('Input invalid.')
+    netInfo['inputtype'] = inputType
     if inputType != 'C' and outputformat == 'C':
         C = teneto.utils.graphlet2contact(netIn, netInfo)
     if outputformat == 'G':
@@ -493,9 +662,9 @@ def multiple_contacts_get_values(C):
 
 
 
-def check_distance_funciton_input(distance_func_name,netinfo): 
+def check_distance_funciton_input(distance_func_name,netinfo):
     """
-    Funciton returns distance_func_name given netinfo. 
+    Funciton returns distance_func_name given netinfo.
     """
 
     if distance_func_name == 'default' and netinfo['nettype'][0] == 'b':
@@ -506,5 +675,52 @@ def check_distance_funciton_input(distance_func_name,netinfo):
         print(
             'Default distance funciton specified. '
             'As network is weighted, using Euclidean')
-    
-    return distance_func_name    
+
+    return distance_func_name
+
+
+
+
+def load_parcellation_coords(parcellation_name):
+
+    path = teneto.__path__[0] + '/data/parcellation/' + parcellation_name + '.csv'
+    parc = np.loadtxt(path,skiprows=1,delimiter=',',usecols=[1,2,3])
+
+    return parc
+
+
+def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None):
+
+    if isinstance(parcellation,str):
+
+        if not parc_type or not parc_params:
+            path = teneto.__path__[0] + '/data/parcellation_defaults/defaults.json'
+            with open(path) as data_file:
+                defaults = json.load(data_file)
+        if not parc_type:
+            parc_type = defaults[parcellation]['type']
+            print('Using default parcellation type')
+        if not parc_params:
+            parc_params = defaults[parcellation]['params']
+            print('Using default parameters')
+
+        parcellation = teneto.utils.load_parcellation_coords(parcellation)
+
+
+    if parc_type == 'sphere':
+        seed = NiftiSpheresMasker(np.array(parcellation),**parc_params)
+        data = seed.fit_transform(data_path)
+    else:
+        raise ValueError('Unknown parc_type specified')
+
+    return data
+
+
+
+def create_traj_ranges(start, stop, N):
+    # Adapted from https://stackoverflow.com/a/40624614
+    steps = (1.0/(N-1)) * (stop - start)
+    if np.isscalar(steps):
+        return steps*np.arange(N) + start
+    else:
+        return steps[:,None]*np.arange(N) + start[:,None]

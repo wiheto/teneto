@@ -1,6 +1,6 @@
 """
 
-derive: different methods to derive dynamic functional connectivity 
+derive: different methods to derive dynamic functional connectivity
 
 """
 
@@ -34,7 +34,7 @@ def derive(data, params):
     *params for all methods (necessary)*
 
     :method: "distance","slidingwindow", "taperedslidingwindow",
-     "jackknife", "temporalderivative".
+     "jackknife", "multiplytemporalderivative".
      Alternatively, method can be a weight matrix of size time x time.
 
     *params for all methods (optional)*
@@ -47,9 +47,9 @@ def derive(data, params):
      to be sure that you are inputing the data in the correct way.
     :analysis_id: add to identify specfic analysis.
      Generated report will be placed in './report/' + analysis_id + '/derivation_report.html
-    :report: "yes" (default) or "no".
+    :report: "yes" or "no" (default).
      A report is saved in ./report/[analysis_id]/derivation_report.html if "yes"
-
+    :report_path: string to override where the report is saved
 
     *When method == "distance"*
 
@@ -114,16 +114,27 @@ def derive(data, params):
     report = {}
 
     if 'dimord' not in params.keys():
-        params['dimord'] = 'time,node'
+        params['dimord'] = 'node,time'
 
     if 'report' not in params.keys():
-        params['report'] = 'yes'
+        params['report'] = 'no'
 
     if 'analysis_id' not in params.keys():
         params['analysis_id'] = ''
 
     if 'postpro' not in params.keys():
         params['postpro'] = 'no'
+
+    if params['report'] != 'no':
+
+        if 'analysis_id' not in params.keys():
+            params['analysis_id'] = ''
+
+        if 'report_path' not in params.keys():
+            params['report_path'] = './report/' + params['analysis_id']
+
+        if 'report_filename' not in params.keys():
+            params['repor_filename'] = 'derivation_report.html'
 
     if params['dimord'] == 'node,time':
         data = data.transpose()
@@ -143,7 +154,7 @@ def derive(data, params):
         elif params['method'] == 'distance' or params['method'] == "spatial distance" or params['method'] == "node distance" or params['method'] == "nodedistance" or params['method'] == "spatialdistance":
             weights, report = weightfun_spatial_distance(data, params, report)
             relation = 'weight'
-        elif params['method'] == 'temporal derivative' or params['method'] == "temporalderivative":
+        elif params['method'] == 'mtd' or params['method'] == 'multiply temporal derivative' or params['method'] == 'multiplytemporalderivative' or params['method'] == 'temporal derivative' or params['method'] == "temporalderivative":
             R, report = temporal_derivative(data, params, report)
             relation = 'coupling'
         else:
@@ -179,7 +190,7 @@ def derive(data, params):
         R[np.isinf(R)] = 0
 
     if params['report'] == 'yes':
-        teneto.derive.gen_report(report, './report/' + params['analysis_id'])
+        teneto.derive.gen_report(report, params['report_path'], params['report_filename'])
     return R
 
 
@@ -187,6 +198,8 @@ def weightfun_jackknife(T, report):
 
     weights = np.ones([T, T])
     np.fill_diagonal(weights, 0)
+    report['method'] = 'jackknife'
+    report['jackknife'] = ''
     return weights, report
 
 
