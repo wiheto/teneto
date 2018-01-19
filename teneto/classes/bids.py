@@ -6,6 +6,7 @@ from bids.grabbids import BIDSLayout
 import numpy as np
 import inspect
 import pandas as pd
+import statsmodels.formula.api as smf
 
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
@@ -227,9 +228,15 @@ class TenetoBIDS:
 
             r = re.compile('^' + fstr + '.*' + space + '.*' + self.last_analysis_step + '.*')
             if os.path.exists(wdir):
+                # make filenames
                 found = list(filter(r.match, os.listdir(wdir)))
+                # Include only if all analysis step tags are present
                 found = [i for i in found if all(x in i for x in self.analysis_steps)]
+                # Exclude if confounds tag is present
+                found = [i for i in found if '_confounds' not in i]
+                # Make full paths
                 found = list(map(str.__add__,[re.sub('/+','/',wdir)]*len(found),found))
+
                 if found:
                     found_files += found
 
@@ -273,7 +280,6 @@ class TenetoBIDS:
             r = re.compile('^' + fstr + '.*' + '_confounds' + '.*')
             if os.path.exists(wdir):
                 found = list(filter(r.match, os.listdir(wdir)))
-                found = [i for i in found if all(x in i for x in self.analysis_steps)]
                 found = list(map(str.__add__,[re.sub('/+','/',wdir)]*len(found),found))
                 if found:
                     found_files += found
@@ -323,30 +329,60 @@ class TenetoBIDS:
         self.confounds = confounds
 
 
-    def make_parcellation(self,parcellation,parc_type=None,parc_params=None,update_pipeline=True,confounds='None'):
+    def make_parcellation(self,parcellation,parc_type=None,parc_params=None,update_pipeline=True,removeconfounds=False):
 
         parc_name = parcellation.split('_')[0].lower()
 
-        files = self.get_selected_files(quiet=1)
+        # Check confounds have been specified
+        if not tnet.confounds:
+            raise ValueError('Specified confounds are not found. Make sure that you have run tnet.set_confunds([\'Confound1\',\'Confound2\']) first.')
 
-        for f in files:
+        # In theory these should be the same. So at the moment, it goes through each element and checks they are matched.
+        # A matching algorithem may be needed if cases arise where this isnt the case
+        files = tnet.get_selected_files(quiet=1)
+        if removeconfounds:
+            confound_files = tnet.get_confound_files(quiet=1)
+            if len(files) != len(confound_files):
+                print('WARNING: number of confound files does not equal number of selected files')
+            for n in range(len(files)):
+                if confound_files[n].split('_confounds')[0] not in files[n]:
+                    raise ValueError('Confound matching with data did not work.')
+
+        for i,f in enumerate(files):
 
             file_name = f.split('/')[-1].split('.')[0]
             save_name = file_name + '_parc-' + parc_name + '_roi'
-            paths_post_pipeline = f.split(self.pipeline)
-            if self.pipeline_subdir:
-                paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)
+            paths_post_pipeline = f.split(tnet.pipeline)
+            if tnet.pipeline_subdir:
+                paths_post_pipeline = paths_post_pipeline[1].split(tnet.pipeline_subdir)
             paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
-            save_dir = self.BIDS_dir + '/derivatives/teneto/' + paths_post_pipeline + '/parcellation/'
+            save_dir = tnet.BIDS_dir + '/derivatives/teneto/' + paths_post_pipeline + '/parcellation/'
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
             roi = teneto.utils.make_parcellation(f,parcellation,parc_type,parc_params)
             # Make nodd, time
             roi = roi.transpose()
 
-            if confounds
+            # Confounds need to be loaded here.
+            if removeconfounds:
+                if confound_files[i].split('.')[-1] == 'csv':
+                    delimiter = ','
+                elif confound_files[i].split('.')[-1] == 'tsv':
+                    delimiter = '\t'
+                df = pd.read_csv(confound_files[i],sep=delimiter)
+                df = df[tnet.confounds]
+                patsy_str_confounds = ' + '.join(tnet.confounds)
+                # Linear regresion to regress out (i.e. perform regression and keep residuals) or confound variables. 
+                for r in range(roi.shape[0]):
+                    # Create dataframe
+                    df['y'] = roi[r,:]
+                    # Specify model
+                    model = smf.ols(formula = 'y ~ ' + patsy_str_confounds,data=df)
+                    # Fit model
+                    res = model.fit()
+                    # Get residuals
+                    roi[r,:] = res.resid_pearson
 
-                
 
             np.save(save_dir + save_name + '.npy', roi)
 
