@@ -372,7 +372,7 @@ class TenetoBIDS:
                 df = pd.read_csv(confound_files[i],sep=delimiter)
                 df = df[tnet.confounds]
                 patsy_str_confounds = ' + '.join(tnet.confounds)
-                # Linear regresion to regress out (i.e. perform regression and keep residuals) or confound variables. 
+                # Linear regresion to regress out (i.e. perform regression and keep residuals) or confound variables.
                 for r in range(roi.shape[0]):
                     # Create dataframe
                     df['y'] = roi[r,:]
@@ -389,6 +389,7 @@ class TenetoBIDS:
         if update_pipeline == True:
             self.set_pipeline('teneto')
             self.set_pipeline_subdir('parcellation')
+            self.analysis_steps += self.last_analysis_step
             self.set_last_analysis_step('roi')
             self.parcellation = parcellation
 
@@ -396,6 +397,23 @@ class TenetoBIDS:
 
     def set_last_analysis_step(self,last_analysis_step):
         self.last_analysis_step = last_analysis_step
+
+    def set_analysis_steps(self,analysis_step,add=False):
+        if isinstance(analysis_step,str):
+            if add:
+                self.analysis_steps.append()
+            else:
+                self.analysis_steps = [analysis_step]
+        elif isinstance(analysis_step,list):
+            if add:
+                self.analysis_steps += analysis_step
+            else:
+                self.analysis_steps = analysis_step
+
+        else:
+            raise ValueError('Invalud input')
+
+
 
     def set_pipeline(self,pipeline):
         if not os.path.exists(self.BIDS_dir + '/derivatives/' + pipeline):
