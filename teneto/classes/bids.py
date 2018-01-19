@@ -334,14 +334,14 @@ class TenetoBIDS:
         parc_name = parcellation.split('_')[0].lower()
 
         # Check confounds have been specified
-        if not tnet.confounds:
-            raise ValueError('Specified confounds are not found. Make sure that you have run tnet.set_confunds([\'Confound1\',\'Confound2\']) first.')
+        if not self.confounds:
+            raise ValueError('Specified confounds are not found. Make sure that you have run self.set_confunds([\'Confound1\',\'Confound2\']) first.')
 
         # In theory these should be the same. So at the moment, it goes through each element and checks they are matched.
         # A matching algorithem may be needed if cases arise where this isnt the case
-        files = tnet.get_selected_files(quiet=1)
+        files = self.get_selected_files(quiet=1)
         if removeconfounds:
-            confound_files = tnet.get_confound_files(quiet=1)
+            confound_files = self.get_confound_files(quiet=1)
             if len(files) != len(confound_files):
                 print('WARNING: number of confound files does not equal number of selected files')
             for n in range(len(files)):
@@ -352,11 +352,11 @@ class TenetoBIDS:
 
             file_name = f.split('/')[-1].split('.')[0]
             save_name = file_name + '_parc-' + parc_name + '_roi'
-            paths_post_pipeline = f.split(tnet.pipeline)
-            if tnet.pipeline_subdir:
-                paths_post_pipeline = paths_post_pipeline[1].split(tnet.pipeline_subdir)
+            paths_post_pipeline = f.split(self.pipeline)
+            if self.pipeline_subdir:
+                paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)
             paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
-            save_dir = tnet.BIDS_dir + '/derivatives/teneto/' + paths_post_pipeline + '/parcellation/'
+            save_dir = self.BIDS_dir + '/derivatives/teneto/' + paths_post_pipeline + '/parcellation/'
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
             roi = teneto.utils.make_parcellation(f,parcellation,parc_type,parc_params)
@@ -370,8 +370,8 @@ class TenetoBIDS:
                 elif confound_files[i].split('.')[-1] == 'tsv':
                     delimiter = '\t'
                 df = pd.read_csv(confound_files[i],sep=delimiter)
-                df = df[tnet.confounds]
-                patsy_str_confounds = ' + '.join(tnet.confounds)
+                df = df[self.confounds]
+                patsy_str_confounds = ' + '.join(self.confounds)
                 # Linear regresion to regress out (i.e. perform regression and keep residuals) or confound variables.
                 for r in range(roi.shape[0]):
                     # Create dataframe
