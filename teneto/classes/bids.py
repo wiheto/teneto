@@ -63,6 +63,12 @@ class TenetoBIDS:
 
     def derive(self, params, update_pipeline=True):
 
+        """
+        :params: is a dictionary. See teneto.derive.derive for the structure of this.
+
+        :update_pipeline: if true, the object updates with the new directories made during derivation.
+        """
+
         files = self.get_selected_files(quiet=1)
 
         for f in files:
@@ -106,6 +112,16 @@ class TenetoBIDS:
 
 
     def networkmeasures(self, measure=None, measure_params=None, update_pipeline=True):
+
+        """
+        For available funcitons see: teneto.networkmeasures
+
+        *INPUT*
+
+        :measure: (string) the function from teneto.networkmeasures.
+        :measure_params: (dictionary) containing kwargs fo the networkmeasure.
+        :update_pipeline: if true, updates the pipeline (if necessary).
+        """
 
         module_dict = inspect.getmembers(teneto.networkmeasures)
         # Remove all functions starting with __
@@ -371,6 +387,11 @@ class TenetoBIDS:
                     delimiter = '\t'
                 df = pd.read_csv(confound_files[i],sep=delimiter)
                 df = df[self.confounds]
+                if df.isnull().any().any():
+                    # Not sure what is the best way to deal with this.
+                    # The time points could be ignored. But if multiple confounds, this means these values will get ignored
+                    print('WARNING: Some confounds were NaNs. Setting these values to median of confound.')
+                    df = df.fillna(df.median())
                 patsy_str_confounds = ' + '.join(self.confounds)
                 # Linear regresion to regress out (i.e. perform regression and keep residuals) or confound variables.
                 for r in range(roi.shape[0]):
