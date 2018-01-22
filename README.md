@@ -59,6 +59,7 @@ The following measures exist in the package:
 - volatility
 - reachability latency
 - temporal efficiency
+- intercontacttimes
 
 All measures work for binary undirected networks. Some work for other types of networks as well. This will be updated with time.
 
@@ -66,14 +67,7 @@ Found a measure in the literature that you would like included? Add to this issu
 
 ### Outlook.
 
-This package is under active development.
-
-(1) Calculate based on contact sequence representations
-(2) Assist in creating temporal network representations.
-(3) integrate with python neuroimaging toolboxes and other network formats from other packages.
-
-The time line is that all of these should be up over the next 6 months or so. If something is missing that you need now, let me know and I can try and prioritize getting that up and running (if requests are limited!).
-
+This package is under active development. And a lot of changes will still be made.
 
 ## Cite
 
