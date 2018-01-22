@@ -219,7 +219,7 @@ class TenetoBIDS:
                     fstr += '_'
                 else:
                     wdir += 'func/'
-                fstr += k + '-' + f[i]
+                fstr += k + '-' + f[i] + '.*'
             wdir += '/' + self.pipeline_subdir + '/'
             if not self.space:
                 space = ''
@@ -274,7 +274,7 @@ class TenetoBIDS:
                     fstr += '_'
                 else:
                     wdir += 'func/'
-                fstr += k + '-' + f[i]
+                fstr += k + '-' + f[i] + '.*'
             wdir += '/' + self.pipeline_subdir + '/'
 
             r = re.compile('^' + fstr + '.*' + '_confounds' + '.*')
