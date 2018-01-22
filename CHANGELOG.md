@@ -1,5 +1,9 @@
 # Changelog
 
+## V0.2.3 (pending)
+
+- Added nan-to-median for nans in confounds in removal in TenetoBIDS.make_parcellation()
+
 ## V0.2.2
 
 - Corrected vminmax error in `plot.graphlet_stack_plot` when specifying a string.

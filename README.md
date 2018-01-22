@@ -1,10 +1,10 @@
 # Teneto
 
-**Te**mporal **ne**twork **to**ols. Version 0.2.1 
+**Te**mporal **ne**twork **to**ols. Version 0.2.13
 
-This is still a lot of work to go before this package is complete. However, it is built to be used now and future updates *should* not break people's pipelines.
+Package includes:  temporal network measures, temporal network generation, derivation of time-varying/dynamic connectivity, plotting functions.
 
-Package includes: temporal network generation (only one function at the moment), derivation of dynamic connectivity, temporal network measures, plotting functions.
+For neuroimaging data, compatible with BIDs format.
 
 ## Installation
 
@@ -19,10 +19,12 @@ to upgrade teneto:
 Requires: Python 3.5 or python 3.6 and pip.
 
 Package dependencies:
-- numpy
-- scipy
-- matplotlib
-- statsmodels
+- matplotlib>=1.5.3
+- nilearn>=0.2.6
+- numpy>=1.13.1
+- pandas>=0.20.3
+- scipy>=0.18.1
+- statsmodels>=0.8.0
 
 Other versions of python (2.7 and <3.5) may work, but not tested.
 
