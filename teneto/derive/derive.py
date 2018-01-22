@@ -42,7 +42,7 @@ def derive(data, params):
     :postpro: "no" (default). Other alternatives are: "fisher", "boxcox", "standardize"
      and any combination seperated by a + (e,g, "fisher+boxcox").
       See postpro_pipeline for more information.
-    :data_dimord: 'node,time' (default) or 'time,node'.
+    :dimord: 'node,time' (default) or 'time,node'.
      People like to represent their data differently and this is an easy way
      to be sure that you are inputing the data in the correct way.
     :analysis_id: add to identify specfic analysis.
