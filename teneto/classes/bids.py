@@ -20,12 +20,27 @@ class TenetoBIDS:
 
     #networkmeasures = NetworkMeasures(self)
 
-    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, space=None, subjects='all', sessions='all', runs='all', tasks='all', last_analysis_step=None, analysis_steps=None):
+    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, space=None, subjects='all', sessions='all', runs='all', tasks='all', last_analysis_step=None, analysis_steps=None, confound_pipeline=None):
+        """
+        **INPUT**
+        :BIDS_dir: string to BIDS directory
+        :pipeline: the directory that is in the BIDS_dir/derivatives/<pipeline>/
+        :pipeline_subdir: the directory that is in the BIDS_dir/derivatives/<pipeline>/sub-<subjectnr/func/ses-<sesnr>/<pipeline_subdir>
+        :parcellation: parcellation name
+        :space: different nomralized spaces
+        :subjects: can be part of the BIDS file name
+        :sessions: can be part of the BIDS file name
+        :runs: can be part of the BIDS file name
+        :tasks: can be part of the BIDS file name
+        :analysis_steps: any tags that exist in the filename (e.g. 'bold' or 'preproc')
+        :confound_pipeline: if the confounds file is in another directory than the pipeline directory.
+        """
 
         self.contact = []
         self.BIDS = BIDSLayout(BIDS_dir)
         self.BIDS_dir = BIDS_dir
         self.pipeline = pipeline
+        self.confound_pipeline = confound_pipeline
         if not pipeline_subdir:
             self.pipeline_subdir = ''
         else:
@@ -111,16 +126,19 @@ class TenetoBIDS:
             self.set_last_analysis_step('tvc')
 
 
-    def networkmeasures(self, measure=None, measure_params=None, update_pipeline=True):
-
+    def networkmeasures(self, measure=None, measure_params={}):
         """
+        Runs a network measure
+
         For available funcitons see: teneto.networkmeasures
 
         *INPUT*
 
-        :measure: (string) the function from teneto.networkmeasures.
-        :measure_params: (dictionary) containing kwargs fo the networkmeasure.
-        :update_pipeline: if true, updates the pipeline (if necessary).
+        :measure: (string or list) the function(s) from teneto.networkmeasures.
+        :measure_params: (dictionary or list of dictionaries) containing kwargs for the argument in measure.
+
+        *RETURNS*
+        Saves in ./BIDS_dir/derivatives/teneto/sub-NAME/func/tvc/temporal-network-measures/MEASURE/
         """
 
         module_dict = inspect.getmembers(teneto.networkmeasures)
@@ -153,17 +171,21 @@ class TenetoBIDS:
             else:
                 raise ValueError('derive can only load npy files at the moment')
 
-            file_name = f.split('/')[-1].split('.')[0]
-            save_name = file_name + '_tvcmethod-' + params['method'] + '_tvc'
+            save_dir_base = '/'.join(f.split('/')[:-1]) + '/temporal-network-measures/'
 
-            if self.pipeline_subdir:
-                paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)[0]
-            else:
-                paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
+            file_name = f.split('/')[-1].split('.')[0]
 
             for i, m in enumerate(measure):
 
-                module_dict[m](data,**measure_params[i])
+                sname = m.replace('_','-')
+                if not os.path.exists(save_dir_base + sname):
+                    os.makedirs(save_dir_base + sname)
+
+                save_name = file_name + '_' + sname
+                netmeasure = module_dict[m](data,**measure_params[i])
+
+                np.savetxt(save_dir_base + sname + '/' + save_name + '.csv', netmeasure, delimiter=",", header=m)
+
 
     def get_space_alternatives(self,quiet=0):
         if not self.pipeline:
@@ -277,7 +299,10 @@ class TenetoBIDS:
                 file_components += [file_dict[k]]
         file_list = list(itertools.product(*file_components))
         # Specify main directory
-        mdir = self.BIDS_dir + '/derivatives/' + self.pipeline
+        if self.confound_pipeline:
+            mdir = self.BIDS_dir + '/derivatives/' + self.confound_pipeline
+        else:
+            mdir = self.BIDS_dir + '/derivatives/' + self.pipeline
         found_files = []
 
         for f in file_list:
@@ -291,8 +316,10 @@ class TenetoBIDS:
                 else:
                     wdir += 'func/'
                 fstr += k + '-' + f[i] + '.*'
-            wdir += '/' + self.pipeline_subdir + '/'
-
+            wdir_pipesub = wdir + '/' + self.pipeline_subdir + '/'
+            # Allow for pipeline_subdir to not be there (ToDo: perhaps add confound_pipeline_subdir in future)
+            if os.path.exists(wdir_pipesub):
+                wdir = wdir_pipesub
             r = re.compile('^' + fstr + '.*' + '_confounds' + '.*')
             if os.path.exists(wdir):
                 found = list(filter(r.match, os.listdir(wdir)))
@@ -323,6 +350,19 @@ class TenetoBIDS:
         if quiet == 0:
             print('Confounds in confound files: \n - ' + '\n - '.join(confounds))
         return confounds
+
+    def set_confound_pipeline(self,confound_pipeline):
+        """
+        There may be times when the pipeline is updated (e.g. teneto) but you want the confounds from the preprocessing pipieline (e.g. fmriprep).
+        To do this, you set the confound_pipeline to be the preprocessing pipeline where the confound files are.
+        """
+        if not os.path.exists(self.BIDS_dir + '/derivatives/' + confound_pipeline):
+            print('Specified direvative directory not found.')
+            self.get_pipeline_alternatives()
+        else:
+            # Todo: perform check that pipeline is valid
+            self.confound_pipeline = confound_pipeline
+
 
 
     def set_confounds(self,confounds,quiet=0):

@@ -2,7 +2,13 @@
 
 ## V0.2.3 (pending)
 
-- Added nan-to-median for nans in confounds in removal in TenetoBIDS.make_parcellation()
+- Added `confound_pipeline` option to TenetoBIDS. 
+
+- Added nan-to-median for nans in confounds in removal in `TenetoBIDS.make_parcellation`
+
+- made `TenetoBIDS.networkmeasures` functional (i.e. saving files, removing an error).
+
+- replaced function `betai` with `betainc` for scipy 1.0 compatibility.
 
 ## V0.2.2
 
