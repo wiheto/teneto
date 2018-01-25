@@ -1,8 +1,8 @@
 # Changelog
 
-## V0.2.3 (pending)
+## V0.2.3 
 
-- Added `confound_pipeline` option to TenetoBIDS. 
+- Added `confound_pipeline` option to TenetoBIDS.
 
 - Added nan-to-median for nans in confounds in removal in `TenetoBIDS.make_parcellation`
 

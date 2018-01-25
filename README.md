@@ -1,10 +1,10 @@
 # Teneto
 
-**Te**mporal **ne**twork **to**ols. Version 0.2.13
+**Te**mporal **ne**twork **to**ols. Version 0.2.3
 
 Package includes:  temporal network measures, temporal network generation, derivation of time-varying/dynamic connectivity, plotting functions.
 
-For neuroimaging data, compatible with BIDs format.
+For neuroimaging data, compatible with BIDS format.
 
 ## Installation
 
