@@ -118,13 +118,13 @@ def bursty_coeff(data, calc='edge', nodes='all', subnet=None):
         ict = [data['intercontacttimes']]
 
     for i in do_nodes:
-        if not ict[i]:
-            b_coeff[i] = np.nan
-        else:
+        if isinstance(ict[i],np.ndarray):
             mu_ict = np.mean(ict[i])
             sigma_ict = np.std(ict[i])
             b_coeff[i] = (sigma_ict - mu_ict) / (sigma_ict + mu_ict)
-            
+        else:
+            b_coeff[i] = np.nan
+
     if len(ict_shape) > 1:
         b_coeff = b_coeff.reshape(ict_shape)
     return b_coeff
