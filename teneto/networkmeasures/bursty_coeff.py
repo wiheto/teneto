@@ -118,7 +118,7 @@ def bursty_coeff(data, calc='edge', nodes='all', subnet=None):
         ict = [data['intercontacttimes']]
 
     for i in do_nodes:
-        if len(ict[i])>0:
+        if isinstance(ict[i],list):
             mu_ict = np.mean(ict[i])
             sigma_ict = np.std(ict[i])
             b_coeff[i] = (sigma_ict - mu_ict) / (sigma_ict + mu_ict)
