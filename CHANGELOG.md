@@ -4,6 +4,8 @@
 
 - Fixed `bursty_coeff` when ICT is empty.
 
+- Fix for #1 
+
 ## V0.2.3
 
 - Added `confound_pipeline` option to TenetoBIDS.

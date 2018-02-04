@@ -1,6 +1,6 @@
 # Teneto
 
-**Te**mporal **ne**twork **to**ols. Version 0.2.3
+**Te**mporal **ne**twork **to**ols. Version 0.2.4
 
 Package includes:  temporal network measures, temporal network generation, derivation of time-varying/dynamic connectivity, plotting functions.
 
