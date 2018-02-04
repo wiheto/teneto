@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.2.41
+## V0.2.4b
 
 - Reverted back the incorrect fix for #1, added
 
