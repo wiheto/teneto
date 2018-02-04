@@ -1,10 +1,16 @@
 # Changelog
 
+## V0.2.41
+
+- Reverted back the incorrect fix for #1, added
+
+- Added distutils version to requirements.  
+
 ## V0.2.4
 
 - Fixed `bursty_coeff` when ICT is empty.
 
-- Fix for #1 
+- Fix for #1  
 
 ## V0.2.3
 

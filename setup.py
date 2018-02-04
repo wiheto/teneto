@@ -12,5 +12,5 @@ setup(name='Teneto',
       author_email='hedley@startmail.com',
       url='https://www.github.com/wiheto/teneto',
       download_url='https://github.com/wiheto/teneto/archive/0.2.tar.gz',
-      package_data={'':['teneto/data']},
+      package_data={'':['./teneto/data/']},
       include_package_data = True)
