@@ -20,7 +20,7 @@ class TenetoBIDS:
 
     #networkmeasures = NetworkMeasures(self)
 
-    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, space=None, subjects='all', sessions='all', runs='all', tasks='all', last_analysis_step=None, analysis_steps=None, confound_pipeline=None):
+    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, space=None, subjects='all', sessions='all', runs='all', tasks='all', last_analysis_step=None, analysis_steps=None, confound_pipeline=None, raw_data_exists=True):
         """
         **INPUT**
         :BIDS_dir: string to BIDS directory
@@ -37,10 +37,14 @@ class TenetoBIDS:
         """
 
         self.contact = []
-        self.BIDS = BIDSLayout(BIDS_dir)
+        if raw_data_exists:
+            self.BIDS = BIDSLayout(BIDS_dir)
+        else:
+            self.BIDS = 'Raw data was flagged as not present in directory structure.'
         self.BIDS_dir = BIDS_dir
         self.pipeline = pipeline
         self.confound_pipeline = confound_pipeline
+        self.raw_data_exists = raw_data_exists
         if not pipeline_subdir:
             self.pipeline_subdir = ''
         else:
@@ -50,21 +54,28 @@ class TenetoBIDS:
         if self.BIDS_dir[-1] != '/':
             self.BIDS_dir = self.BIDS_dir + '/'
         if subjects == 'all':
-            self.subjects = self.BIDS.get_subjects()
-        else:
-            self.set_subjects(subjects)
-        if sessions == 'all':
+            if self.raw_data_exists:
+                self.subjects = self.BIDS.get_subjects()
+            else:
+                self.set_subjects()
+        if sessions == 'all' and self.raw_data_exists:
             self.sessions = self.BIDS.get_sessions()
-        else:
+        elif self.raw_data_exists:
             self.set_sessions(sessions)
-        if tasks == 'all':
+        else:
+            self.sessions = []
+        if tasks == 'all' and self.raw_data_exists:
             self.tasks = self.BIDS.get_tasks()
-        else:
+        elif self.raw_data_exists:
             self.set_tasks(tasks)
-        if runs == 'all':
-            self.runs = self.BIDS.get_runs()
         else:
+            self.tasks = []
+        if runs == 'all' and self.raw_data_exists:
+            self.runs = self.BIDS.get_runs()
+        elif self.raw_data_exists:
             self.set_runs(runs)
+        else:
+            self.runs = []
         if not last_analysis_step:
             self.last_analysis_step = ''
         else:
@@ -496,20 +507,26 @@ class TenetoBIDS:
     def set_runs(self,runs):
         if isinstance(runs,str):
             runs=[runs]
-        runs_in_dataset = self.BIDS.get_runs()
-        if len(set(runs).intersection(runs_in_dataset))==len(runs):
-            self.runs = sorted(list(runs))
+        if self.raw_data_exists:
+            runs_in_dataset = self.BIDS.get_runs()
+            if len(set(runs).intersection(runs_in_dataset))==len(runs):
+                self.runs = sorted(list(runs))
+            else:
+                raise ValueError('Specified run(s) not founds in BIDS dataset')
         else:
-            raise ValueError('Specified run(s) not founds in BIDS dataset')
+            self.runs = sorted(list(tasks))
 
     def set_sessions(self,sessions):
         if isinstance(sessions,str):
             sessions=[sessions]
-        sessions_in_dataset = self.BIDS.get_sessions()
-        if len(set(sessions).intersection(sessions_in_dataset))==len(sessions):
-            self.sessions = sorted(list(sessions))
+        if self.raw_data_exists:
+            sessions_in_dataset = self.BIDS.get_sessions()
+            if len(set(sessions).intersection(sessions_in_dataset))==len(sessions):
+                self.sessions = sorted(list(sessions))
+            else:
+                raise ValueError('Specified session(s) not founds in BIDS dataset')
         else:
-            raise ValueError('Specified session(s) not founds in BIDS dataset')
+            self.sessions = sorted(list(tasks))
 
     def set_space(self,space):
         space_alternatives = self.get_space_alternatives(quiet=1)
@@ -517,50 +534,72 @@ class TenetoBIDS:
             raise ValueError('Specified space cannot be found for any subjects. Run TN.get_space_alternatives() to see the optinos in directories.')
         self.space = space
 
-    def set_subjects(self,subjects):
+    def set_subjects(self,subjects=None):
         if isinstance(subjects,str):
             subjects=[subjects]
-        subjects_in_dataset = self.BIDS.get_subjects()
-        if len(set(subjects).intersection(subjects_in_dataset))==len(subjects):
-            self.subjects = sorted(list(subjects))
-        else:
-            raise ValueError('Specified subject(s) not founds in BIDS dataset')
+        # GEt from raw data or from derivative structure
+        if self.raw_data_exists:
+            subjects_in_dataset = self.BIDS.get_subjects()
+            if len(set(subjects).intersection(subjects_in_dataset))==len(subjects):
+                self.subjects = sorted(list(subjects))
+            else:
+                raise ValueError('Specified subject(s) not founds in BIDS dataset')
+        elif not self.raw_data_exists:
+            if not self.pipeline:
+                raise ValueError('Pipeline must be set if raw_data_exists = False')
+            elif not subjects:
+                subjects_in_dataset = os.listdir(self.BIDS_dir + '/derivatives/' + self.pipeline)
+                subjects_in_dataset = [f.split('sub-')[1] for f in subjects_in_dataset if os.path.isdir(self.BIDS_dir + '/derivatives/' + self.pipeline + '/' + f)]
+                self.subjects = subjects_in_dataset
+            else:
+                self.subjects = subjects 
+
+
 
     def set_tasks(self,tasks):
         if isinstance(tasks,str):
             tasks=[tasks]
-        tasks_in_dataset = self.BIDS.get_tasks()
-        if len(set(tasks).intersection(tasks_in_dataset))==len(tasks):
-            self.tasks = sorted(list(tasks))
+        if self.raw_data_exists:
+            tasks_in_dataset = self.BIDS.get_tasks()
+            if len(set(tasks).intersection(tasks_in_dataset))==len(tasks):
+                self.tasks = sorted(list(tasks))
+            else:
+                raise ValueError('Specified task(s) not founds in BIDS dataset')
         else:
-            raise ValueError('Specified task(s) not founds in BIDS dataset')
+            self.tasks = sorted(list(tasks))
 
     def print_dataset_summary(self):
 
         print('--- DATASET INFORMATION ---')
 
-        print('--- Subjets ---')
-        if self.BIDS.get_subjects():
-            print('Number of subjects (in dataset): ' + str(len(self.BIDS.get_subjects())))
-            print('Subjects (in dataset): ' + ', '.join(self.BIDS.get_subjects()))
-            print('Number of subjects (selected): ' + str(len(self.subjects)))
-            print('Subjects (selected): ' + ', '.join(self.subjects))
-        else:
-            print('NO SUBJECTS FOUND (is the BIDS directory specified correctly?)')
+        print('--- Subjects ---')
+        if self.raw_data_exists:
+            if self.BIDS.get_subjects():
+                print('Number of subjects (in dataset): ' + str(len(self.BIDS.get_subjects())))
+                print('Subjects (in dataset): ' + ', '.join(self.BIDS.get_subjects()))
+            else:
+                print('NO SUBJECTS FOUND (is the BIDS directory specified correctly?)')
+
+        print('Number of subjects (selected): ' + str(len(self.subjects)))
+        print('Subjects (selected): ' + ', '.join(self.subjects))
 
         print('--- Tasks ---')
-        if self.BIDS.get_tasks():
-            print('Number of tasks (in dataset): ' + str(len(self.BIDS.get_tasks())))
-            print('Tasks (in dataset): ' + ', '.join(self.BIDS.get_tasks()))
+        if self.raw_data_exists:
+            if self.BIDS.get_tasks():
+                print('Number of tasks (in dataset): ' + str(len(self.BIDS.get_tasks())))
+                print('Tasks (in dataset): ' + ', '.join(self.BIDS.get_tasks()))
+        if self.tasks:
             print('Number of tasks (selected): ' + str(len(self.tasks)))
             print('Tasks (selected): ' + ', '.join(self.tasks))
         else:
             print('No task names found')
 
         print('--- Runs ---')
-        if self.BIDS.get_runs():
-            print('Number of runs (in dataset): ' + str(len(self.BIDS.get_runs())))
-            print('Runs (in dataset): ' + ', '.join(self.BIDS.get_runs()))
+        if self.raw_data_exists:
+            if self.BIDS.get_runs():
+                print('Number of runs (in dataset): ' + str(len(self.BIDS.get_runs())))
+                print('Runs (in dataset): ' + ', '.join(self.BIDS.get_runs()))
+        if self.runs:
             print('Number of runs (selected): ' + str(len(self.runs)))
             print('Rubs (selected): ' + ', '.join(self.runs))
         else:
@@ -568,9 +607,11 @@ class TenetoBIDS:
 
 
         print('--- Sessions ---')
-        if self.BIDS.get_sessions():
-            print('Number of runs (in dataset): ' + str(len(self.BIDS.get_sessions())))
-            print('Sessions (in dataset): ' + ', '.join(self.BIDS.get_sessions()))
+        if self.raw_data_exists:
+            if self.BIDS.get_sessions():
+                print('Number of runs (in dataset): ' + str(len(self.BIDS.get_sessions())))
+                print('Sessions (in dataset): ' + ', '.join(self.BIDS.get_sessions()))
+        if self.sessions:
             print('Number of sessions (selected): ' + str(len(self.sessions)))
             print('Sessions (selected): ' + ', '.join(self.sessions))
         else:

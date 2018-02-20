@@ -1,5 +1,10 @@
 # Changelog
 
+## V0.2.5
+
+- Added functionality for derivative only BIDS folders.
+- Added bids to requirements
+
 ## V0.2.4b
 
 - Reverted back the incorrect fix for #1, added
