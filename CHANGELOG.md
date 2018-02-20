@@ -2,8 +2,9 @@
 
 ## V0.2.5 (pending release)
 
+- Removed older examples. 
 - Added functionality for derivative only BIDS folders.
-- Added bids to requirements
+- Added bids to requirements.txt
 
 ## V0.2.4b
 
