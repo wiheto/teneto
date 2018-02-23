@@ -4,7 +4,9 @@
 
 - Removed older examples. 
 - Added functionality for derivative only BIDS folders.
-- Added bids to requirements.txt
+- Added bids to requirements.txt 
+- Added dependency to seaborn (adde to requirements.txt)
+- Added confound reports to TenetoBIDS.derive 
 
 ## V0.2.4b
 

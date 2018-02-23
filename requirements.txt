@@ -6,3 +6,4 @@ scipy>=0.18.1
 statsmodels>=0.8.0
 distutils>=3.5.2
 bids>=0.4.2
+seaborn>=0.8.1

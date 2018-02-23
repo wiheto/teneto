@@ -7,6 +7,8 @@ import numpy as np
 import inspect
 import pandas as pd
 import statsmodels.formula.api as smf
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
@@ -96,8 +98,11 @@ class TenetoBIDS:
         """
 
         files = self.get_selected_files(quiet=1)
+        confound_files = self.get_confound_files(quiet=1)
+        if confound_files:
+            confounds_exist = True
 
-        for f in files:
+        for i, f in enumerate(files):
 
             # ADD MORE HERE (csv, json, nifti)
             if f.split('.')[-1] == 'npy':
@@ -129,9 +134,49 @@ class TenetoBIDS:
 
             np.save(save_dir + save_name + '.npy', dfc)
 
-        # Loop over subjects/task/runs/sessions
+            if confounds_exist:
+                analysis_step = 'tvc-derive'
+                if confound_files[i].split('.')[-1] == 'csv':
+                    delimiter = ','
+                elif confound_files[i].split('.')[-1] == 'tsv':
+                    delimiter = '\t'
+                df = pd.read_csv(confound_files[i],sep=delimiter)
+                df = df.fillna(df.median())
+                ind = np.triu_indices(dfc.shape[0], k=1)
+                dfc_df = pd.DataFrame(dfc[ind[0],ind[1],:].transpose())
+                #NOW CORRELATE DF WITH DFC BUT DFC INDEX NOT DF.
+                dfc_df_z = (dfc_df - dfc_df.mean())
+                df_z = (df - df.mean())
+                R_df = dfc_df_z.T.dot(df_z).div(len(dfc_df)).div(df_z.std(ddof=0)).div(dfc_df_z.std(ddof=0), axis=0)
+                R_df_describe = R_df.describe()
+                desc_index = R_df_describe.index
+                confound_report_dir = params['report_path'] + '/' + analysis_step + '_vs_confounds/'
+                confound_report_figdir = confound_report_dir + 'figures/'
+                if not os.path.exists(confound_report_figdir):
+                    os.makedirs(confound_report_figdir)
+                report = '<html><body>'
+                report += '<h1> Correlation of ' + analysis_step + ' and confounds.</h1>' 
+                for c in R_df.columns: 
+                    fig,ax = plt.subplots(1)
+                    ax = sns.distplot(R_df[c],hist=False, color='m', ax=ax, kde_kws={"shade": True})
+                    fig.savefig(confound_report_figdir + c + '.png')
+                    plt.close(fig)
+                    report += '<h2>' + c + '</h2>' 
+                    for ind_name,r in enumerate(R_df_describe[c]): 
+                        report += str(desc_index[ind_name]) + ': '
+                        report += str(r) + '<br>' 
+                    report += 'Distribution of corrlation values:'
+                    report += '<img src=' + confound_report_figdir + c + '.png><br><br>'
+                report += '</body></html>'
+
+            with open(confound_report_dir + analysis_step + '_vs_confounds.html', 'w') as file:
+                file.write(report)
+                
+            file.close()
 
         if update_pipeline == True:
+            if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
+                self.set_confound_pipeline = self.pipeline
             self.set_pipeline('teneto')
             self.set_pipeline_subdir('tvc')
             self.set_last_analysis_step('tvc')
@@ -337,6 +382,7 @@ class TenetoBIDS:
                 found = list(map(str.__add__,[re.sub('/+','/',wdir)]*len(found),found))
                 if found:
                     found_files += found
+            
 
         if quiet == 0:
             print(found_files)
@@ -401,7 +447,7 @@ class TenetoBIDS:
         parc_name = parcellation.split('_')[0].lower()
 
         # Check confounds have been specified
-        if not self.confounds:
+        if not self.confounds and removeconfounds:
             raise ValueError('Specified confounds are not found. Make sure that you have run self.set_confunds([\'Confound1\',\'Confound2\']) first.')
 
         # In theory these should be the same. So at the moment, it goes through each element and checks they are matched.
@@ -459,6 +505,8 @@ class TenetoBIDS:
             np.save(save_dir + save_name + '.npy', roi)
 
         if update_pipeline == True:
+            if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
+                self.set_confound_pipeline(self.pipeline)
             self.set_pipeline('teneto')
             self.set_pipeline_subdir('parcellation')
             self.analysis_steps += self.last_analysis_step
@@ -552,7 +600,7 @@ class TenetoBIDS:
                 subjects_in_dataset = [f.split('sub-')[1] for f in subjects_in_dataset if os.path.isdir(self.BIDS_dir + '/derivatives/' + self.pipeline + '/' + f)]
                 self.subjects = subjects_in_dataset
             else:
-                self.subjects = subjects 
+                self.subjects = subjects
 
 
 
