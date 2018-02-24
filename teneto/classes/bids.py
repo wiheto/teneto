@@ -276,6 +276,7 @@ class TenetoBIDS:
             self.get_pipeline_alternatives()
         else:
             pipeline_subdir_alternatives = []
+            # check code below, why is s not used? 
             for s in self.BIDS.get_subjects():
                 derdir_files = os.listdir(self.BIDS_dir + '/derivatives/' + self.pipeline + '/')
                 pipeline_subdir_alternatives += [f for f in derdir_files if os.path.isdir(f)]

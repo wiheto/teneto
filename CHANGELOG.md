@@ -7,6 +7,7 @@
 - Added bids to requirements.txt 
 - Added dependency to seaborn (adde to requirements.txt)
 - Added confound reports to TenetoBIDS.derive 
+- Added draft version of teneto/bids documentation. 
 
 ## V0.2.4b
 
