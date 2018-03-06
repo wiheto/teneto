@@ -8,6 +8,9 @@
 - Added dependency to seaborn (adde to requirements.txt)
 - Added confound reports to TenetoBIDS.derive 
 - Added draft version of teneto/bids documentation. 
+- Added Gordon2014_333 parcellation 
+- Renamed parcellations to [firstauthor][publicationyear]_[numberofrois]
+- Added more documentation to functions 
 
 ## V0.2.4b
 
