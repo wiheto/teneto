@@ -2,7 +2,7 @@ import numpy as np
 import teneto
 import collections
 import scipy.spatial.distance as distance
-from nilearn.input_data import NiftiSpheresMasker
+from nilearn.input_data import NiftiSpheresMasker, NiftiLabelsMasker
 import json
 
 """
@@ -691,6 +691,19 @@ def load_parcellation_coords(parcellation_name):
 
 def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None):
 
+    """
+    Make a parcellation which reduces voxel space to regions of interest (brain data).
+
+    **INPUT** 
+
+    :parcellation: specify which parcellation that you would like to use. For MNI: power264, yeo, gordon333. TAL: 
+    :parc_type: can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used. 
+    :parc_params: **kwargs for nilearn functions 
+
+    **NOTE** 
+    These functions make use of nilearn. Please cite nilearn if used in a publicaiton.   
+    """
+
     if isinstance(parcellation,str):
 
         if not parc_type or not parc_params:
@@ -704,12 +717,16 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
             parc_params = defaults[parcellation]['params']
             print('Using default parameters')
 
-        parcellation = teneto.utils.load_parcellation_coords(parcellation)
 
 
     if parc_type == 'sphere':
+        parcellation = teneto.utils.load_parcellation_coords(parcellation)
         seed = NiftiSpheresMasker(np.array(parcellation),**parc_params)
         data = seed.fit_transform(data_path)
+    elif parc_type == 'region':
+        path = teneto.__path__[0] + '/data/parcellation/' + parcellation + '.nii'
+        region = NiftiLabelsMasker(path,**parc_params)
+        data = region.fit_transform(data_path)
     else:
         raise ValueError('Unknown parc_type specified')
 
