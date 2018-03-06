@@ -1,1 +1,2 @@
-{"power2012_mni": {"params": {"radius": 5}, "type": "sphere"}}
+{"power2012_264": {"params": {"radius": 5}, "type": "sphere"},
+"gordon2014_333": {"params": {}, "type": "region"}}

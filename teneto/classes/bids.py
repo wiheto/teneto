@@ -244,6 +244,9 @@ class TenetoBIDS:
 
 
     def get_space_alternatives(self,quiet=0):
+        """
+        Returns which space alternatives can be identified in the BIDS derivatives structure. Spaces are denoted with the prefix "space-". 
+        """
         if not self.pipeline:
             print('Please set pipeline first.')
             self.get_pipeline_alternatives()
@@ -262,6 +265,11 @@ class TenetoBIDS:
             return list(space_alternatives)
 
     def get_pipeline_alternatives(self,quiet=0):
+        """
+        The pipeline are the different outputs that are placed in the ./derivatives directory. 
+
+        get_pipeline_alternatives gets those which are found in the specified BIDS directory structure.  
+        """
         if not os.path.exists(self.BIDS_dir + '/derivatives/'):
             print('Derivative directory not found. Is the data preprocessed?')
         else:
@@ -445,6 +453,19 @@ class TenetoBIDS:
 
     def make_parcellation(self,parcellation,parc_type=None,parc_params=None,update_pipeline=True,removeconfounds=False):
 
+        """
+        Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end. 
+
+        **INPUT** 
+
+        :parcellation: specify which parcellation that you would like to use. For MNI: power264, yeo, gordon333. TAL: 
+        :parc_type: can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used. 
+        :parc_params: **kwargs for nilearn functions 
+        :removeconfounds: if true, regresses out confounds that are specfied in tnet.set_confounds
+
+        **NOTE** 
+        These functions make use of nilearn. Please cite nilearn if used in a publicaiton.   
+        """
         parc_name = parcellation.split('_')[0].lower()
 
         # Check confounds have been specified
@@ -517,16 +538,27 @@ class TenetoBIDS:
 
 
     def set_last_analysis_step(self,last_analysis_step):
+        """
+        The last analysis step is the final tag that is present in files. 
+        """
         self.last_analysis_step = last_analysis_step
 
-    def set_analysis_steps(self,analysis_step,add=False):
+    def set_analysis_steps(self,analysis_step,add_step=False):
+        """
+        Specify which analysis steps are part of the selected files. 
+
+        Inputs
+
+        :analysis_step: string or list of analysis tags that are found in the file names of interest. E.g. 'preproc' will only select files with 'preproc' in them.
+        :add_step: (optional). If true, then anything in self.analysis_steps is already kept.    
+        """
         if isinstance(analysis_step,str):
-            if add:
+            if add_step:
                 self.analysis_steps.append()
             else:
                 self.analysis_steps = [analysis_step]
         elif isinstance(analysis_step,list):
-            if add:
+            if add_step:
                 self.analysis_steps += analysis_step
             else:
                 self.analysis_steps = analysis_step
