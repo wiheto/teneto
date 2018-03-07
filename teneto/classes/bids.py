@@ -9,7 +9,7 @@ import pandas as pd
 import statsmodels.formula.api as smf
 import seaborn as sns
 import matplotlib.pyplot as plt
-
+import pickle
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
 #        pass
@@ -155,23 +155,23 @@ class TenetoBIDS:
                 if not os.path.exists(confound_report_figdir):
                     os.makedirs(confound_report_figdir)
                 report = '<html><body>'
-                report += '<h1> Correlation of ' + analysis_step + ' and confounds.</h1>' 
-                for c in R_df.columns: 
+                report += '<h1> Correlation of ' + analysis_step + ' and confounds.</h1>'
+                for c in R_df.columns:
                     fig,ax = plt.subplots(1)
                     ax = sns.distplot(R_df[c],hist=False, color='m', ax=ax, kde_kws={"shade": True})
                     fig.savefig(confound_report_figdir + c + '.png')
                     plt.close(fig)
-                    report += '<h2>' + c + '</h2>' 
-                    for ind_name,r in enumerate(R_df_describe[c]): 
+                    report += '<h2>' + c + '</h2>'
+                    for ind_name,r in enumerate(R_df_describe[c]):
                         report += str(desc_index[ind_name]) + ': '
-                        report += str(r) + '<br>' 
+                        report += str(r) + '<br>'
                     report += 'Distribution of corrlation values:'
                     report += '<img src=' + confound_report_figdir + c + '.png><br><br>'
                 report += '</body></html>'
 
             with open(confound_report_dir + analysis_step + '_vs_confounds.html', 'w') as file:
                 file.write(report)
-                
+
             file.close()
 
         if update_pipeline == True:
@@ -245,7 +245,7 @@ class TenetoBIDS:
 
     def get_space_alternatives(self,quiet=0):
         """
-        Returns which space alternatives can be identified in the BIDS derivatives structure. Spaces are denoted with the prefix "space-". 
+        Returns which space alternatives can be identified in the BIDS derivatives structure. Spaces are denoted with the prefix "space-".
         """
         if not self.pipeline:
             print('Please set pipeline first.')
@@ -266,9 +266,9 @@ class TenetoBIDS:
 
     def get_pipeline_alternatives(self,quiet=0):
         """
-        The pipeline are the different outputs that are placed in the ./derivatives directory. 
+        The pipeline are the different outputs that are placed in the ./derivatives directory.
 
-        get_pipeline_alternatives gets those which are found in the specified BIDS directory structure.  
+        get_pipeline_alternatives gets those which are found in the specified BIDS directory structure.
         """
         if not os.path.exists(self.BIDS_dir + '/derivatives/'):
             print('Derivative directory not found. Is the data preprocessed?')
@@ -284,7 +284,7 @@ class TenetoBIDS:
             self.get_pipeline_alternatives()
         else:
             pipeline_subdir_alternatives = []
-            # check code below, why is s not used? 
+            # check code below, why is s not used?
             for s in self.BIDS.get_subjects():
                 derdir_files = os.listdir(self.BIDS_dir + '/derivatives/' + self.pipeline + '/')
                 pipeline_subdir_alternatives += [f for f in derdir_files if os.path.isdir(f)]
@@ -391,7 +391,7 @@ class TenetoBIDS:
                 found = list(map(str.__add__,[re.sub('/+','/',wdir)]*len(found),found))
                 if found:
                     found_files += found
-            
+
 
         if quiet == 0:
             print(found_files)
@@ -454,17 +454,17 @@ class TenetoBIDS:
     def make_parcellation(self,parcellation,parc_type=None,parc_params=None,update_pipeline=True,removeconfounds=False):
 
         """
-        Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end. 
+        Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end.
 
-        **INPUT** 
+        **INPUT**
 
-        :parcellation: specify which parcellation that you would like to use. For MNI: power264, yeo, gordon333. TAL: 
-        :parc_type: can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used. 
-        :parc_params: **kwargs for nilearn functions 
+        :parcellation: specify which parcellation that you would like to use. For MNI: power264, yeo, gordon333. TAL:
+        :parc_type: can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
+        :parc_params: **kwargs for nilearn functions
         :removeconfounds: if true, regresses out confounds that are specfied in tnet.set_confounds
 
-        **NOTE** 
-        These functions make use of nilearn. Please cite nilearn if used in a publicaiton.   
+        **NOTE**
+        These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
         """
         parc_name = parcellation.split('_')[0].lower()
 
@@ -539,18 +539,18 @@ class TenetoBIDS:
 
     def set_last_analysis_step(self,last_analysis_step):
         """
-        The last analysis step is the final tag that is present in files. 
+        The last analysis step is the final tag that is present in files.
         """
         self.last_analysis_step = last_analysis_step
 
     def set_analysis_steps(self,analysis_step,add_step=False):
         """
-        Specify which analysis steps are part of the selected files. 
+        Specify which analysis steps are part of the selected files.
 
         Inputs
 
         :analysis_step: string or list of analysis tags that are found in the file names of interest. E.g. 'preproc' will only select files with 'preproc' in them.
-        :add_step: (optional). If true, then anything in self.analysis_steps is already kept.    
+        :add_step: (optional). If true, then anything in self.analysis_steps is already kept.
         """
         if isinstance(analysis_step,str):
             if add_step:
@@ -569,6 +569,9 @@ class TenetoBIDS:
 
 
     def set_pipeline(self,pipeline):
+        """
+        Specify the pipeline. See get_pipeline_alternatives to see what are avaialble. Input should be a string.
+        """
         if not os.path.exists(self.BIDS_dir + '/derivatives/' + pipeline):
             print('Specified direvative directory not found.')
             self.get_pipeline_alternatives()
@@ -586,6 +589,9 @@ class TenetoBIDS:
 
 
     def set_runs(self,runs):
+        """
+        Specify the runs which all selected files must include. See get_run_alternatives to see what are avaialble. Input can be string or list of strings.
+        """
         if isinstance(runs,str):
             runs=[runs]
         if self.raw_data_exists:
@@ -598,6 +604,9 @@ class TenetoBIDS:
             self.runs = sorted(list(tasks))
 
     def set_sessions(self,sessions):
+        """
+        Specify the sessions which all selected files must include. See get_session_alternatives to see what are avaialble.  Input can be string or list of strings.
+        """
         if isinstance(sessions,str):
             sessions=[sessions]
         if self.raw_data_exists:
@@ -610,12 +619,18 @@ class TenetoBIDS:
             self.sessions = sorted(list(tasks))
 
     def set_space(self,space):
+        """
+        Specify the space which all selected files must include. See get_space_alternatives to see what are avaialble.  Input can be string or list of strings.
+        """
         space_alternatives = self.get_space_alternatives(quiet=1)
         if space not in space_alternatives:
             raise ValueError('Specified space cannot be found for any subjects. Run TN.get_space_alternatives() to see the optinos in directories.')
         self.space = space
 
     def set_subjects(self,subjects=None):
+        """
+        Specify the subjects which are selected files for the analysis.   Input can be string or list of strings.
+        """
         if isinstance(subjects,str):
             subjects=[subjects]
         # GEt from raw data or from derivative structure
@@ -638,6 +653,9 @@ class TenetoBIDS:
 
 
     def set_tasks(self,tasks):
+        """
+        Specify the space which all selected files must include. See get_task_alternatives to see what are avaialble.  Input can be string or list of strings.
+        """
         if isinstance(tasks,str):
             tasks=[tasks]
         if self.raw_data_exists:
@@ -720,3 +738,16 @@ class TenetoBIDS:
             print('--- SELECTED DATA ---')
             print('Numnber of selected files: ' + str(len(selected_files)))
             print('\n - '.join(selected_files))
+
+    def save_aspickle(self, fname):
+        if fname[-4:] != '.pkl':
+            fname += '.pkl'
+        with open(fname, 'wb') as f:
+            pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
+
+    @classmethod
+    def load_frompickle(cls,fname):
+        if fname[-4:] != '.pkl':
+            fname += '.pkl'
+        with open(fname, 'rb') as f:
+            return pickle.load(f)
