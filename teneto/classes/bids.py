@@ -194,15 +194,12 @@ class TenetoBIDS:
         :measure_params: (dictionary or list of dictionaries) containing kwargs for the argument in measure.
 
         **NOTE**
-        If self.network_communities exist, subnet=True can be specified for subnet options.
+        If self.network_communities exist, subnet=True can be specified for subnet options instead of supplying the network atlas.
 
         **RETURNS**
         Saves in ./BIDS_dir/derivatives/teneto/sub-NAME/func/tvc/temporal-network-measures/MEASURE/
         """
 
-        if 'subnet' in measure_params:
-            if measure_params['subnet'] == True:
-                measure_params['subnet'] = list(self.network_communities['network_id'].values)
 
         module_dict = inspect.getmembers(teneto.networkmeasures)
         # Remove all functions starting with __
@@ -240,6 +237,10 @@ class TenetoBIDS:
 
             for i, m in enumerate(measure):
 
+                if 'subnet' in measure_params[i]:
+                    if measure_params[i]['subnet'] == True:
+                        measure_params[i]['subnet'] = list(self.network_communities['network_id'].values)
+
                 sname = m.replace('_','-')
                 if not os.path.exists(save_dir_base + sname):
                     os.makedirs(save_dir_base + sname)
@@ -247,7 +248,7 @@ class TenetoBIDS:
                 save_name = file_name + '_' + sname
                 netmeasure = module_dict[m](data,**measure_params[i])
 
-                np.savetxt(save_dir_base + sname + '/' + save_name + '.csv', netmeasure, delimiter=",", header=m)
+                np.savetxt(save_dir_base + sname + '/' + save_name + '.csv', netmeasure, delimiter=",")
 
 
     def get_space_alternatives(self,quiet=0):
