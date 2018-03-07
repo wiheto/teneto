@@ -17,7 +17,7 @@ def temporal_degree_centrality(net, axis=0, calc='avg', subnet=None, decay=None)
 
         :nettype: 'bu', 'bd', 'wu', 'wd'
 
-    :d: Dimension that is returned 0 or 1 (default 0).
+    :axis: Dimension that is returned 0 or 1 (default 0).
         Note, only relevant for directed networks.
         i.e. if 0, node i has Aijt summed over j and t.
         and if 1, node j has Aijt summed over i and t.
@@ -45,18 +45,10 @@ def temporal_degree_centrality(net, axis=0, calc='avg', subnet=None, decay=None)
 
     - *temporal_closeness_centrality*
 
-    **HISTORY**
-
-    Modified - Mar 2017, WHT (decay added)
-    Modified - Mar 2017, WHT (calc='time')
-    Modified - Dec 2016, WHT (docmentation)
-    Created - Nov 2016, WHT
-
     """
 
     # Get input in right format
-    net, netfo = utils.process_input(
-        net, ['C', 'G', 'TO'])
+    net, netinfo = utils.process_input(net, ['C', 'G', 'TO'])
 
     # sum sum net
     if calc == 'time' and not subnet:
@@ -68,9 +60,15 @@ def temporal_degree_centrality(net, axis=0, calc='avg', subnet=None, decay=None)
         unique_subnet = np.unique(subnet)
         tdeg_subnet = [np.sum(np.sum(net[subnet == s1, :, :][:, subnet == s2, :], axis=1), axis=0)
                        for s1 in unique_subnet for s2 in unique_subnet]
+
+
         tdeg = np.array(tdeg_subnet)
         tdeg = np.reshape(tdeg, [len(np.unique(subnet)), len(
             np.unique(subnet)), net.shape[-1]])
+        # Divide diagonal by 2 if undirected to correct for edges being present twice
+        if netinfo['nettype'][1] == 'u':
+            for s in range(tdeg.shape[0]):
+                tdeg[s,s,:] = tdeg[s,s,:]/2
     else:
         raise ValueError("invalid calc argument")
     if decay and calc=='time':

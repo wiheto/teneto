@@ -11,3 +11,4 @@ from teneto.networkmeasures.bursty_coeff import bursty_coeff
 from teneto.networkmeasures.fluctuability import fluctuability
 from teneto.networkmeasures.temporal_efficiency import temporal_efficiency
 from teneto.networkmeasures.reachability_latency import reachability_latency
+from teneto.networkmeasures.sid import sid
