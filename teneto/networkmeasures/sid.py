@@ -71,6 +71,6 @@ def sid(net, subnet, calc='global', decay=None):
     if calc == 'global':
         return np.sum(sid)
     elif calc == 'subnet_pairs':
-        pass np.sum(sid,axis=axis)
+        return np.sum(sid,axis=axis)
     else:
         return sid

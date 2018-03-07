@@ -451,7 +451,7 @@ class TenetoBIDS:
         self.confounds = confounds
 
 
-    def make_parcellation(self,parcellation,parc_type=None,parc_params=None,update_pipeline=True,removeconfounds=False):
+    def make_parcellation(self,parcellation,parc_type=None,parc_params=None,network='defaults',update_pipeline=True,removeconfounds=False):
 
         """
         Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end.
@@ -461,7 +461,9 @@ class TenetoBIDS:
         :parcellation: specify which parcellation that you would like to use. For MNI: power264, yeo, gordon333. TAL:
         :parc_type: can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
         :parc_params: **kwargs for nilearn functions
+        :network: if "defaults", it selects static parcellation if available (other options will be made available soon).
         :removeconfounds: if true, regresses out confounds that are specfied in tnet.set_confounds
+        :update_pipeline: teneto object gets updated with the parcellated files being selected.
 
         **NOTE**
         These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
@@ -482,6 +484,10 @@ class TenetoBIDS:
             for n in range(len(files)):
                 if confound_files[n].split('_confounds')[0] not in files[n]:
                     raise ValueError('Confound matching with data did not work.')
+
+        net_path = teneto.__path__[0] + '/data/parcellation_defaults/' + parcellation + '_network.csv'
+        if network == 'defaults' and os.path.exists(net_path):
+            self.network_communities = pd.read_csv(net_path,index_col=0)
 
         for i,f in enumerate(files):
 
