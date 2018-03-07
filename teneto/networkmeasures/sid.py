@@ -68,7 +68,7 @@ def sid(net, subnet, calc='global', decay=None):
             sid[n,m,:] = withinmodulescaling * D[n,n,:] - betweenmodulescaling * D[n,m,:]
 
     if calc == 'global':
-        return np.sum(sid)
+        return np.sum(np.sum(sid,axis=1),axis=0)
     elif calc == 'subnet_pairs':
         return np.sum(sid,axis=axis)
     else:

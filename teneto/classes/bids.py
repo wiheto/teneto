@@ -188,14 +188,21 @@ class TenetoBIDS:
 
         For available funcitons see: teneto.networkmeasures
 
-        *INPUT*
+        **INPUT**
 
         :measure: (string or list) the function(s) from teneto.networkmeasures.
         :measure_params: (dictionary or list of dictionaries) containing kwargs for the argument in measure.
 
-        *RETURNS*
+        **NOTE**
+        If self.network_communities exist, subnet=True can be specified for subnet options.
+
+        **RETURNS**
         Saves in ./BIDS_dir/derivatives/teneto/sub-NAME/func/tvc/temporal-network-measures/MEASURE/
         """
+
+        if 'subnet' in measure_params:
+            if measure_params['subnet'] == True:
+                measure_params['subnet'] = list(self.network_communities['network_id'].values)
 
         module_dict = inspect.getmembers(teneto.networkmeasures)
         # Remove all functions starting with __
