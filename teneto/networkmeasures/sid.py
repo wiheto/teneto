@@ -65,7 +65,6 @@ def sid(net, subnet, calc='global', decay=None):
                 withinmodulescaling = 2/(subnet_size[n]*(subnet_size[n]-1))
                 if n == m:
                     betweenmodulescaling = withinmodulescaling
-                    print(betweensubnetwork)
             sid[n,m,:] = withinmodulescaling * D[n,n,:] - betweenmodulescaling * D[n,m,:]
 
     if calc == 'global':
