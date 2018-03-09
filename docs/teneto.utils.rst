@@ -1,11 +1,11 @@
-teneto.utils package
-====================
+teneto\.utils package
+=====================
 
 Submodules
 ----------
 
-teneto.utils.utils module
--------------------------
+teneto\.utils\.utils module
+---------------------------
 
 .. automodule:: teneto.utils.utils
     :members:

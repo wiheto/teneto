@@ -1,11 +1,11 @@
-teneto.generatenetwork package
-==============================
+teneto\.generatenetwork package
+===============================
 
 Submodules
 ----------
 
-teneto.generatenetwork.rand_binomial module
--------------------------------------------
+teneto\.generatenetwork\.rand\_binomial module
+----------------------------------------------
 
 .. automodule:: teneto.generatenetwork.rand_binomial
     :members:
