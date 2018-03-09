@@ -22,9 +22,17 @@
 
 - Added more documentation to functions
 
-- Added networkmeasures.sid
+- Added `networkmeasures.sid`
 
 - Added forced division by 2 for within (calc: time and subnetwork specified)
+
+- Added version number to pipeline name in tenetoBIDS
+
+- Added `TenetoBIDS.make_time_locked_events` and `TenetoBIDS.load_network_measure`
+
+- Added `teneto.utils.get_dimord`
+
+- Fixed the `teneto.__version__` that wasn't getting updated (stuck on 0.2.2 for previous versions. So check setup.py in previous versions to be sure what version you were using.)
 
 ## V0.2.4b
 
