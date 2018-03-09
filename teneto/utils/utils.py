@@ -741,3 +741,49 @@ def create_traj_ranges(start, stop, N):
         return steps*np.arange(N) + start
     else:
         return steps[:,None]*np.arange(N) + start[:,None]
+
+
+
+def get_dimord(measure,calc=None,subnet=None):
+    if not calc: 
+        calc = ''
+    else: 
+        calc = '_' + calc
+    if not subnet: 
+        subnet = ''
+    else: 
+        subnet = '_subnet'
+    if '_subnet' in calc and '_subnet' in subnet: 
+        subnet = ''
+    dimord_dict = {
+        'temporal_closeness_centrality': 'node',
+        'temporal_degree_centrality': 'node',
+        'temporal_degree_centralit_avg': 'node',
+        'temporal_degree_centrality_time': 'node,time',
+        'temporal_degree_centrality_time_subnet': 'subnet,subnet,time',
+        'temporal_degree_centrality_subnet': 'subnet,subnet',
+        'temporal_degree_centrality_avg_subnet': 'subnet,subnet',
+        'temporal_efficiency': 'global',
+        'temporal_efficiency_global': 'global',
+        'temporal_efficiency_node': 'node',
+        'temporal_efficiency_to': 'node',
+        'sid_global': 'global,time',
+        'sid_subnet_pairs': 'subnet,subnet,time',
+        'sid_subnet_avg': 'subnet,time',
+        'sid': 'global,time',
+        'reachability_latency_global': 'global',
+        'reachability_latency': 'global',
+        'reachability_latency_node': 'node',
+        'fluctuability': 'node',
+        'fluctuability_global': 'global',
+        'bursty_coeff': 'edge,edge',
+        'bursty_coeff_edge': 'edge,edge',
+        'bursty_coeff_node': 'node',
+        'bursty_coeff_subnet': 'subnet,subnet',
+        'bursty_coeff_meanEdgePerNode': 'node',
+    }
+    if measure + calc + subnet in dimord_dict: 
+        return dimord_dict[measure + calc + subnet] 
+    else: 
+        print('Unknown dimension order')
+        return 'unknown'
