@@ -20,8 +20,9 @@ def volatility(net, distance_func_name='default', calc='global', subnet_id=None)
         :'node': (i.e. returns the average per node output when calculating volatility per 'edge').
         :'time': returns volatility per time point
         :'subnet': returns volatility per subnetwork id (see subnet_id). Also is returned per time-point and this may be changed in the future (with additional options)
-        :'subnet_id': vector of integers.
-        :Note: Index of subnetworks are returned "as is" with a shape of [max(subnet)+1,max(subnet)+1]. So if the indexes used are [1,2,3,5], V.shape==(6,6). The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns). If this behaviour is unwanted, call clean_subnetdexes first.
+    :'subnet_id': vector of integers.
+    
+    :Note: Index of subnetworks are returned "as is" with a shape of [max(subnet)+1,max(subnet)+1]. So if the indexes used are [1,2,3,5], V.shape==(6,6). The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns). If this behaviour is unwanted, call clean_subnetdexes first. This will probably change.
 
     :network:
 

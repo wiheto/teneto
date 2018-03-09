@@ -5,7 +5,7 @@ import numpy as np
 from teneto.networkmeasures.temporal_degree_centrality import temporal_degree_centrality
 
 
-def sid(net, subnet, calc='global', decay=None):
+def sid(net, subnet, axis=0, calc='global', decay=None):
     """
 
     Segregation integration difference (SID). An estimation of each subnetwork (or global) difference of within versus between subnetwork strength.
@@ -69,7 +69,7 @@ def sid(net, subnet, calc='global', decay=None):
 
     if calc == 'global':
         return np.sum(np.sum(sid,axis=1),axis=0)
-    elif calc == 'subnet_pairs':
+    elif calc == 'subnet_avg':
         return np.sum(sid,axis=axis)
     else:
         return sid
