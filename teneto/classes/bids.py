@@ -10,6 +10,7 @@ import statsmodels.formula.api as smf
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pickle
+
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
 #        pass
@@ -118,10 +119,10 @@ class TenetoBIDS:
                 paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)[0]
             else:
                 paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
-            save_dir = self.BIDS_dir + '/derivatives/' + 'teneto/' + paths_post_pipeline + '/tvc/'
+            save_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/tvc/'
 
             params['report'] = 'yes'
-            params['report_path'] =  self.BIDS_dir + '/derivatives/' + 'teneto/' + paths_post_pipeline + '/tvc/report/'
+            params['report_path'] =  self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/tvc/report/'
             params['report_filename'] =  save_name + '_derivationreport.html'
 
             if not os.path.exists(save_dir):
@@ -177,9 +178,9 @@ class TenetoBIDS:
         if update_pipeline == True:
             if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
                 self.set_confound_pipeline = self.pipeline
-            self.set_pipeline('teneto')
+            self.set_pipeline('teneto_' + teneto.__version__)
             self.set_pipeline_subdir('tvc')
-            self.set_last_analysis_step('tvc')
+            self.set_last_analysis_step('tvc')  
 
 
     def networkmeasures(self, measure=None, measure_params={}):
@@ -208,7 +209,7 @@ class TenetoBIDS:
         if isinstance(measure, str):
             measure = [measure]
         # measure_params can be dictionaary or list of dictionaries
-        if isinstance(measure_params, dict):
+        if     isinstance(measure_params, dict):
             measure_params = [measure_params]
         if measure_params and len(measure) != len(measure_params):
             raise ValueError('Number of identified measure_params (' + str(len(measure_params)) + ') differs from number of identified measures (' + str(len(measure)) + '). Leave black dictionary if default methods are wanted')
@@ -222,6 +223,20 @@ class TenetoBIDS:
             print('Following measures are valid (specified as string or list): \n - ' + '\n - '.join(module_dict.keys()))
 
         files = self.get_selected_files(quiet=1)
+
+        if 'calc' in measure_params:
+            c = measure_params['calc']
+        else:
+            c = None
+        if 'subnet' in measure_params:
+            s = measure_params['calc']
+        else:
+            s = None 
+
+        dimord = teneto.utils.get_dimord(measure,c,s)
+        dimord_str
+        if dimord != 'unknown': 
+            dimord_str = '_dimord-' + dimord
 
         for f in files:
 
@@ -239,7 +254,7 @@ class TenetoBIDS:
 
                 if 'subnet' in measure_params[i]:
                     if measure_params[i]['subnet'] == True:
-                        measure_params[i]['subnet'] = list(self.network_communities['network_id'].values)
+                        measure_params[i]['subnet'] = list(self.network_communities_['network_id'].values)
 
                 sname = m.replace('_','-')
                 if not os.path.exists(save_dir_base + sname):
@@ -248,8 +263,7 @@ class TenetoBIDS:
                 save_name = file_name + '_' + sname
                 netmeasure = module_dict[m](data,**measure_params[i])
 
-                np.savetxt(save_dir_base + sname + '/' + save_name + '.csv', netmeasure, delimiter=",")
-
+                np.save(save_dir_base + sname + '/' + save_name, netmeasure)
 
     def get_space_alternatives(self,quiet=0):
         """
@@ -287,14 +301,19 @@ class TenetoBIDS:
             return list(pipeline_alternatives)
 
     def get_pipeline_subdir_alternatives(self,quiet=0):
+        """
+        This function currently returns the wrong folders. 
+
+        This function should return ./derivatives/pipeline/sub-xx/[ses-yy/][func/]/pipeline_subdir 
+        But it does not care about ses-yy at the moment. 
+        """
         if not self.pipeline:
             print('Please set pipeline first.')
             self.get_pipeline_alternatives()
         else:
             pipeline_subdir_alternatives = []
-            # check code below, why is s not used?
             for s in self.BIDS.get_subjects():
-                derdir_files = os.listdir(self.BIDS_dir + '/derivatives/' + self.pipeline + '/')
+                derdir_files = os.listdir(self.BIDS_dir + '/derivatives/' + self.pipeline + '/' + s + '/')
                 pipeline_subdir_alternatives += [f for f in derdir_files if os.path.isdir(f)]
             pipeline_subdir_alternatives = set(pipeline_subdir_alternatives)
             if quiet == 0:
@@ -458,6 +477,18 @@ class TenetoBIDS:
 
         self.confounds = confounds
 
+    def set_network_communities(self,parcellation):
+        net_path = teneto.__path__[0] + '/data/parcellation_defaults/' + parcellation + '_network.csv'
+        if os.path.exists(parcellation):
+            self.network_communities_ = pd.read_csv(parcellation,index_col=0)
+            self.network_communities_info_ = self.network_communities_.drop_duplicates().sort_values('network_id').reset_index(drop=True)
+            self.network_communities_info_['number_of_nodes'] = self.network_communities_.groupby('network_id').count()
+        elif os.path.exists(net_path):
+            self.network_communities_ = pd.read_csv(net_path,index_col=0)
+            self.network_communities_info_ = self.network_communities_.drop_duplicates().sort_values('network_id').reset_index(drop=True)
+            self.network_communities_info_['number_of_nodes'] = self.network_communities_.groupby('network_id').count()
+        else: 
+            print('No (static) network community file found.')            
 
     def make_parcellation(self,parcellation,parc_type=None,parc_params=None,network='defaults',update_pipeline=True,removeconfounds=False):
 
@@ -470,7 +501,7 @@ class TenetoBIDS:
         :parc_type: can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
         :parc_params: **kwargs for nilearn functions
         :network: if "defaults", it selects static parcellation if available (other options will be made available soon).
-        :removeconfounds: if true, regresses out confounds that are specfied in tnet.set_confounds
+        :removeconfounds: if true, regresses out confounds that are specfied in self.set_confounds
         :update_pipeline: teneto object gets updated with the parcellated files being selected.
 
         **NOTE**
@@ -493,9 +524,7 @@ class TenetoBIDS:
                 if confound_files[n].split('_confounds')[0] not in files[n]:
                     raise ValueError('Confound matching with data did not work.')
 
-        net_path = teneto.__path__[0] + '/data/parcellation_defaults/' + parcellation + '_network.csv'
-        if network == 'defaults' and os.path.exists(net_path):
-            self.network_communities = pd.read_csv(net_path,index_col=0)
+        self.set_network_communities(parcellation)
 
         for i,f in enumerate(files):
 
@@ -505,7 +534,7 @@ class TenetoBIDS:
             if self.pipeline_subdir:
                 paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)
             paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
-            save_dir = self.BIDS_dir + '/derivatives/teneto/' + paths_post_pipeline + '/parcellation/'
+            save_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/parcellation/'
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
             roi = teneto.utils.make_parcellation(f,parcellation,parc_type,parc_params)
@@ -543,7 +572,7 @@ class TenetoBIDS:
         if update_pipeline == True:
             if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
                 self.set_confound_pipeline(self.pipeline)
-            self.set_pipeline('teneto')
+            self.set_pipeline('teneto_' + teneto.__version__)
             self.set_pipeline_subdir('parcellation')
             self.analysis_steps += self.last_analysis_step
             self.set_last_analysis_step('roi')
@@ -765,3 +794,104 @@ class TenetoBIDS:
             fname += '.pkl'
         with open(fname, 'rb') as f:
             return pickle.load(f)
+
+
+    def load_network_measure(self,measure,event_locked=False,calc=None): 
+
+        data_list=[]
+        trialinfo_list = []
+        for s in self.subjects:
+            # Define base folder
+            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline  
+            base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/' 
+            measure_sub = measure
+            # Add evet_locked folder if thats what is asked for 
+            if event_locked:
+                base_path += 'event-locked/'
+                measure_sub = 'time-locked-' + measure_sub
+            # Get files
+            file_list=os.listdir(base_path)
+            # Get tags in filename 
+            for f in file_list: 
+                if os.path.isfile(base_path + f):
+                    tags=re.findall('[a-zA-Z]*-',f)
+                    tag_dict = {}
+                    for t in tags: 
+                        key = t[:-1]
+                        tag_dict[key]=re.findall(t+'[A-Za-z0-9]*',f)[0].split('-')[-1]
+                    # Get data
+                    if f.split('.')[-1] == 'pkl': 
+                        df = pd.read_pickle(base_path+f)
+                        data = df[measure_sub].values
+                        trialinfo = df.drop(measure_sub, 1)
+                        for k in tag_dict.keys(): 
+                            trialinfo[k] = tag_dict[k]
+                        trialinfo_list.append(trialinfo)    
+                        for d in data:
+                            data_list.append(d)
+                    else: 
+                        print('Warning: Could not find pickle data')
+                        
+            self.networkmeasure_ = np.array(data_list)
+            out_trialinfo = pd.concat(trialinfo_list)
+            out_trialinfo.reset_index(inplace=True,drop=True)
+            self.trialinfo_ = out_trialinfo
+
+
+
+    def make_time_locked_events(self, measure, event_names, event_onsets, toi): 
+
+        """
+        Creates time locked time series of <measure>
+
+        Measure must have time in its -1 axis.  
+
+        :measure: temporal network measure that should already exist in the teneto/[subject]/tvc/network-measures directory  
+        :event_names: what the event is called (can be list of multiple event names) 
+        :event_onsets: list of onset times (can be list of list for multiple events) 
+        :toi: +/- time points around each event. So if toi = [-10,10] it will take 10 time points before and 10 time points after 
+
+        (Currently no ability to loop over more than one measure)
+
+        """
+
+        event_onsets_combined = list(itertools.chain.from_iterable(event_onsets))
+        event_names_list = [[e]*len(event_onsets[i]) for i,e in enumerate(event_names)]
+        event_names_list = list(itertools.chain.from_iterable(event_names_list))
+        #time_index = np.arange(toi[0],toi[1]+1)
+
+        for s in self.subjects:
+
+            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline  
+            base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/' 
+
+            if not os.path.exists(base_path): 
+                print('Warning: cannot find data for subject: ' + s)
+
+            if not os.path.exists(base_path + '/event-locked/'):
+                os.makedirs(base_path + '/event-locked/')
+
+            for f in os.listdir(base_path): 
+                if os.path.isfile(base_path + f):
+                    self_measure = np.load(base_path + '/' + f)
+                    # make time dimensions the first dimension 
+                    self_measure = self_measure.transpose([len(self_measure.shape)-1] + list(np.arange(0,len(self_measure.shape)-1))) 
+                    tl_data = []
+                    for e in event_onsets_combined:
+                        tmp = self_measure[e+toi[0]:e+toi[1]+1]
+                        # Make time dimension last dimension 
+                        tmp = tmp.transpose(list(np.arange(1,len(self_measure.shape))) + [0]) 
+                        tl_data.append(tmp)
+                    df=pd.DataFrame(data={'time-locked-' + measure: tl_data, 'event': event_names_list, 'event_osnet': event_onsets_combined})
+                    net_event = [] 
+                    for e in df['event'].unique(): 
+                        edf = df[df['event']==e]
+                        net_tmp = []
+                        for r in edf.iterrows():
+                            net_tmp.append(r[1]['time-locked-' + measure])
+                        net_event.append(np.array(net_tmp).mean(axis=0)) 
+                    # Save output 
+                    save_dir_base = base_path + 'time_locked'
+                    file_name = f.split('/')[-1].split('.')[0] + '_timelocked'
+                    df.to_pickle(save_dir_base + file_name + '.pkl')
+
