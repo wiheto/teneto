@@ -8,6 +8,10 @@ For neuroimaging data, compatible with BIDS format.
 
 ## Installation
 
+Download additional requirements 
+
+`pip install bids`
+
 With pip installed:
 
 `pip install teneto`
@@ -16,17 +20,7 @@ to upgrade teneto:
 
 `pip install teneto -U`
 
-Requires: Python 3.5 or python 3.6 and pip.
-
-Package dependencies:
-- matplotlib>=1.5.3
-- nilearn>=0.2.6
-- numpy>=1.13.1
-- pandas>=0.20.3
-- scipy>=0.18.1
-- statsmodels>=0.8.0
-
-Other versions of python (2.7 and <3.5) may work, but not tested.
+Requires: Python 3.5 or python 3.6. Other versions of python (2.7 and <3.5) may work, but not tested.
 
 ### Tutorials
 
@@ -44,8 +38,7 @@ __These will be updated__
 
 ### Documentation
 
-Documentation for the functions can be found at  [teneto.readthedocs.io](https://teneto.readthedocs.io),  At some point the tutorials and documentation will merge.
-
+Documentation for the functions can be found at  [teneto.readthedocs.io](https://teneto.readthedocs.io).
 
 ### Measures
 
