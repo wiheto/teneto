@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.2.5 (pending release)
+## V0.2.5 
 
 - Removed older examples.
 
@@ -33,6 +33,10 @@
 - Added `teneto.utils.get_dimord`
 
 - Fixed the `teneto.__version__` that wasn't getting updated (stuck on 0.2.2 for previous versions. So check setup.py in previous versions to be sure what version you were using.)
+
+- Updated readthedocs (fixed bugs)
+
+- Fixed pybids (instead of bids) in requirements. Removed unnecessary requirements
 
 ## V0.2.4b
 
