@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.2.5 
+## V0.2.6 (and partly V0.2.5) 
 
 - Removed older examples.
 
