@@ -6,4 +6,4 @@ seaborn==0.8.1
 matplotlib==2.2.0
 scipy==1.0.0
 pandas>=0.22
-sklearn>=0.19.1
+sklearn==0.19.1
