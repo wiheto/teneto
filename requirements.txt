@@ -1,8 +1,8 @@
-nilearn>=0.4.0
-pandas>=0.22.0
-statsmodels>=0.8.0
-scipy>=1.0.0
-numpy>=1.14.1
-seaborn>=0.8.1
-setuptools>=38.5.2
-matplotlib>=2.2.0
+setuptools==38.5.2
+numpy==1.14.1
+nilearn==0.4.0
+statsmodels==0.8.0
+seaborn==0.8.1
+matplotlib==2.2.0
+scipy==1.0.0
+pandas==0.23.0.dev0+453.g63ce781c9
