@@ -8,7 +8,7 @@ For neuroimaging data, compatible with BIDS format.
 
 ## Installation
 
-Download additional requirements 
+Download additional requirements https://github.com/
 
 `pip install bids`
 
