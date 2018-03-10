@@ -191,7 +191,7 @@ class TenetoBIDS:
 
         **INPUT**
 
-        :measure: (string or list) the function(s) from teneto.networkmeasures.
+        :measure: (string or list) nthe function(s) from teneto.networkmeasures.
         :measure_params: (dictionary or list of dictionaries) containing kwargs for the argument in measure.
 
         **NOTE**
@@ -224,19 +224,6 @@ class TenetoBIDS:
 
         files = self.get_selected_files(quiet=1)
 
-        if 'calc' in measure_params:
-            c = measure_params['calc']
-        else:
-            c = None
-        if 'subnet' in measure_params:
-            s = measure_params['calc']
-        else:
-            s = None 
-
-        dimord = teneto.utils.get_dimord(measure,c,s)
-        dimord_str
-        if dimord != 'unknown': 
-            dimord_str = '_dimord-' + dimord
 
         for f in files:
 
@@ -252,6 +239,22 @@ class TenetoBIDS:
 
             for i, m in enumerate(measure):
 
+                # The following 12 lines get the dimord
+                if 'calc' in measure_params[i]:
+                    c = measure_params[i]['calc']
+                    cs = 'calc-' + c
+                else:
+                    c = ''
+                    cs = ''
+                if 'subnet' in measure_params[i]:
+                    s = 'subnet'
+                else:
+                    s = '' 
+                dimord = teneto.utils.get_dimord(m,c,s)
+                dimord_str = ''
+                if dimord != 'unknown': 
+                    dimord_str = '_dimord-' + dimord
+
                 if 'subnet' in measure_params[i]:
                     if measure_params[i]['subnet'] == True:
                         measure_params[i]['subnet'] = list(self.network_communities_['network_id'].values)
@@ -260,7 +263,7 @@ class TenetoBIDS:
                 if not os.path.exists(save_dir_base + sname):
                     os.makedirs(save_dir_base + sname)
 
-                save_name = file_name + '_' + sname
+                save_name = file_name + '_' + sname + cs + dimord_str
                 netmeasure = module_dict[m](data,**measure_params[i])
 
                 np.save(save_dir_base + sname + '/' + save_name, netmeasure)

@@ -755,6 +755,9 @@ def get_dimord(measure,calc=None,subnet=None):
         subnet = '_subnet'
     if '_subnet' in calc and '_subnet' in subnet: 
         subnet = ''
+    if calc == 'subnet_avg' or calc == 'subnet_pairs': 
+        subnet = ''
+        
     dimord_dict = {
         'temporal_closeness_centrality': 'node',
         'temporal_degree_centrality': 'node',
