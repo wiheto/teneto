@@ -1,5 +1,17 @@
 # Changelog
 
+## V0.2.7 (Pending release) 
+
+- Added calc option to `TenetoBIDS.make_time_locked_events` allowing for selecting one of multiple networkmeasures
+
+- Corrected bug where timelocked files were not placed in timelocked directory 
+
+- Changed all forms of time_locked and event-locked to timelocked
+
+- Added load_parcellation_data to TenetoBIDS
+
+*more to come*
+
 ## V0.2.6 (and partly V0.2.5) 
 
 - Removed older examples.

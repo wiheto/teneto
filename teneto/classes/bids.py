@@ -90,6 +90,7 @@ class TenetoBIDS:
         else:
             self.analysis_steps = ''
 
+
     def derive(self, params, update_pipeline=True):
 
         """
@@ -180,7 +181,7 @@ class TenetoBIDS:
                 self.set_confound_pipeline = self.pipeline
             self.set_pipeline('teneto_' + teneto.__version__)
             self.set_pipeline_subdir('tvc')
-            self.set_last_analysis_step('tvc')  
+            self.set_last_analysis_step('tvc')
 
 
     def networkmeasures(self, measure=None, measure_params={}):
@@ -242,17 +243,17 @@ class TenetoBIDS:
                 # The following 12 lines get the dimord
                 if 'calc' in measure_params[i]:
                     c = measure_params[i]['calc']
-                    cs = 'calc-' + c
+                    cs = '_calc-' + c
                 else:
                     c = ''
                     cs = ''
                 if 'subnet' in measure_params[i]:
                     s = 'subnet'
                 else:
-                    s = '' 
+                    s = ''
                 dimord = teneto.utils.get_dimord(m,c,s)
                 dimord_str = ''
-                if dimord != 'unknown': 
+                if dimord != 'unknown':
                     dimord_str = '_dimord-' + dimord
 
                 if 'subnet' in measure_params[i]:
@@ -305,10 +306,10 @@ class TenetoBIDS:
 
     def get_pipeline_subdir_alternatives(self,quiet=0):
         """
-        This function currently returns the wrong folders. 
+        This function currently returns the wrong folders.
 
-        This function should return ./derivatives/pipeline/sub-xx/[ses-yy/][func/]/pipeline_subdir 
-        But it does not care about ses-yy at the moment. 
+        This function should return ./derivatives/pipeline/sub-xx/[ses-yy/][func/]/pipeline_subdir
+        But it does not care about ses-yy at the moment.
         """
         if not self.pipeline:
             print('Please set pipeline first.')
@@ -490,8 +491,8 @@ class TenetoBIDS:
             self.network_communities_ = pd.read_csv(net_path,index_col=0)
             self.network_communities_info_ = self.network_communities_.drop_duplicates().sort_values('network_id').reset_index(drop=True)
             self.network_communities_info_['number_of_nodes'] = self.network_communities_.groupby('network_id').count()
-        else: 
-            print('No (static) network community file found.')            
+        else:
+            print('No (static) network community file found.')
 
     def make_parcellation(self,parcellation,parc_type=None,parc_params=None,network='defaults',update_pipeline=True,removeconfounds=False):
 
@@ -799,60 +800,117 @@ class TenetoBIDS:
             return pickle.load(f)
 
 
-    def load_network_measure(self,measure,event_locked=False,calc=None): 
-
+    def load_parcellation_data(self,parcellation=None):
         data_list=[]
         trialinfo_list = []
+        if parcellation: 
+            self.parcellation = parcellation  
+        if not self.parcellation: 
+            self.parcellation = ''
         for s in self.subjects:
             # Define base folder
-            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline  
-            base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/' 
-            measure_sub = measure
-            # Add evet_locked folder if thats what is asked for 
-            if event_locked:
-                base_path += 'event-locked/'
-                measure_sub = 'time-locked-' + measure_sub
-            # Get files
+            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
+            base_path += '/sub-' + s + '/func/parcellation/'
             file_list=os.listdir(base_path)
-            # Get tags in filename 
-            for f in file_list: 
-                if os.path.isfile(base_path + f):
+            for f in file_list:
+                if self.parcellation in f: 
                     tags=re.findall('[a-zA-Z]*-',f)
                     tag_dict = {}
-                    for t in tags: 
+                    for t in tags:
                         key = t[:-1]
                         tag_dict[key]=re.findall(t+'[A-Za-z0-9]*',f)[0].split('-')[-1]
-                    # Get data
-                    if f.split('.')[-1] == 'pkl': 
+                    if f.split('.')[-1] == 'pkl':
                         df = pd.read_pickle(base_path+f)
                         data = df[measure_sub].values
                         trialinfo = df.drop(measure_sub, 1)
-                        for k in tag_dict.keys(): 
+                        for k in tag_dict.keys():
                             trialinfo[k] = tag_dict[k]
-                        trialinfo_list.append(trialinfo)    
+                        trialinfo_list.append(trialinfo)
                         for d in data:
                             data_list.append(d)
-                    else: 
-                        print('Warning: Could not find pickle data')
-                        
+                    elif f.split('.')[-1] == 'npy':
+                        data = np.load(base_path+f)
+                        data_list.append(data)
+                        trialinfo = pd.DataFrame(tag_dict,index=[0])
+                        trialinfo_list.append(trialinfo)
+                    else:
+                        print('Warning: Could not find data for a subject')
+
+            self.parcellation_data_ = np.array(data_list)
+            if trialinfo_list:
+                out_trialinfo = pd.concat(trialinfo_list)
+                out_trialinfo.reset_index(inplace=True,drop=True)
+                self.parcellation_trialinfo_ = out_trialinfo
+                    
+
+    def load_network_measure(self,measure,timelocked=False,calc=None):
+
+        data_list=[]
+        trialinfo_list = []
+
+        if not calc:
+            calc = ''
+        else:
+            calc = 'calc-' + calc
+
+        for s in self.subjects:
+            # Define base folder
+            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
+            base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/'
+            measure_sub = measure
+            # Add evet_locked folder if thats what is asked for
+            if timelocked:
+                base_path += 'timelocked/'
+                measure_sub = 'timelocked-' + measure_sub
+            # Get files
+            file_list=os.listdir(base_path)
+            # Get tags in filename
+            for f in file_list:
+                if os.path.isfile(base_path + f):
+                    if calc in f:
+                        tags=re.findall('[a-zA-Z]*-',f)
+                        tag_dict = {}
+                        for t in tags:
+                            key = t[:-1]
+                            tag_dict[key]=re.findall(t+'[A-Za-z0-9]*',f)[0].split('-')[-1]
+                        # Get data
+                        if f.split('.')[-1] == 'pkl':
+                            df = pd.read_pickle(base_path+f)
+                            data = df[measure_sub].values
+                            trialinfo = df.drop(measure_sub, 1)
+                            for k in tag_dict.keys():
+                                trialinfo[k] = tag_dict[k]
+                            trialinfo_list.append(trialinfo)
+                            for d in data:
+                                data_list.append(d)
+                        elif f.split('.')[-1] == 'npy':
+                            data = np.load(base_path+f)
+                            data_list.append(data)
+                            trialinfo = pd.DataFrame(tag_dict,index=[0])
+                            trialinfo_list.append(trialinfo)
+
+                        else:
+                            print('Warning: Could not find pickle data')
+
             self.networkmeasure_ = np.array(data_list)
-            out_trialinfo = pd.concat(trialinfo_list)
-            out_trialinfo.reset_index(inplace=True,drop=True)
-            self.trialinfo_ = out_trialinfo
+            if trialinfo_list:
+                out_trialinfo = pd.concat(trialinfo_list)
+                out_trialinfo.reset_index(inplace=True,drop=True)
+                self.trialinfo_ = out_trialinfo
 
 
 
-    def make_time_locked_events(self, measure, event_names, event_onsets, toi): 
+    def make_timelocked_events(self, measure, event_names, event_onsets, toi, calc=None):
 
         """
         Creates time locked time series of <measure>
 
-        Measure must have time in its -1 axis.  
+        Measure must have time in its -1 axis.
 
-        :measure: temporal network measure that should already exist in the teneto/[subject]/tvc/network-measures directory  
-        :event_names: what the event is called (can be list of multiple event names) 
-        :event_onsets: list of onset times (can be list of list for multiple events) 
-        :toi: +/- time points around each event. So if toi = [-10,10] it will take 10 time points before and 10 time points after 
+        :measure: temporal network measure that should already exist in the teneto/[subject]/tvc/network-measures directory
+        :event_names: what the event is called (can be list of multiple event names)
+        :event_onsets: list of onset times (can be list of list for multiple events)
+        :toi: +/- time points around each event. So if toi = [-10,10] it will take 10 time points before and 10 time points after
 
         (Currently no ability to loop over more than one measure)
 
@@ -863,38 +921,47 @@ class TenetoBIDS:
         event_names_list = list(itertools.chain.from_iterable(event_names_list))
         #time_index = np.arange(toi[0],toi[1]+1)
 
+        if not calc:
+            calc = ''
+        else:
+            calc = 'calc-' + calc
+
         for s in self.subjects:
 
-            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline  
-            base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/' 
+            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
+            base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/'
 
-            if not os.path.exists(base_path): 
+            if not os.path.exists(base_path):
                 print('Warning: cannot find data for subject: ' + s)
 
-            if not os.path.exists(base_path + '/event-locked/'):
-                os.makedirs(base_path + '/event-locked/')
+            if not os.path.exists(base_path + '/timelocked/'):
+                os.makedirs(base_path + '/timelocked/')
 
-            for f in os.listdir(base_path): 
+            for f in os.listdir(base_path):
                 if os.path.isfile(base_path + f):
-                    self_measure = np.load(base_path + '/' + f)
-                    # make time dimensions the first dimension 
-                    self_measure = self_measure.transpose([len(self_measure.shape)-1] + list(np.arange(0,len(self_measure.shape)-1))) 
-                    tl_data = []
-                    for e in event_onsets_combined:
-                        tmp = self_measure[e+toi[0]:e+toi[1]+1]
-                        # Make time dimension last dimension 
-                        tmp = tmp.transpose(list(np.arange(1,len(self_measure.shape))) + [0]) 
-                        tl_data.append(tmp)
-                    df=pd.DataFrame(data={'time-locked-' + measure: tl_data, 'event': event_names_list, 'event_osnet': event_onsets_combined})
-                    net_event = [] 
-                    for e in df['event'].unique(): 
-                        edf = df[df['event']==e]
-                        net_tmp = []
-                        for r in edf.iterrows():
-                            net_tmp.append(r[1]['time-locked-' + measure])
-                        net_event.append(np.array(net_tmp).mean(axis=0)) 
-                    # Save output 
-                    save_dir_base = base_path + 'time_locked'
-                    file_name = f.split('/')[-1].split('.')[0] + '_timelocked'
-                    df.to_pickle(save_dir_base + file_name + '.pkl')
+                    if calc in f:
+                        self_measure = np.load(base_path + '/' + f)
+                        # make time dimensions the first dimension
+                        self_measure = self_measure.transpose([len(self_measure.shape)-1] + list(np.arange(0,len(self_measure.shape)-1)))
+                        tl_data = []
+                        for e in event_onsets_combined:
+                            tmp = self_measure[e+toi[0]:e+toi[1]+1]
+                            # Make time dimension last dimension
+                            tmp = tmp.transpose(list(np.arange(1,len(self_measure.shape))) + [0])
+                            tl_data.append(tmp)
+                        df=pd.DataFrame(data={'timelocked-' + measure: tl_data, 'event': event_names_list, 'event_osnet': event_onsets_combined})
+                        net_event = []
+                        for e in df['event'].unique():
+                            edf = df[df['event']==e]
+                            net_tmp = []
+                            for r in edf.iterrows():
+                                net_tmp.append(r[1]['timelocked-' + measure])
+                            net_event.append(np.array(net_tmp).mean(axis=0))
+                        # Save output
+                        save_dir_base = base_path + 'timelocked/'
+                        file_name = f.split('/')[-1].split('.')[0] + '_timelocked'
+                        df.to_pickle(save_dir_base + file_name + '.pkl')
 
+
+    def load_participant_data(self):
+        self.participants_ = pd.read_csv(self.BIDS_dir + 'participants.tsv',delimiter='\t')
