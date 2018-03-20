@@ -66,8 +66,7 @@ release = '0.2.7'
 # for a list of supported languages.
 #
 # This is also used if you do content translation via gettext catalogs.
-# Usually you set "language = 'index'
-" from the command line for these cases.
+# Usually you set "language = 'index' from the command line for these cases.
 language = None
 
 # There are two options for replacing |today|: either, you set today to some
