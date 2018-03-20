@@ -1,4 +1,4 @@
-setuptools==38.5.2
+setuptools==34.3.2
 numpy==1.14.1
 nilearn==0.4.0
 statsmodels==0.8.0
