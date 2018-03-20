@@ -10,6 +10,7 @@ import statsmodels.formula.api as smf
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pickle
+import traceback 
 
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
@@ -38,6 +39,7 @@ class TenetoBIDS:
         :analysis_steps: any tags that exist in the filename (e.g. 'bold' or 'preproc')
         :confound_pipeline: if the confounds file is in another directory than the pipeline directory.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
 
         self.contact = []
         if raw_data_exists:
@@ -90,6 +92,13 @@ class TenetoBIDS:
         else:
             self.analysis_steps = ''
 
+        
+    def add_history(self, fname, fargs, init=0):
+        if init == 1: 
+            self.history = []
+        self.history.append([fname,fargs]) 
+
+
 
     def derive(self, params, update_pipeline=True):
 
@@ -98,6 +107,7 @@ class TenetoBIDS:
 
         :update_pipeline: if true, the object updates with the new directories made during derivation.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
 
         files = self.get_selected_files(quiet=1)
         confound_files = self.get_confound_files(quiet=1)
@@ -201,7 +211,8 @@ class TenetoBIDS:
         **RETURNS**
         Saves in ./BIDS_dir/derivatives/teneto/sub-NAME/func/tvc/temporal-network-measures/MEASURE/
         """
-
+ 
+        self.add_history(inspect.stack()[0][3], locals(), 1)
 
         module_dict = inspect.getmembers(teneto.networkmeasures)
         # Remove all functions starting with __
@@ -453,6 +464,9 @@ class TenetoBIDS:
         There may be times when the pipeline is updated (e.g. teneto) but you want the confounds from the preprocessing pipieline (e.g. fmriprep).
         To do this, you set the confound_pipeline to be the preprocessing pipeline where the confound files are.
         """
+     
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+
         if not os.path.exists(self.BIDS_dir + '/derivatives/' + confound_pipeline):
             print('Specified direvative directory not found.')
             self.get_pipeline_alternatives()
@@ -464,6 +478,9 @@ class TenetoBIDS:
 
     def set_confounds(self,confounds,quiet=0):
         # This could be mnade better
+
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+
         file_list = self.get_confound_files(quiet=1)
 
         if isinstance(confounds,str):
@@ -482,6 +499,7 @@ class TenetoBIDS:
         self.confounds = confounds
 
     def set_network_communities(self,parcellation):
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         net_path = teneto.__path__[0] + '/data/parcellation_defaults/' + parcellation + '_network.csv'
         if os.path.exists(parcellation):
             self.network_communities_ = pd.read_csv(parcellation,index_col=0)
@@ -511,6 +529,8 @@ class TenetoBIDS:
         **NOTE**
         These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+
         parc_name = parcellation.split('_')[0].lower()
 
         # Check confounds have been specified
@@ -588,6 +608,7 @@ class TenetoBIDS:
         """
         The last analysis step is the final tag that is present in files.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         self.last_analysis_step = last_analysis_step
 
     def set_analysis_steps(self,analysis_step,add_step=False):
@@ -599,6 +620,7 @@ class TenetoBIDS:
         :analysis_step: string or list of analysis tags that are found in the file names of interest. E.g. 'preproc' will only select files with 'preproc' in them.
         :add_step: (optional). If true, then anything in self.analysis_steps is already kept.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         if isinstance(analysis_step,str):
             if add_step:
                 self.analysis_steps.append()
@@ -619,6 +641,7 @@ class TenetoBIDS:
         """
         Specify the pipeline. See get_pipeline_alternatives to see what are avaialble. Input should be a string.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         if not os.path.exists(self.BIDS_dir + '/derivatives/' + pipeline):
             print('Specified direvative directory not found.')
             self.get_pipeline_alternatives()
@@ -627,6 +650,7 @@ class TenetoBIDS:
             self.pipeline = pipeline
 
     def set_pipeline_subdir(self,pipeline_subdir):
+        self.add_history(inspect.stack()[0][3], locals(), 1)
 #        if not os.path.exists(self.BIDS_dir + '/derivatives/' + self.pipeline + '/' + pipeline_subdir):
 #            print('Specified direvative sub-directory not found.')
 #            self.get_pipeline_subdir_alternatives()
@@ -639,6 +663,7 @@ class TenetoBIDS:
         """
         Specify the runs which all selected files must include. See get_run_alternatives to see what are avaialble. Input can be string or list of strings.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         if isinstance(runs,str):
             runs=[runs]
         if self.raw_data_exists:
@@ -654,6 +679,7 @@ class TenetoBIDS:
         """
         Specify the sessions which all selected files must include. See get_session_alternatives to see what are avaialble.  Input can be string or list of strings.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         if isinstance(sessions,str):
             sessions=[sessions]
         if self.raw_data_exists:
@@ -669,6 +695,8 @@ class TenetoBIDS:
         """
         Specify the space which all selected files must include. See get_space_alternatives to see what are avaialble.  Input can be string or list of strings.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+
         space_alternatives = self.get_space_alternatives(quiet=1)
         if space not in space_alternatives:
             raise ValueError('Specified space cannot be found for any subjects. Run TN.get_space_alternatives() to see the optinos in directories.')
@@ -678,6 +706,7 @@ class TenetoBIDS:
         """
         Specify the subjects which are selected files for the analysis.   Input can be string or list of strings.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         if isinstance(subjects,str):
             subjects=[subjects]
         # GEt from raw data or from derivative structure
@@ -703,6 +732,7 @@ class TenetoBIDS:
         """
         Specify the space which all selected files must include. See get_task_alternatives to see what are avaialble.  Input can be string or list of strings.
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         if isinstance(tasks,str):
             tasks=[tasks]
         if self.raw_data_exists:
@@ -715,6 +745,10 @@ class TenetoBIDS:
             self.tasks = sorted(list(tasks))
 
     def print_dataset_summary(self):
+
+        """
+        Prints information about the the BIDS data and the files currently selected.
+        """
 
         print('--- DATASET INFORMATION ---')
 
@@ -801,6 +835,19 @@ class TenetoBIDS:
 
 
     def load_parcellation_data(self,parcellation=None):
+        """ 
+        Function returns the data created by. The default grabs all data in the teneto/../func/parcellation directory. 
+
+        **INPUT**
+
+        :parcellation: specify parcellation (optional). Default will grab everything that can be found.  
+
+        **RETURNS**
+
+        :parcellation_data_: numpy array containing the parcellation data. Each file is appended to the first dimension of the numpy array.  
+        :parcellation_trialinfo_: pandas data frame containing the subject info (all BIDS tags) in the numpy array.
+        """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         data_list=[]
         trialinfo_list = []
         if parcellation: 
@@ -844,7 +891,7 @@ class TenetoBIDS:
                     
 
     def load_network_measure(self,measure,timelocked=False,calc=None):
-
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         data_list=[]
         trialinfo_list = []
 
@@ -901,7 +948,6 @@ class TenetoBIDS:
 
 
     def make_timelocked_events(self, measure, event_names, event_onsets, toi, calc=None):
-
         """
         Creates time locked time series of <measure>
 
@@ -913,9 +959,8 @@ class TenetoBIDS:
         :toi: +/- time points around each event. So if toi = [-10,10] it will take 10 time points before and 10 time points after
 
         (Currently no ability to loop over more than one measure)
-
         """
-
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         event_onsets_combined = list(itertools.chain.from_iterable(event_onsets))
         event_names_list = [[e]*len(event_onsets[i]) for i,e in enumerate(event_names)]
         event_names_list = list(itertools.chain.from_iterable(event_names_list))
@@ -964,4 +1009,11 @@ class TenetoBIDS:
 
 
     def load_participant_data(self):
+        """ 
+        Loads the participanets.tsv file that is placed in BIDS_dir as participants_.  
+        """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
         self.participants_ = pd.read_csv(self.BIDS_dir + 'participants.tsv',delimiter='\t')
+
+
+

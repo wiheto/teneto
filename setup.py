@@ -4,8 +4,12 @@ Gemeral setup for module
 
 from setuptools import setup, find_packages
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 setup(name='Teneto',
-      version='0.2.6',
+      version='0.2.7',
+      install_requires=requirements
       description='Temporal network tools',
       packages=find_packages(),
       author='William Hedley Thompson',

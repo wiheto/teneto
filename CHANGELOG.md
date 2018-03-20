@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.2.7 (Pending release) 
+## V0.2.7 
 
 - Added calc option to `TenetoBIDS.make_time_locked_events` allowing for selecting one of multiple networkmeasures
 
@@ -8,9 +8,11 @@
 
 - Changed all forms of time_locked and event-locked to timelocked
 
-- Added load_parcellation_data to TenetoBIDS
+- Added `load_parcellation_data` to `TenetoBIDS`
 
-*more to come*
+- Added history to TenetoBIDS
+
+- Added install_requires to `setup.py`
 
 ## V0.2.6 (and partly V0.2.5) 
 
