@@ -5,7 +5,7 @@ General setup for module
 from setuptools import setup, find_packages
 
 setup(name='Teneto',
-      version='0.2.7',
+      version='0.2.7b',
       install_requires=['setuptools>=38.5.2',
 			'numpy>=1.14.1',
 			'nilearn>=0.4.0',
