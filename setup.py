@@ -1,15 +1,21 @@
 """
-Gemeral setup for module
+General setup for module
 """
 
 from setuptools import setup, find_packages
 
-with open('requirements.txt') as f:
-    requirements = f.read().splitlines()
-
 setup(name='Teneto',
       version='0.2.7',
-      install_requires=requirements,
+      install_requires=['setuptools>=38.5.2',
+			'numpy>=1.14.1',
+			'nilearn>=0.4.0',
+			'statsmodels>=0.8.0',
+			'seaborn>=0.8.1',
+			'matplotlib>=2.2.0',
+			'scipy>=1.0.0',
+			'pandas>=0.22',
+			'scikit-learn>=0.19.1',
+			'pybids>=0.4.2'],
       description='Temporal network tools',
       packages=find_packages(),
       author='William Hedley Thompson',
