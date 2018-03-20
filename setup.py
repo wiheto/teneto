@@ -9,7 +9,7 @@ with open('requirements.txt') as f:
 
 setup(name='Teneto',
       version='0.2.7',
-      install_requires=requirements
+      install_requires=requirements,
       description='Temporal network tools',
       packages=find_packages(),
       author='William Hedley Thompson',
