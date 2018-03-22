@@ -10,7 +10,7 @@ import statsmodels.formula.api as smf
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pickle
-import traceback 
+import traceback
 
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
@@ -92,11 +92,47 @@ class TenetoBIDS:
         else:
             self.analysis_steps = ''
 
-        
+
     def add_history(self, fname, fargs, init=0):
-        if init == 1: 
+        if init == 1:
             self.history = []
-        self.history.append([fname,fargs]) 
+        self.history.append([fname,fargs])
+
+
+    def make_functional_connectivity(self):
+
+        """
+        Makes connectivity matrix for each of the subjects. 
+        """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+        files = self.get_selected_files(quiet=1)
+
+        R_group = []
+        for i, f in enumerate(files):
+
+            # ADD MORE HERE (csv, json, nifti)
+            if f.split('.')[-1] == 'npy':
+                data = np.load(f)
+            else:
+                raise ValueError('derive can only load npy files at the moment')
+
+            file_name = f.split('/')[-1].split('.')[0]
+            save_name = file_name + '_fc'
+            paths_post_pipeline = f.split(self.pipeline)
+
+            if self.pipeline_subdir:
+                paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)[0]
+            else:
+                paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
+            save_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/fc/'
+
+            if not os.path.exists(save_dir):
+                os.makedirs(save_dir)
+
+            R = teneto.misc.corrcoef_matrix(data)[0]
+            # Fisher transform of subject R values before group average 
+            R_group.append(np.arctan(R))
+            np.save(save_dir + save_name + '.npy', R)
 
 
 
@@ -131,6 +167,18 @@ class TenetoBIDS:
             else:
                 paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
             save_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/tvc/'
+
+            if 'weight-var' in params.keys():
+                if params['weight-var'] == 'from-subject-fc':
+                    fc_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/fc/'
+                    f = os.listdir(fc_dir) 
+                    params['weight-var'] = np.load(fc_dir + f[0])
+
+            if 'weight-mean' in params.keys():
+                if params['weight-mean'] == 'from-subject-fc':
+                    fc_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/fc/'
+                    f = os.listdir(fc_dir) 
+                    params['weight-mean'] = np.load(fc_dir + f[0])
 
             params['report'] = 'yes'
             params['report_path'] =  self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/tvc/report/'
@@ -211,7 +259,7 @@ class TenetoBIDS:
         **RETURNS**
         Saves in ./BIDS_dir/derivatives/teneto/sub-NAME/func/tvc/temporal-network-measures/MEASURE/
         """
- 
+
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
         module_dict = inspect.getmembers(teneto.networkmeasures)
@@ -385,6 +433,9 @@ class TenetoBIDS:
                 if found:
                     found_files += found
 
+            if quiet==-1: 
+                print(wdir)
+
         if quiet == 0:
             print(found_files)
         return found_files
@@ -464,7 +515,7 @@ class TenetoBIDS:
         There may be times when the pipeline is updated (e.g. teneto) but you want the confounds from the preprocessing pipieline (e.g. fmriprep).
         To do this, you set the confound_pipeline to be the preprocessing pipeline where the confound files are.
         """
-     
+
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
         if not os.path.exists(self.BIDS_dir + '/derivatives/' + confound_pipeline):
@@ -835,32 +886,35 @@ class TenetoBIDS:
 
 
     def load_parcellation_data(self,parcellation=None):
-        """ 
-        Function returns the data created by. The default grabs all data in the teneto/../func/parcellation directory. 
+        """
+        Function returns the data created by. The default grabs all data in the teneto/../func/parcellation directory.
 
         **INPUT**
 
-        :parcellation: specify parcellation (optional). Default will grab everything that can be found.  
+        :parcellation: specify parcellation (optional). Default will grab everything that can be found.
 
         **RETURNS**
 
-        :parcellation_data_: numpy array containing the parcellation data. Each file is appended to the first dimension of the numpy array.  
+        :parcellation_data_: numpy array containing the parcellation data. Each file is appended to the first dimension of the numpy array.
         :parcellation_trialinfo_: pandas data frame containing the subject info (all BIDS tags) in the numpy array.
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         data_list=[]
         trialinfo_list = []
-        if parcellation: 
-            self.parcellation = parcellation  
-        if not self.parcellation: 
-            self.parcellation = ''
+        if parcellation:
+            parc = parcellation
+        if not self.parcellation:
+            parc = ''
+        else:
+            parc = self.parcellation.split('_')[0]
+
         for s in self.subjects:
             # Define base folder
             base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
             base_path += '/sub-' + s + '/func/parcellation/'
             file_list=os.listdir(base_path)
             for f in file_list:
-                if self.parcellation in f: 
+                if parc in f: 
                     tags=re.findall('[a-zA-Z]*-',f)
                     tag_dict = {}
                     for t in tags:
@@ -888,7 +942,7 @@ class TenetoBIDS:
                 out_trialinfo = pd.concat(trialinfo_list)
                 out_trialinfo.reset_index(inplace=True,drop=True)
                 self.parcellation_trialinfo_ = out_trialinfo
-                    
+
 
     def load_network_measure(self,measure,timelocked=False,calc=None):
         self.add_history(inspect.stack()[0][3], locals(), 1)
@@ -1009,11 +1063,8 @@ class TenetoBIDS:
 
 
     def load_participant_data(self):
-        """ 
-        Loads the participanets.tsv file that is placed in BIDS_dir as participants_.  
+        """
+        Loads the participanets.tsv file that is placed in BIDS_dir as participants_.
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         self.participants_ = pd.read_csv(self.BIDS_dir + 'participants.tsv',delimiter='\t')
-
-
-
