@@ -1,4 +1,4 @@
-setuptools==34.3.2
+setuptools>=34.3.2
 numpy==1.14.1
 nilearn==0.4.0
 statsmodels==0.8.0
@@ -8,4 +8,4 @@ scipy==1.0.0
 pandas>=0.22
 scikit-learn==0.19.1
 pybids==0.4.2
-numpydoc
+numpydoc==0.7.0
