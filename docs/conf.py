@@ -69,7 +69,7 @@ release = '0.2.8'
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language = 'index' from the command line for these cases.
 # language = None
-# 
+#
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
 #today = ''
@@ -286,13 +286,3 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
-
-
-
-numpydoc_use_plots : bool
-numpydoc_show_class_members : bool
-numpydoc_show_inherited_class_members : bool
-numpydoc_class_members_toctree : bool
-numpydoc_citation_re : str
-numpydoc_use_blockquotes : bool
-numpydoc_edit_link : bool
