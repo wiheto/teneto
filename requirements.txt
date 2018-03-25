@@ -8,4 +8,4 @@ scipy==1.0.0
 pandas>=0.22
 scikit-learn==0.19.1
 pybids==0.4.2
-
+numpydoc
