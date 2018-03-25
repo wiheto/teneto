@@ -1,5 +1,15 @@
 # Changelog
 
+## V0.2.8 (pending release)
+
+- Added weight-var and weight-mean options to jackknife correlation. 
+
+- Added make_static_connectivity in TenetoBIDS
+
+- Added from-subject-fc open to jackknife correlation in TenetoBIDS.derive. 
+
+- Numpydoc adopted in docstrings (teneto.utils). 
+
 ## V0.2.7 
 
 - Added calc option to `TenetoBIDS.make_time_locked_events` allowing for selecting one of multiple networkmeasures

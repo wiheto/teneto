@@ -14,7 +14,7 @@ import teneto.derive as derive
 import teneto.misc as misc
 import teneto.trajectory as trajectory
 #import teneto.communitydetection as communitydetection
-from teneto.classes import NewTemporalNetwork, TenetoBIDS
+from teneto.classes import TenetoBIDS
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering
 
