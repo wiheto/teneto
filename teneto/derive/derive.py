@@ -119,15 +119,11 @@ def derive(data, params):
 
 
     Returns
-    -------
-
-    G, Info
+    -------    
 
     G : array 
         Connectivity estimates (nodes x nodes x time)
 
-    Info : dict 
-        dictionary containing information about derivation.
 
     READ MORE
     ---------
