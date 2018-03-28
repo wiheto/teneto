@@ -13,7 +13,6 @@ import scipy.stats as sps
 
 def derive(data, params):
     """
-
     Derives connectivity from the data. A lot of data is inherently built with edges
      (e.g. communication between two individuals).
     However other networks are derived from the covariance of time series
@@ -25,52 +24,70 @@ def derive(data, params):
     Derive a weight vector for each time point and then the corrrelation coefficient
      for each time point.
 
-    :PARAMETERS:
+    Paramters
+    --------
 
-    :data: input data. (Default: time times are rows, nodes are columns).
-     Change params{'dimord'} if you want it the other way (see below).
-    :params: dictionary of parameters for each method (see below).
+    data : array 
+        Time series data to perform connectivity derivation on. (Default dimensions are: (time as rows, nodes as columns). Change params{'dimord'} if you want it the other way (see below).
+    
+    params : dict 
+        Parameters for each method (see below).
 
-    *params for all methods (necessary)*
+    Necessary paramters
+    ===================
 
-    :method: "distance","slidingwindow", "taperedslidingwindow",
-     "jackknife", "multiplytemporalderivative".
-     Alternatively, method can be a weight matrix of size time x time.
+    method : str
+        method: "distance","slidingwindow", "taperedslidingwindow",
+     "jackknife", "multiplytemporalderivative". Alternatively, method can be a weight matrix of size time x time.
 
-    *params for all methods (optional)*
+    **Different methods have method specific paramaters (see below)**
 
-    :postpro: "no" (default). Other alternatives are: "fisher", "boxcox", "standardize"
+    Params for all methods (optional)
+    =================================
+
+    postpro: "no" (default). Other alternatives are: "fisher", "boxcox", "standardize"
      and any combination seperated by a + (e,g, "fisher+boxcox").
       See postpro_pipeline for more information.
-    :dimord: 'node,time' (default) or 'time,node'.
-     People like to represent their data differently and this is an easy way
-     to be sure that you are inputing the data in the correct way.
-    :analysis_id: add to identify specfic analysis.
-     Generated report will be placed in './report/' + analysis_id + '/derivation_report.html
-    :report: "yes" or "no" (default).
-     A report is saved in ./report/[analysis_id]/derivation_report.html if "yes"
-    :report_path: string to override where the report is saved
+    dimord : str
+        Dimension order: 'node,time' (default) or 'time,node'. People like to represent their data differently and this is an easy way to be sure that you are inputing the data in the correct way.
+    analysis_id : str or int 
+        add to identify specfic analysis. Generated report will be placed in './report/' + analysis_id + '/derivation_report.html
+    report : str 
+        Options: "yes" or "no" (default). A report is saved in ./report/[analysis_id]/derivation_report.html if "yes"
+    report_path : str 
+        String where the report is saved. Default is ./report/[analysis_id]/derivation_report.html 
 
-    *When method == "distance"*
+    Methods specific parameters 
+    =========================== 
 
-        Distance metric calculates 1/Distance metric weights, and scales between 0 and 1.
-         W[t,t] is excluded from the scaling and then set to 1.
+    method == "distance"
+    ~~~~~~~~~~~~~~~~~~~
 
-        params['distance'] = 'euclidean', 'hamming'. See teneto.utils.getDistanceFunction
+    Distance metric calculates 1/Distance metric weights, and scales between 0 and 1.
+    W[t,t] is excluded from the scaling and then set to 1.
 
-    *When method == "slidingwindow"*
+    params['distance']: str 
+        Distance metric (e.g. 'euclidean'). See teneto.utils.getDistanceFunction for more info
 
-        :params['windowsize']: = integer. Size of window.
+    When method == "slidingwindow"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    *When method == "taperedslidingwindow"*
+    params['windowsize'] : int 
+        Size of window.
 
-        :params['windowsize']: = integer. Size of window.
-        :params['distribution']: = Scipy distribution
-         (e.g. 'norm','expon'). Any distribution here: https://docs.scipy.org/doc/scipy/reference/stats.html
-        :params['distribution_params']: = list of each parameter, excluding the data "x"
-         (in their scipy function order) to generate pdf.
+    When method == "taperedslidingwindow"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        IMPORTANT: The data x should be considered to be centered at 0 and have a length of window size.
+    params['windowsize'] : int 
+        Size of window.
+    params['distribution'] : str 
+        Scipy distribution (e.g. 'norm','expon'). Any distribution here: https://docs.scipy.org/doc/scipy/reference/stats.html
+    params['distribution_params'] : list 
+        Each parameter, excluding the data "x" (in their scipy function order) to generate pdf.
+
+        NOTE
+        !!!!!!!!!!
+        The data x should be considered to be centered at 0 and have a length of window size.
          (i.e. a window size of 5 entails x is [-2, -1, 0, 1, 2] a window size of 6 entails [-2.5, -1.5, 0.5, 0.5, 1.5, 2.5])
         Given x params['distribution_params'] contains the remaining parameters.
 
@@ -82,34 +99,46 @@ def derive(data, params):
 
         Instead, if we set params['distribution_params'] is [10,5] this will lead to a half gaussian with its peak at the final time point with a standard deviation of 5.
 
-    *When method == "temporalderivative"*
+    When method == "temporalderivative"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        :params['windowsize']: = integer. Size of window.
+    params['windowsize'] : int
+        Size of window.
 
-    *When method == "jackknife"*
+    When method == "jackknife"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        :params['weight-var']: (optional) NxN array to weight the JC estimates (standerdized-JC*W). If weightby is selected, do not standerdize in postpro.
-        :params['weight-mean']: (optional) NxN array to weight the JC estimates (standerdized-JC+W). If weightby is selected, do not standerdize in postpro.
+    No parameters are necessary. 
+    
+    Optional parameters: 
+    
+    params['weight-var'] : array, (optional) 
+        NxN array to weight the JC estimates (standerdized-JC*W). If weightby is selected, do not standerdize in postpro.
+    params['weight-mean'] : array, (optional) 
+        NxN array to weight the JC estimates (standerdized-JC+W). If weightby is selected, do not standerdize in postpro.
 
 
-    :RETURNS:
+    Returns
+    -------
 
-    Graphlet,DeriveInfo
-        :Graphlet: representation (nodes x nodes x time)
-        :DeriveInfo: dictionary containing information about derivation.
+    G, Info
 
-    :READ MORE:
+    G : array 
+        Connectivity estimates (nodes x nodes x time)
 
-    For more information about the weighted pearson method and how
+    Info : dict 
+        dictionary containing information about derivation.
 
-    :SEE ALSO:
+    READ MORE
+    ---------
+    About the general weighted pearson approach used for most methods, see: 
+    Thompson & Fransson (2019) A common framework for the problem of deriving estimates of dynamic functional brain connectivity. 
+    Neuroimage. (https://doi.org/10.1016/j.neuroimage.2017.12.057)
+
+    SEE ALSO
+    --------
 
     *postpro_pipeline*, *gen_report*
-
-    :HISTORY:
-
-    Created - March 2017 - wht
-
 
     """
     report = {}
