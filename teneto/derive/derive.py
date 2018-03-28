@@ -240,6 +240,9 @@ def derive(data, params):
 
 
 def weightfun_jackknife(T, report):
+    """ 
+    Creates the weights for the jackknife method. See func: teneto.derive.derive. 
+    """
 
     weights = np.ones([T, T])
     np.fill_diagonal(weights, 0)
@@ -249,7 +252,9 @@ def weightfun_jackknife(T, report):
 
 
 def weightfun_sliding_window(T, params, report):
-
+    """ 
+    Creates the weights for the sliding window method. See func: teneto.derive.derive. 
+    """
     weightat0 = np.zeros(T)
     weightat0[0:params['windowsize']] = np.ones(params['windowsize'])
     weights = np.array([np.roll(weightat0, i)
@@ -261,7 +266,9 @@ def weightfun_sliding_window(T, params, report):
 
 
 def weightfun_tapered_sliding_window(T, params, report):
-
+    """ 
+    Creates the weights for the tapered method. See func: teneto.derive.derive. 
+    """
     x = np.arange(-(params['windowsize'] - 1) / 2, (params['windowsize']) / 2)
     distribution_parameters = ','.join(map(str, params['distribution_params']))
     taper = eval('sps.' + params['distribution'] +
@@ -279,6 +286,9 @@ def weightfun_tapered_sliding_window(T, params, report):
 
 
 def weightfun_spatial_distance(data, params, report):
+    """ 
+    Creates the weights for the spatial distance method. See func: teneto.derive.derive. 
+    """
     distance = teneto.utils.getDistanceFunction(params['distance'])
     weights = np.array([distance(data[n, :], data[t, :]) for n in np.arange(
         0, data.shape[0]) for t in np.arange(0, data.shape[0])])
@@ -292,7 +302,9 @@ def weightfun_spatial_distance(data, params, report):
 
 
 def temporal_derivative(data, params, report):
-
+    """ 
+    Performs mtd method. See func: teneto.derive.derive. 
+    """
     # Data should be timexnode
     report = {}
 
