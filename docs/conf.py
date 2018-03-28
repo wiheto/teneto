@@ -15,6 +15,12 @@
 
 import sys
 import os
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -288,3 +294,4 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 MOCK_MODULES = ['numpy', 'pandas','scipy','nilearn','sklearn','pybids']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
