@@ -293,5 +293,5 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
 
-MOCK_MODULES = ['numpy', 'pandas','scipy','nilearn','matplotlib', 'matplotlib.pyplot','scipy.stats','scipy.distance']
+MOCK_MODULES = ['numpy', 'pandas','scipy','nilearn','matplotlib', 'matplotlib.pyplot','scipy.stats','scipy.spatial.distance','nilearn.input_data','scipy.special']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
