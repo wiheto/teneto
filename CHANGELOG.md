@@ -10,6 +10,8 @@
 
 - Numpydoc adopted in docstrings (teneto.utils). 
 
+- Added `bad_subjects` and `set_bad_subjects()` in `TenetoBIDS`
+
 ## V0.2.7 
 
 - Added calc option to `TenetoBIDS.make_time_locked_events` allowing for selecting one of multiple networkmeasures
