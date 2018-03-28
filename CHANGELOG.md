@@ -12,7 +12,7 @@
 
 - Added `bad_subjects` and `set_bad_subjects()` in `TenetoBIDS`
 
-- Added readthedocs badge
+- Added readthedocs and pypi badge
 
 ## V0.2.7 
 
