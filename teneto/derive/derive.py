@@ -45,7 +45,7 @@ def derive(data, params):
     Params for all methods (optional)
     =================================
 
-    postpro: "no" (default). Other alternatives are: "fisher", "boxcox", "standardize"
+    postpro : "no" (default). Other alternatives are: "fisher", "boxcox", "standardize"
      and any combination seperated by a + (e,g, "fisher+boxcox").
       See postpro_pipeline for more information.
     dimord : str
