@@ -6,5 +6,5 @@ seaborn==0.8.1
 matplotlib==2.2.0
 scipy==1.0.0
 pandas>=0.22
-scikit-learn==0.19.1
+#scikit-learn==0.19.1
 pybids==0.4.2
