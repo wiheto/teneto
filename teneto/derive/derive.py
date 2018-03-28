@@ -88,8 +88,8 @@ def derive(data, params):
 
     *When method == "jackknife"*
 
-        :params['weight-var']: (optional) NxN array to weight the JC estimates (standerdized-JC*W). If weightby is selected, do not standerdize in postpro. 
-        :params['weight-mean']: (optional) NxN array to weight the JC estimates (standerdized-JC+W). If weightby is selected, do not standerdize in postpro.  
+        :params['weight-var']: (optional) NxN array to weight the JC estimates (standerdized-JC*W). If weightby is selected, do not standerdize in postpro.
+        :params['weight-mean']: (optional) NxN array to weight the JC estimates (standerdized-JC+W). If weightby is selected, do not standerdize in postpro.
 
 
     :RETURNS:
@@ -185,21 +185,20 @@ def derive(data, params):
     if params['method'] == 'jackknife':
         R = R * -1
         jc_z = 0
-        if 'weight-var' in params.keys():    
+        if 'weight-var' in params.keys():
             R = np.transpose(R, [2, 0, 1])
             standardized_R = (R - R.mean(axis=0)) / R.std(axis=0)
-            standardized_R = np.transpose(standardized_R, [1, 2, 0])
             jc_z = 1
-            R = standardized_R.transpose([2,0,1])
             R = R * params['weight-var']
             R = R.transpose([1,2,0])
-        if 'weight-mean' in params.keys(): 
-            if jc_z == 0: 
-                R = np.transpose(R, [2, 0, 1])
+        if 'weight-mean' in params.keys():
+            R = np.transpose(R, [2, 0, 1])
+            if jc_z == 0:
                 standardized_R = (R - R.mean(axis=0)) / R.std(axis=0)
-                R = np.transpose(standardized_R, [1, 2, 0])
-            R = R + params['weight-mean'] 
-              
+            R = R + params['weight-mean']
+            R = np.transpose(standardized_R, [1, 2, 0])
+
+
 
     if params['postpro'] != 'no':
         R, report = teneto.derive.postpro_pipeline(
