@@ -24,20 +24,37 @@ class TenetoBIDS:
 
     #networkmeasures = NetworkMeasures(self)
 
-    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, space=None, subjects='all', sessions='all', runs='all', tasks='all', last_analysis_step=None, analysis_steps=None, confound_pipeline=None, raw_data_exists=True):
+    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, space=None, subjects='all', sessions='all', runs='all', tasks='all', last_analysis_step=None, analysis_steps=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True):
         """
-        **INPUT**
-        :BIDS_dir: string to BIDS directory
-        :pipeline: the directory that is in the BIDS_dir/derivatives/<pipeline>/
-        :pipeline_subdir: the directory that is in the BIDS_dir/derivatives/<pipeline>/sub-<subjectnr/func/ses-<sesnr>/<pipeline_subdir>
-        :parcellation: parcellation name
-        :space: different nomralized spaces
-        :subjects: can be part of the BIDS file name
-        :sessions: can be part of the BIDS file name
-        :runs: can be part of the BIDS file name
-        :tasks: can be part of the BIDS file name
-        :analysis_steps: any tags that exist in the filename (e.g. 'bold' or 'preproc')
-        :confound_pipeline: if the confounds file is in another directory than the pipeline directory.
+        Parameters 
+        ----------
+
+        BIDS_dir : str
+            string to BIDS directory
+        pipeline : str
+            the directory that is in the BIDS_dir/derivatives/<pipeline>/
+        pipeline_subdir : str, optional 
+            the directory that is in the BIDS_dir/derivatives/<pipeline>/sub-<subjectnr/func/ses-<sesnr>/<pipeline_subdir>
+        parcellation : str, optional 
+            parcellation name
+        space : str, optional  
+            different nomralized spaces
+        subjects : str or list, optional
+            can be part of the BIDS file name
+        sessions : str or list, optional 
+            can be part of the BIDS file name
+        runs : str or list, optional 
+            can be part of the BIDS file name
+        tasks : str or list, optional 
+            can be part of the BIDS file name
+        analysis_steps : str or list, optional 
+            any tags that exist in the filename (e.g. 'bold' or 'preproc')
+        bad_subjects : list or str, optional  
+            Removes these subjects from the analysis 
+        confound_pipeline : str, optional 
+            If the confounds file is in another derivatives directory than the pipeline directory, set it here.
+        raw_data_exists : bool, optional 
+            Default is True. If the unpreprocessed data is not present in BIDS_dir, set to False. Some BIDS funcitonality will be lost.  
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
@@ -91,6 +108,11 @@ class TenetoBIDS:
             self.analysis_steps = analysis_steps
         else:
             self.analysis_steps = ''
+
+        if bad_subjects == None: 
+            self.bad_subjects = None
+        else: 
+            self.set_bad_subjects(bad_subjects)
 
 
     def add_history(self, fname, fargs, init=0):
@@ -510,6 +532,23 @@ class TenetoBIDS:
             print('Confounds in confound files: \n - ' + '\n - '.join(confounds))
         return confounds
 
+    def set_bad_subjects(self,bad_subjects): 
+
+        if isinstance(bad_subjects,str):
+            bad_subjects = [bad_subjects]
+
+        for bs in bad_subjects: 
+            if bs in self.subjects: 
+                self.subjects.remove(bs)
+            else: 
+                print('WARNING: subject: ' + str(bs) + ' is not found in tnet.subjects')
+
+        if not self.bad_subjects: 
+            self.bad_subjects = bad_subjects 
+        else: 
+            self.bad_subjects += bad_subjects   
+
+
     def set_confound_pipeline(self,confound_pipeline):
         """
         There may be times when the pipeline is updated (e.g. teneto) but you want the confounds from the preprocessing pipieline (e.g. fmriprep).
@@ -813,7 +852,11 @@ class TenetoBIDS:
 
         print('Number of subjects (selected): ' + str(len(self.subjects)))
         print('Subjects (selected): ' + ', '.join(self.subjects))
-
+        if isinstance(self.bad_subjects,list): 
+            print('Bad subjects: ' + ', '.join(self.bad_subjects))
+        else: 
+            print('Bad subjects: 0')
+        
         print('--- Tasks ---')
         if self.raw_data_exists:
             if self.BIDS.get_tasks():
