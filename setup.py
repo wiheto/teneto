@@ -6,7 +6,8 @@ from setuptools import setup, find_packages
 
 setup(name='Teneto',
       version='0.2.8',
-      install_requires=[
+      python_requires='>3.6'
+      install_requires=[  
 			'numpy>=1.14.1',
 			'nilearn>=0.4.0',
 			'statsmodels>=0.8.0',
