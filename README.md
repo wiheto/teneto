@@ -1,5 +1,7 @@
 # Teneto
 
+[![Documentation Status](https://readthedocs.org/projects/teneto/badge/?version=latest)](http://teneto.readthedocs.io/en/latest/?badge=latest)
+
 **Te**mporal **ne**twork **to**ols. Version 0.2.8
 
 Package includes:  temporal network measures, temporal network generation, derivation of time-varying/dynamic connectivity, plotting functions.
