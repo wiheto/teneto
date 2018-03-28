@@ -1,6 +1,7 @@
 # Teneto
 
 [![Documentation Status](https://readthedocs.org/projects/teneto/badge/?version=latest)](http://teneto.readthedocs.io/en/latest/?badge=latest)
+[![PyPI version](https://badge.fury.io/py/Teneto.svg)](https://badge.fury.io/py/Teneto)
 
 **Te**mporal **ne**twork **to**ols. Version 0.2.8
 
