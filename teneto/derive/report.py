@@ -67,7 +67,7 @@ def gen_report(report, sdir='./', report_name = 'report.html'):
 
                     report_html += "- <b>" + j + "</b>: " + "<br>"
 
-                    lambda_val = np.array(report['boxcox']['ambda_valambda'])
+                    lambda_val = np.array(report['boxcox']['lambda'])
                     fig, ax = plt.subplots(1)
                     ax.hist(lambda_val[:, -1])
                     ax.set_xlabel('lambda')
