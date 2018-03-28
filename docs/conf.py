@@ -297,4 +297,5 @@ MOCK_MODULES = ['numpy', 'pandas','scipy','nilearn','matplotlib',
     'matplotlib.pyplot','scipy.stats','scipy.spatial.distance','nilearn.input_data',
     'scipy.special', 'statsmodels.stats.weightstats', 'seaborn', 'bids.grabbids', 
     'statsmodels.formula.api']
+    
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
