@@ -119,15 +119,11 @@ def derive(data, params):
 
 
     Returns
-    -------
-
-    G, Info
+    -------    
 
     G : array 
         Connectivity estimates (nodes x nodes x time)
 
-    Info : dict 
-        dictionary containing information about derivation.
 
     READ MORE
     ---------
@@ -164,7 +160,7 @@ def derive(data, params):
             params['report_path'] = './report/' + params['analysis_id']
 
         if 'report_filename' not in params.keys():
-            params['repor_filename'] = 'derivation_report.html'
+            params['report_filename'] = 'derivation_report.html'
 
     if params['dimord'] == 'node,time':
         data = data.transpose()
