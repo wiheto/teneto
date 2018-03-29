@@ -212,20 +212,23 @@ def derive(data, params):
 
     # Correct jackknife direction
     if params['method'] == 'jackknife':
+        # Correct inversion 
         R = R * -1
         jc_z = 0
         if 'weight-var' in params.keys():
             R = np.transpose(R, [2, 0, 1])
-            standardized_R = (R - R.mean(axis=0)) / R.std(axis=0)
+            R = (R - R.mean(axis=0)) / R.std(axis=0)
             jc_z = 1
             R = R * params['weight-var']
             R = R.transpose([1,2,0])
         if 'weight-mean' in params.keys():
             R = np.transpose(R, [2, 0, 1])
             if jc_z == 0:
-                standardized_R = (R - R.mean(axis=0)) / R.std(axis=0)
+                R = (R - R.mean(axis=0)) / R.std(axis=0)
             R = R + params['weight-mean']
-            R = np.transpose(standardized_R, [1, 2, 0])
+            R = np.transpose(R, [1, 2, 0])
+        # The above step makes the self edges to -1 or -inf. So correct this 
+        R = teneto.utils.set_diagonal(R,1)
 
 
 
