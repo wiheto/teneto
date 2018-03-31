@@ -2,23 +2,27 @@
 
 ## V0.2.8 (pending release)
 
-- Added weight-var and weight-mean options to jackknife correlation. 
+- Added weight-var and weight-mean options to jackknife correlation.
 
 - Added make_static_connectivity in TenetoBIDS
 
-- Added from-subject-fc open to jackknife correlation in TenetoBIDS.derive. 
+- Added from-subject-fc open to jackknife correlation in TenetoBIDS.derive.
 
-- Numpydoc adopted in docstrings (teneto.utils). 
+- Numpydoc adopted in docstrings (teneto.utils).
 
 - Added `bad_subjects` and `set_bad_subjects()` in `TenetoBIDS`
 
 - Added readthedocs and pypi badge
 
-## V0.2.7 
+- Fixed `teneto.networkmeasures.volatility` when subnet is given.
+
+- Changed argument subnet_id in `teneto.networkmeasures.volatility` to subnet.  
+
+## V0.2.7
 
 - Added calc option to `TenetoBIDS.make_time_locked_events` allowing for selecting one of multiple networkmeasures
 
-- Corrected bug where timelocked files were not placed in timelocked directory 
+- Corrected bug where timelocked files were not placed in timelocked directory
 
 - Changed all forms of time_locked and event-locked to timelocked
 
@@ -28,7 +32,7 @@
 
 - Added install_requires to `setup.py`
 
-## V0.2.6 (and partly V0.2.5) 
+## V0.2.6 (and partly V0.2.5)
 
 - Removed older examples.
 
