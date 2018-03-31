@@ -26,35 +26,35 @@ class TenetoBIDS:
 
     def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, space=None, subjects='all', sessions='all', runs='all', tasks='all', last_analysis_step=None, analysis_steps=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True):
         """
-        Parameters 
+        Parameters
         ----------
 
         BIDS_dir : str
             string to BIDS directory
         pipeline : str
             the directory that is in the BIDS_dir/derivatives/<pipeline>/
-        pipeline_subdir : str, optional 
+        pipeline_subdir : str, optional
             the directory that is in the BIDS_dir/derivatives/<pipeline>/sub-<subjectnr/func/ses-<sesnr>/<pipeline_subdir>
-        parcellation : str, optional 
+        parcellation : str, optional
             parcellation name
-        space : str, optional  
+        space : str, optional
             different nomralized spaces
         subjects : str or list, optional
             can be part of the BIDS file name
-        sessions : str or list, optional 
+        sessions : str or list, optional
             can be part of the BIDS file name
-        runs : str or list, optional 
+        runs : str or list, optional
             can be part of the BIDS file name
-        tasks : str or list, optional 
+        tasks : str or list, optional
             can be part of the BIDS file name
-        analysis_steps : str or list, optional 
+        analysis_steps : str or list, optional
             any tags that exist in the filename (e.g. 'bold' or 'preproc')
-        bad_subjects : list or str, optional  
-            Removes these subjects from the analysis 
-        confound_pipeline : str, optional 
+        bad_subjects : list or str, optional
+            Removes these subjects from the analysis
+        confound_pipeline : str, optional
             If the confounds file is in another derivatives directory than the pipeline directory, set it here.
-        raw_data_exists : bool, optional 
-            Default is True. If the unpreprocessed data is not present in BIDS_dir, set to False. Some BIDS funcitonality will be lost.  
+        raw_data_exists : bool, optional
+            Default is True. If the unpreprocessed data is not present in BIDS_dir, set to False. Some BIDS funcitonality will be lost.
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
@@ -109,22 +109,26 @@ class TenetoBIDS:
         else:
             self.analysis_steps = ''
 
-        if bad_subjects == None: 
+        if bad_subjects == None:
             self.bad_subjects = None
-        else: 
+        else:
             self.set_bad_subjects(bad_subjects)
 
 
     def add_history(self, fname, fargs, init=0):
+        """
+        Adds a processing step to TenetoBIDS.history.
+        """
         if init == 1:
             self.history = []
         self.history.append([fname,fargs])
 
 
     def make_functional_connectivity(self):
-
         """
-        Makes connectivity matrix for each of the subjects. 
+        Makes connectivity matrix for each of the subjects.
+
+        Saves data in derivatives/teneto_<version>/.../fc/
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         files = self.get_selected_files(quiet=1)
@@ -152,7 +156,7 @@ class TenetoBIDS:
                 os.makedirs(save_dir)
 
             R = teneto.misc.corrcoef_matrix(data)[0]
-            # Fisher transform of subject R values before group average 
+            # Fisher transform of subject R values before group average
             R_group.append(np.arctan(R))
             np.save(save_dir + save_name + '.npy', R)
 
@@ -161,9 +165,13 @@ class TenetoBIDS:
     def derive(self, params, update_pipeline=True):
 
         """
-        :params: is a dictionary. See teneto.derive.derive for the structure of this.
+        Derive time-varying connectivity on the selected files.
 
-        :update_pipeline: if true, the object updates with the new directories made during derivation.
+        params : dict.
+            See teneto.derive.derive for the structure of the param dictionary.
+
+        update_pipeline : bool
+            If true, the object updates the selected files with those derived here.
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
@@ -193,13 +201,13 @@ class TenetoBIDS:
             if 'weight-var' in params.keys():
                 if params['weight-var'] == 'from-subject-fc':
                     fc_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/fc/'
-                    f = os.listdir(fc_dir) 
+                    f = os.listdir(fc_dir)
                     params['weight-var'] = np.load(fc_dir + f[0])
 
             if 'weight-mean' in params.keys():
                 if params['weight-mean'] == 'from-subject-fc':
                     fc_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/fc/'
-                    f = os.listdir(fc_dir) 
+                    f = os.listdir(fc_dir)
                     params['weight-mean'] = np.load(fc_dir + f[0])
 
             params['report'] = 'yes'
@@ -270,16 +278,24 @@ class TenetoBIDS:
 
         For available funcitons see: teneto.networkmeasures
 
-        **INPUT**
+        Parameters
+        ----------
 
-        :measure: (string or list) nthe function(s) from teneto.networkmeasures.
-        :measure_params: (dictionary or list of dictionaries) containing kwargs for the argument in measure.
+        measure : str or list
+            Mame of function(s) from teneto.networkmeasures that will be run.
 
-        **NOTE**
+        measure_params : dict or list of dctionaries)
+            Containing kwargs for the argument in measure.
+
+        Note
+        ----
         If self.network_communities exist, subnet=True can be specified for subnet options instead of supplying the network atlas.
 
-        **RETURNS**
+        Returns
+        -------
+
         Saves in ./BIDS_dir/derivatives/teneto/sub-NAME/func/tvc/temporal-network-measures/MEASURE/
+        Load the measure with tenetoBIDS.load_network_measure
         """
 
         self.add_history(inspect.stack()[0][3], locals(), 1)
@@ -387,7 +403,10 @@ class TenetoBIDS:
 
     def get_pipeline_subdir_alternatives(self,quiet=0):
         """
-        This function currently returns the wrong folders.
+        Note
+        -----
+
+        This function currently returns the wrong folders and will be fixed in the future.
 
         This function should return ./derivatives/pipeline/sub-xx/[ses-yy/][func/]/pipeline_subdir
         But it does not care about ses-yy at the moment.
@@ -406,6 +425,17 @@ class TenetoBIDS:
             return list(pipeline_subdir_alternatives)
 
     def get_selected_files(self,quiet=0):
+        """
+        Parameters
+        ----------
+        quiet: int
+            If 1, prints results. If 0, no results printed.
+
+        Returns
+        -------
+        found_files : list
+            The files which are currently selected with the current using the set pipeline, pipeline_subdir, space, parcellation, tasks, runs, subjects etc. There are the files that will generally be used if calling a make_ function.
+        """
         # This could be mnade better
         file_dict = {
             'sub': self.subjects,
@@ -455,7 +485,7 @@ class TenetoBIDS:
                 if found:
                     found_files += found
 
-            if quiet==-1: 
+            if quiet==-1:
                 print(wdir)
 
         if quiet == 0:
@@ -464,6 +494,19 @@ class TenetoBIDS:
 
 
     def get_confound_files(self,quiet=0):
+        """
+        Parameters
+        ----------
+        quiet: int
+            If 1, prints results. If 0, no results printed.
+
+        Returns
+        -------
+        found_files : list
+            The files which are currently selected wihch will be used if removing confounds.
+
+            This is specified by confound_pipeline (or pipeline if unset), confound_pipeline_subdir (or pipeline_subdir if unset), space, parcellation, tasks, runs, subjects etc.
+        """
         # This could be mnade better
         file_dict = {
             'sub': self.subjects,
@@ -532,27 +575,35 @@ class TenetoBIDS:
             print('Confounds in confound files: \n - ' + '\n - '.join(confounds))
         return confounds
 
-    def set_bad_subjects(self,bad_subjects): 
+    def set_bad_subjects(self,bad_subjects):
 
         if isinstance(bad_subjects,str):
             bad_subjects = [bad_subjects]
 
-        for bs in bad_subjects: 
-            if bs in self.subjects: 
+        for bs in bad_subjects:
+            if bs in self.subjects:
                 self.subjects.remove(bs)
-            else: 
+            else:
                 print('WARNING: subject: ' + str(bs) + ' is not found in tnet.subjects')
 
-        if not self.bad_subjects: 
-            self.bad_subjects = bad_subjects 
-        else: 
-            self.bad_subjects += bad_subjects   
+        if not self.bad_subjects:
+            self.bad_subjects = bad_subjects
+        else:
+            self.bad_subjects += bad_subjects
 
 
     def set_confound_pipeline(self,confound_pipeline):
         """
         There may be times when the pipeline is updated (e.g. teneto) but you want the confounds from the preprocessing pipieline (e.g. fmriprep).
         To do this, you set the confound_pipeline to be the preprocessing pipeline where the confound files are.
+
+        Parameters
+        ----------
+
+        confound_pipeline : str
+            Directory in the BIDS_dir where the confounds file is.
+
+
         """
 
         self.add_history(inspect.stack()[0][3], locals(), 1)
@@ -607,16 +658,29 @@ class TenetoBIDS:
         """
         Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end.
 
-        **INPUT**
+        Parameters
+        -----------
 
-        :parcellation: specify which parcellation that you would like to use. For MNI: power264, yeo, gordon333. TAL:
-        :parc_type: can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
-        :parc_params: **kwargs for nilearn functions
-        :network: if "defaults", it selects static parcellation if available (other options will be made available soon).
-        :removeconfounds: if true, regresses out confounds that are specfied in self.set_confounds
-        :update_pipeline: teneto object gets updated with the parcellated files being selected.
+        parcellation : str
+            specify which parcellation that you would like to use. For MNI: 'power2012_264', 'gordon2014_333'. TAL: 'shen2013_278'
+        parc_type : str
+            can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
+        parc_params : dict
+            **kwargs for nilearn functions
+        network : str
+            if "defaults", it selects static parcellation, _if available_ (other options will be made available soon).
+        removeconfounds : bool
+            if true, regresses out confounds that are specfied in self.set_confounds with linear regression.
+        update_pipeline : bool
+            TenetoBIDS gets updated with the parcellated files being selected.
 
-        **NOTE**
+        Returns
+        -------
+        Files are saved in ./BIDS_dir/derivatives/teneto_<version>/.../parcellation/.
+        To load these files call TenetoBIDS.load_parcellation.
+
+        NOTE
+        ----
         These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
@@ -852,11 +916,11 @@ class TenetoBIDS:
 
         print('Number of subjects (selected): ' + str(len(self.subjects)))
         print('Subjects (selected): ' + ', '.join(self.subjects))
-        if isinstance(self.bad_subjects,list): 
+        if isinstance(self.bad_subjects,list):
             print('Bad subjects: ' + ', '.join(self.bad_subjects))
-        else: 
+        else:
             print('Bad subjects: 0')
-        
+
         print('--- Tasks ---')
         if self.raw_data_exists:
             if self.BIDS.get_tasks():
@@ -957,7 +1021,7 @@ class TenetoBIDS:
             base_path += '/sub-' + s + '/func/parcellation/'
             file_list=os.listdir(base_path)
             for f in file_list:
-                if parc in f: 
+                if parc in f:
                     tags=re.findall('[a-zA-Z]*-',f)
                     tag_dict = {}
                     for t in tags:
