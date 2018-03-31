@@ -2,7 +2,7 @@ import teneto.utils as utils
 import numpy as np
 
 
-def volatility(net, distance_func_name='default', calc='global', subnet_id=None):
+def volatility(net, distance_func_name='default', calc='global', subnet=None):
     """
     volatility of temporal networks. This is the average distance between consecutive time points of graphlets (difference is caclualted either globally, per edge)
 
@@ -19,8 +19,8 @@ def volatility(net, distance_func_name='default', calc='global', subnet_id=None)
         :'edge': average distance between consecutive time points for each edge). Takes considerably longer
         :'node': (i.e. returns the average per node output when calculating volatility per 'edge').
         :'time': returns volatility per time point
-        :'subnet': returns volatility per subnetwork id (see subnet_id). Also is returned per time-point and this may be changed in the future (with additional options)
-    :'subnet_id': vector of integers.
+        :'subnet': returns volatility per subnetwork id (see subnet). Also is returned per time-point and this may be changed in the future (with additional options)
+    :'subnet': vector of integers.
     
     :Note: Index of subnetworks are returned "as is" with a shape of [max(subnet)+1,max(subnet)+1]. So if the indexes used are [1,2,3,5], V.shape==(6,6). The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns). If this behaviour is unwanted, call clean_subnetdexes first. This will probably change.
 
@@ -59,12 +59,12 @@ def volatility(net, distance_func_name='default', calc='global', subnet_id=None)
         ind = np.triu_indices(net.shape[0], k=1)
 
     if calc == 'subnet':
-        # Make sure subnet_id is np array for indexing later on.
-        subnet_id = np.array(subnet_id)
-        if len(subnet_id) != netinfo['netshape'][0]:
+        # Make sure subnet is np array for indexing later on.
+        subnet = np.array(subnet)
+        if len(subnet) != netinfo['netshape'][0]:
             raise ValueError(
-                'When processing per network, subnet_id vector must equal the number of nodes')
-        if subnet_id.min() < 0:
+                'When processing per network, subnet vector must equal the number of nodes')
+        if subnet.min() < 0:
             raise ValueError(
                 'Subnetwork assignments must be positive integers')
 
@@ -89,21 +89,21 @@ def volatility(net, distance_func_name='default', calc='global', subnet_id=None)
         if calc == 'node':
             vol = np.sum(vol, axis=1)
     elif calc == 'subnet':
-        net_id = set(subnet_id)
+        net_id = set(subnet)
         vol = np.zeros([max(net_id) + 1, max(net_id) +
                         1, netinfo['netshape'][-1] - 1])
         for net1 in net_id:
             for net2 in net_id:
-                vol[net1, net2, :] = [distance_func(net[subnet_id == net1][:, subnet_id == net2, t],
-                                                    net[subnet_id == net1][:, subnet_id == net2, t + 1]) for t in range(0, net.shape[-1] - 1)]
+                vol[net1, net2, :] = [distance_func(net[subnet == net1][:, subnet == net2, t].flatten(),
+                                                    net[subnet == net1][:, subnet == net2, t + 1].flatten()) for t in range(0, net.shape[-1] - 1)]
     elif calc == 'withinsubnet':
         within_ind = np.array([[ind[0][n], ind[1][n]] for n in range(
-            0, len(ind[0])) if subnet_id[ind[0][n]] == subnet_id[ind[1][n]]])
+            0, len(ind[0])) if subnet[ind[0][n]] == subnet[ind[1][n]]])
         vol = [distance_func(net[within_ind[:, 0], within_ind[:, 1], t], net[within_ind[:, 0],
                                                                                    within_ind[:, 1], t + 1]) for t in range(0, net.shape[-1] - 1)]
     elif calc == 'betweensubnet':
         between_ind = np.array([[ind[0][n], ind[1][n]] for n in range(
-            0, len(ind[0])) if subnet_id[ind[0][n]] != subnet_id[ind[1][n]]])
+            0, len(ind[0])) if subnet[ind[0][n]] != subnet[ind[1][n]]])
         vol = [distance_func(net[between_ind[:, 0], between_ind[:, 1], t], net[between_ind[:,
                                                                                                  0], between_ind[:, 1], t + 1]) for t in range(0, net.shape[-1] - 1)]
 
