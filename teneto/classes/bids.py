@@ -162,7 +162,7 @@ class TenetoBIDS:
 
 
 
-    def derive(self, params, update_pipeline=True):
+    def derive(self, params, update_pipeline=True, tag=None):
 
         """
         Derive time-varying connectivity on the selected files.
@@ -180,6 +180,11 @@ class TenetoBIDS:
         if confound_files:
             confounds_exist = True
 
+        if not tag: 
+            tag = ''
+        else: 
+            tag = '_' + tag
+
         for i, f in enumerate(files):
 
             # ADD MORE HERE (csv, json, nifti)
@@ -189,7 +194,7 @@ class TenetoBIDS:
                 raise ValueError('derive can only load npy files at the moment')
 
             file_name = f.split('/')[-1].split('.')[0]
-            save_name = file_name + '_tvcmethod-' + params['method'] + '_tvc'
+            save_name = file_name + '_tvcmethod-' + params['method'] + tag + '_tvc'
             paths_post_pipeline = f.split(self.pipeline)
 
             if self.pipeline_subdir:
@@ -270,9 +275,11 @@ class TenetoBIDS:
             self.set_pipeline('teneto_' + teneto.__version__)
             self.set_pipeline_subdir('tvc')
             self.set_last_analysis_step('tvc')
+            if tag: 
+                self.analysis_steps += [tag[1:]]
 
 
-    def networkmeasures(self, measure=None, measure_params={}):
+    def networkmeasures(self, measure=None, measure_params={}, tag=None):
         """
         Runs a network measure
 
@@ -286,6 +293,9 @@ class TenetoBIDS:
 
         measure_params : dict or list of dctionaries)
             Containing kwargs for the argument in measure.
+
+        tag : str 
+            Add additional tag to filenames. 
 
         Note
         ----
@@ -322,6 +332,11 @@ class TenetoBIDS:
 
         files = self.get_selected_files(quiet=1)
 
+
+        if not tag: 
+            tag = ''
+        else: 
+            tag = '_' + tag
 
         for f in files:
 
@@ -361,7 +376,7 @@ class TenetoBIDS:
                 if not os.path.exists(save_dir_base + sname):
                     os.makedirs(save_dir_base + sname)
 
-                save_name = file_name + '_' + sname + cs + dimord_str
+                save_name = file_name + '_' + sname + cs + dimord_str + tag
                 netmeasure = module_dict[m](data,**measure_params[i])
 
                 np.save(save_dir_base + sname + '/' + save_name, netmeasure)
@@ -584,7 +599,7 @@ class TenetoBIDS:
             if bs in self.subjects:
                 self.subjects.remove(bs)
             else:
-                print('WARNING: subject: ' + str(bs) + ' is not found in tnet.subjects')
+                print('WARNING: subject: ' + str(bs) + ' is not found in TenetoBIDS.subjects')
 
         if not self.bad_subjects:
             self.bad_subjects = bad_subjects
@@ -641,6 +656,15 @@ class TenetoBIDS:
 
     def set_network_communities(self,parcellation):
         self.add_history(inspect.stack()[0][3], locals(), 1)
+        # Sett if seperate subcortical atlas is specified
+        if '+' in parcellation:
+            # Need to add subcortical info to network_communities and network_communities_info_
+            parcin = parcellation.split('+')
+            parcellation = parcin[0]
+            subcortical = parcin[1]
+        else:
+            subcortical = None
+
         net_path = teneto.__path__[0] + '/data/parcellation_defaults/' + parcellation + '_network.csv'
         if os.path.exists(parcellation):
             self.network_communities_ = pd.read_csv(parcellation,index_col=0)
@@ -653,7 +677,7 @@ class TenetoBIDS:
         else:
             print('No (static) network community file found.')
 
-    def make_parcellation(self,parcellation,parc_type=None,parc_params=None,network='defaults',update_pipeline=True,removeconfounds=False):
+    def make_parcellation(self,parcellation,parc_type=None,parc_params=None,network='defaults',update_pipeline=True,removeconfounds=False,tag=None):
 
         """
         Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end.
@@ -673,6 +697,8 @@ class TenetoBIDS:
             if true, regresses out confounds that are specfied in self.set_confounds with linear regression.
         update_pipeline : bool
             TenetoBIDS gets updated with the parcellated files being selected.
+        tag : str 
+            If multiple types of analysis are going to be run, you can set tag to add a '_tag' on the file name. 
 
         Returns
         -------
@@ -704,10 +730,15 @@ class TenetoBIDS:
 
         self.set_network_communities(parcellation)
 
+        if not tag: 
+            tag = ''
+        else: 
+            tag = '_' + tag
+
         for i,f in enumerate(files):
 
             file_name = f.split('/')[-1].split('.')[0]
-            save_name = file_name + '_parc-' + parc_name + '_roi'
+            save_name = file_name + '_parc-' + parc_name + tag + '_roi'
             paths_post_pipeline = f.split(self.pipeline)
             if self.pipeline_subdir:
                 paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)
@@ -753,6 +784,8 @@ class TenetoBIDS:
             self.set_pipeline('teneto_' + teneto.__version__)
             self.set_pipeline_subdir('parcellation')
             self.analysis_steps += self.last_analysis_step
+            if tag: 
+                self.analysis_steps += [tag[1:]]
             self.set_last_analysis_step('roi')
             self.parcellation = parcellation
 
@@ -769,10 +802,17 @@ class TenetoBIDS:
         """
         Specify which analysis steps are part of the selected files.
 
-        Inputs
+        Parameters 
+        -----------
 
-        :analysis_step: string or list of analysis tags that are found in the file names of interest. E.g. 'preproc' will only select files with 'preproc' in them.
-        :add_step: (optional). If true, then anything in self.analysis_steps is already kept.
+        analysis_step : str or list 
+            Analysis tags that are found in the file names of interest. E.g. 'preproc' will only select files with 'preproc' in them.
+        add_step : Bool 
+            If true, then anything in self.analysis_steps is already kept.
+
+        Returns 
+        -------
+        TenetoBIDS.analysis_steps gets updated. 
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         if isinstance(analysis_step,str):
@@ -992,13 +1032,17 @@ class TenetoBIDS:
             return pickle.load(f)
 
 
-    def load_parcellation_data(self,parcellation=None):
+    def load_parcellation_data(self,parcellation=None,tag=None):
         """
         Function returns the data created by. The default grabs all data in the teneto/../func/parcellation directory.
 
         **INPUT**
 
-        :parcellation: specify parcellation (optional). Default will grab everything that can be found.
+        parcellation : str 
+            Specify parcellation (optional). Default will grab everything that can be found.
+    
+        tag : str 
+            Any additional tag to filter out which files to load. 
 
         **RETURNS**
 
@@ -1015,31 +1059,27 @@ class TenetoBIDS:
         else:
             parc = self.parcellation.split('_')[0]
 
+        if not tag:
+            tag = '' 
+
         for s in self.subjects:
             # Define base folder
             base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
             base_path += '/sub-' + s + '/func/parcellation/'
             file_list=os.listdir(base_path)
             for f in file_list:
-                if parc in f:
-                    tags=re.findall('[a-zA-Z]*-',f)
-                    tag_dict = {}
-                    for t in tags:
+                # Include only if all analysis step tags are present
+                if parc in f and tag in f:
+                    # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.  
+                    bid_tags=re.findall('[a-zA-Z]*-',f)
+                    bids_tag_dict = {}
+                    for t in bid_tags:
                         key = t[:-1]
-                        tag_dict[key]=re.findall(t+'[A-Za-z0-9]*',f)[0].split('-')[-1]
-                    if f.split('.')[-1] == 'pkl':
-                        df = pd.read_pickle(base_path+f)
-                        data = df[measure_sub].values
-                        trialinfo = df.drop(measure_sub, 1)
-                        for k in tag_dict.keys():
-                            trialinfo[k] = tag_dict[k]
-                        trialinfo_list.append(trialinfo)
-                        for d in data:
-                            data_list.append(d)
-                    elif f.split('.')[-1] == 'npy':
+                        bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9]*',f)[0].split('-')[-1]
+                    if f.split('.')[-1] == 'npy':
                         data = np.load(base_path+f)
                         data_list.append(data)
-                        trialinfo = pd.DataFrame(tag_dict,index=[0])
+                        trialinfo = pd.DataFrame(bids_tag_dict,index=[0])
                         trialinfo_list.append(trialinfo)
                     else:
                         print('Warning: Could not find data for a subject')
@@ -1051,7 +1091,7 @@ class TenetoBIDS:
                 self.parcellation_trialinfo_ = out_trialinfo
 
 
-    def load_network_measure(self,measure,timelocked=False,calc=None):
+    def load_network_measure(self,measure,timelocked=False,calc=None,tag=None):
         self.add_history(inspect.stack()[0][3], locals(), 1)
         data_list=[]
         trialinfo_list = []
@@ -1060,6 +1100,9 @@ class TenetoBIDS:
             calc = ''
         else:
             calc = 'calc-' + calc
+
+        if not tag: 
+            tag = '' 
 
         for s in self.subjects:
             # Define base folder
@@ -1075,26 +1118,26 @@ class TenetoBIDS:
             # Get tags in filename
             for f in file_list:
                 if os.path.isfile(base_path + f):
-                    if calc in f:
-                        tags=re.findall('[a-zA-Z]*-',f)
-                        tag_dict = {}
-                        for t in tags:
+                    if calc in f and tag in f:
+                        bids_tags=re.findall('[a-zA-Z]*-',f)
+                        bids_tag_dict = {}
+                        for t in bids_tags:
                             key = t[:-1]
-                            tag_dict[key]=re.findall(t+'[A-Za-z0-9]*',f)[0].split('-')[-1]
+                            bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9]*',f)[0].split('-')[-1]
                         # Get data
                         if f.split('.')[-1] == 'pkl':
                             df = pd.read_pickle(base_path+f)
                             data = df[measure_sub].values
                             trialinfo = df.drop(measure_sub, 1)
-                            for k in tag_dict.keys():
-                                trialinfo[k] = tag_dict[k]
+                            for k in bids_tag_dict.keys():
+                                trialinfo[k] = bids_tag_dict[k]
                             trialinfo_list.append(trialinfo)
                             for d in data:
                                 data_list.append(d)
                         elif f.split('.')[-1] == 'npy':
                             data = np.load(base_path+f)
                             data_list.append(data)
-                            trialinfo = pd.DataFrame(tag_dict,index=[0])
+                            trialinfo = pd.DataFrame(bids_tag_dict,index=[0])
                             trialinfo_list.append(trialinfo)
 
                         else:
@@ -1108,18 +1151,34 @@ class TenetoBIDS:
 
 
 
-    def make_timelocked_events(self, measure, event_names, event_onsets, toi, calc=None):
+    def make_timelocked_events(self, measure, event_names, event_onsets, toi, calc=None, tag=None):
         """
-        Creates time locked time series of <measure>
+        Creates time locked time series of <measure>. Measure must have time in its -1 axis.
 
-        Measure must have time in its -1 axis.
+        Parameters 
+        -----------
 
-        :measure: temporal network measure that should already exist in the teneto/[subject]/tvc/network-measures directory
-        :event_names: what the event is called (can be list of multiple event names)
-        :event_onsets: list of onset times (can be list of list for multiple events)
-        :toi: +/- time points around each event. So if toi = [-10,10] it will take 10 time points before and 10 time points after
+        measure : str 
+            temporal network measure that should already exist in the teneto/[subject]/tvc/network-measures directory
+        event_names : str or list 
+            what the event is called (can be list of multiple event names)
+        event_onsets: list 
+            List of onset times (can be list of list for multiple events)
+        toi : array
+            +/- time points around each event. So if toi = [-10,10] it will take 10 time points before and 10 time points after
+        calc : str 
+            type of network measure calculation. 
+        tag : str 
+            any additional tag placed on file name.  
 
-        (Currently no ability to loop over more than one measure)
+        Note 
+        ---- 
+
+        Currently no ability to loop over more than one measure
+
+        Returns
+        -------
+        Creates a time-locked output placed in BIDS_dir/derivatives/teneto_<version>/../tvc/temporal-network-measures/<networkmeasure>/timelocked/
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         event_onsets_combined = list(itertools.chain.from_iterable(event_onsets))
@@ -1131,6 +1190,9 @@ class TenetoBIDS:
             calc = ''
         else:
             calc = 'calc-' + calc
+
+        if not tag: 
+            tag = ''
 
         for s in self.subjects:
 
