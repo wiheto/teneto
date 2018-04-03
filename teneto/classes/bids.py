@@ -655,6 +655,12 @@ class TenetoBIDS:
         self.confounds = confounds
 
     def set_network_communities(self,parcellation):
+        """
+
+        parcellation : str 
+            path to csv or name of default parcellation. 
+
+        """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         # Sett if seperate subcortical atlas is specified
         if '+' in parcellation:
@@ -676,6 +682,13 @@ class TenetoBIDS:
             self.network_communities_info_['number_of_nodes'] = self.network_communities_.groupby('network_id').count()
         else:
             print('No (static) network community file found.')
+
+        if subcortical: 
+            #Assuming only OH atlas exists for subcortical at the moment. 
+            node_num=21
+            sub = pd.DataFrame(data={'Community': ['Subcortical (OH)']*node_num,'network_id':np.repeat(self.network_communities_['network_id'].max()+1,node_num)})
+            self.network_communities_ = self.network_communities_.append(sub)
+            self.network_communities_.reset_index(drop=True,inplace=True)
 
     def make_parcellation(self,parcellation,parc_type=None,parc_params=None,network='defaults',update_pipeline=True,removeconfounds=False,tag=None):
 
