@@ -3,6 +3,7 @@ import teneto
 import collections
 import scipy.spatial.distance as distance
 from nilearn.input_data import NiftiSpheresMasker, NiftiLabelsMasker
+from nilearn.datasets import fetch_atlas_harvard_oxford
 import json
 
 """
@@ -20,43 +21,43 @@ def graphlet2contact(G, params=None):
     Parameters
     ----------
     G : array_like
-        Temporal network. 
-    params : dict, optional 
-        Dictionary of parameters for contact representation. 
-        
+        Temporal network.
+    params : dict, optional
+        Dictionary of parameters for contact representation.
+
         *Fs* : int, default=1
             sampling rate.
-        
+
         *timeunit* : str, default=''
-            Sampling rate in for units (e.g. seconds, minutes, years). 
-        
+            Sampling rate in for units (e.g. seconds, minutes, years).
+
         *nettype* : str, default='auto'
-            Define what type of network. Can be: 
+            Define what type of network. Can be:
             'auto': detects automatically;
             'wd': weighted, directed;
             'bd': binary, directed;
             'wu': weighted, undirected;
             'bu': binary, undirected.
 
-        *diagonal* : int, default = 0. 
+        *diagonal* : int, default = 0.
             What should the diagonal be. (note: does could be expanded to take vector of unique diagonal values in the future, but not implemented now)
-        
-        *timetype* : str, default='discrete' 
+
+        *timetype* : str, default='discrete'
             Time units can be The cfg file becomes the foundation of 'C'. Any other information in cfg, will added to C.
-        
+
         *nLabs* : list
             Set nod labels.
-        
-        *t0*: int 
+
+        *t0*: int
             Time label at first index.
 
 
     Returns
     -------
 
-    C : dict 
-    
-        Contact representation of temporal network. 
+    C : dict
+
+        Contact representation of temporal network.
         Includes 'contacts', 'values' (if nettype[0]='w'),'nettype','netshape', 'Fs', 'dimord' and 'timeunit', 'timetype'.
 
     """
@@ -141,7 +142,7 @@ def contact2graphlet(C):
 
     Converts contact representation to graphlet (snaptshot) representation. Graphlet representation discards all meta information in the contact representation.
 
-    Parameters 
+    Parameters
     ----------
 
     C : dict
@@ -156,7 +157,7 @@ def contact2graphlet(C):
     Note
     ----
 
-    Returning elements of G will be float, even if binary graph. 
+    Returning elements of G will be float, even if binary graph.
 
     """
 
@@ -218,20 +219,20 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
     Parameters
     ----------
 
-    netin : array or dict 
+    netin : array or dict
         network (graphlet or contact representation),
     level : float
         Percent to keep (expressed as decimal, e.g. 0.1 = top 10%)
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
-    axis : str, default='time' 
-        Specify which dimension thresholding is applied against. Only 'time' option exists at present. 
+    axis : str, default='time'
+        Specify which dimension thresholding is applied against. Only 'time' option exists at present.
 
-    Returns 
+    Returns
     -------
 
     netout : array or dict (depending on input)
-        Binarized network 
+        Binarized network
 
     """
     netin, netinfo = teneto.utils.process_input(netin, ['C', 'G', 'TO'])
@@ -268,17 +269,17 @@ def binarize_rdp(netin, level, sign='pos', axis='time'):
     """
     Binarizes a network based on RDP compression.
 
-    Parameters 
+    Parameters
     ----------
 
-    netin : array or dict 
+    netin : array or dict
         Network (graphlet or contact representation),
     level : float
-        Delta parameter which is the tolorated error in RDP compression. 
+        Delta parameter which is the tolorated error in RDP compression.
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
 
-    Returns 
+    Returns
     -------
 
     netout : array or dict (dependning on input)
@@ -322,20 +323,20 @@ def binarize_magnitude(netin, level, sign='pos'):
     Parameters
     ----------
 
-    netin : array or dict 
+    netin : array or dict
         Network (graphlet or contact representation),
     level : float
-        Magnitude level threshold at. 
+        Magnitude level threshold at.
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
-    axis : str, default='time' 
-        Specify which dimension thresholding is applied against. Only 'time' option exists at present. 
+    axis : str, default='time'
+        Specify which dimension thresholding is applied against. Only 'time' option exists at present.
 
-    Returns 
+    Returns
     -------
 
     netout : array or dict (depending on input)
-        Binarized network 
+        Binarized network
     """
     netin, netinfo = teneto.utils.process_input(netin, ['C', 'G', 'TO'])
     # Predefine
@@ -366,26 +367,26 @@ def binarize(netin, threshold_type, threshold_level, sign='pos'):
     Parameters
     ----------
 
-    netin : array or dict 
+    netin : array or dict
        Network (graphlet or contact representation),
-    
+
     threshold_type : str
-        What type of thresholds to make binarization. Options: 'rdp', 'percent', 'magnitude'. 
+        What type of thresholds to make binarization. Options: 'rdp', 'percent', 'magnitude'.
 
     threshold_level : str
         Paramter dependent on threshold type.
-        If 'rdp', it is the delta (i.e. error allowed in compression). 
+        If 'rdp', it is the delta (i.e. error allowed in compression).
         If 'percent', it is the percentage to keep (e.g. 0.1, means keep 10% of signal).
         If 'magnitude', it is the amplitude of signal to keep.
 
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
 
-    Returns 
+    Returns
     -------
 
     netout : array or dict (depending on input)
-        Binarized network 
+        Binarized network
 
     """
     if threshold_type == 'percent':
@@ -413,7 +414,7 @@ def set_diagonal(G, val=0):
     Returns
     -------
 
-    G : array 
+    G : array
         Graphlet representation with new diagonal
 
     """
@@ -428,12 +429,12 @@ def gen_nettype(G, printWarning=0):
 
     Attempts to identify what nettype input graphlet G is. Diagonal is ignored.
 
-    Paramters 
+    Paramters
     ---------
 
-    G : array 
+    G : array
         temporal network (graphlet)
-    
+
     printWarning : int, default=0
         Options: 0 (default) or 1. Prints warning in console so user knows assumptions made about inputted data.
 
@@ -468,11 +469,11 @@ def checkInput(netIn, raiseIfU=1, conMat=0):
     Parameters
     ----------
 
-    netIn : array or dict 
+    netIn : array or dict
         temporal network, (graphlet or contact).
-    raiseIfU : int, default=1. 
+    raiseIfU : int, default=1.
         Options 1 or 0. Error is raised if not found to be G or C
-    conMat : int, default=0. 
+    conMat : int, default=0.
         Options 1 or 0. If 1, input is allowed to be a 2 dimensional connectivity matrix. Allows output to be 'M'
 
     Returns
@@ -518,13 +519,13 @@ def getDistanceFunction(requested_metric):
     Paramters
     ---------
 
-    requested_metric: str 
+    requested_metric: str
         Distance function. Can be any function in: https://docs.scipy.org/doc/scipy/reference/spatial.distance.html.
 
     Returns
     -------
 
-    requested_metric : distance function 
+    requested_metric : distance function
 
     """
 
@@ -557,14 +558,14 @@ def getDistanceFunction(requested_metric):
 
 def process_input(netIn, allowedformats, outputformat='G'):
     """
-    Takes input network and checks what the input is. 
+    Takes input network and checks what the input is.
 
-    Parameters 
+    Parameters
     ----------
 
-    netIn : array, dict, or class 
+    netIn : array, dict, or class
         Network (graphlet, contact or object)
-    allowedformats : str 
+    allowedformats : str
         Which format of network objects that are allowed. Options: 'C', 'TO', 'G'.
     outputformat: str, default=G
         Target output format. Options: 'C' or 'G'.
@@ -572,12 +573,12 @@ def process_input(netIn, allowedformats, outputformat='G'):
     Returns
     -------
 
-    C : dict 
+    C : dict
 
-    OR  
+    OR
 
-    G : array 
-        Graphlet representation. 
+    G : array
+        Graphlet representation.
     netInfo : dict
         Metainformation about network.
 
@@ -620,15 +621,15 @@ def clean_community_indexes(communityID):
     Parameters
     ----------
 
-    communityID : array-like 
-        list or array of integers. Output from community detection algorithems. 
+    communityID : array-like
+        list or array of integers. Output from community detection algorithems.
 
     Returns
     -------
 
     new_communityID : array
         cleaned list going from 0 to len(np.unique(communityID))-1
-    
+
     Note
     -----
 
@@ -649,15 +650,15 @@ def multiple_contacts_get_values(C):
     Parameters
     ----------
 
-    C : dict 
-    
+    C : dict
+
         contact representation with multiple repeated contacts.
 
     Returns
     -------
 
     :C_out: dict
-    
+
         Contact representation with duplicate contacts removed and the number of duplicates is now in the 'values' field.
 
     """
@@ -691,14 +692,14 @@ def check_distance_funciton_input(distance_func_name,netinfo):
     distance_func_name : str
         distance function name.
 
-    netinfo : dict 
+    netinfo : dict
         the output of utils.process_input
 
-    Returns 
+    Returns
     -------
 
     distance_func_name : str
-        distance function name. 
+        distance function name.
     """
 
     if distance_func_name == 'default' and netinfo['nettype'][0] == 'b':
@@ -717,18 +718,18 @@ def check_distance_funciton_input(distance_func_name,netinfo):
 
 def load_parcellation_coords(parcellation_name):
     """
-    Loads coordinates of included parcellations. 
+    Loads coordinates of included parcellations.
 
     Parameters
-    ---------- 
+    ----------
 
-    parcellation_name : str 
+    parcellation_name : str
         options: 'gordon2014_333', 'power2012_264', 'shen2013_278'.
 
-    Returns 
+    Returns
     -------
-    parc : array 
-        parcellation cordinates 
+    parc : array
+        parcellation cordinates
 
     """
 
@@ -746,27 +747,38 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
     Parameters
     ----------
 
-    data_path : str 
-        Path to .nii image.  
-    parcellation : str 
-        Specify which parcellation that you would like to use. For MNI: 'gordon2014_333', 'power2012_264', For TAL: 'shen2013_278'.  
-    parc_type : str 
-        Can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used. 
-    parc_params : dict 
-        **kwargs for nilearn functions 
+    data_path : str
+        Path to .nii image.
+    parcellation : str
+        Specify which parcellation that you would like to use. For MNI: 'gordon2014_333', 'power2012_264', For TAL: 'shen2013_278'.
+        It is possible to add the OH subcotical atlas on top of a cortical atlas (e.g. gordon) by adding:
+            '+sub-maxprob-thr0-1mm', '+sub-maxprob-thr0-2mm', 'sub-maxprob-thr25-1mm', 'sub-maxprob-thr25-2mm',
+            '+sub-maxprob-thr50-1mm', '+sub-maxprob-thr50-2mm'.
+            e.g.: gordon2014_333+submaxprob-thr0-2mm'
+    parc_type : str
+        Can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
+    parc_params : dict
+        **kwargs for nilearn functions
 
-    Returns 
+    Returns
     -------
 
-    data : array 
+    data : array
         Data after the parcellation.
 
     NOTE
     ----
-    These functions make use of nilearn. Please cite nilearn if used in a publicaiton.   
+    These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
     """
 
     if isinstance(parcellation,str):
+
+        if '+' in parcellation:
+            parcin = parcellation.split('+')
+            parcellation = parcin[0]
+            subcortical = parcin[1]
+        else:
+            subcortical = None
 
         if not parc_type or not parc_params:
             path = teneto.__path__[0] + '/data/parcellation_defaults/defaults.json'
@@ -779,8 +791,6 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
             parc_params = defaults[parcellation]['params']
             print('Using default parameters')
 
-
-
     if parc_type == 'sphere':
         parcellation = teneto.utils.load_parcellation_coords(parcellation)
         seed = NiftiSpheresMasker(np.array(parcellation),**parc_params)
@@ -792,6 +802,12 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
     else:
         raise ValueError('Unknown parc_type specified')
 
+    if subcortical:
+        subatlas = fetch_atlas_harvard_oxford('sub-maxprob-thr0-2mm')['maps']
+        region = NiftiLabelsMasker(subatlas,**parc_params)
+        data_sub = region.fit_transform(data_path)
+        data = np.hstack([data, data_sub])
+
     return data
 
 
@@ -799,7 +815,7 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
 def create_traj_ranges(start, stop, N):
 
     """
-    Fills in the trajectory range. 
+    Fills in the trajectory range.
 
     # Adapted from https://stackoverflow.com/a/40624614
     """
@@ -814,39 +830,39 @@ def create_traj_ranges(start, stop, N):
 def get_dimord(measure,calc=None,subnet=None):
 
     """
-    Get the dimension order of a network measure. 
+    Get the dimension order of a network measure.
 
     Parameters
     ----------
 
-    measure : str 
-        Name of funciton in teneto.networkmeasures.  
-    calc : str, default=None 
-        Calc parameter for the function 
-    subnet : bool, default=None  
-        If not null, then subnet property is assumed to be believed. 
+    measure : str
+        Name of funciton in teneto.networkmeasures.
+    calc : str, default=None
+        Calc parameter for the function
+    subnet : bool, default=None
+        If not null, then subnet property is assumed to be believed.
 
-    Returns 
+    Returns
     -------
 
-    dimord : str 
-        Dimension order. So "node,node,time" would define the dimensions of the network measure. 
+    dimord : str
+        Dimension order. So "node,node,time" would define the dimensions of the network measure.
 
     """
 
-    if not calc: 
+    if not calc:
         calc = ''
-    else: 
+    else:
         calc = '_' + calc
-    if not subnet: 
+    if not subnet:
         subnet = ''
-    else: 
+    else:
         subnet = '_subnet'
-    if '_subnet' in calc and '_subnet' in subnet: 
+    if '_subnet' in calc and '_subnet' in subnet:
         subnet = ''
-    if calc == 'subnet_avg' or calc == 'subnet_pairs': 
+    if calc == 'subnet_avg' or calc == 'subnet_pairs':
         subnet = ''
-        
+
     dimord_dict = {
         'temporal_closeness_centrality': 'node',
         'temporal_degree_centrality': 'node',
@@ -876,8 +892,8 @@ def get_dimord(measure,calc=None,subnet=None):
         'bursty_coeff_meanEdgePerNode': 'node',
         'volatility_global': 'time',
     }
-    if measure + calc + subnet in dimord_dict: 
-        return dimord_dict[measure + calc + subnet] 
-    else: 
+    if measure + calc + subnet in dimord_dict:
+        return dimord_dict[measure + calc + subnet]
+    else:
         print('WARNINGL: get_dimord() returned unknown dimension labels')
         return 'unknown'

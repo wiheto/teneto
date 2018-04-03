@@ -8,7 +8,7 @@
 
 - Added from-subject-fc open to jackknife correlation in TenetoBIDS.derive.
 
-- Numpydoc adopted in docstrings (teneto.utils).
+- Numpydoc adopted in docstrings (teneto.utils, teneto.generatenetwork).
 
 - Added `bad_subjects` and `set_bad_subjects()` in `TenetoBIDS`
 
@@ -17,6 +17,12 @@
 - Fixed `teneto.networkmeasures.volatility` when subnet is given.
 
 - Changed argument subnet_id in `teneto.networkmeasures.volatility` to subnet.  
+
+- Added possibility to append OH subcortical atlas to make_parcellation.
+
+- Added tag option to TenetoBIDS
+
+- Changed cfg variable name to params in teneto.utils. 
 
 ## V0.2.7
 
