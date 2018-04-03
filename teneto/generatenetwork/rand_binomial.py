@@ -11,50 +11,52 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
 
     Creates a random binary network following a binomial distribution.
 
-    **PARAMETERS**
+    Parameters
+    ----------
 
-    :size: number of nodes and number of time points.
+    size : list or array of length 2 or 3.  
+    
+        Input [n,t] generates n number of nodes and t number of time points.  
+        Can also be of length 3 (node x node x time) but number of nodes in 3-tuple must be identical.
 
-        :format: 2-tuple, list of size 2 or array of size 2. Can also be of length 3 (node x node x time) but number of nodes in 3-tuple must be identical.
-
-    :prob: Probability of edge present. Two possibilities.
-
-        :integer: the same probabability for each node becoming active (equal for all nodes).
-        :tuple/list of size 2: different probabilities for edges to become active/inactive.
+    prob : int or list/array of length 2.  
+     
+        If int, this indicates probabability for each node becoming active (equal for all nodes).
+        
+        If tuple/list of length 2, this indicates different probabilities for edges to become active/inactive.
 
             The first value is "birth rate". The probability of an absent connection becoming present.
 
             The second value is the "death rate". This dictates the probability of an edge present remaining present.
 
-            :example: (40,60) means there is a 40% chance that a 0 will become a 1 and a 60% chance that a 1 stays a 1.
+            example : [40,60] means there is a 40% chance that a 0 will become a 1 and a 60% chance that a 1 stays a 1.
 
-    :netrep: network representation: 'graphlet' or 'contact'.
-    :nettype: string 'bu' or 'bd' (accepts 'u' and 'd' as well as b is implicit)
-    :initialize: optional variable for option2 of prob. Follwoing options:
+    netrep : str 
+        network representation: 'graphlet' (default) or 'contact'.
+    nettype : str 
+        Weighted or directed network. String 'bu' or 'bd' (accepts 'u' and 'd' as well as b is implicit)
+    initialize : float or str 
+        Input percentage (in decimal) for how many nodes start activated. Alternative specify 'zero' (default) for all nodes to start deactivated.      
+    netinfo : dict 
+        Dictionary for contact representaiton information. 
+ 
+    Returns 
+    -------
 
-        :'zero': all nodes start deactivated
-        :integer: states percentage of nodes that should active when t=1 (determined randomly).
-    :netinfo: dictionary for contact representaiton information
+    net : array or dict 
+        
+        Generated nework. Format depends on netrep input argument.
 
-
-    **OUTPUT**
-
-    :net: generated network.
-
-        :format: either graphlet (numpy) or contact (dictionary), depending on netrep input.
-
-    **NOTES**
+    Note
+    ------
 
     Option 2 of the "prob" parameter can be used to create a small autocorrelaiton or make sure that, once an edge has been present, it never disapears.
 
-    **SEE ALSO**
+    
+    Read more
+    ---------
 
-    **READ MORE**
     There is some work on the properties on the graphs with birth/death rates (called edge-Markovian Dynamic graphs) as described here. Clementi et al (2008) Flooding Time in edge-Markovian Dynamic Graphs *PODC*
-
-    **HISTORY**
-
-    :Created: Dec 16, WHT
 
     """
 
