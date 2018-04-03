@@ -43,7 +43,7 @@ def graphlet2contact(G, params=None):
             What should the diagonal be. (note: does could be expanded to take vector of unique diagonal values in the future, but not implemented now)
 
         *timetype* : str, default='discrete'
-            Time units can be The cfg file becomes the foundation of 'C'. Any other information in cfg, will added to C.
+            Time units can be The params file becomes the foundation of 'C'. Any other information in params, will added to C.
 
         *nLabs* : list
             Set nod labels.
@@ -63,8 +63,8 @@ def graphlet2contact(G, params=None):
     """
 
     # Create config dictionary if missing
-    if cfg == None:
-        cfg = {}
+    if params == None:
+        params = {}
     # Check that temporal network is vald input.
     if G.shape[0] != G.shape[1]:
         raise ValueError(
@@ -75,39 +75,39 @@ def graphlet2contact(G, params=None):
         raise ValueError(
             'Input G must be three dimensions (node x node x time)')
     # Check number of nodes is correct, if specfied
-    if 'nLabs' in cfg.keys():
-        if cfg['nLabs']:
-            if len(cfg['nLabs']) != G.shape[0]:
+    if 'nLabs' in params.keys():
+        if params['nLabs']:
+            if len(params['nLabs']) != G.shape[0]:
                 raise ValueError(
                     'Specified list of node names has to be equal in length to number of nodes')
-    if 't0' in cfg.keys():
-        cfg['t0'] = np.atleast_1d(np.array(cfg['t0']))
-        if len(cfg['t0']) != 1:
+    if 't0' in params.keys():
+        params['t0'] = np.atleast_1d(np.array(params['t0']))
+        if len(params['t0']) != 1:
             raise ValueError(
                 't0 must be sigular be either integer representing time at first temporal index)')
-        cfg['t0'] = np.squeeze(cfg['t0'])
-    # Check that all inputs in cfg are correct.
+        params['t0'] = np.squeeze(params['t0'])
+    # Check that all inputs in params are correct.
 
-    if 'nettype' not in cfg.keys() or cfg['nettype'] == 'auto':
-        cfg['nettype'] = gen_nettype(G, 1)
-    if cfg['nettype'] not in {'bd', 'bu', 'wd', 'wu', 'auto'}:
+    if 'nettype' not in params.keys() or params['nettype'] == 'auto':
+        params['nettype'] = gen_nettype(G, 1)
+    if params['nettype'] not in {'bd', 'bu', 'wd', 'wu', 'auto'}:
         raise ValueError(
-            '\'nettype\' (in cfg) must be a string \'wd\',\'bd\',\'wu\',\'bu\'). w: weighted network. b: binary network. u: undirected network. d: directed network')
-    if 'Fs' not in cfg.keys():
-        cfg['Fs'] = 1
+            '\'nettype\' (in params) must be a string \'wd\',\'bd\',\'wu\',\'bu\'). w: weighted network. b: binary network. u: undirected network. d: directed network')
+    if 'Fs' not in params.keys():
+        params['Fs'] = 1
         print('Warning, no sampling rate set. Assuming 1.')
-    if 'timeunit' not in cfg.keys():
-        cfg['timeunit'] = ''
-    if 'diagonal' not in cfg.keys():
-        cfg['diagonal'] = 0
-    if 'nLabs' not in cfg.keys():
-        cfg['nLabs'] = ''
+    if 'timeunit' not in params.keys():
+        params['timeunit'] = ''
+    if 'diagonal' not in params.keys():
+        params['diagonal'] = 0
+    if 'nLabs' not in params.keys():
+        params['nLabs'] = ''
     else:
-        cfg['nLabs'] = list(cfg['nLabs'])
+        params['nLabs'] = list(params['nLabs'])
 
-    if 't0' not in cfg.keys():
-        cfg['t0'] = 1
-    nt = cfg['nettype']
+    if 't0' not in params.keys():
+        params['t0'] = 1
+    nt = params['nettype']
 
     # Set diagonal to 0 to make contacts 0.
     G = set_diagonal(G, 0)
@@ -125,7 +125,7 @@ def graphlet2contact(G, params=None):
         values = list(G[edg[0][sortTime], edg[1][sortTime], edg[2][sortTime]])
 
     # build output dictionary
-    C = cfg
+    C = params
     C['contacts'] = contacts
     C['netshape'] = G.shape
     C['dimord'] = 'node,node,time'
