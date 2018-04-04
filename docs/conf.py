@@ -289,6 +289,6 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 
-MOCK_MODULES = ['numpy', 'scipy']
+MOCK_MODULES = ['numpy', 'scipy', 'pybids', 'bids', 'statsmodels', 'seaborn', 'matplotlib', 'pandas']
 for mod_name in MOCK_MODULES:
    sys.modules[mod_name] = mock.Mock() 
