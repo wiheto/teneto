@@ -293,6 +293,6 @@ MOCK_MODULES = ['numpy', 'scipy', 'bids.grabbids', 'statsmodels.formula.api',
     'seaborn', 'matplotlib.pylpt', 'pandas','scipy.stats',
     'statsmodels.stats.weightstats','scipy.special','nilearn.input_data',
     'scipy.spatial.distance','nilearn.datasets', 'traceback', 'inspect', 
-    'json','maths', 'pickle']
+    'json','math', 'pickle']
 for mod_name in MOCK_MODULES:
    sys.modules[mod_name] = mock.Mock() 
