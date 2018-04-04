@@ -15,8 +15,7 @@
 
 import sys
 import os
-from unittest.mock import MagicMock
-
+import mock
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -289,3 +288,7 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
 
+
+MOCK_MODULES = ['numpy', 'scipy']
+for mod_name in MOCK_MODULES:
+   sys.modules[mod_name] = mock.Mock() 
