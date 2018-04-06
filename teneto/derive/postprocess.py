@@ -80,19 +80,21 @@ def postpro_boxcox(data, report=None):
 
 def postpro_standardize(data, report=None):
     """
-    Standardizes everything in data (along axis 0).
+    Standardizes everything in data (along axis -1).
 
     If report variable is passed, this is added to the report.
     """
     if not report:
         report = {}
-    # First make trailing dimension nodal.
+    # First make dim 1 = time.
     data = np.transpose(data, [2, 0, 1])
     standardized_data = (data - data.mean(axis=0)) / data.std(axis=0)
     standardized_data = np.transpose(standardized_data, [1, 2, 0])
     report['standardize'] = {}
     report['standardize']['performed'] = 'yes'
     report['standardize']['method'] = 'starndard score'
+    # The above makes self connections to nan, set to 1. 
+    data = teneto.utils.set_diagonal(data,1)
     return standardized_data, report
 
 
