@@ -22,7 +22,11 @@
 
 - Added tag option to TenetoBIDS
 
-- Changed cfg variable name to params in teneto.utils. 
+- Changed cfg variable name to params in teneto.utils.
+
+- Fixed bug in teneto_degree_centrlaity where decay and subnet set.
+
+- Allow * and + in tag in TenetoBIDS.  
 
 ## V0.2.7
 
