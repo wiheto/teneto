@@ -92,7 +92,7 @@ def postpro_standardize(data, report=None):
     standardized_data = np.transpose(standardized_data, [1, 2, 0])
     report['standardize'] = {}
     report['standardize']['performed'] = 'yes'
-    report['standardize']['method'] = 'starndard score'
+    report['standardize']['method'] = 'Z-score'
     # The above makes self connections to nan, set to 1. 
     data = teneto.utils.set_diagonal(data,1)
     return standardized_data, report

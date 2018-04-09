@@ -223,7 +223,6 @@ def derive(data, params):
                 R = (R - R.mean(axis=0)) / R.std(axis=0)
             R = R + params['weight-mean']
             R = np.transpose(R, [1, 2, 0])
-        # The above step makes the self edges to -1 or -inf. So correct this 
         R = teneto.utils.set_diagonal(R,1)
 
 
@@ -231,7 +230,7 @@ def derive(data, params):
     if params['postpro'] != 'no':
         R, report = teneto.derive.postpro_pipeline(
             R, params['postpro'], report)
-        R[np.isinf(R)] = 0
+        R = teneto.utils.set_diagonal(R,1)
 
     if params['report'] == 'yes':
         teneto.derive.gen_report(report, params['report_path'], params['report_filename'])
