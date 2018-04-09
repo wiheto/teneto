@@ -279,7 +279,7 @@ class TenetoBIDS:
                 self.analysis_steps += [tag[1:]]
 
 
-    def networkmeasures(self, measure=None, measure_params={}, tag=None):
+    def networkmeasures(self, measure=None, measure_params={}, load_tag=None, save_tag=None):
         """
         Runs a network measure
 
@@ -333,53 +333,58 @@ class TenetoBIDS:
         files = self.get_selected_files(quiet=1)
 
 
-        if not tag:
-            tag = ''
+        if not load_tag:
+            load_tag = ''
+
+        if not save_tag:
+            save_tag = ''
         else:
-            tag = '_' + tag
+            save_tag = '_' + save_tag
 
         for f in files:
 
-            # ADD MORE HERE (csv, json, nifti)
-            if f.split('.')[-1] == 'npy':
-                data = np.load(f)
-            else:
-                raise ValueError('derive can only load npy files at the moment')
+            if load_tag in f:
 
-            save_dir_base = '/'.join(f.split('/')[:-1]) + '/temporal-network-measures/'
-
-            file_name = f.split('/')[-1].split('.')[0]
-
-            for i, m in enumerate(measure):
-
-                # The following 12 lines get the dimord
-                if 'calc' in measure_params[i]:
-                    c = measure_params[i]['calc']
-                    cs = '_calc-' + c
+                # ADD MORE HERE (csv, json, nifti)
+                if f.split('.')[-1] == 'npy':
+                    data = np.load(f)
                 else:
-                    c = ''
-                    cs = ''
-                if 'subnet' in measure_params[i]:
-                    s = 'subnet'
-                else:
-                    s = ''
-                dimord = teneto.utils.get_dimord(m,c,s)
-                dimord_str = ''
-                if dimord != 'unknown':
-                    dimord_str = '_dimord-' + dimord
+                    raise ValueError('derive can only load npy files at the moment')
 
-                if 'subnet' in measure_params[i]:
-                    if measure_params[i]['subnet'] == True:
-                        measure_params[i]['subnet'] = list(self.network_communities_['network_id'].values)
+                save_dir_base = '/'.join(f.split('/')[:-1]) + '/temporal-network-measures/'
 
-                sname = m.replace('_','-')
-                if not os.path.exists(save_dir_base + sname):
-                    os.makedirs(save_dir_base + sname)
+                file_name = f.split('/')[-1].split('.')[0]
 
-                save_name = file_name + '_' + sname + cs + dimord_str + tag
-                netmeasure = module_dict[m](data,**measure_params[i])
+                for i, m in enumerate(measure):
 
-                np.save(save_dir_base + sname + '/' + save_name, netmeasure)
+                    # The following 12 lines get the dimord
+                    if 'calc' in measure_params[i]:
+                        c = measure_params[i]['calc']
+                        cs = '_calc-' + c
+                    else:
+                        c = ''
+                        cs = ''
+                    if 'subnet' in measure_params[i]:
+                        s = 'subnet'
+                    else:
+                        s = ''
+                    dimord = teneto.utils.get_dimord(m,c,s)
+                    dimord_str = ''
+                    if dimord != 'unknown':
+                        dimord_str = '_dimord-' + dimord
+
+                    if 'subnet' in measure_params[i]:
+                        if measure_params[i]['subnet'] == True:
+                            measure_params[i]['subnet'] = list(self.network_communities_['network_id'].values)
+
+                    sname = m.replace('_','-')
+                    if not os.path.exists(save_dir_base + sname):
+                        os.makedirs(save_dir_base + sname)
+
+                    save_name = file_name + '_' + sname + cs + dimord_str + save_tag
+                    netmeasure = module_dict[m](data,**measure_params[i])
+
+                    np.save(save_dir_base + sname + '/' + save_name, netmeasure)
 
     def get_space_alternatives(self,quiet=0):
         """
@@ -1088,7 +1093,7 @@ class TenetoBIDS:
                     bids_tag_dict = {}
                     for t in bid_tags:
                         key = t[:-1]
-                        bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9*+]*',f)[0].split('-')[-1]
+                        bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
                     if f.split('.')[-1] == 'npy':
                         data = np.load(base_path+f)
                         data_list.append(data)
@@ -1102,6 +1107,62 @@ class TenetoBIDS:
                 out_trialinfo = pd.concat(trialinfo_list)
                 out_trialinfo.reset_index(inplace=True,drop=True)
                 self.parcellation_trialinfo_ = out_trialinfo
+
+
+
+    def load_tvc_data(self,tag=None):
+        """
+        Function loads time-varying connectivity estimates created by the TenetoBIDS.derive function.
+        The default grabs all data (in numpy arrays) in the teneto/../func/tvc/ directory.
+        Data is placed in teneto.tvc_data_
+
+        **INPUT**
+
+        tag : str
+            Any additional tag to filter out which files to load.
+
+        **RETURNS**
+
+        tvc_data_ : numpy array
+            Containing the parcellation data. Each file is appended to the first dimension of the numpy array.
+        tvc_trialinfo_ : pandas data frame
+            Containing the subject info (all BIDS tags) in the numpy array.
+        """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+        data_list=[]
+        trialinfo_list = []
+
+        if not tag:
+            tag = ''
+
+        for s in self.subjects:
+            # Define base folder
+            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
+            base_path += '/sub-' + s + '/func/tvc/'
+            file_list=os.listdir(base_path)
+            for f in file_list:
+                # Include only if all analysis step tags are present
+                if os.path.isfile(base_path + f) and tag in f:
+                    # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
+                    bid_tags=re.findall('[a-zA-Z]*-',f)
+                    bids_tag_dict = {}
+                    for t in bid_tags:
+                        key = t[:-1]
+                        bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
+                    if f.split('.')[-1] == 'npy':
+                        data = np.load(base_path+f)
+                        data_list.append(data)
+                        trialinfo = pd.DataFrame(bids_tag_dict,index=[0])
+                        trialinfo_list.append(trialinfo)
+                    else:
+                        print('Warning: Could not find data for a subject (expecting numpy array)')
+
+            self.tvc_data_ = np.array(data_list)
+            if trialinfo_list:
+                out_trialinfo = pd.concat(trialinfo_list)
+                out_trialinfo.reset_index(inplace=True,drop=True)
+                self.tvc_trialinfo_ = out_trialinfo
+
 
 
     def load_network_measure(self,measure,timelocked=False,calc=None,tag=None):
@@ -1136,7 +1197,7 @@ class TenetoBIDS:
                         bids_tag_dict = {}
                         for t in bids_tags:
                             key = t[:-1]
-                            bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9*+]*',f)[0].split('-')[-1]
+                            bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
                         # Get data
                         if f.split('.')[-1] == 'pkl':
                             df = pd.read_pickle(base_path+f)
