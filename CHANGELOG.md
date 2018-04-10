@@ -28,6 +28,8 @@
 
 - Allow * and + in tag in TenetoBIDS.  
 
+- clean_community_indexes works with temporal clustering
+
 ## V0.2.7
 
 - Added calc option to `TenetoBIDS.make_time_locked_events` allowing for selecting one of multiple networkmeasures

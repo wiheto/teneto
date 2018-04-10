@@ -633,13 +633,18 @@ def clean_community_indexes(communityID):
     Note
     -----
 
-    Behaviour : the lowest community integer in communityID will recieve the lowest integer in new_communityID.
+    Behaviour of funciton entails that the lowest community integer in communityID will recieve the lowest integer in new_communityID.
 
     """
-    np.array(communityID)
+    communityID = np.array(communityID)
+    cid_shape = communityID.shape
+    if len(cid_shape) > 1: 
+        communityID = communityID.flatten()  
     new_communityID = np.zeros(len(communityID))
     for i, n in enumerate(np.unique(communityID)):
         new_communityID[communityID == n] = i
+    if len(cid_shape) > 1: 
+        new_communityID = new_communityID.reshape(cid_shape)  
     return new_communityID
 
 
