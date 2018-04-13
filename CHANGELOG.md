@@ -2,6 +2,8 @@
 
 ## V0.3.0 
 
+- Dockerfile added 
+
 - Added weight-var and weight-mean options to jackknife correlation.
 
 - Added make_static_connectivity in TenetoBIDS
