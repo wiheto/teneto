@@ -3,17 +3,13 @@
 [![Documentation Status](https://readthedocs.org/projects/teneto/badge/?version=latest)](http://teneto.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/Teneto.svg)](https://badge.fury.io/py/Teneto)
 
-**Te**mporal **ne**twork **to**ols. Version 0.2.8
+**Te**mporal **ne**twork **to**ols. Version 0.3.0
 
-Package includes:  temporal network measures, temporal network generation, derivation of time-varying/dynamic connectivity, plotting functions.
+## What is the package
 
-For neuroimaging data, compatible with BIDS format.
+Package includes various tools for analyzing temporal network data. Temporal network measures, temporal network generation, derivation of time-varying/dynamic connectivity, plotting functions. Some extra focus is placed on neuroimaging data (e.g. compatible with BIDS data format).
 
 ## Installation
-
-Download additional requirements https://github.com/
-
-`pip install bids`
 
 With pip installed:
 
@@ -25,43 +21,13 @@ to upgrade teneto:
 
 Requires: Python 3.5 or python 3.6. Other versions of python (2.7 and <3.5) may work, but not tested.
 
-### Tutorials
+Installing teneto installs all python package requirements as well. However, for community detection, iGraph is used which can need some seperate C compilers installed. See ([python-iGraph installation page](http://igraph.org/python/#startpy) for more details regarding what needs to be installed).
 
-__These will be updated__
+##
 
-[1. The different formats of temporal networks in teneto](https://github.com/wiheto/teneto/blob/master/examples/01_network_representations.ipynb)
+Documentation for the functions can be found at  [teneto.readthedocs.io](https://teneto.readthedocs.io) and includes tutorials.
 
-
-[2. The plotting different networks](https://github.com/wiheto/teneto/blob/master/examples/02_plotting_temporalnetworks.ipynb)
-
-
-[3. Creating temporal networks ](https://github.com/wiheto/teneto/blob/master/examples/03_creating_temporalnetworks.ipynb)
-
-*More tutorials will be written when I have time (and the above will be improved). Until then, check out our overview of the metrics here: http://biorxiv.org/content/early/2016/12/24/096461*
-
-### Documentation
-
-Documentation for the functions can be found at  [teneto.readthedocs.io](https://teneto.readthedocs.io).
-
-### Measures
-
-The following measures exist in the package:
-
-- temporal degree
-- temporal closeness
-- shortest temporal paths
-- bursty coefficient
-- fluctuability  
-- volatility
-- reachability latency
-- temporal efficiency
-- intercontacttimes
-
-All measures work for binary undirected networks. Some work for other types of networks as well. This will be updated with time.
-
-Found a measure in the literature that you would like included? Add to this issue with a reference to someone using it and I will try and implement it.
-
-### Outlook.
+## Outlook.
 
 This package is under active development. And a lot of changes will still be made.
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.2.8 (pending release)
+## V0.3.0 
 
 - Added weight-var and weight-mean options to jackknife correlation.
 
@@ -29,6 +29,10 @@
 - Allow * and + in tag in TenetoBIDS.  
 
 - clean_community_indexes works with temporal clustering
+
+- Added iGraph as requirement 
+
+- Added `teneto.communitydetection.louvain`
 
 ## V0.2.7
 

@@ -4,13 +4,15 @@ General setup for module
 
 from setuptools import setup, find_packages
 
-setup(name='Teneto',
-      version='0.2.8',
+setup(name='teneto',
+      version='0.3.0',
       python_requires='>3.5',
       install_requires=[  
 			'nilearn>=0.4.0',
 			'statsmodels>=0.8.0',
-			'pybids>=0.4.2'],
+			'pybids>=0.4.2',
+      'louvain>=0.6.1',
+      'python-igraph>=0.6.1'],
       description='Temporal network tools',
       packages=find_packages(),
       author='William Hedley Thompson',

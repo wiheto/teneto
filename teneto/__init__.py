@@ -4,7 +4,7 @@
 """Teneto is a module with tools for analyzing network patterns in time."""
 #
 __author__ = "William Hedley Thompson (wiheto)"
-__version__ = "0.2.8"
+__version__ = "0.3.0"
 #
 import teneto.utils as utils
 import teneto.networkmeasures as networkmeasures
@@ -13,7 +13,7 @@ import teneto.generatenetwork as generatenetwork
 import teneto.derive as derive
 import teneto.misc as misc
 import teneto.trajectory as trajectory
-#import teneto.communitydetection as communitydetection
+import teneto.communitydetection as communitydetection
 from teneto.classes import TenetoBIDS
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering
