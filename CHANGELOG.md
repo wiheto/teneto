@@ -1,5 +1,9 @@
 # Changelog
 
+## V0.3.1 
+
+- __main__ added.
+
 ## V0.3.0 
 
 - Dockerfile added 

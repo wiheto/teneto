@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 setup(name='teneto',
       version='0.3.0',
       python_requires='>3.5',
-      install_requires=[  
+      install_requires=[
 			'nilearn>=0.4.0',
 			'statsmodels>=0.8.0',
 			'pybids>=0.4.2',
@@ -20,4 +20,8 @@ setup(name='teneto',
       url='https://www.github.com/wiheto/teneto',
       download_url='https://github.com/wiheto/teneto/archive/0.2.tar.gz',
       package_data={'':['./teneto/data']},
-      include_package_data = True)
+      include_package_data = True,
+      entry_points={
+      'console_scripts': ['teneto = teneto.__main__:main'
+          ]
+      })
