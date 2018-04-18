@@ -2,7 +2,9 @@
 
 ## V0.3.1 
 
-- __main__ added.
+- __main__ added (this may be removed at later date as I don't have an interest in maintaining this).
+
+- Added `njobs` argument to `TenetoBIDS` (and various other functions therein) for parallel computing.
 
 ## V0.3.0 
 

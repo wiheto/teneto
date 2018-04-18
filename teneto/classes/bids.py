@@ -11,6 +11,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pickle
 import traceback
+import concurrent
 
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
@@ -20,11 +21,12 @@ import traceback
     #    print(self)
     #    print(teneto.networkmeasures.temporal_degree_centrality(self,**kwargs))
 
+
 class TenetoBIDS:
 
     #networkmeasures = NetworkMeasures(self)
 
-    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, space=None, subjects='all', sessions='all', runs='all', tasks='all', last_analysis_step=None, analysis_steps=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True):
+    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, space=None, subjects='all', sessions='all', runs='all', tasks='all', last_analysis_step=None, analysis_steps=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True, njobs=None):
         """
         Parameters
         ----------
@@ -55,6 +57,8 @@ class TenetoBIDS:
             If the confounds file is in another derivatives directory than the pipeline directory, set it here.
         raw_data_exists : bool, optional
             Default is True. If the unpreprocessed data is not present in BIDS_dir, set to False. Some BIDS funcitonality will be lost.
+        njobs : int, optional
+            How many parallel jobs to run. Default: 1. The set value can be overruled in individual functions.
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
@@ -114,6 +118,10 @@ class TenetoBIDS:
         else:
             self.set_bad_subjects(bad_subjects)
 
+        if not njobs: 
+            self.njobs = 1
+        else: 
+            self.njobs = njobs
 
     def add_history(self, fname, fargs, init=0):
         """
@@ -123,46 +131,7 @@ class TenetoBIDS:
             self.history = []
         self.history.append([fname,fargs])
 
-
-    def make_functional_connectivity(self):
-        """
-        Makes connectivity matrix for each of the subjects.
-
-        Saves data in derivatives/teneto_<version>/.../fc/
-        """
-        self.add_history(inspect.stack()[0][3], locals(), 1)
-        files = self.get_selected_files(quiet=1)
-
-        R_group = []
-        for i, f in enumerate(files):
-
-            # ADD MORE HERE (csv, json, nifti)
-            if f.split('.')[-1] == 'npy':
-                data = np.load(f)
-            else:
-                raise ValueError('derive can only load npy files at the moment')
-
-            file_name = f.split('/')[-1].split('.')[0]
-            save_name = file_name + '_fc'
-            paths_post_pipeline = f.split(self.pipeline)
-
-            if self.pipeline_subdir:
-                paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)[0]
-            else:
-                paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
-            save_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/fc/'
-
-            if not os.path.exists(save_dir):
-                os.makedirs(save_dir)
-
-            R = teneto.misc.corrcoef_matrix(data)[0]
-            # Fisher transform of subject R values before group average
-            R_group.append(np.arctan(R))
-            np.save(save_dir + save_name + '.npy', R)
-
-
-
-    def derive(self, params, update_pipeline=True, tag=None):
+    def derive(self, params, update_pipeline=True, tag=None, njobs=1):
 
         """
         Derive time-varying connectivity on the selected files.
@@ -172,7 +141,12 @@ class TenetoBIDS:
 
         update_pipeline : bool
             If true, the object updates the selected files with those derived here.
+        
+        njobs : int 
+            How many parallel jobs to run
         """
+        if not njobs: 
+            njobs = self.njobs
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
         files = self.get_selected_files(quiet=1)
@@ -185,89 +159,10 @@ class TenetoBIDS:
         else:
             tag = '_' + tag
 
-        for i, f in enumerate(files):
-
-            # ADD MORE HERE (csv, json, nifti)
-            if f.split('.')[-1] == 'npy':
-                data = np.load(f)
-            else:
-                raise ValueError('derive can only load npy files at the moment')
-
-            file_name = f.split('/')[-1].split('.')[0]
-            save_name = file_name + '_tvcmethod-' + params['method'] + tag + '_tvc'
-            paths_post_pipeline = f.split(self.pipeline)
-
-            if self.pipeline_subdir:
-                paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)[0]
-            else:
-                paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
-            save_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/tvc/'
-
-            if 'weight-var' in params.keys():
-                if params['weight-var'] == 'from-subject-fc':
-                    fc_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/fc/'
-                    f = os.listdir(fc_dir)
-                    params['weight-var'] = np.load(fc_dir + f[0])
-
-            if 'weight-mean' in params.keys():
-                if params['weight-mean'] == 'from-subject-fc':
-                    fc_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/fc/'
-                    f = os.listdir(fc_dir)
-                    params['weight-mean'] = np.load(fc_dir + f[0])
-
-            params['report'] = 'yes'
-            params['report_path'] =  self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/tvc/report/'
-            params['report_filename'] =  save_name + '_derivationreport.html'
-
-            if not os.path.exists(save_dir):
-                os.makedirs(save_dir)
-
-            if not os.path.exists(params['report_path']):
-                os.makedirs(params['report_path'])
-
-            dfc = teneto.derive.derive(data,params)
-
-            np.save(save_dir + save_name + '.npy', dfc)
-
-            if confounds_exist:
-                analysis_step = 'tvc-derive'
-                if confound_files[i].split('.')[-1] == 'csv':
-                    delimiter = ','
-                elif confound_files[i].split('.')[-1] == 'tsv':
-                    delimiter = '\t'
-                df = pd.read_csv(confound_files[i],sep=delimiter)
-                df = df.fillna(df.median())
-                ind = np.triu_indices(dfc.shape[0], k=1)
-                dfc_df = pd.DataFrame(dfc[ind[0],ind[1],:].transpose())
-                #NOW CORRELATE DF WITH DFC BUT DFC INDEX NOT DF.
-                dfc_df_z = (dfc_df - dfc_df.mean())
-                df_z = (df - df.mean())
-                R_df = dfc_df_z.T.dot(df_z).div(len(dfc_df)).div(df_z.std(ddof=0)).div(dfc_df_z.std(ddof=0), axis=0)
-                R_df_describe = R_df.describe()
-                desc_index = R_df_describe.index
-                confound_report_dir = params['report_path'] + '/' + analysis_step + '_vs_confounds/'
-                confound_report_figdir = confound_report_dir + 'figures/'
-                if not os.path.exists(confound_report_figdir):
-                    os.makedirs(confound_report_figdir)
-                report = '<html><body>'
-                report += '<h1> Correlation of ' + analysis_step + ' and confounds.</h1>'
-                for c in R_df.columns:
-                    fig,ax = plt.subplots(1)
-                    ax = sns.distplot(R_df[c],hist=False, color='m', ax=ax, kde_kws={"shade": True})
-                    fig.savefig(confound_report_figdir + c + '.png')
-                    plt.close(fig)
-                    report += '<h2>' + c + '</h2>'
-                    for ind_name,r in enumerate(R_df_describe[c]):
-                        report += str(desc_index[ind_name]) + ': '
-                        report += str(r) + '<br>'
-                    report += 'Distribution of corrlation values:'
-                    report += '<img src=' + confound_report_figdir + c + '.png><br><br>'
-                report += '</body></html>'
-
-            with open(confound_report_dir + analysis_step + '_vs_confounds.html', 'w') as file:
-                file.write(report)
-
-            file.close()
+        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+            job = {executor.submit(self._run_derive,f,i,tag,params,confounds_exist,confound_files) for i,f in enumerate(files)}
+            for j in job:
+                j.result()
 
         if update_pipeline == True:
             if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
@@ -278,113 +173,158 @@ class TenetoBIDS:
             if tag:
                 self.analysis_steps += [tag[1:]]
 
-
-    def networkmeasures(self, measure=None, measure_params={}, load_tag=None, save_tag=None):
+    def _run_derive(self,f,i,tag,params,confounds_exist,confound_files):
+        """ 
+        Funciton called by TenetoBIDS.derive for parallel processing.
         """
-        Runs a network measure
+        # ADD MORE HERE (csv, json, nifti)
+        if f.split('.')[-1] == 'npy':
+            data = np.load(f)
+        else:
+            raise ValueError('derive can only load npy files at the moment')
 
-        For available funcitons see: teneto.networkmeasures
+        save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,'_tvcmethod-' + params['method'] + tag + '_tvc','tvc')
 
-        Parameters
+        if 'weight-var' in params.keys():
+            if params['weight-var'] == 'from-subject-fc':
+                fc_dir = base_dir + '/fc/'
+                f = os.listdir(fc_dir)
+                params['weight-var'] = np.load(fc_dir + f[0])
+
+        if 'weight-mean' in params.keys():
+            if params['weight-mean'] == 'from-subject-fc':
+                fc_dir = base_dir + '/fc/'
+                f = os.listdir(fc_dir)
+                params['weight-mean'] = np.load(fc_dir + f[0])
+
+        params['report'] = 'yes'
+        params['report_path'] =  save_dir + '/report/'
+        params['report_filename'] =  save_name + '_derivationreport.html'
+
+        if not os.path.exists(params['report_path']):
+            os.makedirs(params['report_path'])
+
+        dfc = teneto.derive.derive(data,params)
+
+        np.save(save_dir + save_name + '.npy', dfc)
+
+        if confounds_exist:
+            analysis_step = 'tvc-derive'
+            if confound_files[i].split('.')[-1] == 'csv':
+                delimiter = ','
+            elif confound_files[i].split('.')[-1] == 'tsv':
+                delimiter = '\t'
+            df = pd.read_csv(confound_files[i],sep=delimiter)
+            df = df.fillna(df.median())
+            ind = np.triu_indices(dfc.shape[0], k=1)
+            dfc_df = pd.DataFrame(dfc[ind[0],ind[1],:].transpose())
+            #NOW CORRELATE DF WITH DFC BUT DFC INDEX NOT DF.
+            dfc_df_z = (dfc_df - dfc_df.mean())
+            df_z = (df - df.mean())
+            R_df = dfc_df_z.T.dot(df_z).div(len(dfc_df)).div(df_z.std(ddof=0)).div(dfc_df_z.std(ddof=0), axis=0)
+            R_df_describe = R_df.describe()
+            desc_index = R_df_describe.index
+            confound_report_dir = params['report_path'] + '/' + analysis_step + '_vs_confounds/'
+            confound_report_figdir = confound_report_dir + 'figures/'
+            if not os.path.exists(confound_report_figdir):
+                os.makedirs(confound_report_figdir)
+            report = '<html><body>'
+            report += '<h1> Correlation of ' + analysis_step + ' and confounds.</h1>'
+            for c in R_df.columns:
+                fig,ax = plt.subplots(1)
+                ax = sns.distplot(R_df[c],hist=False, color='m', ax=ax, kde_kws={"shade": True})
+                fig.savefig(confound_report_figdir + c + '.png')
+                plt.close(fig)
+                report += '<h2>' + c + '</h2>'
+                for ind_name,r in enumerate(R_df_describe[c]):
+                    report += str(desc_index[ind_name]) + ': '
+                    report += str(r) + '<br>'
+                report += 'Distribution of corrlation values:'
+                report += '<img src=' + confound_report_figdir + c + '.png><br><br>'
+            report += '</body></html>'
+
+        with open(confound_report_dir + analysis_step + '_vs_confounds.html', 'w') as file:
+            file.write(report)
+
+        file.close()
+
+
+    def make_functional_connectivity(self,njobs=None,returngroup=False):
+        """
+        Makes connectivity matrix for each of the subjects.
+
+        Parameters 
         ----------
+        returngroup : bool, default=False 
+            If true, returns the group average connectivity matrix.
+        njobs : int 
+            How many parallel jobs to run
 
-        measure : str or list
-            Mame of function(s) from teneto.networkmeasures that will be run.
-
-        measure_params : dict or list of dctionaries)
-            Containing kwargs for the argument in measure.
-
-        tag : str
-            Add additional tag to filenames.
-
-        Note
-        ----
-        If self.network_communities exist, subnet=True can be specified for subnet options instead of supplying the network atlas.
-
-        Returns
+        Returns 
         -------
+        Saves data in derivatives/teneto_<version>/.../fc/
+        R_group : array 
+            if returngroup is true, the average connectivity matrix is returned.
 
-        Saves in ./BIDS_dir/derivatives/teneto/sub-NAME/func/tvc/temporal-network-measures/MEASURE/
-        Load the measure with tenetoBIDS.load_network_measure
         """
-
+        if not njobs: 
+            njobs = self.njobs
         self.add_history(inspect.stack()[0][3], locals(), 1)
-
-        module_dict = inspect.getmembers(teneto.networkmeasures)
-        # Remove all functions starting with __
-        module_dict={m[0]:m[1] for m in module_dict if m[0][0:2]!='__'}
-        # measure can be string or list
-        if isinstance(measure, str):
-            measure = [measure]
-        # measure_params can be dictionaary or list of dictionaries
-        if     isinstance(measure_params, dict):
-            measure_params = [measure_params]
-        if measure_params and len(measure) != len(measure_params):
-            raise ValueError('Number of identified measure_params (' + str(len(measure_params)) + ') differs from number of identified measures (' + str(len(measure)) + '). Leave black dictionary if default methods are wanted')
-
-
-        # Check that specified measure is valid.
-        flag = [n for n in measure if n not in module_dict.keys()]
-        if flag:
-            print('Specified measure(s): ' + ', '.join(flag) + ' not valid.')
-        if not measure or flag:
-            print('Following measures are valid (specified as string or list): \n - ' + '\n - '.join(module_dict.keys()))
-
         files = self.get_selected_files(quiet=1)
 
+        R_group = []
 
-        if not load_tag:
-            load_tag = ''
+        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+            job = {executor.submit(self.run_make_functional_connectivity,f) for f in files}
+            for j in job:
+                R_group.append(j.result())
+        if returngroup: 
+            # Fisher tranform -> mean -> inverse fisher tranform
+            R_group = np.tanh(np.mean(np.arctanh(np.array(R_group)), axis=0))
+            return np.array(R_group)
 
-        if not save_tag:
-            save_tag = ''
+    def run_make_functional_connectivity(self,f):
+            save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,'_fc','fc')
+
+            # ADD MORE HERE (csv, json, nifti)
+            if f.split('.')[-1] == 'npy':
+                data = np.load(f)
+            else:
+                raise ValueError('derive can only load npy files at the moment')
+
+            R = teneto.misc.corrcoef_matrix(data)[0]
+            # Fisher transform of subject R values before group average
+            np.save(save_dir + save_name + '.npy', R)
+            return R
+
+
+    def _save_namepaths_bids_derivatives(self,f,save_tag,save_directory):
+        """ 
+        Creates output directory and output name 
+
+        f : str 
+            input files, includes the file suffix 
+        save_tag : str 
+            what should be added to f in the output file.  
+        save_directory : str 
+            additional directory that the output file should go in  
+
+        """
+        file_name = f.split('/')[-1].split('.')[0]
+        if save_tag[0] != '_': 
+            save_tag = '_' + save_tag 
+        save_name = file_name + save_tag
+        paths_post_pipeline = f.split(self.pipeline)
+        if self.pipeline_subdir:
+            paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)[0]
         else:
-            save_tag = '_' + save_tag
+            paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
+        base_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/' 
+        save_dir = base_dir + '/' + save_directory + '/'
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+        return save_name, save_dir, base_dir
 
-        for f in files:
-
-            if load_tag in f:
-
-                # ADD MORE HERE (csv, json, nifti)
-                if f.split('.')[-1] == 'npy':
-                    data = np.load(f)
-                else:
-                    raise ValueError('derive can only load npy files at the moment')
-
-                save_dir_base = '/'.join(f.split('/')[:-1]) + '/temporal-network-measures/'
-
-                file_name = f.split('/')[-1].split('.')[0]
-
-                for i, m in enumerate(measure):
-
-                    # The following 12 lines get the dimord
-                    if 'calc' in measure_params[i]:
-                        c = measure_params[i]['calc']
-                        cs = '_calc-' + c
-                    else:
-                        c = ''
-                        cs = ''
-                    if 'subnet' in measure_params[i]:
-                        s = 'subnet'
-                    else:
-                        s = ''
-                    dimord = teneto.utils.get_dimord(m,c,s)
-                    dimord_str = ''
-                    if dimord != 'unknown':
-                        dimord_str = '_dimord-' + dimord
-
-                    if 'subnet' in measure_params[i]:
-                        if measure_params[i]['subnet'] == True:
-                            measure_params[i]['subnet'] = list(self.network_communities_['network_id'].values)
-
-                    sname = m.replace('_','-')
-                    if not os.path.exists(save_dir_base + sname):
-                        os.makedirs(save_dir_base + sname)
-
-                    save_name = file_name + '_' + sname + cs + dimord_str + save_tag
-                    netmeasure = module_dict[m](data,**measure_params[i])
-
-                    np.save(save_dir_base + sname + '/' + save_name, netmeasure)
 
     def get_space_alternatives(self,quiet=0):
         """
@@ -595,6 +535,227 @@ class TenetoBIDS:
             print('Confounds in confound files: \n - ' + '\n - '.join(confounds))
         return confounds
 
+
+    def make_parcellation(self,parcellation,parc_type=None,parc_params=None,network='defaults',update_pipeline=True,removeconfounds=False,tag=None,njobs=None):
+
+        """
+        Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end.
+
+        Parameters
+        -----------
+
+        parcellation : str
+            specify which parcellation that you would like to use. For MNI: 'power2012_264', 'gordon2014_333'. TAL: 'shen2013_278'
+        parc_type : str
+            can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
+        parc_params : dict
+            **kwargs for nilearn functions
+        network : str
+            if "defaults", it selects static parcellation, _if available_ (other options will be made available soon).
+        removeconfounds : bool
+            if true, regresses out confounds that are specfied in self.set_confounds with linear regression.
+        update_pipeline : bool
+            TenetoBIDS gets updated with the parcellated files being selected.
+        tag : str
+            If multiple types of analysis are going to be run, you can set tag to add a '_tag' on the file name.
+
+        Returns
+        -------
+        Files are saved in ./BIDS_dir/derivatives/teneto_<version>/.../parcellation/.
+        To load these files call TenetoBIDS.load_parcellation.
+
+        NOTE
+        ----
+        These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
+        """
+        if not njobs: 
+            njobs = self.njobs 
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+
+        parc_name = parcellation.split('_')[0].lower()
+
+        # Check confounds have been specified
+        if not self.confounds and removeconfounds:
+            raise ValueError('Specified confounds are not found. Make sure that you have run self.set_confunds([\'Confound1\',\'Confound2\']) first.')
+
+        # In theory these should be the same. So at the moment, it goes through each element and checks they are matched.
+        # A matching algorithem may be needed if cases arise where this isnt the case
+        files = self.get_selected_files(quiet=1)
+        if removeconfounds:
+            confound_files = self.get_confound_files(quiet=1)
+            if len(files) != len(confound_files):
+                print('WARNING: number of confound files does not equal number of selected files')
+            for n in range(len(files)):
+                if confound_files[n].split('_confounds')[0] not in files[n]:
+                    raise ValueError('Confound matching with data did not work.')
+
+        self.set_network_communities(parcellation)
+
+        if not tag:
+            tag = ''
+        else:
+            tag = '_' + tag
+
+        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+            job = {executor.submit(self._run_make_parcellation,f,i,tag,parcellation,parc_name,parc_type,parc_params,removeconfounds,confound_files) for i,f in enumerate(files)}
+            for j in job:
+                j.result()
+
+        if update_pipeline == True:
+            if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
+                self.set_confound_pipeline(self.pipeline)
+            self.set_pipeline('teneto_' + teneto.__version__)
+            self.set_pipeline_subdir('parcellation')
+            self.analysis_steps += self.last_analysis_step
+            if tag:
+                self.analysis_steps += [tag[1:]]
+            self.set_last_analysis_step('roi')
+            self.parcellation = parcellation
+
+    def _run_make_parcellation(self,f,i,tag,parcellation,parc_name,parc_type,parc_params,removeconfounds,confound_files): 
+        save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,'_parc-' + parc_name + tag + '_roi','parcellation')
+        roi = teneto.utils.make_parcellation(f,parcellation,parc_type,parc_params)
+        # Make nodd, time
+        roi = roi.transpose()
+        # Confounds need to be loaded here.
+        if removeconfounds:
+            if confound_files[i].split('.')[-1] == 'csv':
+                delimiter = ','
+            elif confound_files[i].split('.')[-1] == 'tsv':
+                delimiter = '\t'
+            df = pd.read_csv(confound_files[i],sep=delimiter)
+            df = df[self.confounds]
+            if df.isnull().any().any():
+                # Not sure what is the best way to deal with this.
+                # The time points could be ignored. But if multiple confounds, this means these values will get ignored
+                print('WARNING: Some confounds were NaNs. Setting these values to median of confound.')
+                df = df.fillna(df.median())
+            patsy_str_confounds = ' + '.join(self.confounds)
+            # Linear regresion to regress out (i.e. perform regression and keep residuals) or confound variables.
+            for r in range(roi.shape[0]):
+                # Create dataframe
+                df['y'] = roi[r,:]
+                # Specify model
+                model = smf.ols(formula = 'y ~ ' + patsy_str_confounds,data=df)
+                # Fit model
+                res = model.fit()
+                # Get residuals
+                roi[r,:] = res.resid_pearson
+        np.save(save_dir + save_name + '.npy', roi)
+
+
+
+    def networkmeasures(self, measure=None, measure_params={}, load_tag=None, save_tag=None, njobs=None):
+        """
+        Runs a network measure
+
+        For available funcitons see: teneto.networkmeasures
+
+        Parameters
+        ----------
+
+        measure : str or list
+            Mame of function(s) from teneto.networkmeasures that will be run.
+
+        measure_params : dict or list of dctionaries)
+            Containing kwargs for the argument in measure.
+
+        tag : str
+            Add additional tag to filenames.
+
+        Note
+        ----
+        If self.network_communities exist, subnet=True can be specified for subnet options instead of supplying the network atlas.
+
+        Returns
+        -------
+
+        Saves in ./BIDS_dir/derivatives/teneto/sub-NAME/func/tvc/temporal-network-measures/MEASURE/
+        Load the measure with tenetoBIDS.load_network_measure
+        """
+        if not njobs: 
+            njobs = self.njobs
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+
+        module_dict = inspect.getmembers(teneto.networkmeasures)
+        # Remove all functions starting with __
+        module_dict={m[0]:m[1] for m in module_dict if m[0][0:2]!='__'}
+        # measure can be string or list
+        if isinstance(measure, str):
+            measure = [measure]
+        # measure_params can be dictionaary or list of dictionaries
+        if     isinstance(measure_params, dict):
+            measure_params = [measure_params]
+        if measure_params and len(measure) != len(measure_params):
+            raise ValueError('Number of identified measure_params (' + str(len(measure_params)) + ') differs from number of identified measures (' + str(len(measure)) + '). Leave black dictionary if default methods are wanted')
+
+        # Check that specified measure is valid.
+        flag = [n for n in measure if n not in module_dict.keys()]
+        if flag:
+            print('Specified measure(s): ' + ', '.join(flag) + ' not valid.')
+        if not measure or flag:
+            print('Following measures are valid (specified as string or list): \n - ' + '\n - '.join(module_dict.keys()))
+
+        files = self.get_selected_files(quiet=1)
+
+
+        if not load_tag:
+            load_tag = ''
+
+        if not save_tag:
+            save_tag = ''
+        else:
+            save_tag = '_' + save_tag
+
+        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+            job = {executor.submit(self._run_networkmeasures,f,load_tag,save_tag,measure,measure_params,module_dict) for f in files if load_tag in f}
+            for j in job:
+                j.result()
+        
+
+    def _run_networkmeasures(self,f,load_tag,save_tag,measure,measure_params,module_dict):
+        # ADD MORE HERE (csv, json, nifti)
+        if f.split('.')[-1] == 'npy':
+            data = np.load(f)
+        else:
+            raise ValueError('derive can only load npy files at the moment')
+
+        save_dir_base = '/'.join(f.split('/')[:-1]) + '/temporal-network-measures/'
+
+        file_name = f.split('/')[-1].split('.')[0]
+
+        for i, m in enumerate(measure):
+
+            # The following 12 lines get the dimord
+            if 'calc' in measure_params[i]:
+                c = measure_params[i]['calc']
+                cs = '_calc-' + c
+            else:
+                c = ''
+                cs = ''
+            if 'subnet' in measure_params[i]:
+                s = 'subnet'
+            else:
+                s = ''
+            dimord = teneto.utils.get_dimord(m,c,s)
+            dimord_str = ''
+            if dimord != 'unknown':
+                dimord_str = '_dimord-' + dimord
+
+            if 'subnet' in measure_params[i]:
+                if measure_params[i]['subnet'] == True:
+                    measure_params[i]['subnet'] = list(self.network_communities_['network_id'].values)
+
+            sname = m.replace('_','-')
+            if not os.path.exists(save_dir_base + sname):
+                os.makedirs(save_dir_base + sname)
+
+            save_name = file_name + '_' + sname + cs + dimord_str + save_tag
+            netmeasure = module_dict[m](data,**measure_params[i])
+
+            np.save(save_dir_base + sname + '/' + save_name, netmeasure)
+
+
     def set_bad_subjects(self,bad_subjects):
 
         if isinstance(bad_subjects,str):
@@ -693,119 +854,6 @@ class TenetoBIDS:
             sub = pd.DataFrame(data={'Community': ['Subcortical (OH)']*node_num,'network_id':np.repeat(self.network_communities_['network_id'].max()+1,node_num)})
             self.network_communities_ = self.network_communities_.append(sub)
             self.network_communities_.reset_index(drop=True,inplace=True)
-
-    def make_parcellation(self,parcellation,parc_type=None,parc_params=None,network='defaults',update_pipeline=True,removeconfounds=False,tag=None):
-
-        """
-        Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end.
-
-        Parameters
-        -----------
-
-        parcellation : str
-            specify which parcellation that you would like to use. For MNI: 'power2012_264', 'gordon2014_333'. TAL: 'shen2013_278'
-        parc_type : str
-            can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
-        parc_params : dict
-            **kwargs for nilearn functions
-        network : str
-            if "defaults", it selects static parcellation, _if available_ (other options will be made available soon).
-        removeconfounds : bool
-            if true, regresses out confounds that are specfied in self.set_confounds with linear regression.
-        update_pipeline : bool
-            TenetoBIDS gets updated with the parcellated files being selected.
-        tag : str
-            If multiple types of analysis are going to be run, you can set tag to add a '_tag' on the file name.
-
-        Returns
-        -------
-        Files are saved in ./BIDS_dir/derivatives/teneto_<version>/.../parcellation/.
-        To load these files call TenetoBIDS.load_parcellation.
-
-        NOTE
-        ----
-        These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
-        """
-        self.add_history(inspect.stack()[0][3], locals(), 1)
-
-        parc_name = parcellation.split('_')[0].lower()
-
-        # Check confounds have been specified
-        if not self.confounds and removeconfounds:
-            raise ValueError('Specified confounds are not found. Make sure that you have run self.set_confunds([\'Confound1\',\'Confound2\']) first.')
-
-        # In theory these should be the same. So at the moment, it goes through each element and checks they are matched.
-        # A matching algorithem may be needed if cases arise where this isnt the case
-        files = self.get_selected_files(quiet=1)
-        if removeconfounds:
-            confound_files = self.get_confound_files(quiet=1)
-            if len(files) != len(confound_files):
-                print('WARNING: number of confound files does not equal number of selected files')
-            for n in range(len(files)):
-                if confound_files[n].split('_confounds')[0] not in files[n]:
-                    raise ValueError('Confound matching with data did not work.')
-
-        self.set_network_communities(parcellation)
-
-        if not tag:
-            tag = ''
-        else:
-            tag = '_' + tag
-
-        for i,f in enumerate(files):
-
-            file_name = f.split('/')[-1].split('.')[0]
-            save_name = file_name + '_parc-' + parc_name + tag + '_roi'
-            paths_post_pipeline = f.split(self.pipeline)
-            if self.pipeline_subdir:
-                paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)
-            paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
-            save_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/parcellation/'
-            if not os.path.exists(save_dir):
-                os.makedirs(save_dir)
-            roi = teneto.utils.make_parcellation(f,parcellation,parc_type,parc_params)
-            # Make nodd, time
-            roi = roi.transpose()
-
-            # Confounds need to be loaded here.
-            if removeconfounds:
-                if confound_files[i].split('.')[-1] == 'csv':
-                    delimiter = ','
-                elif confound_files[i].split('.')[-1] == 'tsv':
-                    delimiter = '\t'
-                df = pd.read_csv(confound_files[i],sep=delimiter)
-                df = df[self.confounds]
-                if df.isnull().any().any():
-                    # Not sure what is the best way to deal with this.
-                    # The time points could be ignored. But if multiple confounds, this means these values will get ignored
-                    print('WARNING: Some confounds were NaNs. Setting these values to median of confound.')
-                    df = df.fillna(df.median())
-                patsy_str_confounds = ' + '.join(self.confounds)
-                # Linear regresion to regress out (i.e. perform regression and keep residuals) or confound variables.
-                for r in range(roi.shape[0]):
-                    # Create dataframe
-                    df['y'] = roi[r,:]
-                    # Specify model
-                    model = smf.ols(formula = 'y ~ ' + patsy_str_confounds,data=df)
-                    # Fit model
-                    res = model.fit()
-                    # Get residuals
-                    roi[r,:] = res.resid_pearson
-
-
-            np.save(save_dir + save_name + '.npy', roi)
-
-        if update_pipeline == True:
-            if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
-                self.set_confound_pipeline(self.pipeline)
-            self.set_pipeline('teneto_' + teneto.__version__)
-            self.set_pipeline_subdir('parcellation')
-            self.analysis_steps += self.last_analysis_step
-            if tag:
-                self.analysis_steps += [tag[1:]]
-            self.set_last_analysis_step('roi')
-            self.parcellation = parcellation
-
 
 
     def set_last_analysis_step(self,last_analysis_step):
@@ -1310,3 +1358,5 @@ class TenetoBIDS:
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         self.participants_ = pd.read_csv(self.BIDS_dir + 'participants.tsv',delimiter='\t')
+
+
