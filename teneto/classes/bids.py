@@ -643,7 +643,6 @@ class TenetoBIDS:
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
         file_list = self.get_confound_files(quiet=1)
-
         if isinstance(confounds,str):
             confounds = [confounds]
 
