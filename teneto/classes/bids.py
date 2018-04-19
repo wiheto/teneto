@@ -6,13 +6,12 @@ from bids.grabbids import BIDSLayout
 import numpy as np
 import inspect
 import pandas as pd
-import statsmodels.formula.api as smf
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pickle
 import traceback
 import concurrent
-
+import nilearn
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
 #        pass
@@ -67,6 +66,7 @@ class TenetoBIDS:
             self.BIDS = BIDSLayout(BIDS_dir)
         else:
             self.BIDS = 'Raw data was flagged as not present in directory structure.'
+
         self.BIDS_dir = BIDS_dir
         self.pipeline = pipeline
         self.confound_pipeline = confound_pipeline
@@ -536,7 +536,7 @@ class TenetoBIDS:
         return confounds
 
 
-    def make_parcellation(self,parcellation,parc_type=None,parc_params=None,network='defaults',update_pipeline=True,removeconfounds=False,tag=None,njobs=None):
+    def make_parcellation(self,parcellation,parc_type=None,parc_params=None,network='defaults',update_pipeline=True,removeconfounds=False,tag=None,njobs=None,clean_params=None):
 
         """
         Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end.
@@ -558,6 +558,8 @@ class TenetoBIDS:
             TenetoBIDS gets updated with the parcellated files being selected.
         tag : str
             If multiple types of analysis are going to be run, you can set tag to add a '_tag' on the file name.
+        clean_params : dict
+            **kwargs for nilearn function nilearn.signal.clean
 
         Returns
         -------
@@ -597,7 +599,7 @@ class TenetoBIDS:
             tag = '_' + tag
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_make_parcellation,f,i,tag,parcellation,parc_name,parc_type,parc_params,removeconfounds,confound_files) for i,f in enumerate(files)}
+            job = {executor.submit(self._run_make_parcellation,f,i,tag,parcellation,parc_name,parc_type,parc_params,removeconfounds,confound_files,clean_params) for i,f in enumerate(files)}
             for j in job:
                 j.result()
 
@@ -612,13 +614,13 @@ class TenetoBIDS:
             self.set_last_analysis_step('roi')
             self.parcellation = parcellation
 
-    def _run_make_parcellation(self,f,i,tag,parcellation,parc_name,parc_type,parc_params,removeconfounds,confound_files): 
+    def _run_make_parcellation(self,f,i,tag,parcellation,parc_name,parc_type,parc_params,removeconfounds,confound_files,clean_params): 
         save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,'_parc-' + parc_name + tag + '_roi','parcellation')
         roi = teneto.utils.make_parcellation(f,parcellation,parc_type,parc_params)
-        # Make nodd, time
-        roi = roi.transpose()
         # Confounds need to be loaded here.
         if removeconfounds:
+            if not clean_params: 
+                clean_params = {}
             if confound_files[i].split('.')[-1] == 'csv':
                 delimiter = ','
             elif confound_files[i].split('.')[-1] == 'tsv':
@@ -630,17 +632,9 @@ class TenetoBIDS:
                 # The time points could be ignored. But if multiple confounds, this means these values will get ignored
                 print('WARNING: Some confounds were NaNs. Setting these values to median of confound.')
                 df = df.fillna(df.median())
-            patsy_str_confounds = ' + '.join(self.confounds)
-            # Linear regresion to regress out (i.e. perform regression and keep residuals) or confound variables.
-            for r in range(roi.shape[0]):
-                # Create dataframe
-                df['y'] = roi[r,:]
-                # Specify model
-                model = smf.ols(formula = 'y ~ ' + patsy_str_confounds,data=df)
-                # Fit model
-                res = model.fit()
-                # Get residuals
-                roi[r,:] = res.resid_pearson
+        roi = nilearn.signal.clean(roi,confounds=df.values,**clean_params)
+        # Make node, time
+        roi = roi.transpose()
         np.save(save_dir + save_name + '.npy', roi)
 
 
