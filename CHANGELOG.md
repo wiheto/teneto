@@ -6,6 +6,10 @@
 
 - Added `njobs` argument to `TenetoBIDS` (and various other functions therein) for parallel computing.
 
+- added nilearn.signal.clean for denoising
+
+- removed statsmodels as dependence.
+
 ## V0.3.0 
 
 - Dockerfile added 
@@ -32,7 +36,7 @@
 
 - Changed cfg variable name to params in teneto.utils.
 
-- Fixed bug in teneto_degree_centrlaity where decay and subnet set.
+- Fixed bug in teneto_degree_centrality where decay and subnet set.
 
 - Allow * and + in tag in TenetoBIDS.  
 
