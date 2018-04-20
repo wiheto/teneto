@@ -289,7 +289,7 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 
-MOCK_MODULES = ['numpy', 'scipy', 'bids.grabbids', 'statsmodels.formula.api',
+MOCK_MODULES = ['numpy', 'scipy', 'bids.grabbids', 'igraph', 'louvain',
     'seaborn', 'matplotlib.pylpt', 'pandas','scipy.stats',
     'statsmodels.stats.weightstats','scipy.special','nilearn.input_data',
     'scipy.spatial.distance','nilearn.datasets', 'traceback', 'inspect',
