@@ -1,6 +1,12 @@
 # Changelog
 
-## V0.3.1 
+## V0.3.2
+
+- Added a temporal participation coefficient to networkmeasures (`teneto.networkmeasures.temporal_part_coef`)
+
+- Allow contact representation in louvain clustering. 
+
+## V0.3.1
 
 - __main__ added (this may be removed at later date as I don't have an interest in maintaining this).
 
@@ -10,9 +16,9 @@
 
 - removed statsmodels as dependence.
 
-## V0.3.0 
+## V0.3.0
 
-- Dockerfile added 
+- Dockerfile added
 
 - Added weight-var and weight-mean options to jackknife correlation.
 
@@ -42,7 +48,7 @@
 
 - clean_community_indexes works with temporal clustering
 
-- Added iGraph as requirement 
+- Added iGraph as requirement
 
 - Added `teneto.communitydetection.louvain`
 
