@@ -12,3 +12,4 @@ from teneto.networkmeasures.fluctuability import fluctuability
 from teneto.networkmeasures.temporal_efficiency import temporal_efficiency
 from teneto.networkmeasures.reachability_latency import reachability_latency
 from teneto.networkmeasures.sid import sid
+from teneto.networkmeasures.temporal_part_coef import temporal_part_coef
