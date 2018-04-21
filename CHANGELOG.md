@@ -1,10 +1,10 @@
 # Changelog
 
-## V0.3.2
+## V0.3.2 (pending)
 
 - Added a temporal participation coefficient to networkmeasures (`teneto.networkmeasures.temporal_part_coef`)
 
-- Allow contact representation in louvain clustering. 
+- Allow contact representation in louvain clustering.
 
 ## V0.3.1
 
