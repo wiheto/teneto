@@ -2,46 +2,51 @@ import teneto.utils as utils
 import numpy as np
 
 
-def volatility(net, distance_func_name='default', calc='global', subnet=None):
+def volatility(net, distance_func_name='default', calc='global', communities=None, subnet=None):
     """
     volatility of temporal networks. This is the average distance between consecutive time points of graphlets (difference is caclualted either globally, per edge)
 
-    **PARAMETERS**
+    Parameters
+    ----------
 
-    :net: temporal network input (graphlet or contact)
+    net : array or dict
+        temporal network input (graphlet or contact). Nettype: 'bu','bd','wu','wd'
 
-        :net nettype: 'bu','bd','wu','wd'
+    D : str
+        Distance function. Following options available: 'default', 'hamming', 'euclidean'. (Default implies hamming for binary networks, euclidean for weighted).
 
-    :D: distance function. Following options available: 'default', 'hamming', 'euclidean'. (Default implies hamming for binary networks, euclidean for weighted).
-    :calc: version of volaitility to caclulate. Possibilities include:
+    calc : str
+        Version of volaitility to caclulate. Possibilities include:
+        'global': (default): the average distance of all nodes for each consecutive time point).
+        'edge': average distance between consecutive time points for each edge). Takes considerably longer
+        'node': (i.e. returns the average per node output when calculating volatility per 'edge').
+        'time': returns volatility per time point
+        'communities': returns volatility per communitieswork id (see communities). Also is returned per time-point and this may be changed in the future (with additional options)
 
-        :'global': (default): the average distance of all nodes for each consecutive time point).
-        :'edge': average distance between consecutive time points for each edge). Takes considerably longer
-        :'node': (i.e. returns the average per node output when calculating volatility per 'edge').
-        :'time': returns volatility per time point
-        :'subnet': returns volatility per subnetwork id (see subnet). Also is returned per time-point and this may be changed in the future (with additional options)
-    :'subnet': vector of integers.
-    
-    :Note: Index of subnetworks are returned "as is" with a shape of [max(subnet)+1,max(subnet)+1]. So if the indexes used are [1,2,3,5], V.shape==(6,6). The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns). If this behaviour is unwanted, call clean_subnetdexes first. This will probably change.
+    'communities' : array
+        Array of indicies for community (eiter (node) or (node,time) dimensions).
 
-    :network:
+    'subnet' : array
+        Array of indicies for community (eiter (node) or (node,time) dimensions). To be removed. Use communities. 
 
-    **OUTPUT**
+    Note
+    -----
+    Index of communities are returned "as is" with a shape of [max(communities)+1,max(communities)+1]. So if the indexes used are [1,2,3,5], V.shape==(6,6). The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns). If this behaviour is unwanted, call clean_communitiesdexes first. This will probably change.
 
-    :vol: Volatility
+    Output
+    ------
 
-        :format: scalar (calc='global'),
-            1d numpy array (calc='node'),
-            2d numpy array (calc='edge')
+    vol : array
+        Volatility. Format: scalar (calc='global');
+            1d numpy array (calc='node');
+            2d numpy array (calc='edge').
 
-    **SEE ALSO**
-    - *utils.getDistanceFunction*
-
-    **HISTORY**
-    Modified - Aug 2016, WHT (PEP8, cleanup)
-    Modified - Dec 2016, WHT (documentation, cleanup)
-    Created - Dec 2016, WHT
     """
+
+    if subnet is not None:
+        warnings.warn(
+        "Subnet argument will be removed in v0.3.5. Use communities instead.", FutureWarning)
+        communities = subnet
 
     # Get input (C or G)
     net, netinfo = utils.process_input(net, ['C', 'G', 'TO'])
@@ -58,15 +63,15 @@ def volatility(net, distance_func_name='default', calc='global', subnet=None):
     elif netinfo['nettype'][1] == 'u':
         ind = np.triu_indices(net.shape[0], k=1)
 
-    if calc == 'subnet':
-        # Make sure subnet is np array for indexing later on.
-        subnet = np.array(subnet)
-        if len(subnet) != netinfo['netshape'][0]:
+    if calc == 'communities':
+        # Make sure communities is np array for indexing later on.
+        communities = np.array(communities)
+        if len(communities) != netinfo['netshape'][0]:
             raise ValueError(
-                'When processing per network, subnet vector must equal the number of nodes')
-        if subnet.min() < 0:
+                'When processing per network, communities vector must equal the number of nodes')
+        if communities.min() < 0:
             raise ValueError(
-                'Subnetwork assignments must be positive integers')
+                'Communitiy assignments must be positive integers')
 
     # Get chosen distance metric fucntion
     distance_func = utils.getDistanceFunction(distance_func_name)
@@ -88,22 +93,22 @@ def volatility(net, distance_func_name='default', calc='global', subnet=None):
             vol = vol + np.transpose(vol)
         if calc == 'node':
             vol = np.sum(vol, axis=1)
-    elif calc == 'subnet':
-        net_id = set(subnet)
+    elif calc == 'communities':
+        net_id = set(communities)
         vol = np.zeros([max(net_id) + 1, max(net_id) +
                         1, netinfo['netshape'][-1] - 1])
         for net1 in net_id:
             for net2 in net_id:
-                vol[net1, net2, :] = [distance_func(net[subnet == net1][:, subnet == net2, t].flatten(),
-                                                    net[subnet == net1][:, subnet == net2, t + 1].flatten()) for t in range(0, net.shape[-1] - 1)]
-    elif calc == 'withinsubnet':
+                vol[net1, net2, :] = [distance_func(net[communities == net1][:, communities == net2, t].flatten(),
+                                                    net[communities == net1][:, communities == net2, t + 1].flatten()) for t in range(0, net.shape[-1] - 1)]
+    elif calc == 'withincommunities':
         within_ind = np.array([[ind[0][n], ind[1][n]] for n in range(
-            0, len(ind[0])) if subnet[ind[0][n]] == subnet[ind[1][n]]])
+            0, len(ind[0])) if communities[ind[0][n]] == communities[ind[1][n]]])
         vol = [distance_func(net[within_ind[:, 0], within_ind[:, 1], t], net[within_ind[:, 0],
                                                                                    within_ind[:, 1], t + 1]) for t in range(0, net.shape[-1] - 1)]
-    elif calc == 'betweensubnet':
+    elif calc == 'betweencommunities':
         between_ind = np.array([[ind[0][n], ind[1][n]] for n in range(
-            0, len(ind[0])) if subnet[ind[0][n]] != subnet[ind[1][n]]])
+            0, len(ind[0])) if communities[ind[0][n]] != communities[ind[1][n]]])
         vol = [distance_func(net[between_ind[:, 0], between_ind[:, 1], t], net[between_ind[:,
                                                                                                  0], between_ind[:, 1], t + 1]) for t in range(0, net.shape[-1] - 1)]
 

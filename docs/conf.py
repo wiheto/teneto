@@ -272,7 +272,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'Teneto', 'Teneto Documentation',
-     author, 'Teneto', 'One line description of project.',
+     author, 'Teneto', 'Temporal network tools.',
      'Miscellaneous'),
 ]
 

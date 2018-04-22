@@ -118,9 +118,9 @@ class TenetoBIDS:
         else:
             self.set_bad_subjects(bad_subjects)
 
-        if not njobs: 
+        if not njobs:
             self.njobs = 1
-        else: 
+        else:
             self.njobs = njobs
 
     def add_history(self, fname, fargs, init=0):
@@ -141,11 +141,11 @@ class TenetoBIDS:
 
         update_pipeline : bool
             If true, the object updates the selected files with those derived here.
-        
-        njobs : int 
+
+        njobs : int
             How many parallel jobs to run
         """
-        if not njobs: 
+        if not njobs:
             njobs = self.njobs
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
@@ -174,7 +174,7 @@ class TenetoBIDS:
                 self.analysis_steps += [tag[1:]]
 
     def _run_derive(self,f,i,tag,params,confounds_exist,confound_files):
-        """ 
+        """
         Funciton called by TenetoBIDS.derive for parallel processing.
         """
         # ADD MORE HERE (csv, json, nifti)
@@ -253,21 +253,21 @@ class TenetoBIDS:
         """
         Makes connectivity matrix for each of the subjects.
 
-        Parameters 
+        Parameters
         ----------
-        returngroup : bool, default=False 
+        returngroup : bool, default=False
             If true, returns the group average connectivity matrix.
-        njobs : int 
+        njobs : int
             How many parallel jobs to run
 
-        Returns 
+        Returns
         -------
         Saves data in derivatives/teneto_<version>/.../fc/
-        R_group : array 
+        R_group : array
             if returngroup is true, the average connectivity matrix is returned.
 
         """
-        if not njobs: 
+        if not njobs:
             njobs = self.njobs
         self.add_history(inspect.stack()[0][3], locals(), 1)
         files = self.get_selected_files(quiet=1)
@@ -278,7 +278,7 @@ class TenetoBIDS:
             job = {executor.submit(self.run_make_functional_connectivity,f) for f in files}
             for j in job:
                 R_group.append(j.result())
-        if returngroup: 
+        if returngroup:
             # Fisher tranform -> mean -> inverse fisher tranform
             R_group = np.tanh(np.mean(np.arctanh(np.array(R_group)), axis=0))
             return np.array(R_group)
@@ -299,27 +299,27 @@ class TenetoBIDS:
 
 
     def _save_namepaths_bids_derivatives(self,f,save_tag,save_directory):
-        """ 
-        Creates output directory and output name 
+        """
+        Creates output directory and output name
 
-        f : str 
-            input files, includes the file suffix 
-        save_tag : str 
-            what should be added to f in the output file.  
-        save_directory : str 
-            additional directory that the output file should go in  
+        f : str
+            input files, includes the file suffix
+        save_tag : str
+            what should be added to f in the output file.
+        save_directory : str
+            additional directory that the output file should go in
 
         """
         file_name = f.split('/')[-1].split('.')[0]
-        if save_tag[0] != '_': 
-            save_tag = '_' + save_tag 
+        if save_tag[0] != '_':
+            save_tag = '_' + save_tag
         save_name = file_name + save_tag
         paths_post_pipeline = f.split(self.pipeline)
         if self.pipeline_subdir:
             paths_post_pipeline = paths_post_pipeline[1].split(self.pipeline_subdir)[0]
         else:
             paths_post_pipeline = paths_post_pipeline[1].split(file_name)[0]
-        base_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/' 
+        base_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/'
         save_dir = base_dir + '/' + save_directory + '/'
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
@@ -570,8 +570,8 @@ class TenetoBIDS:
         ----
         These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
         """
-        if not njobs: 
-            njobs = self.njobs 
+        if not njobs:
+            njobs = self.njobs
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
         parc_name = parcellation.split('_')[0].lower()
@@ -614,12 +614,12 @@ class TenetoBIDS:
             self.set_last_analysis_step('roi')
             self.parcellation = parcellation
 
-    def _run_make_parcellation(self,f,i,tag,parcellation,parc_name,parc_type,parc_params,removeconfounds,confound_files,clean_params): 
+    def _run_make_parcellation(self,f,i,tag,parcellation,parc_name,parc_type,parc_params,removeconfounds,confound_files,clean_params):
         save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,'_parc-' + parc_name + tag + '_roi','parcellation')
         roi = teneto.utils.make_parcellation(f,parcellation,parc_type,parc_params)
         # Confounds need to be loaded here.
         if removeconfounds:
-            if not clean_params: 
+            if not clean_params:
                 clean_params = {}
             if confound_files[i].split('.')[-1] == 'csv':
                 delimiter = ','
@@ -659,7 +659,7 @@ class TenetoBIDS:
 
         Note
         ----
-        If self.network_communities exist, subnet=True can be specified for subnet options instead of supplying the network atlas.
+        If self.network_communities exist, communities=True can be specified for communities options instead of supplying the network atlas.
 
         Returns
         -------
@@ -667,7 +667,7 @@ class TenetoBIDS:
         Saves in ./BIDS_dir/derivatives/teneto/sub-NAME/func/tvc/temporal-network-measures/MEASURE/
         Load the measure with tenetoBIDS.load_network_measure
         """
-        if not njobs: 
+        if not njobs:
             njobs = self.njobs
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
@@ -705,7 +705,7 @@ class TenetoBIDS:
             job = {executor.submit(self._run_networkmeasures,f,load_tag,save_tag,measure,measure_params,module_dict) for f in files if load_tag in f}
             for j in job:
                 j.result()
-        
+
 
     def _run_networkmeasures(self,f,load_tag,save_tag,measure,measure_params,module_dict):
         # ADD MORE HERE (csv, json, nifti)
@@ -727,8 +727,8 @@ class TenetoBIDS:
             else:
                 c = ''
                 cs = ''
-            if 'subnet' in measure_params[i]:
-                s = 'subnet'
+            if 'communities' in measure_params[i]:
+                s = 'communities'
             else:
                 s = ''
             dimord = teneto.utils.get_dimord(m,c,s)
@@ -736,9 +736,9 @@ class TenetoBIDS:
             if dimord != 'unknown':
                 dimord_str = '_dimord-' + dimord
 
-            if 'subnet' in measure_params[i]:
-                if measure_params[i]['subnet'] == True:
-                    measure_params[i]['subnet'] = list(self.network_communities_['network_id'].values)
+            if 'communities' in measure_params[i]:
+                if measure_params[i]['communities'] == True:
+                    measure_params[i]['communities'] = list(self.network_communities_['network_id'].values)
 
             sname = m.replace('_','-')
             if not os.path.exists(save_dir_base + sname):
@@ -1352,5 +1352,3 @@ class TenetoBIDS:
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         self.participants_ = pd.read_csv(self.BIDS_dir + 'participants.tsv',delimiter='\t')
-
-

@@ -6,7 +6,7 @@ import numpy as np
 from teneto.networkmeasures.intercontacttimes import intercontacttimes
 
 
-def bursty_coeff(data, calc='edge', nodes='all', subnet=None):
+def bursty_coeff(data, calc='edge', nodes='all', communities=None, subnet=None):
     """
     returns calculates the bursty coefficient. Value > 0
      indicates bursty. Value < 0 periodic/tonic. Value = 0
@@ -14,58 +14,45 @@ def bursty_coeff(data, calc='edge', nodes='all', subnet=None):
     As temporalPaths only works with binary undirected edges
      at the moment, weighted edges are assumed to be binary.
 
-    **PARAMETERS**
+    Parameters
+    ----------
 
-    :data: This is either:
+    data : array, dict
+        This is either (1) temporal network input (graphlet or contact) with nettype: 'bu', 'bd'. (2) dictionary of ICTs (output of *intercontacttimes*).
 
-        :netin: temporal network input (graphlet or contact).
+    calc : str
+        Caclulate the bursty coeff over what. Options include 'edge': calculate b_coeff on all ICTs between node i and j. (Default); 'node': caclulate b_coeff on all ICTs connected to node i.;
+        'communities': calculate b_coeff for each communities (argument communities then required);
+        'meanEdgePerNode': first calculate the ICTs between node i and j, then take the mean over all j.
 
-            :nettype: 'bu', 'bd'
+    nodes: list or str
+        Options: 'all': do for all nodes (default) or list of node indexes to calculate.
 
-        :ICT: dictionary of ICTs (output of *intercontacttimes*).
+    communities : array, optoinal
+        None (default) or Nx1 vector of communities assignment. This returns a "centrality" per communities instead of per node.
 
-    :calc: caclulate the bursty coeff over what. Options include
-
-        :'edge': calculate b_coeff on all ICTs between node i and j. (Default)
-        :'node': caclulate b_coeff on all ICTs connected to node i.
-        :'subnet': calculate b_coeff for each subnetwork (argument subnet then required)
-
-        :'meanEdgePerNode': first calculate the ICTs between node i and j,
-         then take the mean over all j.
-
-    :nodes: which do to do. Options include:
-
-        :'all': do for all nodes (default)
-        :specify: list of node indexes to calculate.
-
-    :subnet: None (default) or Nx1 vector of subnetwork assignment.
-    This returns a "centrality" per subnetwork instead of per node.
+    subnet : array, optoinal
+        None (default) or Nx1 vector of communities assignment. This returns a "centrality" per communities instead of per node. Will be removed. Use communities instead.
 
 
-    **OUTPUT**
+    Returns
+    -------
+    b_coeff : array
+        bursty coefficienct per (edge or node measure)
 
-    :b_coeff: bursty coefficienct per (edge or node measure)
-
-        :format: 1d numpy array
-
-    **SEE ALSO**
-
-    intercontacttimes
-
-    **ORIGIN**
-
-    Goh and b_coeffarabasi 2008
+    Source
+    ------
+    Goh and Barabasi 2008
     Discrete formulation here from Holme 2012.
 
-    **HISTORY**
-
-    :Modified: Nov 2016, WHT (documentation)
-    :Created: Nov 2016, WHT
-
     """
+    if subnet is not None:
+        warnings.warn(
+        "Subnet argument will be removed in v0.3.5. Use communities instead.", FutureWarning)
+        communities = subnet
 
-    if calc == 'subnet' and not subnet:
-        raise ValueError("Specified calc='subnet' but no subnet argument provided (list of clusters/modules)")
+    if calc == 'communities' and not communities:
+        raise ValueError("Specified calc='communities' but no communities argument provided (list of clusters/modules)")
 
     ict = 0  # are ict present
     if isinstance(data, dict):
@@ -95,17 +82,17 @@ def bursty_coeff(data, calc='edge', nodes='all', subnet=None):
     # Reshae ICTs
     if calc == 'node':
         ict = np.concatenate(data['intercontacttimes'][do_nodes, do_nodes], axis=1)
-    elif calc == 'subnet':
-        unique_subnet = np.unique(subnet)
-        ict_shape = (len(unique_subnet),len(unique_subnet))
+    elif calc == 'communities':
+        unique_communities = np.unique(communities)
+        ict_shape = (len(unique_communities),len(unique_communities))
         ict = np.array([[None] * ict_shape[0]] * ict_shape[1])
-        for i, s1 in enumerate(unique_subnet):
-            for j, s2 in enumerate(unique_subnet):
+        for i, s1 in enumerate(unique_communities):
+            for j, s2 in enumerate(unique_communities):
                 if s1 == s2:
-                    ind = np.triu_indices(sum(subnet==s1),k=1)
+                    ind = np.triu_indices(sum(communities==s1),k=1)
                     ict[i,j] = np.concatenate(data['intercontacttimes'][ind[0],ind[1]])
                 else:
-                    ict[i,j] = np.concatenate(np.concatenate(data['intercontacttimes'][subnet==s1,:][:,subnet==s2]))
+                    ict[i,j] = np.concatenate(np.concatenate(data['intercontacttimes'][communities==s1,:][:,communities==s2]))
         # Quick fix, but could be better
         data['intercontacttimes'] = ict
         do_nodes = np.arange(0,ict_shape[0]*ict_shape[1])
