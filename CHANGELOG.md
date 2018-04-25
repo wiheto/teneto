@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.3.2 (pending)
+## V0.3.2
 
 - Added a temporal participation coefficient to networkmeasures (`teneto.networkmeasures.temporal_part_coef`)
 
@@ -10,9 +10,11 @@
 
 - Added DeprecationWarning for removal of subnet argument in Teneto 0.3.5
 
-- Added networkmeasures.temporal_part_coef and module_degree_zscore option in teneto.networkmeasures.temporal_degree_centrality. 
+- Added networkmeasures.temporal_part_coef and module_degree_zscore option in teneto.networkmeasures.temporal_degree_centrality.
 
-- Added subject_exclusion_criteria and temporal_exclusion_criteria to TenetoBIDS
+- Added `file_exclusion_criteria` and `temporal_exclusion_criteria` to TenetoBIDS
+
+- Updated confound_files selection in TenetoBIDS
 
 ## V0.3.1
 
