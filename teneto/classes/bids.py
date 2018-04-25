@@ -762,7 +762,7 @@ class TenetoBIDS:
             if len(files) != len(confound_files):
                 print('WARNING: number of confound files does not equal number of selected files')
             for n in range(len(files)):
-                if confound_files[n].split('_confounds')[0] not in files[n]:
+                if confound_files[n].split('_confounds')[0].split('func')[1] not in files[n]:
                     raise ValueError('Confound matching with data did not work.')
 
         self.set_network_communities(parcellation)
