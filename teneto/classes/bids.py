@@ -12,6 +12,8 @@ import pickle
 import traceback
 import concurrent
 import nilearn
+from scipy.interpolate import interp1d
+
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
 #        pass
@@ -122,6 +124,7 @@ class TenetoBIDS:
             self.njobs = 1
         else:
             self.njobs = njobs
+        self.bad_files = []
 
     def add_history(self, fname, fargs, init=0):
         """
@@ -205,7 +208,6 @@ class TenetoBIDS:
             os.makedirs(params['report_path'])
 
         dfc = teneto.derive.derive(data,params)
-
         np.save(save_dir + save_name + '.npy', dfc)
 
         if confounds_exist:
@@ -441,7 +443,7 @@ class TenetoBIDS:
                 found = [i for i in found if '_confounds' not in i]
                 # Make full paths
                 found = list(map(str.__add__,[re.sub('/+','/',wdir)]*len(found),found))
-
+                found = [i for i in found if i not in self.bad_files]
                 if found:
                     found_files += found
 
@@ -451,6 +453,176 @@ class TenetoBIDS:
         if quiet == 0:
             print(found_files)
         return found_files
+
+
+    def file_exclusion_criteria(self,confound,exclusion_criteria,confound_stat='mean'):
+        """
+        Excludes subjects given a certain exclusion criteria.
+
+        NOTE THIS ONLY WORKS IF THERE IS 1 SESSIONS, TASK and RUN.
+
+        Parameters
+        ----------
+            confound : str or list
+                string or list of confound name(s) from confound files
+            exclusion_criteria  : str or list
+                for each confound, an exclusion_criteria should be expressed as a string. It starts with >,<,>= or <= then the numerical threshold. Ex. '>0.2' will entail every subject with the avg greater than 0.2 of confound will be rejected.
+            confound_stat : str or list
+                Can be median, mean, std. How the confound data is aggregated (so if there is a meaasure per time-point, this is averaged over all time points. If multiple confounds specified, this has to be a list.).
+        Returns
+        ------
+            calls TenetoBIDS.set_bad_files with the files meeting the exclusion criteria.
+        """
+        if isinstance(confound,str):
+            confound = [confound]
+        if isinstance(exclusion_criteria,str):
+            exclusion_criteria = [exclusion_criteria]
+        if isinstance(confound_stat,str):
+            confound_stat = [confound_stat]
+        if len(exclusion_criteria)!=len(confound):
+            raise ValueError('Same number of confound names and exclusion criteria must be given')
+        if len(confound_stat)!=len(confound):
+            raise ValueError('Same number of confound names and confound stats must be given')
+        rel = []
+        crit = []
+        for ec in exclusion_criteria:
+            if ec[0:2] == '>=':
+                rel.append(np.greater_equal)
+                crit.append(float(ec[2:]))
+            elif ec[0:2] == '<=':
+                rel.append(np.less_equal)
+                crit.append(float(ec[2:]))
+            elif ec[0] == '>':
+                rel.append(np.greater)
+                crit.append(float(ec[1:]))
+            elif ec[0] == '<':
+                rel.append(np.less)
+                crit.append(float(ec[1:]))
+            else:
+                raise ValueError('exclusion crieria must being with >,<,>= or <=')
+        # Load filelist and confound list
+        files = self.get_selected_files(quiet=1)
+        confound_files = self.get_confound_files(quiet=1)
+        # Check integerity of confound list
+        if len(files) != len(confound_files):
+            print('WARNING: number of confound files does not equal number of selected files')
+        for n in range(len(files)):
+            if confound_files[n].split('_confounds')[0].split('func')[1] not in files[n]:
+                raise ValueError('Confound matching with data did not work.')
+        bad_files = []
+        bs = 0
+        for s, cfile in enumerate(confound_files):
+            if cfile.split('.')[-1] == 'csv':
+                delimiter = ','
+            elif cfile.split('.')[-1] == 'tsv':
+                delimiter = '\t'
+            df = pd.read_csv(cfile,sep=delimiter)
+            found_bad_subject = False
+            for i in range(len(confound)):
+                if confound_stat[i] == 'median':
+                    if rel[i](df[confound[i]].median(),crit[i]):
+                        found_bad_subject = True
+                elif confound_stat[i] == 'mean':
+                    if rel[i](df[confound[i]].mean(),crit[i]):
+                        found_bad_subject = True
+                elif confound_stat[i] == 'std':
+                    if rel(df[i][confound[i]].std(),crit[i]):
+                        found_bad_subject = True
+            if found_bad_subject:
+                bad_files.append(files[s])
+                bs += 1
+        self.set_bad_files(bad_files)
+        print('Removed ' + str(bs) + ' files from inclusion.')
+
+    def temporal_exclusion_criteria(self,confound,exclusion_criteria,replace_with):
+        """
+        Excludes subjects given a certain exclusion criteria. Does not work on nifti files, only csv, numpy or tsc.
+
+        Parameters
+        ----------
+            confound : str or list
+                string or list of confound name(s) from confound files
+            exclusion_criteria  : str or list
+                for each confound, an exclusion_criteria should be expressed as a string. It starts with >,<,>= or <= then the numerical threshold. Ex. '>0.2' will entail every subject with the avg greater than 0.2 of confound will be rejected.
+            confound_stat : str
+                Can be median, mean, std. How the confound data is aggregated (so if there is a meaasure per time-point, this is averaged over all time points).
+            replace_with : str
+                Can be 'nan' (bad values become nans) or 'cubicspline' (bad values are interpolated).
+
+        Returns
+        ------
+            Loads the TenetoBIDS.selected_files and replaces any instances of confound meeting the exclusion_criteria with replace_with.
+        """
+        if isinstance(confound,str):
+            confound = [confound]
+        if isinstance(exclusion_criteria,str):
+            exclusion_criteria = [exclusion_criteria]
+        if len(exclusion_criteria)!=len(confound):
+            raise ValueError('Same number of confound names and exclusion criteria must be given')
+        rel = []
+        crit = []
+        for ec in exclusion_criteria:
+            if ec[0:2] == '>=':
+                rel.append(np.greater_equal)
+                crit.append(float(ec[2:]))
+            elif ec[0:2] == '<=':
+                rel.append(np.less_equal)
+                crit.append(float(ec[2:]))
+            elif ec[0] == '>':
+                rel.append(np.greater)
+                crit.append(float(ec[1:]))
+            elif ec[0] == '<':
+                rel.append(np.less)
+                crit.append(float(ec[1:]))
+            else:
+                raise ValueError('exclusion crieria must being with >,<,>= or <=')
+        files = self.get_selected_files(quiet=1)
+        confound_files = self.get_confound_files(quiet=1)
+        # Check integerity of confound list
+        if len(files) != len(confound_files):
+            print('WARNING: number of confound files does not equal number of selected files')
+        # Make sure confound file name is in the file name.
+        for n in range(len(files)):
+            if confound_files[n].split('_confounds')[0].split('func')[1] not in files[n]:
+                raise ValueError('Confound matching with data did not work.')
+        for i, cfile in enumerate(confound_files):
+            if cfile.split('.')[-1] == 'csv':
+                delimiter = ','
+            elif cfile.split('.')[-1] == 'tsv':
+                delimiter = '\t'
+            if files[i].split('.')[-1] == 'npy':
+                data = np.load(files[i])
+                saveas = 'npy'
+            elif files[i].split('.')[-1] == 'csv':
+                data = pd.read_csv(files[i],sep=',')
+                saveas = 'csv'
+                dlim = ','
+            elif files[i].split('.')[-1] == 'tsv':
+                data = pd.read_csv(files[i],sep='\t')
+                saveas = 'tsv'
+                dlim = '\t'
+            else:
+                raise ValueError('Cannot excude files of this type at the moment (but could be added if requested)')
+            df = pd.read_csv(cfile,sep=delimiter)
+            for ci,c in enumerate(confound):
+                ind = df[rel[ci](df[c],crit[ci])].index
+                data[:,ind] = np.nan
+            nanind = np.where(np.isnan(data[0,:]))[0]
+            nonnanind = np.where(np.isnan(data[0,:])==0)[0]
+            # Can't interpolate values if nanind is at the beginning or end. So keep these nan
+            nanind = nanind[nanind>nonnanind.min()]
+            nanind = nanind[nanind<nonnanind.max()]
+            if replace_with == 'cubicspline':
+                for n in range(data.shape[0]):
+                    interp = interp1d(nonnanind,data[n,nonnanind],kind='cubic')
+                    data[n,nanind] = interp(nanind)
+            if saveas == 'csv' or saveas == 'tsv':
+                data.tofile(files[i][:-4] + '_scrub' + '.' + saveas,sep=dlim)
+            elif saveas == 'npy':
+                np.save(files[i][:-4] + '_scrub',data)
+        self.analysis_steps += [self.last_analysis_step]
+        self.last_analysis_step = 'scrub'
+
 
 
     def get_confound_files(self,quiet=0):
@@ -487,7 +659,6 @@ class TenetoBIDS:
         else:
             mdir = self.BIDS_dir + '/derivatives/' + self.pipeline
         found_files = []
-
         for f in file_list:
             wdir = str(mdir)
             fstr = ''
@@ -507,6 +678,9 @@ class TenetoBIDS:
             if os.path.exists(wdir):
                 found = list(filter(r.match, os.listdir(wdir)))
                 found = list(map(str.__add__,[re.sub('/+','/',wdir)]*len(found),found))
+                # Fix this. sublist in sublist.
+                found = [f for f in found if all(f.split('_confounds')[0] not in bf for bf in self.bad_files)]
+                # found = [f for f in found if f.split('_confounds')[0].split('func')[1] not in bad_files_clipped]
                 if found:
                     found_files += found
 
@@ -765,6 +939,17 @@ class TenetoBIDS:
             self.bad_subjects = bad_subjects
         else:
             self.bad_subjects += bad_subjects
+
+
+    def set_bad_files(self,bad_files):
+
+        if isinstance(bad_files,str):
+            bad_files = [bad_files]
+
+        if not self.bad_files:
+            self.bad_files = bad_files
+        else:
+            self.bad_files += bad_files
 
 
     def set_confound_pipeline(self,confound_pipeline):

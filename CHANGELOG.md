@@ -12,6 +12,8 @@
 
 - Added networkmeasures.temporal_part_coef and module_degree_zscore option in teneto.networkmeasures.temporal_degree_centrality. 
 
+- Added subject_exclusion_criteria and temporal_exclusion_criteria to TenetoBIDS
+
 ## V0.3.1
 
 - __main__ added (this may be removed at later date as I don't have an interest in maintaining this).
