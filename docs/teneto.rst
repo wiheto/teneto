@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
     teneto.classes
+    teneto.communitydetection
     teneto.derive
     teneto.generatenetwork
     teneto.misc

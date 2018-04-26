@@ -1,5 +1,11 @@
 # Changelog
 
+## V0.3.3 (Pending)
+
+- Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted. 
+
+- rename temporal_exclusion_criteria and file_exclusion_critiera to 'set_timepoint_exclusion' and 'set_file_exclusion'
+
 ## V0.3.2
 
 - Added a temporal participation coefficient to networkmeasures (`teneto.networkmeasures.temporal_part_coef`)

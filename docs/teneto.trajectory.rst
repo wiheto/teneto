@@ -1,11 +1,11 @@
-teneto\.trajectory package
-==========================
+teneto.trajectory package
+=========================
 
 Submodules
 ----------
 
-teneto\.trajectory\.compression module
---------------------------------------
+teneto.trajectory.compression module
+------------------------------------
 
 .. automodule:: teneto.trajectory.compression
     :members:
