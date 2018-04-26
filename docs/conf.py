@@ -168,3 +168,13 @@ texinfo_documents = [
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+
+# MOCK MODULESS
+
+MOCK_MODULES = ['numpy', 'scipy', 'bids.grabbids', 'igraph', 'louvain', 'python-igraph',
+    'seaborn', 'matplotlib.pylpt', 'pandas','scipy.stats','scipy.special','nilearn.input_data',
+    'scipy.spatial.distance','nilearn.datasets', 'traceback', 'inspect',
+    'json','math', 'pickle']
+for mod_name in MOCK_MODULES:
+   sys.modules[mod_name] = mock.Mock()
