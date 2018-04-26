@@ -83,14 +83,6 @@ teneto.networkmeasures.temporal\_efficiency module
     :undoc-members:
     :show-inheritance:
 
-teneto.networkmeasures.temporal\_module\_degree\_zscore module
---------------------------------------------------------------
-
-.. automodule:: teneto.networkmeasures.temporal_module_degree_zscore
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 teneto.networkmeasures.temporal\_part\_coef module
 --------------------------------------------------
 
