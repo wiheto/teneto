@@ -6,16 +6,16 @@
 __author__ = "William Hedley Thompson (wiheto)"
 __version__ = "0.3.2-develop"
 #
-import teneto.networkmeasures as networkmeasures
-import teneto.utils as utils
-import teneto.plot as plot
-import teneto.generatenetwork as generatenetwork
-import teneto.derive as derive
-import teneto.misc as misc
-import teneto.trajectory as trajectory
-import teneto.communitydetection as communitydetection
-from teneto.classes import TenetoBIDS
+from . import networkmeasures
+from . import utils
+from . import plot
+from . import generatenetwork
+from . import derive
+from . import misc
+from . import trajectory
+from . import communitydetection
+from .classes import TenetoBIDS
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering
 
-#del measures
+del classes
