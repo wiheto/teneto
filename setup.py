@@ -8,10 +8,11 @@ setup(name='teneto',
       version='0.3.2',
       python_requires='>3.5',
       install_requires=[
-			'nilearn>=0.4.0',
-			'pybids>=0.4.2',
-      'louvain>=0.6.1',
-      'python-igraph>=0.6.1'],
+		'nilearn>=0.4.0',
+		'pybids>=0.4.2',
+        'louvain>=0.6.1',
+        'python-igraph>=0.6.1',
+        'statsmodels>=0.8.0'],
       description='Temporal network tools',
       packages=find_packages(),
       author='William Hedley Thompson',
@@ -23,4 +24,6 @@ setup(name='teneto',
       entry_points={
       'console_scripts': ['teneto = teneto.__main__:main'
           ]
-      })
+      },
+      long_description='Temporal network tools. A package for deriving, analysing and plotting temporal network representations. Additional tools for temporal network analysis with neuroimaging contexts.'
+      )
