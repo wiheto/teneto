@@ -14,7 +14,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../teneto/'))
+sys.path.insert(0, '/home/william/work/teneto/')
 
 
 # -- Project information -----------------------------------------------------
@@ -24,7 +24,7 @@ copyright = '2018, William Hedley Thompson'
 author = 'William Hedley Thompson'
 
 # The short X.Y version
-version = ''
+version = '0.3.2'
 # The full version, including alpha/beta/rc tags
 release = '0.3.2'
 
@@ -45,7 +45,8 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages'
+    'sphinx.ext.githubpages',
+    'sphinx.ext.napoleon'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -171,11 +172,4 @@ todo_include_todos = True
 
 
 # MOCK MODULESS
-import mock
-
-MOCK_MODULES = ['numpy', 'scipy', 'bids.grabbids', 'igraph', 'louvain', 'python-igraph',
-    'seaborn', 'matplotlib.pylpt', 'pandas','scipy.stats','scipy.special','nilearn.input_data',
-    'scipy.spatial.distance','nilearn.datasets', 'traceback', 'inspect',
-    'json','math', 'pickle']
-for mod_name in MOCK_MODULES:
-   sys.modules[mod_name] = mock.Mock()
+#autodoc_mock_imports = ['numpy', 'scipy', 'bids', 'igraph', 'louvain', 'python-igraph','seaborn', 'matplotlib.pyplot', 'pandas','scipy','nilearn']
