@@ -12,44 +12,25 @@ from teneto.networkmeasures.shortest_temporal_path import shortest_temporal_path
 
 def temporal_efficiency(data, calc='global'):
     """
-    returns temporal efficiency estimate.
+    Returns temporal efficiency estimate. BU networks only.
 
+    Parameters
+    ----------
+    data: dict or array
+        If array, graphlet.
+        If dict, either contact representation or paths (output from shortest_temporal_path).
 
-    **PARAMETERS**
+    calc : str
+        Options: 'global' (default) - measure averages over time and nodes;
+        'node' or 'node_from' average over nodes (i) and time. Giving average efficiency for i to j;
+        'node_to' measure average over nodes j and time;
+         Giving average efficiency using paths to j from  i;
 
-    :data: This is either:
+    Returns
+    -------
 
-        :netIn: temporal network input (graphlet or contact).
-
-            :nettype: 'bu'
-
-        :paths: Dictionary of paths (output of shortest_temporal_path).
-
-
-    :calc: 'global' (default) - measure averages over time and nodes.
-        'node' or 'node_from' average over nodes (i) and time. Giving average efficiency for i to j.
-        'node_to' measure average over nodes j and time.
-         Giving average efficiency using paths to j from  i.
-
-
-    **OUTPUT**
-
-    :E: global temporal efficiency (global measure)
-
-        :format: integer (numpy array)
-
-    **NOTES**
-
-    This can be implemented on a non-global level in the future.
-
-    **SEE ALSO**
-
-    - *shortesttemporalpath*
-
-    **HISTORY**
-
-    Modified - Jan 2016, WHT (documentation)
-    Created - Dec 2016, WHT
+    E : array
+        Global temporal efficiency
 
     """
 

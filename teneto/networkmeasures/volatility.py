@@ -1,4 +1,4 @@
-import teneto.utils as utils
+import teneto
 import numpy as np
 
 
@@ -27,7 +27,7 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
         Array of indicies for community (eiter (node) or (node,time) dimensions).
 
     'subnet' : array
-        Array of indicies for community (eiter (node) or (node,time) dimensions). To be removed. Use communities. 
+        Array of indicies for community (eiter (node) or (node,time) dimensions). To be removed. Use communities.
 
     Note
     -----
@@ -49,9 +49,9 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
         communities = subnet
 
     # Get input (C or G)
-    net, netinfo = utils.process_input(net, ['C', 'G', 'TO'])
+    net, netinfo = teneto.utils.process_input(net, ['C', 'G', 'TO'])
 
-    distance_func_name = utils.check_distance_funciton_input(
+    distance_func_name = teneto.utils.check_distance_funciton_input(
         distance_func_name, netinfo)
 
     if not isinstance(distance_func_name, str):
@@ -74,7 +74,7 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
                 'Communitiy assignments must be positive integers')
 
     # Get chosen distance metric fucntion
-    distance_func = utils.getDistanceFunction(distance_func_name)
+    distance_func = teneto.utils.getDistanceFunction(distance_func_name)
 
     if calc == 'global':
         vol = np.mean([distance_func(net[ind[0], ind[1], t], net[ind[0],
