@@ -10,7 +10,7 @@ Welcome to teneto's documentation!
    :maxdepth: 5
    :caption: Contents:
 
-   _static/modules
+   modules
 
 Indices and tables
 ==================

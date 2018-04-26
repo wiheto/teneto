@@ -4,11 +4,6 @@ teneto.communitydetection package
 Subpackages
 -----------
 
-.. toctree::
-
-    teneto.communitydetection.optimization
-    teneto.communitydetection.static
-
 Submodules
 ----------
 

@@ -12,6 +12,7 @@ teneto.classes.bids module
     :undoc-members:
     :show-inheritance:
 
+
 Module contents
 ---------------
 
