@@ -171,6 +171,7 @@ todo_include_todos = True
 
 
 # MOCK MODULESS
+import mock
 
 MOCK_MODULES = ['numpy', 'scipy', 'bids.grabbids', 'igraph', 'louvain', 'python-igraph',
     'seaborn', 'matplotlib.pylpt', 'pandas','scipy.stats','scipy.special','nilearn.input_data',
