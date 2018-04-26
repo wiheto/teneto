@@ -4,10 +4,6 @@ teneto.networkmeasures package
 Subpackages
 -----------
 
-.. toctree::
-
-    teneto.networkmeasures.static
-
 Submodules
 ----------
 
