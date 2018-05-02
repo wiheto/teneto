@@ -251,7 +251,7 @@ class TenetoBIDS:
         file.close()
 
 
-    def make_functional_connectivity(self,njobs=None,returngroup=False):
+    def make_functional_connectivity(self,njobs=None,returngroup=False,file_hdr=None,file_idx=None):
         """
         Makes connectivity matrix for each of the subjects.
 
@@ -261,6 +261,10 @@ class TenetoBIDS:
             If true, returns the group average connectivity matrix.
         njobs : int
             How many parallel jobs to run
+        file_idx : bool 
+            Default False, true if to ignore index column in loaded file. 
+        file_hdr : bool 
+            Default False, true if to ignore header row in loaded file. 
 
         Returns
         -------
@@ -277,7 +281,7 @@ class TenetoBIDS:
         R_group = []
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_make_functional_connectivity,f) for f in files}
+            job = {executor.submit(self._run_make_functional_connectivity,f,file_hdr,file_idx) for f in files}
             for j in job:
                 R_group.append(j.result())
         if returngroup:
@@ -285,16 +289,10 @@ class TenetoBIDS:
             R_group = np.tanh(np.mean(np.arctanh(np.array(R_group)), axis=0))
             return np.array(R_group)
 
-    def _run_make_functional_connectivity(self,f):
+    def _run_make_functional_connectivity(self,f,file_hdr,file_idx):
             save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,'_fc','fc')
 
-            # ADD MORE HERE (csv, json, nifti)
-            if f.split('.')[-1] == 'npy':
-                data = np.load(f)
-            elif f.split('.')[-1] == 'tsv':
-                data = np.loadtxt(f,delimiter='\t')
-            else:
-                raise ValueError('derive can only load npy files at the moment')
+            data = self._load_file(f,output='array',header=file_hdr,index_col=file_idx)
 
             R = teneto.misc.corrcoef_matrix(data)[0]
             # Fisher transform of subject R values before group average
@@ -546,16 +544,21 @@ class TenetoBIDS:
             file name and path. Can be csv, tsv, npy. 
         output : str 
             array or pd (pandas dataframe). Default = array 
-        header : str 
-            if there is a header in the csv or tsv file, specify row. 
-        index_col : str 
-            if there is an index column in the csv or tsv file, specify column. 
+        header : bool (default false)
+            if there is a header in the csv or tsv file, true will use first row in file. 
+        index_col : bool (default false)
+            if there is an index column in the csv or tsv file, true will use first row in file. 
 
         Returns 
         -------
         f : array or pd (pandas dataframe) 
             The loaded file
         """ 
+        if index_col: 
+            index_col = 0 
+        if header: 
+            header = 0 
+
         if not output: 
             output = 'array' 
         fsuf = fname.split('.')[-1]
@@ -849,14 +852,57 @@ class TenetoBIDS:
         roi = roi.transpose()
         np.save(save_dir + save_name + '.npy', roi)
 
-    def removeconfounds(self,confounds=None,clean_params=None,transpose=False,njobs=None,update_pipeline=True,confound_hdr_idx_present=True,file_hdr_idx_present=False): 
+    def community_detection(self,community_detection_params,file_hdr=False,file_idx=False):
+        """
+        Calls temporal_louvain_with_consensus
+
+        Parameters
+        ----------
+
+        community_detection_params : dict 
+            see teneto.communitydetection.louvain.temporal_louvain_with_consensus
+        file_idx : bool (default false) 
+            if true, index column present in data and this will be ignored 
+        file_hdr : bool (default false) 
+            if true, header row present in data and this will be ignored 
+
+        Returns 
+        ------- 
+        List of communities for each subject. 
+        """
+
+ 
+        files = self.get_selected_files(quiet=True) 
+        for f in files: 
+            f = self._load_file(f,output='array',header=file_idx,index_col=file_idx) 
+
+
+
+    def removeconfounds(self,confounds=None,clean_params=None,transpose=False,njobs=None,update_pipeline=True,confound_hdr=True,confound_idx=False,file_hdr=False,file_idx=False): 
         """ 
         Removes specified confounds using nilearn.signal.clean 
 
         Parameters
         ----------
-
-
+        confounds : list 
+            List of confounds. Can be prespecified in set_confounds 
+        clean_params : dict 
+            Dictionary of kawgs to pass to nilearn.signal.clean 
+        transpose : bool (default False) 
+            Default removeconfounds works on time,node dimensions. Pass transpose=True to transpose pre and post confound removal. 
+        njobs : int 
+            Number of jobs. Otherwise tenetoBIDS.njobs is run. 
+        update_pipeline : bool 
+            update pipeline with '_clean' tag for new files created 
+        confound_hdr : bool (default True) 
+            if header is present in confound data (often the case in csv). Note, at present there is not an option for there to be header but no index. 
+        confound_idx : bool (default False) 
+            if index is present in confound data (often the case in csv). Note, at present there is not an option for there to be header but no index. This is generally not as important as getting the header correct header. 
+        file_hdr : bool (default True) 
+            if header is present in data (often the case in csv). Note, at present there is not an option for there to be header but no index. 
+        file_idx : bool (default False) 
+            if index is present in data (often the case in csv). Note, at present there is not an option for there to be header but no index. 
+        
         Returns
         -------
         Says all TenetBIDS.get_selected_files with confounds removed with _rmconfounds at the end.
@@ -886,7 +932,7 @@ class TenetoBIDS:
             clean_params = {}
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_removeconfounds,f,confound_files[i],clean_params,transpose,confound_hdr_idx_present,file_hdr_idx_present) for i,f in enumerate(files)}
+            job = {executor.submit(self._run_removeconfounds,f,confound_files[i],clean_params,transpose,confound_hdr,confound_idx,file_hdr,file_idx) for i,f in enumerate(files)}
             for j in job:
                 j.result()
 
@@ -894,22 +940,10 @@ class TenetoBIDS:
             self.analysis_steps += self.last_analysis_step
             self.set_last_analysis_step('clean')
 
-    def _run_removeconfounds(self,file_path,confound_path,clean_params,transpose=False,confound_hdr_idx_present=True,file_hdr_idx_present=False): 
-        if confound_hdr_idx_present: 
-            cheader = 0 
-            cindex_col = 0 
-        else: 
-            cheader = None 
-            cindex_col = None 
-        if file_hdr_idx_present: 
-            fheader = 0 
-            findex_col = 0 
-        else: 
-            fheader = None 
-            findex_col = None 
-        df = self._load_file(confound_path,output='pd',header=cheader,index_col=cindex_col)
+    def _run_removeconfounds(self,file_path,confound_path,clean_params,transpose=False,confound_hdr=True,confound_idx=True,file_hdr=False,file_idx=False): 
+        df = self._load_file(confound_path,output='pd',header=confound_hdr,index_col=confound_idx)
         df = df[self.confounds]
-        roi = self._load_file(file_path,output='array',header=fheader,index_col=findex_col)
+        roi = self._load_file(file_path,output='array',header=file_hdr,index_col=file_idx)
         if transpose: 
             roi = roi.transpose() 
         if df.isnull().any().any():

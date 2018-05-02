@@ -1,5 +1,11 @@
 # Changelog
 
+## V0.3.4 (pending)
+
+- Added more TenetoBIDS functions that use _load_data 
+
+- Changed file_hdr and file_idx in _load_data
+
 ## V0.3.3 
 
 - Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted.
