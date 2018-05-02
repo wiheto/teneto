@@ -1,10 +1,21 @@
 # Changelog
 
-## V0.3.3 (Pending)
+## V0.3.3 
 
-- Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted. 
+- Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted.
 
 - rename temporal_exclusion_criteria and file_exclusion_critiera to 'set_timepoint_exclusion' and 'set_file_exclusion'
+
+- better importing of modules.
+
+- more numpydoc-ing of comments
+
+- improved tenetoBIDS.get_selected_files with respect to last_analysis_step 
+
+- added tenetoBIDS.removeconfounds as standalone function that can still be called through tenetoBIDS.make_parcellation 
+
+- added a tenetoBIDS._load_files() function to unity io code and increase compatibility through the different funcitons/file formats. However not implemented in all functions yet. 
+
 
 ## V0.3.2
 

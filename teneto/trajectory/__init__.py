@@ -1,2 +1,2 @@
 
-from teneto.trajectory.compression import rdp
+from .compression import rdp

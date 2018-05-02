@@ -277,7 +277,7 @@ class TenetoBIDS:
         R_group = []
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self.run_make_functional_connectivity,f) for f in files}
+            job = {executor.submit(self._run_make_functional_connectivity,f) for f in files}
             for j in job:
                 R_group.append(j.result())
         if returngroup:
@@ -285,12 +285,14 @@ class TenetoBIDS:
             R_group = np.tanh(np.mean(np.arctanh(np.array(R_group)), axis=0))
             return np.array(R_group)
 
-    def run_make_functional_connectivity(self,f):
+    def _run_make_functional_connectivity(self,f):
             save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,'_fc','fc')
 
             # ADD MORE HERE (csv, json, nifti)
             if f.split('.')[-1] == 'npy':
                 data = np.load(f)
+            elif f.split('.')[-1] == 'tsv':
+                data = np.loadtxt(f,delimiter='\t')
             else:
                 raise ValueError('derive can only load npy files at the moment')
 
@@ -433,7 +435,7 @@ class TenetoBIDS:
             else:
                 space = '_space-' + self.space
 
-            r = re.compile('^' + fstr + '.*' + space + '.*' + self.last_analysis_step + '.*')
+            r = re.compile('^' + fstr + '.*' + space + '.*' + self.last_analysis_step + '[.].*')
             if os.path.exists(wdir):
                 # make filenames
                 found = list(filter(r.match, os.listdir(wdir)))
@@ -455,7 +457,7 @@ class TenetoBIDS:
         return found_files
 
 
-    def file_exclusion_criteria(self,confound,exclusion_criteria,confound_stat='mean'):
+    def set_exclusion_file(self,confound,exclusion_criteria,confound_stat='mean'):
         """
         Excludes subjects given a certain exclusion criteria.
 
@@ -534,7 +536,49 @@ class TenetoBIDS:
         self.set_bad_files(bad_files)
         print('Removed ' + str(bs) + ' files from inclusion.')
 
-    def temporal_exclusion_criteria(self,confound,exclusion_criteria,replace_with):
+    def _load_file(self,fname,output=None,header=None,index_col=None):
+        """
+        Given a file name loads that file
+
+        Parameters
+        ----------
+        fname : str
+            file name and path. Can be csv, tsv, npy. 
+        output : str 
+            array or pd (pandas dataframe). Default = array 
+        header : str 
+            if there is a header in the csv or tsv file, specify row. 
+        index_col : str 
+            if there is an index column in the csv or tsv file, specify column. 
+
+        Returns 
+        -------
+        f : array or pd (pandas dataframe) 
+            The loaded file
+        """ 
+        if not output: 
+            output = 'array' 
+        fsuf = fname.split('.')[-1]
+        if fsuf == 'tsv':
+            dtype = 'csv'
+            delim = '\t'
+        if fsuf == 'csv':
+            dtype = 'csv'
+            delim = ',' 
+        elif fsuf == 'npy':
+            dtype = 'npy'
+        if dtype == 'csv': 
+            f = pd.read_csv(fname,header=header,index_col=index_col,sep=delim) 
+            if output == 'array':
+                f = f.values 
+        elif dtype == 'npy': 
+            f = np.load(fname)
+            if output == 'pd': 
+                f = pd.DataFrame(f) 
+        return f 
+
+
+    def set_exclusion_timepoint(self,confound,exclusion_criteria,replace_with):
         """
         Excludes subjects given a certain exclusion criteria. Does not work on nifti files, only csv, numpy or tsc.
 
@@ -604,6 +648,7 @@ class TenetoBIDS:
             else:
                 raise ValueError('Cannot excude files of this type at the moment (but could be added if requested)')
             df = pd.read_csv(cfile,sep=delimiter)
+            deleted_timepoints_txt = ''
             for ci,c in enumerate(confound):
                 ind = df[rel[ci](df[c],crit[ci])].index
                 data[:,ind] = np.nan
@@ -612,6 +657,9 @@ class TenetoBIDS:
             # Can't interpolate values if nanind is at the beginning or end. So keep these nan
             nanind = nanind[nanind>nonnanind.min()]
             nanind = nanind[nanind<nonnanind.max()]
+            deleted_timepoints_txt += 'number of deleted timepoints (' + c + '): ' + str(len(nanind)) + '\n'
+            deleted_timepoints_txt += 'problematic timepoints timepoints (' + c + '): '
+            deleted_timepoints_txt += str(nanind)
             if replace_with == 'cubicspline':
                 for n in range(data.shape[0]):
                     interp = interp1d(nonnanind,data[n,nonnanind],kind='cubic')
@@ -620,6 +668,12 @@ class TenetoBIDS:
                 data.tofile(files[i][:-4] + '_scrub' + '.' + saveas,sep=dlim)
             elif saveas == 'npy':
                 np.save(files[i][:-4] + '_scrub',data)
+            sdir = ''
+            if files[0] == '/':
+                sdir += '/'
+            sdir += '/'.join(files[i].split('/')[:-1])
+            with open(sdir + "/temporal_exclusion_info.txt", "w") as text_file:
+                text_file.write(deleted_timepoints_txt)
         self.analysis_steps += [self.last_analysis_step]
         self.last_analysis_step = 'scrub'
 
@@ -754,17 +808,14 @@ class TenetoBIDS:
         if not self.confounds and removeconfounds:
             raise ValueError('Specified confounds are not found. Make sure that you have run self.set_confunds([\'Confound1\',\'Confound2\']) first.')
 
+        # Check confounds have been specified
+        if update_pipeline == False and removeconfounds:
+            raise ValueError('Pipeline must be updated in order to remove confounds within this funciton.')
+
         # In theory these should be the same. So at the moment, it goes through each element and checks they are matched.
         # A matching algorithem may be needed if cases arise where this isnt the case
         files = self.get_selected_files(quiet=1)
-        if removeconfounds:
-            confound_files = self.get_confound_files(quiet=1)
-            if len(files) != len(confound_files):
-                print('WARNING: number of confound files does not equal number of selected files')
-            for n in range(len(files)):
-                if confound_files[n].split('_confounds')[0].split('func')[1] not in files[n]:
-                    raise ValueError('Confound matching with data did not work.')
-
+        # Load network communities, if possible. 
         self.set_network_communities(parcellation)
 
         if not tag:
@@ -773,7 +824,7 @@ class TenetoBIDS:
             tag = '_' + tag
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_make_parcellation,f,i,tag,parcellation,parc_name,parc_type,parc_params,removeconfounds,confound_files,clean_params) for i,f in enumerate(files)}
+            job = {executor.submit(self._run_make_parcellation,f,i,tag,parcellation,parc_name,parc_type,parc_params) for i,f in enumerate(files)}
             for j in job:
                 j.result()
 
@@ -788,30 +839,88 @@ class TenetoBIDS:
             self.set_last_analysis_step('roi')
             self.parcellation = parcellation
 
-    def _run_make_parcellation(self,f,i,tag,parcellation,parc_name,parc_type,parc_params,removeconfounds,confound_files,clean_params):
+            if removeconfounds: 
+                self.removeconfounds(clean_params=clean_params,transpose=True,njobs=njobs)
+            
+    def _run_make_parcellation(self,f,i,tag,parcellation,parc_name,parc_type,parc_params):
         save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,'_parc-' + parc_name + tag + '_roi','parcellation')
         roi = teneto.utils.make_parcellation(f,parcellation,parc_type,parc_params)
-        # Confounds need to be loaded here.
-        if removeconfounds:
-            if not clean_params:
-                clean_params = {}
-            if confound_files[i].split('.')[-1] == 'csv':
-                delimiter = ','
-            elif confound_files[i].split('.')[-1] == 'tsv':
-                delimiter = '\t'
-            df = pd.read_csv(confound_files[i],sep=delimiter)
-            df = df[self.confounds]
-            if df.isnull().any().any():
-                # Not sure what is the best way to deal with this.
-                # The time points could be ignored. But if multiple confounds, this means these values will get ignored
-                print('WARNING: Some confounds were NaNs. Setting these values to median of confound.')
-                df = df.fillna(df.median())
-        roi = nilearn.signal.clean(roi,confounds=df.values,**clean_params)
-        # Make node, time
+        #Make data node,time
         roi = roi.transpose()
         np.save(save_dir + save_name + '.npy', roi)
 
+    def removeconfounds(self,confounds=None,clean_params=None,transpose=False,njobs=None,update_pipeline=True,confound_hdr_idx_present=True,file_hdr_idx_present=False): 
+        """ 
+        Removes specified confounds using nilearn.signal.clean 
 
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+        Says all TenetBIDS.get_selected_files with confounds removed with _rmconfounds at the end.
+
+        Note 
+        ----
+        There may be some issues regarding loading non-cleaned data through the TenetoBIDS functions instead of the cleaned data. This depeneds on when you clean the data. 
+        """
+        if not njobs:
+            njobs = self.njobs
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+
+        if not self.confounds and not confounds:
+            raise ValueError('Specified confounds are not found. Make sure that you have run self.set_confunds([\'Confound1\',\'Confound2\']) first or pass confounds as input to function.')
+
+        if confounds: 
+            self.set_confounds(confounds)
+        files = self.get_selected_files(quiet=1)
+        confound_files = self.get_confound_files(quiet=1)
+        if len(files) != len(confound_files):
+            print('WARNING: number of confound files does not equal number of selected files')
+        for n in range(len(files)):
+            if confound_files[n].split('_confounds')[0].split('func')[1] not in files[n]:
+                raise ValueError('Confound matching with data did not work.')
+
+        if not clean_params:
+            clean_params = {}
+
+        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+            job = {executor.submit(self._run_removeconfounds,f,confound_files[i],clean_params,transpose,confound_hdr_idx_present,file_hdr_idx_present) for i,f in enumerate(files)}
+            for j in job:
+                j.result()
+
+        if update_pipeline == True:
+            self.analysis_steps += self.last_analysis_step
+            self.set_last_analysis_step('clean')
+
+    def _run_removeconfounds(self,file_path,confound_path,clean_params,transpose=False,confound_hdr_idx_present=True,file_hdr_idx_present=False): 
+        if confound_hdr_idx_present: 
+            cheader = 0 
+            cindex_col = 0 
+        else: 
+            cheader = None 
+            cindex_col = None 
+        if file_hdr_idx_present: 
+            fheader = 0 
+            findex_col = 0 
+        else: 
+            fheader = None 
+            findex_col = None 
+        df = self._load_file(confound_path,output='pd',header=cheader,index_col=cindex_col)
+        df = df[self.confounds]
+        roi = self._load_file(file_path,output='array',header=fheader,index_col=findex_col)
+        if transpose: 
+            roi = roi.transpose() 
+        if df.isnull().any().any():
+            # Not sure what is the best way to deal with this.
+            # The time points could be ignored. But if multiple confounds, this means these values will get ignored
+            print('WARNING: Some confounds were NaNs. Setting these values to median of confound.')
+            df = df.fillna(df.median())
+        roi = nilearn.signal.clean(roi,confounds=df.values,**clean_params)
+        if transpose: 
+            roi = roi.transpose() 
+        np.save(file_path.split(self.last_analysis_step)[0] + self.last_analysis_step + '_clean.npy',roi)
 
     def networkmeasures(self, measure=None, measure_params={}, load_tag=None, save_tag=None, njobs=None):
         """

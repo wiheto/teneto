@@ -3,7 +3,7 @@
 [![Documentation Status](https://readthedocs.org/projects/teneto/badge/?version=latest)](http://teneto.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/Teneto.svg)](https://badge.fury.io/py/Teneto)
 
-**Te**mporal **ne**twork **to**ols. Version 0.3.2
+**Te**mporal **ne**twork **to**ols. Version 0.3.3
 
 ## What is the package
 

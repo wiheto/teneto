@@ -5,7 +5,7 @@ General setup for module
 from setuptools import setup, find_packages
 
 setup(name='teneto',
-      version='0.3.2',
+      version='0.3.3',
       python_requires='>3.5',
       install_requires=[
 		'nilearn>=0.4.0',
