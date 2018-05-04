@@ -489,7 +489,7 @@ def checkInput(netIn, raiseIfU=1, conMat=0):
         netShape = netIn.shape
         if len(netShape) == 3 and netShape[0] == netShape[1]:
             inputIs = 'G'
-        if netShape[0] == netShape[1] and conMat == 1:
+        elif netShape[0] == netShape[1] and conMat == 1:
             inputIs = 'M'
 
     elif isinstance(netIn, dict):

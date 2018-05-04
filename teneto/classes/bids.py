@@ -13,7 +13,7 @@ import traceback
 import concurrent
 import nilearn
 from scipy.interpolate import interp1d
-
+import time 
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
 #        pass
@@ -69,7 +69,7 @@ class TenetoBIDS:
         else:
             self.BIDS = 'Raw data was flagged as not present in directory structure.'
 
-        self.BIDS_dir = BIDS_dir
+        self.BIDS_dir = os.path.abspath(BIDS_dir)
         self.pipeline = pipeline
         self.confound_pipeline = confound_pipeline
         self.raw_data_exists = raw_data_exists
@@ -86,6 +86,8 @@ class TenetoBIDS:
                 self.subjects = self.BIDS.get_subjects()
             else:
                 self.set_subjects()
+        else: 
+            self.set_subjects(subjects)
         if sessions == 'all' and self.raw_data_exists:
             self.sessions = self.BIDS.get_sessions()
         elif self.raw_data_exists:
@@ -173,8 +175,6 @@ class TenetoBIDS:
             self.set_pipeline('teneto_' + teneto.__version__)
             self.set_pipeline_subdir('tvc')
             self.set_last_analysis_step('tvc')
-            if tag:
-                self.analysis_steps += [tag[1:]]
 
     def _run_derive(self,f,i,tag,params,confounds_exist,confound_files):
         """
@@ -216,17 +216,21 @@ class TenetoBIDS:
                 delimiter = ','
             elif confound_files[i].split('.')[-1] == 'tsv':
                 delimiter = '\t'
-            df = pd.read_csv(confound_files[i],sep=delimiter)
+            df = pd.read_csv(confound_files[i],sep=delimiter,index_col=0)
             df = df.fillna(df.median())
             ind = np.triu_indices(dfc.shape[0], k=1)
             dfc_df = pd.DataFrame(dfc[ind[0],ind[1],:].transpose())
-            #NOW CORRELATE DF WITH DFC BUT DFC INDEX NOT DF.
+            # If windowed, prune df so that it matches with dfc_df 
+            if len(df) != len(dfc_df): 
+                df = df.iloc[int(np.round((params['windowsize']-1)/2)):int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df.reset_index(inplace=True,drop=True)
+            #NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
             df_z = (df - df.mean())
             R_df = dfc_df_z.T.dot(df_z).div(len(dfc_df)).div(df_z.std(ddof=0)).div(dfc_df_z.std(ddof=0), axis=0)
             R_df_describe = R_df.describe()
             desc_index = R_df_describe.index
-            confound_report_dir = params['report_path'] + '/' + analysis_step + '_vs_confounds/'
+            confound_report_dir = params['report_path'] + '/' + save_name + '_confoundcorr/'
             confound_report_figdir = confound_report_dir + 'figures/'
             if not os.path.exists(confound_report_figdir):
                 os.makedirs(confound_report_figdir)
@@ -242,10 +246,10 @@ class TenetoBIDS:
                     report += str(desc_index[ind_name]) + ': '
                     report += str(r) + '<br>'
                 report += 'Distribution of corrlation values:'
-                report += '<img src=' + confound_report_figdir + c + '.png><br><br>'
+                report += '<img src=' + os.path.abspath(confound_report_figdir) + '/' + c + '.png><br><br>'
             report += '</body></html>'
 
-        with open(confound_report_dir + analysis_step + '_vs_confounds.html', 'w') as file:
+        with open(confound_report_dir + save_name + '_confoundcorr.html', 'w') as file:
             file.write(report)
 
         file.close()
@@ -299,6 +303,78 @@ class TenetoBIDS:
             np.save(save_dir + save_name + '.npy', R)
             return R
 
+    def get_functional_connectivity_files(self,quiet=1):
+        """
+        Load functional connectivity files. Requires make_functional_connectivity to be run
+
+        Parameters
+        ----------
+        quiet: int
+            If 1, prints results. If 0, no results printed.
+
+        Returns
+        -------
+        found_files : list
+            Get list of files where functional connecitivty is stored.
+        """
+        # This could be mnade better
+        file_dict = {
+            'sub': self.subjects,
+            'ses': self.sessions,
+            'task': self.tasks,
+            'run': self.runs}
+        # Only keep none empty elemenets
+        file_types = []
+        file_components = []
+        for k in ['sub', 'ses', 'task', 'run']:
+            if file_dict[k]:
+                file_types.append(k)
+                file_components += [file_dict[k]]
+        file_list = list(itertools.product(*file_components))
+        # Specify main directory
+        mdir = self.BIDS_dir + '/derivatives/teneto_' + teneto.__version__ + '/'
+        found_files = []
+
+        for f in file_list:
+            wdir = str(mdir)
+            fstr = ''
+            for i,k in enumerate(file_types):
+                if k == 'sub' or k == 'ses':
+                    wdir += '/' + k + '-' + f[i] + '/'
+                if k != 'sub':
+                    fstr += '_'
+                else:
+                    wdir += 'func/'
+                fstr += k + '-' + f[i] + '.*'
+            #wdir += '/' + self.pipeline_subdir + '/'
+            if not self.space:
+                space = ''
+            else:
+                space = '_space-' + self.space
+
+            wdir += '/fc/'
+
+            r = re.compile('^' + fstr + '.*' + space + '.*' + '_fc[.].*')
+            if os.path.exists(wdir):
+                # make filenames
+                found = list(filter(r.match, os.listdir(wdir)))
+                # Include only if all analysis step tags are present
+                found = [i for i in found if all(x in i for x in self.analysis_steps)]
+                # Exclude if confounds tag is present
+                found = [i for i in found if '_confounds' not in i]
+                # Make full paths
+                found = list(map(str.__add__,[re.sub('/+','/',wdir)]*len(found),found))
+                found = [i for i in found if i not in self.bad_files]
+                if found:
+                    found_files += found
+
+            if quiet==-1:
+                print(wdir)
+
+        if quiet == 0:
+            print(found_files)
+        return found_files
+
 
     def _save_namepaths_bids_derivatives(self,f,save_tag,save_directory):
         """
@@ -310,6 +386,15 @@ class TenetoBIDS:
             what should be added to f in the output file.
         save_directory : str
             additional directory that the output file should go in
+
+        Returns 
+        -------
+        save_name : str 
+            previous filename with new save_tag 
+        save_dir : str
+            directory where it will be saved 
+        base_dir : str 
+            subjective base directory (i.e. derivatives/teneto/func[/anythingelse/])
 
         """
         file_name = f.split('/')[-1].split('.')[0]
@@ -324,7 +409,12 @@ class TenetoBIDS:
         base_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/' + paths_post_pipeline + '/'
         save_dir = base_dir + '/' + save_directory + '/'
         if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
+            # A case has happened where this has been done in parallel and an error was raised. So do try/except
+            try:
+                os.makedirs(save_dir)
+            except:
+                #Wait 2 seconds so that the error does not try and save something in the directory before it is created
+                time.sleep(2)
         return save_name, save_dir, base_dir
 
 
@@ -385,6 +475,69 @@ class TenetoBIDS:
             if quiet == 0:
                 print('Pipeline_subdir alternatives: ' + ', '.join(pipeline_subdir_alternatives))
             return list(pipeline_subdir_alternatives)
+
+    def load_community_data(self,community_type,tag=None):
+        """
+        Load derived communities\
+
+        Parameters 
+        ---------- 
+        community_type: str 
+            Either static or temporal 
+        tag : str 
+            Tag that should be included to load specific data. E.g. gamma-1 will only load data with gamma-1_ in the title gamma-1_omega-1 will load files with both those BIDS tags. 
+
+        Returns 
+        -------
+        loads TenetoBIDS.community_data_ and TenetoBIDS.community_info_
+        """ 
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+        
+        data_list=[]
+        info_list = []
+
+        community_type = 'communitytype-' + community_type 
+
+        if not tag:
+            tag = ''
+
+        for s in self.subjects:
+            # Define base folder
+            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
+            base_path += '/sub-' + s + '/func/communities/'
+            file_list=os.listdir(base_path)
+            for f in file_list:
+                # Include only if all analysis step tags are present
+                if community_type in f and tag + '_' in f:
+                    # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
+                    bid_tags=re.findall('[a-zA-Z]*-',f)
+                    bids_tag_dict = {}
+                    for t in bid_tags:
+                        key = t[:-1]
+                        bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
+                    if f.split('.')[-1] == 'npy':
+                        data = np.load(base_path+f)
+                        data_list.append(data)
+                        info = pd.DataFrame(bids_tag_dict,index=[0])
+                        info_list.append(info)
+                    else:
+                        print('Warning: Could not find data for a subject')
+
+        #Get time-shape of data loaded 
+        if community_type == 'communitytype-' + 'temporal': 
+            shape = np.array([n.shape[-1] for n in data_list])
+            if len(np.unique(shape)) != 1:
+                print("Warning: Unequal time dimension. Returning networkcommunity_data_ as list.")    
+                self.community_data_ = data_list
+            else:         
+                self.community_data_ = np.array(data_list)
+        else: 
+            self.community_data_ = np.array(data_list)
+        if info_list:
+            out_info = pd.concat(info_list)
+            out_info.reset_index(inplace=True,drop=True)
+            self.community_info_ = out_info
+
 
     def get_selected_files(self,quiet=0):
         """
@@ -501,8 +654,8 @@ class TenetoBIDS:
             else:
                 raise ValueError('exclusion crieria must being with >,<,>= or <=')
         # Load filelist and confound list
-        files = self.get_selected_files(quiet=1)
-        confound_files = self.get_confound_files(quiet=1)
+        files = sorted(self.get_selected_files(quiet=1))
+        confound_files = sorted(self.get_confound_files(quiet=1))
         # Check integerity of confound list
         if len(files) != len(confound_files):
             print('WARNING: number of confound files does not equal number of selected files')
@@ -556,8 +709,12 @@ class TenetoBIDS:
         """ 
         if index_col: 
             index_col = 0 
+        else: 
+            index_col = None
         if header: 
             header = 0 
+        else:
+            header = None 
 
         if not output: 
             output = 'array' 
@@ -623,8 +780,8 @@ class TenetoBIDS:
                 crit.append(float(ec[1:]))
             else:
                 raise ValueError('exclusion crieria must being with >,<,>= or <=')
-        files = self.get_selected_files(quiet=1)
-        confound_files = self.get_confound_files(quiet=1)
+        files = sorted(self.get_selected_files(quiet=1))
+        confound_files = sorted(self.get_confound_files(quiet=1))
         # Check integerity of confound list
         if len(files) != len(confound_files):
             print('WARNING: number of confound files does not equal number of selected files')
@@ -684,6 +841,8 @@ class TenetoBIDS:
 
     def get_confound_files(self,quiet=0):
         """
+        Returns confound files that are currently selected
+
         Parameters
         ----------
         quiet: int
@@ -791,6 +950,8 @@ class TenetoBIDS:
             If multiple types of analysis are going to be run, you can set tag to add a '_tag' on the file name.
         clean_params : dict
             **kwargs for nilearn function nilearn.signal.clean
+        njobs : n 
+            number of processes to run. Overrides TenetoBIDS.njobs
 
         Returns
         -------
@@ -852,30 +1013,69 @@ class TenetoBIDS:
         roi = roi.transpose()
         np.save(save_dir + save_name + '.npy', roi)
 
-    def community_detection(self,community_detection_params,file_hdr=False,file_idx=False):
+    def communitydetection(self,community_detection_params,community_type='temporal',file_hdr=False,file_idx=False,njobs=None):
         """
-        Calls temporal_louvain_with_consensus
+        Calls temporal_louvain_with_consensus on connectivity data
 
         Parameters
         ----------
 
         community_detection_params : dict 
-            see teneto.communitydetection.louvain.temporal_louvain_with_consensus
+            kwargs for detection. See teneto.communitydetection.louvain.temporal_louvain_with_consensus
+        community_type : str
+            Either 'temporal' or 'static'. If temporal, community is made per time-point for each timepoint.         
         file_idx : bool (default false) 
             if true, index column present in data and this will be ignored 
         file_hdr : bool (default false) 
             if true, header row present in data and this will be ignored 
+        njobs : int 
+            number of processes to run. Overrides TenetoBIDS.njobs
 
         Returns 
         ------- 
-        List of communities for each subject. 
+        List of communities for each subject. Saved in BIDS_dir/derivatives/teneto/communitydetection/
         """
+        if not njobs:
+            njobs = self.njobs
+        self.add_history(inspect.stack()[0][3], locals(), 1)
 
- 
-        files = self.get_selected_files(quiet=True) 
-        for f in files: 
-            f = self._load_file(f,output='array',header=file_idx,index_col=file_idx) 
+        if community_type == 'temporal':
+            files = self.get_selected_files(quiet=True) 
+            # Run check to make sure files are tvc input
+            for f in files: 
+                    if 'tvc' not in f: 
+                        raise ValueError('tvc tag not found in filename. TVC data must be used in communitydetection (perhaps run TenetoBIDS.derive first?).')
+        elif community_type == 'static': 
+            files = self.get_functional_connectivity_files(quiet=True) 
 
+        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+            job = {executor.submit(self._run_communitydetection,f,community_detection_params,community_type,file_hdr,file_idx) for i,f in enumerate(files)}
+            for j in job:
+                j.result()
+
+    def _run_communitydetection(self,f,params,community_type,file_hdr=False,file_idx=False): 
+        tag = 'communitytype-' + community_type
+        if 'resolution_parameter' in params: 
+            tag += '_gamma-' + str(np.round(params['resolution_parameter'],5))
+        if 'interslice_weight' in params: 
+            tag += '_omega-' + str(np.round(params['interslice_weight'],5))
+        tag += '_louvain'
+        if community_type == 'dynamic': 
+            save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,tag,'communities')
+        else: 
+            save_name, a, b = self._save_namepaths_bids_derivatives(f,tag,'')
+            save_dir = f.split('fc')[0] + '/communities/'
+            if not os.path.exists(save_dir): 
+                try: 
+                    os.makedirs(save_dir)
+                except: 
+                    #Wait 2 seconds so that the error does not try and save something in the directory before it is created
+                    time.sleep(2)
+        data = self._load_file(f,output='array',header=file_idx,index_col=file_idx) 
+        # Only put positive edges into clustering (more advanced methods can be added here later )
+        data[data<0] = 0
+        C = teneto.communitydetection.temporal_louvain_with_consensus(data, **params)
+        np.save(save_dir + save_name,C)
 
 
     def removeconfounds(self,confounds=None,clean_params=None,transpose=False,njobs=None,update_pipeline=True,confound_hdr=True,confound_idx=False,file_hdr=False,file_idx=False): 
@@ -920,8 +1120,8 @@ class TenetoBIDS:
 
         if confounds: 
             self.set_confounds(confounds)
-        files = self.get_selected_files(quiet=1)
-        confound_files = self.get_confound_files(quiet=1)
+        files = sorted(self.get_selected_files(quiet=1))
+        confound_files = sorted(self.get_confound_files(quiet=1))
         if len(files) != len(confound_files):
             print('WARNING: number of confound files does not equal number of selected files')
         for n in range(len(files)):
@@ -1412,11 +1612,27 @@ class TenetoBIDS:
             pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
 
     @classmethod
-    def load_frompickle(cls,fname):
+    def load_frompickle(cls,fname,reload_object=False):
+        """
+        Loaded saved instance of 
+
+        fname : str
+            path to pickle object (output of TenetoBIDS.save_aspickle) 
+        reload_object : bool (default False)
+            reloads object by calling teneto.TenetoBIDS (some information lost, for development)
+
+        Returns 
+        ------- 
+            self : 
+                TenetoBIDS instance 
+        """
         if fname[-4:] != '.pkl':
             fname += '.pkl'
         with open(fname, 'rb') as f:
-            return pickle.load(f)
+            lnet = pickle.load(f)
+        if reload_object: 
+            lnet = teneto.TenetoBIDS(lnet.BIDS_dir, pipeline=lnet.pipeline, pipeline_subdir=lnet.pipeline_subdir, parcellation=lnet.parcellation, space=lnet.space, subjects=lnet.subjects, sessions=lnet.sessions, runs=lnet.runs, tasks=lnet.tasks, last_analysis_step=lnet.last_analysis_step, analysis_steps=lnet.analysis_steps, bad_subjects=lnet.bad_subjects, confound_pipeline=lnet.confound_pipeline, raw_data_exists=lnet.raw_data_exists, njobs=lnet.njobs) 
+        return lnet
 
 
     def load_parcellation_data(self,parcellation=None,tag=None):

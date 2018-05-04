@@ -22,7 +22,7 @@ def temporal_louvain_with_consensus(net, iter_n=100, resolution_parameter=1, int
     interslice_weight : int
         The weight that connects the different graphlets/snapshots to eachother. Default=0
     quality function : str
-        What type of louvain clustering is done. Options: NewmanGirvan2004, TraagVanDoorenNesterov2011, ReichardtBornholdt2006
+        What type of louvain clustering is done. Options: NewmanGirvan2004, TraagVanDoorenNesterov2011, ReichardtBornholdt2006, TraagKringsVanDooren2013, TraagAldecoaDelvenne2015
     seed : int
         Seed for reproduceability
     consensus_threshold : float
@@ -66,7 +66,8 @@ def temporal_louvain_with_consensus(net, iter_n=100, resolution_parameter=1, int
         dict_input = True
     else:
         dict_input = False
-    net, netinfo = teneto.utils.process_input(net, ['C', 'G', 'TO'])
+    if teneto.utils.checkInput(net,conMat=1) != 'M':
+        net, netinfo = teneto.utils.process_input(net, ['C', 'G', 'TO'])
 
     Gin = net.copy()
     D = np.random.random(np.prod(Gin.shape)).reshape(Gin.shape)
@@ -75,11 +76,18 @@ def temporal_louvain_with_consensus(net, iter_n=100, resolution_parameter=1, int
     while len(np.where((D > 0) & (D < 1))[0]) > 0:
         i=i+1
         C = teneto.communitydetection.temporal_louvain(Gin, iter_n=iter_n, resolution_parameter=resolution_parameter, seed=seed, interslice_weight=interslice_weight, quality_function=quality_function)
-        D = [teneto.communitydetection.make_consensus_matrix(C[:,:,t],th=consensus_threshold) for t in range(C.shape[-1])]
-        D = np.dstack(D)
+        if len(C.shape) == 3: 
+            D = [teneto.communitydetection.make_consensus_matrix(C[:,:,t],th=consensus_threshold) for t in range(C.shape[-1])]
+            D = np.dstack(D)
+        elif len(C.shape) == 2: 
+            D = teneto.communitydetection.make_consensus_matrix(C,th=consensus_threshold)
         Gin = D
         #Only first iteration needs to be returned as consensus means they are all identical
-    communities = teneto.communitydetection.make_temporal_consensus(C[0,:,:])
+    if len(C.shape) == 3: 
+        communities = teneto.communitydetection.make_temporal_consensus(C[0,:,:])
+    else:
+        communities = C[0,:]
+
     if dict_input:
         C = teneto.utils.graphlet2contact(net,netinfo)
         C['communities'] = communities
@@ -148,7 +156,8 @@ def temporal_louvain(net, iter_n=1, resolution_parameter=1, interslice_weight=1,
         dict_input = True
     else:
         dict_input = False
-    net, netinfo = teneto.utils.process_input(net, ['C', 'G', 'TO'])
+    if teneto.utils.checkInput(net,conMat=1) != 'M':
+        net, netinfo = teneto.utils.process_input(net, ['C', 'G', 'TO'])
     if quality_function == 'TraagVanDoorenNesterov2011':
         louvain_alg = louvain.CPMVertexPartition
         louvain_kwags = {'resolution_parameter': resolution_parameter}
@@ -165,11 +174,15 @@ def temporal_louvain(net, iter_n=1, resolution_parameter=1, interslice_weight=1,
         louvain_alg = louvain.SurpriseVertexPartition
         louvain_kwags = {}
     g_to_ig = []
-    for i in range(net.shape[-1]):
-        g_to_ig.append(ig.Graph.Weighted_Adjacency(net[:,:,i].tolist()))
-    for n in range(net.shape[0]):
-        for t in range(net.shape[-1]):
-            g_to_ig[t].vs[n]['id'] = n
+    if len(net.shape) == 3:
+        for i in range(net.shape[-1]):
+            g_to_ig.append(ig.Graph.Weighted_Adjacency(net[:,:,i].tolist()))
+        for n in range(net.shape[0]):
+            for t in range(net.shape[-1]):
+                g_to_ig[t].vs[n]['id'] = n
+    elif len(net.shape) == 2: 
+        g_to_ig.append(ig.Graph.Weighted_Adjacency(net.tolist()))
+
     membership = []
     louvain.set_rng_seed(seed)
     if interslice_weight != 0:

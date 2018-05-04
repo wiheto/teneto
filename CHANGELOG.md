@@ -6,6 +6,26 @@
 
 - Changed file_hdr and file_idx in _load_data
 
+- Improved matching of confound files and file in TenetoBIDS 
+
+- Fixed bug for confound reports when windowed method used in TenetoBIDS.derive. 
+
+- Added analysis tag to directory name of derive vs confound directory. Fixed paths to be absolute image links in html report
+
+- BIDS_dir is made to abspath in __init__ of TenetoBIDS
+
+- Fixed bug where subjects couldn't be set in __init__ of TenetoBIDS 
+
+- Allowed ability to reload teneto_bids object when loading from pickle (for development purposes as some information (e.g. history) is lost)
+
+- Added communitydetection to TenetoBIDS
+
+- Added load_community_data to TenetoBIDS 
+
+- communitydetection.temporal_louvain_with_consensus can be passed a 2d 
+
+- Updat
+
 ## V0.3.3 
 
 - Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted.
