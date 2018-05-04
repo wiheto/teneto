@@ -115,7 +115,7 @@ class TenetoBIDS:
         elif isinstance(analysis_steps,list):
             self.analysis_steps = analysis_steps
         else:
-            self.analysis_steps = ''
+            self.analysis_steps = []
 
         if bad_subjects == None:
             self.bad_subjects = None
@@ -628,7 +628,7 @@ class TenetoBIDS:
         """
         if isinstance(confound,str):
             confound = [confound]
-        if isinstance(exclusion_criteria,str):
+        if not isinstance(exclusion_criteria,list):
             exclusion_criteria = [exclusion_criteria]
         if isinstance(confound_stat,str):
             confound_stat = [confound_stat]
@@ -738,14 +738,14 @@ class TenetoBIDS:
         return f 
 
 
-    def set_exclusion_timepoint(self,confound,exclusion_criteria,replace_with):
+    def set_exclusion_timepoint(self,confound,exclusion_criteria,replace_with,file_hdr=False,file_idx=False,confound_hdr=True,confound_idx=False):
         """
         Excludes subjects given a certain exclusion criteria. Does not work on nifti files, only csv, numpy or tsc.
 
         Parameters
         ----------
             confound : str or list
-                string or list of confound name(s) from confound files
+                string or list of confound name(s) from confound files. Assumes data is node,time
             exclusion_criteria  : str or list
                 for each confound, an exclusion_criteria should be expressed as a string. It starts with >,<,>= or <= then the numerical threshold. Ex. '>0.2' will entail every subject with the avg greater than 0.2 of confound will be rejected.
             confound_stat : str
@@ -790,25 +790,10 @@ class TenetoBIDS:
             if confound_files[n].split('_confounds')[0].split('func')[1] not in files[n]:
                 raise ValueError('Confound matching with data did not work.')
         for i, cfile in enumerate(confound_files):
-            if cfile.split('.')[-1] == 'csv':
-                delimiter = ','
-            elif cfile.split('.')[-1] == 'tsv':
-                delimiter = '\t'
-            if files[i].split('.')[-1] == 'npy':
-                data = np.load(files[i])
-                saveas = 'npy'
-            elif files[i].split('.')[-1] == 'csv':
-                data = pd.read_csv(files[i],sep=',')
-                saveas = 'csv'
-                dlim = ','
-            elif files[i].split('.')[-1] == 'tsv':
-                data = pd.read_csv(files[i],sep='\t')
-                saveas = 'tsv'
-                dlim = '\t'
-            else:
-                raise ValueError('Cannot excude files of this type at the moment (but could be added if requested)')
-            df = pd.read_csv(cfile,sep=delimiter)
+            data = self._load_file(files[i],output='array',header=file_hdr,index_col=file_idx)
+            df = self._load_file(cfile,output='pd',header=confound_hdr,index_col=confound_idx)
             deleted_timepoints_txt = ''
+            ind = []
             for ci,c in enumerate(confound):
                 ind = df[rel[ci](df[c],crit[ci])].index
                 data[:,ind] = np.nan
@@ -824,10 +809,7 @@ class TenetoBIDS:
                 for n in range(data.shape[0]):
                     interp = interp1d(nonnanind,data[n,nonnanind],kind='cubic')
                     data[n,nanind] = interp(nanind)
-            if saveas == 'csv' or saveas == 'tsv':
-                data.tofile(files[i][:-4] + '_scrub' + '.' + saveas,sep=dlim)
-            elif saveas == 'npy':
-                np.save(files[i][:-4] + '_scrub',data)
+            np.save(files[i][:-4] + '_scrub',data)
             sdir = ''
             if files[0] == '/':
                 sdir += '/'

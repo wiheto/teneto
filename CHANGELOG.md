@@ -24,7 +24,7 @@
 
 - communitydetection.temporal_louvain_with_consensus can be passed a 2d 
 
-- Updat
+- Several minor improvements to exclusion_files and exclusion_timepoint in TenetoBIDS
 
 ## V0.3.3 
 
