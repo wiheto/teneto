@@ -141,6 +141,8 @@ class TenetoBIDS:
         """
         Derive time-varying connectivity on the selected files.
 
+        Parameters
+        ----------
         params : dict.
             See teneto.derive.derive for the structure of the param dictionary.
 
@@ -168,6 +170,7 @@ class TenetoBIDS:
             job = {executor.submit(self._run_derive,f,i,tag,params,confounds_exist,confound_files) for i,f in enumerate(files)}
             for j in job:
                 j.result()
+            executor.shutdown(wait=True)
 
         if update_pipeline == True:
             if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
@@ -288,6 +291,7 @@ class TenetoBIDS:
             job = {executor.submit(self._run_make_functional_connectivity,f,file_hdr,file_idx) for f in files}
             for j in job:
                 R_group.append(j.result())
+            executor.shutdown(wait=True)
         if returngroup:
             # Fisher tranform -> mean -> inverse fisher tranform
             R_group = np.tanh(np.mean(np.arctanh(np.array(R_group)), axis=0))
@@ -973,6 +977,7 @@ class TenetoBIDS:
             job = {executor.submit(self._run_make_parcellation,f,i,tag,parcellation,parc_name,parc_type,parc_params) for i,f in enumerate(files)}
             for j in job:
                 j.result()
+            executor.shutdown(wait=True)
 
         if update_pipeline == True:
             if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
@@ -1036,6 +1041,7 @@ class TenetoBIDS:
             job = {executor.submit(self._run_communitydetection,f,community_detection_params,community_type,file_hdr,file_idx) for i,f in enumerate(files)}
             for j in job:
                 j.result()
+            executor.shutdown(wait=True)
 
     def _run_communitydetection(self,f,params,community_type,file_hdr=False,file_idx=False): 
         tag = 'communitytype-' + community_type
@@ -1119,6 +1125,7 @@ class TenetoBIDS:
             job = {executor.submit(self._run_removeconfounds,f,confound_files[i],clean_params,transpose,confound_hdr,confound_idx,file_hdr,file_idx) for i,f in enumerate(files)}
             for j in job:
                 j.result()
+            executor.shutdown(wait=True)
 
         if update_pipeline == True:
             self.analysis_steps += self.last_analysis_step
@@ -1206,6 +1213,7 @@ class TenetoBIDS:
             job = {executor.submit(self._run_networkmeasures,f,load_tag,save_tag,measure,measure_params,module_dict) for f in files if load_tag in f}
             for j in job:
                 j.result()
+            executor.shutdown(wait=True)
 
 
     def _run_networkmeasures(self,f,load_tag,save_tag,measure,measure_params,module_dict):

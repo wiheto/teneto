@@ -30,6 +30,8 @@
 
 - TenetoBIDS.make_timelocked_events can now also do raw tvc 
 
+- Added wait to concurrent
+
 ## V0.3.3 
 
 - Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted.
