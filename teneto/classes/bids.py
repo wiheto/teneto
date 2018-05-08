@@ -169,6 +169,10 @@ class TenetoBIDS:
         confound_files = self.get_confound_files(quiet=1)
         if confound_files:
             confounds_exist = True
+        else: 
+            confounds_exist = False
+        if not confound_corr_report: 
+            confounds_exist = False 
 
         if not tag:
             tag = ''
@@ -176,7 +180,7 @@ class TenetoBIDS:
             tag = '_' + tag
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_derive,f,i,tag,params,confounds_exist,confound_files,confound_corr_report) for i,f in enumerate(files)}
+            job = {executor.submit(self._run_derive,f,i,tag,params,confounds_exist,confound_files) for i,f in enumerate(files)}
             for j in concurrent.futures.as_completed(job):
                 j.result()
 
@@ -187,7 +191,7 @@ class TenetoBIDS:
             self.set_pipeline_subdir('tvc')
             self.set_last_analysis_step('tvc')
 
-    def _run_derive(self,f,i,tag,params,confounds_exist,confound_files,confound_corr_report):
+    def _run_derive(self,f,i,tag,params,confounds_exist,confound_files):
         """
         Funciton called by TenetoBIDS.derive for parallel processing.
         """
@@ -202,7 +206,7 @@ class TenetoBIDS:
         if 'weight-var' in params.keys():
             if params['weight-var'] == 'from-subject-fc':
                 fc_dir = base_dir + '/fc/'
-                fc = os.listdir(fc_di   r)
+                fc = os.listdir(fc_dir)
                 i = 0
                 for ff in fc: 
                     if ff.split('_fc.npy')[0] in f:
@@ -234,7 +238,7 @@ class TenetoBIDS:
         dfc = teneto.derive.derive(data,params)
         np.save(save_dir + save_name + '.npy', dfc)
 
-        if confounds_exist and confound_corr_report:
+        if confounds_exist:
             analysis_step = 'tvc-derive'
             if confound_files[i].split('.')[-1] == 'csv':
                 delimiter = ','
