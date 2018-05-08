@@ -995,6 +995,8 @@ class TenetoBIDS:
         roi = roi.transpose()
         np.save(save_dir + save_name + '.npy', roi)
 
+
+
     def communitydetection(self,community_detection_params,community_type='temporal',file_hdr=False,file_idx=False,njobs=None):
         """
         Calls temporal_louvain_with_consensus on connectivity data
@@ -1042,17 +1044,17 @@ class TenetoBIDS:
         if 'interslice_weight' in params: 
             tag += '_omega-' + str(np.round(params['interslice_weight'],5))
         tag += '_louvain'
-        if community_type == 'dynamic': 
+        if community_type == 'temporal': 
             save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,tag,'communities')
         else: 
             save_name, a, b = self._save_namepaths_bids_derivatives(f,tag,'')
             save_dir = f.split('fc')[0] + '/communities/'
-            if not os.path.exists(save_dir): 
-                try: 
-                    os.makedirs(save_dir)
-                except: 
-                    #Wait 2 seconds so that the error does not try and save something in the directory before it is created
-                    time.sleep(2)
+        if not os.path.exists(save_dir): 
+            try: 
+                os.makedirs(save_dir)
+            except: 
+                #Wait 2 seconds so that the error does not try and save something in the directory before it is created
+                time.sleep(2)
         data = self._load_file(f,output='array',header=file_idx,index_col=file_idx) 
         # Only put positive edges into clustering (more advanced methods can be added here later )
         data[data<0] = 0
@@ -1675,7 +1677,56 @@ class TenetoBIDS:
                 out_trialinfo.reset_index(inplace=True,drop=True)
                 self.parcellation_trialinfo_ = out_trialinfo
 
+    #timelocked average
+    #np.stack(a['timelocked-tvc'].values).mean(axis=0)
 
+    def load_timelocked_data(self,measure,calc=None,tag=None,avg=None,event=None,groupby=None): 
+
+        if not calc:
+            calc = ''
+        else:
+            calc = 'calc-' + calc
+
+        if not tag:
+            tag = ''
+            
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+        trialinfo_list = []
+        data_list = []
+        for s in self.subjects:
+
+            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
+            if measure == 'tvc':
+                base_path += '/sub-' + s + '/func/tvc/timelocked/'
+            else:
+                base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/timelocked/'
+
+            if not os.path.exists(base_path):
+                print('Warning: cannot find data for subject: ' + s)
+
+            for f in os.listdir(base_path):
+                if os.path.isfile(base_path + f) and f.split('.')[-1] == 'npy':
+                    if calc in f and tag in f:
+                        bids_tags=re.findall('[a-zA-Z]*-',f)
+                        bids_tag_dict = {}
+                        for t in bids_tags:
+                            key = t[:-1]
+                            bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
+                        trialinfo_eventinfo = pd.read_csv(base_path + '.'.join(f.split('.')[0:-1]) + '_trialinfo.csv')
+                        trialinfo = pd.DataFrame(bids_tag_dict,index=np.arange(0,len(trialinfo_eventinfo)))
+                        trialinfo = pd.concat([trialinfo,trialinfo_eventinfo],axis=1)
+                        trialinfo_list.append(trialinfo)
+                        data_list.append(np.load(base_path + f))
+
+        self.timelocked_data_ = np.vstack(np.array(data_list))
+        if avg: 
+            self.timelocked_data_ = self.timelocked_data_.mean(axis=0)
+
+        if trialinfo_list:
+            out_trialinfo = pd.concat(trialinfo_list)
+            out_trialinfo = out_trialinfo.drop('Unnamed: 0',axis=1)
+            out_trialinfo.reset_index(inplace=True,drop=True)
+            self.timelocked_trialinfo_ = out_trialinfo
 
     def load_tvc_data(self,tag=None):
         """
@@ -1687,6 +1738,8 @@ class TenetoBIDS:
 
         tag : str
             Any additional tag to filter out which files to load.
+        timelocked : bool 
+            Load timelocked data if true.
 
         **RETURNS**
 
@@ -1716,11 +1769,11 @@ class TenetoBIDS:
                     for t in bid_tags:
                         key = t[:-1]
                         bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
+                    trialinfo = pd.DataFrame(bids_tag_dict,index=[0])
+                    trialinfo_list.append(trialinfo)
                     if f.split('.')[-1] == 'npy':
                         data = np.load(base_path+f)
                         data_list.append(data)
-                        trialinfo = pd.DataFrame(bids_tag_dict,index=[0])
-                        trialinfo_list.append(trialinfo)
                     else:
                         print('Warning: Could not find data for a subject (expecting numpy array)')
 
@@ -1732,7 +1785,7 @@ class TenetoBIDS:
 
 
 
-    def load_network_measure(self,measure,timelocked=False,calc=None,tag=None):
+    def load_network_measure(self,measure,calc=None,tag=None):
         self.add_history(inspect.stack()[0][3], locals(), 1)
         data_list=[]
         trialinfo_list = []
@@ -1750,10 +1803,6 @@ class TenetoBIDS:
             base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
             base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/'
             measure_sub = measure
-            # Add evet_locked folder if thats what is asked for
-            if timelocked:
-                base_path += 'timelocked/'
-                measure_sub = 'timelocked-' + measure_sub
             # Get files
             file_list=os.listdir(base_path)
             # Get tags in filename
@@ -1792,7 +1841,7 @@ class TenetoBIDS:
 
 
 
-    def make_timelocked_events(self, measure, event_names, event_onsets, toi, calc=None, tag=None):
+    def make_timelocked_events(self, measure, event_names, event_onsets, toi, calc=None, tag=None, avg=None):
         """
         Creates time locked time series of <measure>. Measure must have time in its -1 axis.
 
@@ -1802,7 +1851,7 @@ class TenetoBIDS:
         measure : str
             temporal network measure that should already exist in the teneto/[subject]/tvc/network-measures directory
         event_names : str or list
-            what the event is called (can be list of multiple event names)
+            what the event is called (can be list of multiple event names). Can also be TVC to create time-locked tvc. 
         event_onsets: list
             List of onset times (can be list of list for multiple events)
         toi : array
@@ -1821,6 +1870,10 @@ class TenetoBIDS:
         -------
         Creates a time-locked output placed in BIDS_dir/derivatives/teneto_<version>/../tvc/temporal-network-measures/<networkmeasure>/timelocked/
         """
+        if isinstance(event_onsets[0],int) or isinstance(event_onsets[0],float): 
+            event_onsets = [event_onsets]
+        if isinstance(event_names,str): 
+            event_names = [event_names]
         self.add_history(inspect.stack()[0][3], locals(), 1)
         event_onsets_combined = list(itertools.chain.from_iterable(event_onsets))
         event_names_list = [[e]*len(event_onsets[i]) for i,e in enumerate(event_names)]
@@ -1838,7 +1891,10 @@ class TenetoBIDS:
         for s in self.subjects:
 
             base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
-            base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/'
+            if measure == 'tvc':
+                base_path += '/sub-' + s + '/func/tvc/'
+            else:
+                base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/'
 
             if not os.path.exists(base_path):
                 print('Warning: cannot find data for subject: ' + s)
@@ -1848,7 +1904,13 @@ class TenetoBIDS:
 
             for f in os.listdir(base_path):
                 if os.path.isfile(base_path + f):
-                    if calc in f:
+                    if calc in f and tag in f:
+                        bids_tags=re.findall('[a-zA-Z]*-',f)
+                        bids_tag_dict = {}
+                        for t in bids_tags:
+                            key = t[:-1]
+                            bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
+                            
                         self_measure = np.load(base_path + '/' + f)
                         # make time dimensions the first dimension
                         self_measure = self_measure.transpose([len(self_measure.shape)-1] + list(np.arange(0,len(self_measure.shape)-1)))
@@ -1858,19 +1920,21 @@ class TenetoBIDS:
                             # Make time dimension last dimension
                             tmp = tmp.transpose(list(np.arange(1,len(self_measure.shape))) + [0])
                             tl_data.append(tmp)
-                        df=pd.DataFrame(data={'timelocked-' + measure: tl_data, 'event': event_names_list, 'event_osnet': event_onsets_combined})
-                        net_event = []
-                        for e in df['event'].unique():
-                            edf = df[df['event']==e]
-                            net_tmp = []
-                            for r in edf.iterrows():
-                                net_tmp.append(r[1]['timelocked-' + measure])
-                            net_event.append(np.array(net_tmp).mean(axis=0))
+                        tl_data = np.stack(tl_data)
+                        df=pd.DataFrame(data={'event': event_names_list, 'event_onset': event_onsets_combined})
                         # Save output
                         save_dir_base = base_path + 'timelocked/'
-                        file_name = f.split('/')[-1].split('.')[0] + '_timelocked'
-                        df.to_pickle(save_dir_base + file_name + '.pkl')
-
+                        file_name = f.split('/')[-1].split('.')[0] + 'events-' + '+'.join(event_names) + '_timelocked_trialinfo'
+                        df.to_csv(save_dir_base + file_name + '.csv')
+                        file_name = f.split('/')[-1].split('.')[0] + 'events-' + '+'.join(event_names) + '_timelocked'
+                        if avg:
+                            tl_data_std = np.std(tl_data,axis=0)
+                            tl_data = np.mean(tl_data,axis=0) 
+                            np.save(save_dir_base + file_name + '_std',tl_data_std)
+                            np.save(save_dir_base + file_name + '_avg',tl_data_std)
+                        else: 
+                            np.save(save_dir_base + file_name,tl_data)
+                        
 
     def load_participant_data(self):
         """

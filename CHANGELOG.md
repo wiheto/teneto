@@ -26,6 +26,10 @@
 
 - Several minor improvements to exclusion_files and exclusion_timepoint in TenetoBIDS
 
+- Added TenetoBIDS.load_timelocked_data
+
+- TenetoBIDS.make_timelocked_events can now also do raw tvc 
+
 ## V0.3.3 
 
 - Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted.
