@@ -187,7 +187,7 @@ class TenetoBIDS:
             self.set_pipeline_subdir('tvc')
             self.set_last_analysis_step('tvc')
 
-    def _run_derive(self,f,i,tag,params,confounds_exist,confound_files):
+    def _run_derive(self,f,i,tag,params,confounds_exist,confound_files,confound_corr_report):
         """
         Funciton called by TenetoBIDS.derive for parallel processing.
         """
