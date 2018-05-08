@@ -202,7 +202,7 @@ class TenetoBIDS:
         if 'weight-var' in params.keys():
             if params['weight-var'] == 'from-subject-fc':
                 fc_dir = base_dir + '/fc/'
-                fc = os.listdir(fc_dir)
+                fc = os.listdir(fc_di   r)
                 i = 0
                 for ff in fc: 
                     if ff.split('_fc.npy')[0] in f:
@@ -273,10 +273,8 @@ class TenetoBIDS:
                 report += '<img src=' + os.path.abspath(confound_report_figdir) + '/' + c + '.png><br><br>'
             report += '</body></html>'
 
-        with open(confound_report_dir + save_name + '_confoundcorr.html', 'w') as file:
-            file.write(report)
-
-        file.close()
+            with open(confound_report_dir + save_name + '_confoundcorr.html', 'w') as file:
+                file.write(report)
 
 
     def make_functional_connectivity(self,njobs=None,returngroup=False,file_hdr=None,file_idx=None):
