@@ -1970,10 +1970,10 @@ class TenetoBIDS:
                         tl_data = []
                         for e in event_onsets_combined:
                             # Ignore events which do not completely fit defined segment
-                            if e+toi[0]-offset<0 or e+toi[1]+offset>=self_measure.shape[0]: 
+                            if e+toi[0]-offset<0 or e+toi[1]-offset>=self_measure.shape[0]: 
                                 pass
                             else: 
-                                tmp = self_measure[e+toi[0]-offset:e+toi[1]+1+offset]
+                                tmp = self_measure[e+toi[0]-offset:e+toi[1]+1-offset]
                                 # Make time dimension last dimension
                                 tmp = tmp.transpose(list(np.arange(1,len(self_measure.shape))) + [0])
                                 tl_data.append(tmp)
