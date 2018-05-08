@@ -156,6 +156,9 @@ class TenetoBIDS:
         confound_corr_report : bool 
             If true, histograms and summary statistics of TVC and confounds are plotted in a report directory. 
 
+        tag : str
+            Add additional string to savefile. 
+
         Returns 
         ------- 
         dfc : files 
@@ -176,7 +179,7 @@ class TenetoBIDS:
 
         if not tag:
             tag = ''
-        else:
+        else:   
             tag = '_' + tag
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
@@ -511,7 +514,7 @@ class TenetoBIDS:
         ---------- 
         community_type: str 
             Either static or temporal 
-        tag : str 
+        tag : str or list
             Tag that should be included to load specific data. E.g. gamma-1 will only load data with gamma-1_ in the title gamma-1_omega-1 will load files with both those BIDS tags. 
 
         Returns 
@@ -526,7 +529,9 @@ class TenetoBIDS:
         community_type = 'communitytype-' + community_type 
 
         if not tag:
-            tag = ''
+            tag = ['']
+        elif isinstance(tag,str): 
+            tag = [tag]
 
         for s in self.subjects:
             # Define base folder
@@ -535,7 +540,7 @@ class TenetoBIDS:
             file_list=os.listdir(base_path)
             for f in file_list:
                 # Include only if all analysis step tags are present
-                if community_type in f and tag + '_' in f:
+                if community_type in f and all([t + '_' in f or t + '.' in f for t in tag]):
                     # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
                     bid_tags=re.findall('[a-zA-Z]*-',f)
                     bids_tag_dict = {}
@@ -1673,7 +1678,9 @@ class TenetoBIDS:
             parc = self.parcellation.split('_')[0]
 
         if not tag:
-            tag = ''
+            tag = ['']
+        if isinstance(tag,str):
+            tag = [tag]
 
         for s in self.subjects:
             # Define base folder
@@ -1682,7 +1689,7 @@ class TenetoBIDS:
             file_list=os.listdir(base_path)
             for f in file_list:
                 # Include only if all analysis step tags are present
-                if parc in f and tag in f:
+                if parc in f and all([t + '_' in f or t + '.' in f for t in tag]):
                     # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
                     bid_tags=re.findall('[a-zA-Z]*-',f)
                     bids_tag_dict = {}
@@ -1714,7 +1721,9 @@ class TenetoBIDS:
             calc = 'calc-' + calc
 
         if not tag:
-            tag = ''
+            tag = ['']
+        elif isinstance(tag,str): 
+            tag = [tag]
 
         if avg: 
             finaltag = 'timelocked_avg.npy'
@@ -1738,7 +1747,7 @@ class TenetoBIDS:
 
             for f in os.listdir(base_path):
                 if os.path.isfile(base_path + f) and f.split('.')[-1] == 'npy':
-                    if calc in f and tag in f and finaltag in f:
+                    if calc in f and all([t + '_' in f or t + '.' in f for t in tag]) and finaltag in f:
                         if avg: 
                             f = f.split('_avg')[0]
                             f_suff = '.npy'
@@ -1797,7 +1806,9 @@ class TenetoBIDS:
         trialinfo_list = []
 
         if not tag:
-            tag = ''
+            tag = ['']
+        elif isinstance(tag,str): 
+            tag = [tag]
 
         for s in self.subjects:
             # Define base folder
@@ -1806,7 +1817,7 @@ class TenetoBIDS:
             file_list=os.listdir(base_path)
             for f in file_list:
                 # Include only if all analysis step tags are present
-                if os.path.isfile(base_path + f) and tag in f:
+                if os.path.isfile(base_path + f) and all([t + '_' in f or t + '.' in f for t in tag]):
                     # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
                     bid_tags=re.findall('[a-zA-Z]*-',f)
                     bids_tag_dict = {}
@@ -1840,7 +1851,9 @@ class TenetoBIDS:
             calc = 'calc-' + calc
 
         if not tag:
-            tag = ''
+            tag = ['']
+        elif isinstance(tag,str): 
+            tag = [tag]
 
         for s in self.subjects:
             # Define base folder
@@ -1852,7 +1865,7 @@ class TenetoBIDS:
             # Get tags in filename
             for f in file_list:
                 if os.path.isfile(base_path + f):
-                    if calc in f and tag in f:
+                    if calc in f and all([t + '_' in f or t + '.' in f for t in tag]):
                         bids_tags=re.findall('[a-zA-Z]*-',f)
                         bids_tag_dict = {}
                         for t in bids_tags:
@@ -1902,8 +1915,8 @@ class TenetoBIDS:
             +/- time points around each event. So if toi = [-10,10] it will take 10 time points before and 10 time points after
         calc : str
             type of network measure calculation.
-        tag : str
-            any additional tag placed on file name.
+        tag : str or list
+            any additional tag placed in file name.
         offset : int 
             If derive uses a method that has a sliding window, then the data time-points are reduced. Offset should equal half of the window-1. So if the window is 7, offset is 3. This corrects for the missing time points. 
 
@@ -1939,7 +1952,9 @@ class TenetoBIDS:
             calc = 'calc-' + calc
 
         if not tag:
-            tag = ''
+            tag = ['']
+        elif isinstance(tag,str): 
+            tag = [tag]
 
         for s in self.subjects:
 
@@ -1957,7 +1972,7 @@ class TenetoBIDS:
 
             for f in os.listdir(base_path):
                 if os.path.isfile(base_path + f):
-                    if calc in f and tag in f:
+                    if calc in f and all([t + '_' in f or t + '.' in f for t in tag]):
                         bids_tags=re.findall('[a-zA-Z]*-',f)
                         bids_tag_dict = {}
                         for t in bids_tags:

@@ -30,9 +30,11 @@
 
 - TenetoBIDS.make_timelocked_events can now also do raw tvc 
 
-- Added wait to concurrent
+- Added wait to concurrent.
 
-- Fixed bug derive's loading of FC in JC weighting. 
+- Fixed bug. derive's loading of FC in JC weighting. 
+
+- Improved tags in TenetoBIDS when loading data. 
 
 ## V0.3.3 
 
@@ -50,6 +52,7 @@
 
 - added a tenetoBIDS._load_files() function to unity io code and increase compatibility through the different funcitons/file formats. However not implemented in all functions yet. 
 
+- Allow to suppress confound report
 
 ## V0.3.2
 
