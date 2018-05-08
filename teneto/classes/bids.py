@@ -14,6 +14,7 @@ import concurrent
 import nilearn
 from scipy.interpolate import interp1d
 import time 
+
 #class NetworkMeasures:
 #    def __init__(self,**kwargs):
 #        pass
@@ -136,7 +137,7 @@ class TenetoBIDS:
             self.history = []
         self.history.append([fname,fargs])
 
-    def derive(self, params, update_pipeline=True, tag=None, njobs=1):
+    def derive(self, params, update_pipeline=True, tag=None, njobs=1, confound_corr_report=True):
 
         """
         Derive time-varying connectivity on the selected files.
@@ -151,6 +152,14 @@ class TenetoBIDS:
 
         njobs : int
             How many parallel jobs to run
+
+        confound_corr_report : bool 
+            If true, histograms and summary statistics of TVC and confounds are plotted in a report directory. 
+
+        Returns 
+        ------- 
+        dfc : files 
+            saved in .../derivatives/teneto/sub-xxx/tvc/..._tvc.npy
         """
         if not njobs:
             njobs = self.njobs
@@ -167,7 +176,7 @@ class TenetoBIDS:
             tag = '_' + tag
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_derive,f,i,tag,params,confounds_exist,confound_files) for i,f in enumerate(files)}
+            job = {executor.submit(self._run_derive,f,i,tag,params,confounds_exist,confound_files,confound_corr_report) for i,f in enumerate(files)}
             for j in concurrent.futures.as_completed(job):
                 j.result()
 
@@ -225,7 +234,7 @@ class TenetoBIDS:
         dfc = teneto.derive.derive(data,params)
         np.save(save_dir + save_name + '.npy', dfc)
 
-        if confounds_exist:
+        if confounds_exist and confound_corr_report:
             analysis_step = 'tvc-derive'
             if confound_files[i].split('.')[-1] == 'csv':
                 delimiter = ','
@@ -1900,6 +1909,10 @@ class TenetoBIDS:
         ----
         Currently no ability to loop over more than one measure
 
+        Note
+        -----
+        Events that do not completely fit the specified time period (e.g. due to at beginning/end of data) get ignored.  
+
         Returns
         -------
         Creates a time-locked output placed in BIDS_dir/derivatives/teneto_<version>/../tvc/temporal-network-measures/<networkmeasure>/timelocked/
@@ -1954,10 +1967,14 @@ class TenetoBIDS:
                         self_measure = self_measure.transpose([len(self_measure.shape)-1] + list(np.arange(0,len(self_measure.shape)-1)))
                         tl_data = []
                         for e in event_onsets_combined:
-                            tmp = self_measure[e+toi[0]+offset:e+toi[1]+1+offset]
-                            # Make time dimension last dimension
-                            tmp = tmp.transpose(list(np.arange(1,len(self_measure.shape))) + [0])
-                            tl_data.append(tmp)
+                            # Ignore events which do not completely fit defined segment
+                            if e+toi[0]-offset<0 or e+toi[1]+offset>=self_measure.shape[0]: 
+                                pass
+                            else: 
+                                tmp = self_measure[e+toi[0]-offset:e+toi[1]+1+offset]
+                                # Make time dimension last dimension
+                                tmp = tmp.transpose(list(np.arange(1,len(self_measure.shape))) + [0])
+                                tl_data.append(tmp)
                         tl_data = np.stack(tl_data)
                         if avg: 
                             df=pd.DataFrame(data={'event': '+'.join(list(set(event_names_list))), 'event_onset': [event_onsets_combined]})
