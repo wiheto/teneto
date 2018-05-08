@@ -32,6 +32,8 @@
 
 - Added wait to concurrent
 
+- Fixed bug derive's loading of FC in JC weighting. 
+
 ## V0.3.3 
 
 - Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted.

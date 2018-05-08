@@ -168,9 +168,8 @@ class TenetoBIDS:
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_derive,f,i,tag,params,confounds_exist,confound_files) for i,f in enumerate(files)}
-            for j in job:
+            for j in concurrent.futures.as_completed(job):
                 j.result()
-            executor.shutdown(wait=True)
 
         if update_pipeline == True:
             if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
@@ -194,14 +193,27 @@ class TenetoBIDS:
         if 'weight-var' in params.keys():
             if params['weight-var'] == 'from-subject-fc':
                 fc_dir = base_dir + '/fc/'
-                f = os.listdir(fc_dir)
-                params['weight-var'] = np.load(fc_dir + f[0])
+                fc = os.listdir(fc_dir)
+                i = 0
+                for ff in fc: 
+                    if ff.split('_fc.npy')[0] in f:
+                        params['weight-var'] = np.load(fc_dir + ff)
+                        i += 1
+                if i != 1: 
+                    raise ValueError('Cannot correct find FC files')
 
         if 'weight-mean' in params.keys():
             if params['weight-mean'] == 'from-subject-fc':
                 fc_dir = base_dir + '/fc/'
-                f = os.listdir(fc_dir)
-                params['weight-mean'] = np.load(fc_dir + f[0])
+                fc = os.listdir(fc_dir)
+                i = 0
+                for ff in fc: 
+                    if ff.split('_fc.npy')[0] in f:
+                        params['weight-mean'] = np.load(fc_dir + ff)
+                        i += 1
+                if i != 1: 
+                    raise ValueError('Cannot correct find FC files')
+
 
         params['report'] = 'yes'
         params['report_path'] =  save_dir + '/report/'
@@ -289,9 +301,9 @@ class TenetoBIDS:
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_make_functional_connectivity,f,file_hdr,file_idx) for f in files}
-            for j in job:
+            for j in concurrent.futures.as_completed(job):
                 R_group.append(j.result())
-            executor.shutdown(wait=True)
+
         if returngroup:
             # Fisher tranform -> mean -> inverse fisher tranform
             R_group = np.tanh(np.mean(np.arctanh(np.array(R_group)), axis=0))
@@ -975,9 +987,8 @@ class TenetoBIDS:
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_make_parcellation,f,i,tag,parcellation,parc_name,parc_type,parc_params) for i,f in enumerate(files)}
-            for j in job:
+            for j in concurrent.futures.as_completed(job):
                 j.result()
-            executor.shutdown(wait=True)
 
         if update_pipeline == True:
             if not self.confound_pipeline and len(self.get_confound_files(quiet=1)) > 0:
@@ -1039,13 +1050,12 @@ class TenetoBIDS:
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_communitydetection,f,community_detection_params,community_type,file_hdr,file_idx) for i,f in enumerate(files)}
-            for j in job:
+            for j in concurrent.futures.as_completed(job):
                 j.result()
-            executor.shutdown(wait=True)
 
     def _run_communitydetection(self,f,params,community_type,file_hdr=False,file_idx=False): 
         tag = 'communitytype-' + community_type
-        if 'resolution_parameter' in params: 
+        if 'resolution_parameter' in params:    
             tag += '_gamma-' + str(np.round(params['resolution_parameter'],5))
         if 'interslice_weight' in params: 
             tag += '_omega-' + str(np.round(params['interslice_weight'],5))
@@ -1123,9 +1133,8 @@ class TenetoBIDS:
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_removeconfounds,f,confound_files[i],clean_params,transpose,confound_hdr,confound_idx,file_hdr,file_idx) for i,f in enumerate(files)}
-            for j in job:
+            for j in concurrent.futures.as_completed(job):
                 j.result()
-            executor.shutdown(wait=True)
 
         if update_pipeline == True:
             self.analysis_steps += self.last_analysis_step
@@ -1211,10 +1220,8 @@ class TenetoBIDS:
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_networkmeasures,f,load_tag,save_tag,measure,measure_params,module_dict) for f in files if load_tag in f}
-            for j in job:
+            for j in concurrent.futures.as_completed(job):
                 j.result()
-            executor.shutdown(wait=True)
-
 
     def _run_networkmeasures(self,f,load_tag,save_tag,measure,measure_params,module_dict):
         # ADD MORE HERE (csv, json, nifti)
@@ -1697,10 +1704,16 @@ class TenetoBIDS:
 
         if not tag:
             tag = ''
+
+        if avg: 
+            finaltag = 'timelocked_avg.npy'
+        else:
+            finaltag =  'timelocked.npy'
             
         self.add_history(inspect.stack()[0][3], locals(), 1)
         trialinfo_list = []
         data_list = []
+        std_list = []
         for s in self.subjects:
 
             base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
@@ -1714,21 +1727,33 @@ class TenetoBIDS:
 
             for f in os.listdir(base_path):
                 if os.path.isfile(base_path + f) and f.split('.')[-1] == 'npy':
-                    if calc in f and tag in f:
+                    if calc in f and tag in f and finaltag in f:
+                        if avg: 
+                            f = f.split('_avg')[0]
+                            f_suff = '.npy'
+                        else: 
+                            f_suff = ''
                         bids_tags=re.findall('[a-zA-Z]*-',f)
                         bids_tag_dict = {}
                         for t in bids_tags:
                             key = t[:-1]
                             bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
-                        trialinfo_eventinfo = pd.read_csv(base_path + '.'.join(f.split('.')[0:-1]) + '_trialinfo.csv')
+                        trialinfo_eventinfo = pd.read_csv(base_path + '.'.join(f.split('timelocked')[0:-1]) + 'timelocked_trialinfo.csv')
                         trialinfo = pd.DataFrame(bids_tag_dict,index=np.arange(0,len(trialinfo_eventinfo)))
                         trialinfo = pd.concat([trialinfo,trialinfo_eventinfo],axis=1)
                         trialinfo_list.append(trialinfo)
-                        data_list.append(np.load(base_path + f))
-
-        self.timelocked_data_ = np.vstack(np.array(data_list))
+                        if avg:
+                            data_list.append(np.load(base_path + f + '_avg.npy'))
+                            std_list.append(np.load(base_path + f + '_std.npy'))
+                        else: 
+                            data_list.append(np.load(base_path + f))
         if avg: 
-            self.timelocked_data_ = self.timelocked_data_.mean(axis=0)
+            self.timelocked_data_ = {}
+            self.timelocked_data_['avg'] = np.stack(np.array(data_list))
+            self.timelocked_data_['std'] = np.stack(np.array(std_list))
+        else: 
+            self.timelocked_data_ = np.stack(np.array(data_list))
+        
 
         if trialinfo_list:
             out_trialinfo = pd.concat(trialinfo_list)
@@ -1849,7 +1874,7 @@ class TenetoBIDS:
 
 
 
-    def make_timelocked_events(self, measure, event_names, event_onsets, toi, calc=None, tag=None, avg=None):
+    def make_timelocked_events(self, measure, event_names, event_onsets, toi, calc=None, tag=None, avg=None, offset=0):
         """
         Creates time locked time series of <measure>. Measure must have time in its -1 axis.
 
@@ -1868,21 +1893,26 @@ class TenetoBIDS:
             type of network measure calculation.
         tag : str
             any additional tag placed on file name.
+        offset : int 
+            If derive uses a method that has a sliding window, then the data time-points are reduced. Offset should equal half of the window-1. So if the window is 7, offset is 3. This corrects for the missing time points. 
 
         Note
         ----
-
         Currently no ability to loop over more than one measure
 
         Returns
         -------
         Creates a time-locked output placed in BIDS_dir/derivatives/teneto_<version>/../tvc/temporal-network-measures/<networkmeasure>/timelocked/
         """
+        self.add_history(inspect.stack()[0][3], locals(), 1)
+        #Make sure that event_onsets and event_names are lists
+        if  np.any(event_onsets[0]):
+            [e.tolist() for e in event_onsets[0]]   
         if isinstance(event_onsets[0],int) or isinstance(event_onsets[0],float): 
             event_onsets = [event_onsets]
         if isinstance(event_names,str): 
             event_names = [event_names]
-        self.add_history(inspect.stack()[0][3], locals(), 1)
+        # Combine the different events into one list                    
         event_onsets_combined = list(itertools.chain.from_iterable(event_onsets))
         event_names_list = [[e]*len(event_onsets[i]) for i,e in enumerate(event_names)]
         event_names_list = list(itertools.chain.from_iterable(event_names_list))
@@ -1899,7 +1929,7 @@ class TenetoBIDS:
         for s in self.subjects:
 
             base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
-            if measure == 'tvc':
+            if measure == 'tvc':    
                 base_path += '/sub-' + s + '/func/tvc/'
             else:
                 base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/'
@@ -1924,22 +1954,26 @@ class TenetoBIDS:
                         self_measure = self_measure.transpose([len(self_measure.shape)-1] + list(np.arange(0,len(self_measure.shape)-1)))
                         tl_data = []
                         for e in event_onsets_combined:
-                            tmp = self_measure[e+toi[0]:e+toi[1]+1]
+                            tmp = self_measure[e+toi[0]+offset:e+toi[1]+1+offset]
                             # Make time dimension last dimension
                             tmp = tmp.transpose(list(np.arange(1,len(self_measure.shape))) + [0])
                             tl_data.append(tmp)
                         tl_data = np.stack(tl_data)
-                        df=pd.DataFrame(data={'event': event_names_list, 'event_onset': event_onsets_combined})
+                        if avg: 
+                            df=pd.DataFrame(data={'event': '+'.join(list(set(event_names_list))), 'event_onset': [event_onsets_combined]})
+                        else: 
+                            df=pd.DataFrame(data={'event': event_names_list, 'event_onset': event_onsets_combined})
+    
                         # Save output
                         save_dir_base = base_path + 'timelocked/'
-                        file_name = f.split('/')[-1].split('.')[0] + 'events-' + '+'.join(event_names) + '_timelocked_trialinfo'
+                        file_name = f.split('/')[-1].split('.')[0] + '_events-' + '+'.join(event_names) + '_timelocked_trialinfo'
                         df.to_csv(save_dir_base + file_name + '.csv')
-                        file_name = f.split('/')[-1].split('.')[0] + 'events-' + '+'.join(event_names) + '_timelocked'
+                        file_name = f.split('/')[-1].split('.')[0] + '_events-' + '+'.join(event_names) + '_timelocked'
                         if avg:
                             tl_data_std = np.std(tl_data,axis=0)
                             tl_data = np.mean(tl_data,axis=0) 
                             np.save(save_dir_base + file_name + '_std',tl_data_std)
-                            np.save(save_dir_base + file_name + '_avg',tl_data_std)
+                            np.save(save_dir_base + file_name + '_avg',tl_data)
                         else: 
                             np.save(save_dir_base + file_name,tl_data)
                         
