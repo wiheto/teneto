@@ -13,12 +13,12 @@ Converting between representations
 
 Converting between the two different network representations is quite easy.
 
-.. code-block::
+.. code-block:: python
 
   import teneto
   G = 1
   C = teneto.utils.contact2graphlet(G)
 
-.. code-block::
+.. code-block:: python
 
   G = teneto.utils.graphlet2contact(C)
