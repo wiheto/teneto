@@ -56,5 +56,7 @@ You can convert a graphlet representatoin to contact representation with teneto.
 To convert the opposite direction, type teneto.utils.contact2graphlet and check that the new numpy array is equal to the previous one. 
 
 .. code-block:: python
+
   G2 = teneto.utils.contact2graphlet(C)
   G==G2
+
