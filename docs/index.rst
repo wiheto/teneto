@@ -10,6 +10,7 @@ Welcome to teneto's documentation!
    :maxdepth: 5
    :caption: Contents:
 
+   tutorial
    modules
 
 Indices and tables
