@@ -52,6 +52,51 @@ Note: while other preprocessing pipelines are compatible with teneto, all functi
 Preprocessing steps
 ===================
 
+Teneto can do the following preprocessing steps. 
+
+1. Remove confounds (e.g. global signal, movement, framewise displacement). 
+2. Exclude subjects that have too much of a specified  confound. 
+3. Remove time-points or simulation removed time-points that have too much of a specified confound. 
+4. Make regions of interest from a parcellation.  
+5. Manually set bad files or bad subjects 
+
+How to do each of these will be explained below. 
+
+Removing confounds
+******************
+
+The procedure to remove confounds is in three steps (i) Make sure the confound files are being located. (ii) Check and specify which confounds you want to remove. (iii) Remove the confounds. 
+
+Teneto looks for a '_confounds' file in each subject in the /derivatives/<pipeline>/ directory. However, if the confounds file are in another derivative directory (e.g. fmriprep)
+and the current pipeline is derivatives/teneto_vx.y.z/, then it is possible to set the confound_pipeline (TenetoBIDS.set_confound_pipeline()). 
+
+To check that the correct confound files are found, run TenetoBID.get_confound_files(). 
+
+Once the correct confound files are identified, the next step is to choose which confounds should be removed from the data. To check which confounds are available, given the confound
+files, run TenetoBIDS.get_confound_alternatives(). Then to set the confounds (e.g. 'FramewiseDisplacement' and 'GlobalSignal'), TenetoBIDS.set_confounds(['FramewiseDisplacement', 'GlobalSignal']). 
+Then to remove the confounds run tnet.removeconfounds(). 
+
+The removing of confounds uses nilearn.signal.clean. 
+
+NOTE: run tnet.remove(transpose=True) if the input/saved data is of the dimensions node,time (then the saved data will also be node,time).  
+
+Excluding subjects/files due to a confound
+******************************************
+
+.. code-block:: python
+
+
+Remove and simulate time-points due to a confound 
+*************************************************
+
+
+Make a parcellation
+*******************
+
+
+Manually set bad files/bad subjects 
+************************************
+
 
 Deriving time-varying representations 
 ======================================
