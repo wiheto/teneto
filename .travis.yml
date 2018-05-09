@@ -12,4 +12,4 @@ install:
 
 # just put in empty script of now
 script: 
-  - cd ./
+  - pytest --pyargs teneto

@@ -7,6 +7,8 @@ from setuptools import setup, find_packages
 setup(name='teneto',
       version='0.3.3',
       python_requires='>3.5',
+      setup_requires=['pytest-runner'],
+      tests_require=['pytest'],
       install_requires=[
 		'nilearn>=0.4.0',
 		'pybids>=0.4.2',
@@ -18,7 +20,7 @@ setup(name='teneto',
       author='William Hedley Thompson',
       author_email='hedley@startmail.com',
       url='https://www.github.com/wiheto/teneto',
-      download_url='https://github.com/wiheto/teneto/archive/0.2.tar.gz',
+      download_url='https://github.com/wiheto/teneto/archive/0.3.3.tar.gz',
       package_data={'':['./teneto/data']},
       include_package_data = True,
       entry_points={
