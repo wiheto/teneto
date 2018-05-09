@@ -2,6 +2,8 @@
 
 [![Documentation Status](https://readthedocs.org/projects/teneto/badge/?version=latest)](http://teneto.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/Teneto.svg)](https://badge.fury.io/py/Teneto)
+[![Build Status](https://travis-ci.org/wiheto/teneto.svg?branch=master)](https://travis-ci.org/wiheto/teneto)
+[![Coverage Status](https://coveralls.io/repos/github/wiheto/teneto/badge.svg?branch=master)](https://coveralls.io/github/wiheto/teneto?branch=master)
 
 **Te**mporal **ne**twork **to**ols. Version 0.3.3
 
