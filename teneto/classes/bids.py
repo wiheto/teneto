@@ -156,8 +156,8 @@ class TenetoBIDS:
         confound_corr_report : bool 
             If true, histograms and summary statistics of TVC and confounds are plotted in a report directory. 
 
-        tag : str
-            Add additional string to savefile. 
+        tag : str 
+            any additional tag that will be placed in the saved file name. 
 
         Returns 
         ------- 
@@ -515,7 +515,7 @@ class TenetoBIDS:
         community_type: str 
             Either static or temporal 
         tag : str or list
-            Tag that should be included to load specific data. E.g. gamma-1 will only load data with gamma-1_ in the title gamma-1_omega-1 will load files with both those BIDS tags. 
+            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids). 
 
         Returns 
         -------
@@ -960,8 +960,8 @@ class TenetoBIDS:
             if true, regresses out confounds that are specfied in self.set_confounds with linear regression.
         update_pipeline : bool
             TenetoBIDS gets updated with the parcellated files being selected.
-        tag : str
-            If multiple types of analysis are going to be run, you can set tag to add a '_tag' on the file name.
+        tag : str or list
+            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids). 
         clean_params : dict
             **kwargs for nilearn function nilearn.signal.clean
         njobs : n 
@@ -1029,7 +1029,7 @@ class TenetoBIDS:
 
 
 
-    def communitydetection(self,community_detection_params,community_type='temporal',file_hdr=False,file_idx=False,njobs=None):
+    def communitydetection(self,community_detection_params,community_type='temporal',tag=None,file_hdr=False,file_idx=False,njobs=None):
         """
         Calls temporal_louvain_with_consensus on connectivity data
 
@@ -1055,6 +1055,11 @@ class TenetoBIDS:
             njobs = self.njobs
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
+        if not tag:
+            tag = ['']
+        if isinstance(tag,str):
+            tag = [tag]        
+
         if community_type == 'temporal':
             files = self.get_selected_files(quiet=True) 
             # Run check to make sure files are tvc input
@@ -1065,7 +1070,7 @@ class TenetoBIDS:
             files = self.get_functional_connectivity_files(quiet=True) 
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_communitydetection,f,community_detection_params,community_type,file_hdr,file_idx) for i,f in enumerate(files)}
+            job = {executor.submit(self._run_communitydetection,f,community_detection_params,community_type,file_hdr,file_idx) for i,f in enumerate(files) if all([t + '_' in f or t + '.' in f for t in tag])}
             for j in concurrent.futures.as_completed(job):
                 j.result()
 
@@ -1659,8 +1664,8 @@ class TenetoBIDS:
         parcellation : str
             Specify parcellation (optional). Default will grab everything that can be found.
 
-        tag : str
-            Any additional tag to filter out which files to load.
+        tag : str or list
+            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids). 
 
         **RETURNS**
 
@@ -1789,8 +1794,9 @@ class TenetoBIDS:
 
         **INPUT**
 
-        tag : str
-            Any additional tag to filter out which files to load.
+        tag : str or list
+            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids). 
+
         timelocked : bool 
             Load timelocked data if true.
 
@@ -1916,7 +1922,7 @@ class TenetoBIDS:
         calc : str
             type of network measure calculation.
         tag : str or list
-            any additional tag placed in file name.
+            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids). 
         offset : int 
             If derive uses a method that has a sliding window, then the data time-points are reduced. Offset should equal half of the window-1. So if the window is 7, offset is 3. This corrects for the missing time points. 
 
