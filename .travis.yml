@@ -8,3 +8,8 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
+  - python setup.py install
+
+# just put in empty script of now
+script: 
+  - cd ./
