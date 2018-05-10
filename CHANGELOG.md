@@ -36,6 +36,10 @@
 
 - Improved tags in TenetoBIDS when loading data. 
 
+- Improved timepoint exlcusion and bad_file continuity. 
+
+- If timepoint exlcusion is spline, now it is not naned.
+
 ## V0.3.3 
 
 - Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted.

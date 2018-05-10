@@ -394,7 +394,7 @@ class TenetoBIDS:
                 found = [i for i in found if '_confounds' not in i]
                 # Make full paths
                 found = list(map(str.__add__,[re.sub('/+','/',wdir)]*len(found),found))
-                found = [i for i in found if i not in self.bad_files]
+                found = [i for i in found if not any([bf in i for bf in self.bad_files])]
                 if found:
                     found_files += found
 
@@ -410,6 +410,8 @@ class TenetoBIDS:
         """
         Creates output directory and output name
 
+        Paramters 
+        ---------   
         f : str
             input files, includes the file suffix
         save_tag : str
@@ -628,7 +630,7 @@ class TenetoBIDS:
                 found = [i for i in found if '_confounds' not in i]
                 # Make full paths
                 found = list(map(str.__add__,[re.sub('/+','/',wdir)]*len(found),found))
-                found = [i for i in found if i not in self.bad_files]
+                found = [i for i in found if not any([bf in i for bf in self.bad_files])]
                 if found:
                     found_files += found
 
@@ -770,9 +772,9 @@ class TenetoBIDS:
         return f 
 
 
-    def set_exclusion_timepoint(self,confound,exclusion_criteria,replace_with,file_hdr=False,file_idx=False,confound_hdr=True,confound_idx=False):
+    def set_exclusion_timepoint(self,confound,exclusion_criteria,replace_with,tol=1,file_hdr=False,file_idx=False,confound_hdr=True,confound_idx=False):
         """
-        Excludes subjects given a certain exclusion criteria. Does not work on nifti files, only csv, numpy or tsc.
+        Excludes subjects given a certain exclusion criteria. Does not work on nifti files, only csv, numpy or tsc. Assumes data is node,time
 
         Parameters
         ----------
@@ -783,7 +785,9 @@ class TenetoBIDS:
             confound_stat : str
                 Can be median, mean, std. How the confound data is aggregated (so if there is a meaasure per time-point, this is averaged over all time points).
             replace_with : str
-                Can be 'nan' (bad values become nans) or 'cubicspline' (bad values are interpolated).
+                Can be 'nan' (bad values become nans) or 'cubicspline' (bad values are interpolated). If bad value occurs at 0 or -1 index, then these values are kept and no interpolation occurs.
+            tol = float 
+                Tolerance of exlcuded time-points allowed before becoming a bad subject. 
 
         Returns
         ------
@@ -821,17 +825,33 @@ class TenetoBIDS:
         for n in range(len(files)):
             if confound_files[n].split('_confounds')[0].split('func')[1] not in files[n]:
                 raise ValueError('Confound matching with data did not work.')
+        bad_files = []
+        bad_time = []
+        bs = 0
         for i, cfile in enumerate(confound_files):
             data = self._load_file(files[i],output='array',header=file_hdr,index_col=file_idx)
             df = self._load_file(cfile,output='pd',header=confound_hdr,index_col=confound_idx)
             deleted_timepoints_txt = ''
             ind = []
+            # Is set to 1 if subject should be saved ("goodsubject")
+            gs=0
+            # Can't interpolate values if nanind is at the beginning or end. So keep these as their original values. 
             for ci,c in enumerate(confound):
                 ind = df[rel[ci](df[c],crit[ci])].index
+                if np.array(len(ind))/np.array(len(df))>tol: 
+                    bad_files.append(files[i])
+                    bs += 1 
+                else: 
+                    bad_time.append(len(ind))
+                    gs = 1
+                if replace_with == 'cubicspline': 
+                    if 0 in ind: 
+                        ind = np.delete(ind,np.where(ind==0))
+                    if df.index.max(): 
+                        ind = np.delete(ind,np.where(ind==df.index.max()))             
                 data[:,ind] = np.nan
             nanind = np.where(np.isnan(data[0,:]))[0]
             nonnanind = np.where(np.isnan(data[0,:])==0)[0]
-            # Can't interpolate values if nanind is at the beginning or end. So keep these nan
             nanind = nanind[nanind>nonnanind.min()]
             nanind = nanind[nanind<nonnanind.max()]
             deleted_timepoints_txt += 'number of deleted timepoints (' + c + '): ' + str(len(nanind)) + '\n'
@@ -841,16 +861,20 @@ class TenetoBIDS:
                 for n in range(data.shape[0]):
                     interp = interp1d(nonnanind,data[n,nonnanind],kind='cubic')
                     data[n,nanind] = interp(nanind)
-            np.save(files[i][:-4] + '_scrub',data)
+            # only save if the subject is not excluded 
+            if gs == 1: 
+                np.save(files[i][:-4] + '_scrub',data)
             sdir = ''
             if files[0] == '/':
                 sdir += '/'
             sdir += '/'.join(files[i].split('/')[:-1])
-            with open(sdir + "/temporal_exclusion_info.txt", "w") as text_file:
+            with open(files[i][:-4] + '_scrub_exclusion_info.txt', 'w') as text_file:
                 text_file.write(deleted_timepoints_txt)
         self.analysis_steps += [self.last_analysis_step]
         self.last_analysis_step = 'scrub'
-
+        self.set_bad_files(bad_files)
+        print('Removed ' + str(bs) + ' files from inclusion.')
+        print('Average ' + str(np.array(bad_time).mean()) + ' time-points were smoothed (in non-excluded files).')
 
 
     def get_confound_files(self,quiet=0):
@@ -1046,6 +1070,11 @@ class TenetoBIDS:
             if true, header row present in data and this will be ignored 
         njobs : int 
             number of processes to run. Overrides TenetoBIDS.njobs
+
+        Note 
+        ----
+        All non-positive edges are made to zero. 
+
 
         Returns 
         ------- 
@@ -1308,6 +1337,8 @@ class TenetoBIDS:
 
         if isinstance(bad_files,str):
             bad_files = [bad_files]
+        
+        bad_files = [''.join(f.split('.')[0:-1]) for f in bad_files]
 
         if not self.bad_files:
             self.bad_files = bad_files
