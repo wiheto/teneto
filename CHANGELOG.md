@@ -38,7 +38,11 @@
 
 - Improved timepoint exlcusion and bad_file continuity. 
 
-- If timepoint exlcusion is spline, now it is not naned.
+- If timepoint exlcusion is spline, now the first and last time-point are not naned.
+
+- Added event related displacement (option in networkmeasures.volatility)
+
+- Other minor selection/load imprvement of tenetoBIDS.
 
 ## V0.3.3 
 

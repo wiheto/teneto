@@ -2,7 +2,7 @@ import teneto
 import numpy as np
 
 
-def volatility(net, distance_func_name='default', calc='global', communities=None, subnet=None):
+def volatility(net, distance_func_name='default', calc='global', communities=None, subnet=None, event_displacement=None):
     """
     volatility of temporal networks. This is the average distance between consecutive time points of graphlets (difference is caclualted either globally, per edge)
 
@@ -17,17 +17,21 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
 
     calc : str
         Version of volaitility to caclulate. Possibilities include:
-        'global': (default): the average distance of all nodes for each consecutive time point).
-        'edge': average distance between consecutive time points for each edge). Takes considerably longer
-        'node': (i.e. returns the average per node output when calculating volatility per 'edge').
-        'time': returns volatility per time point
-        'communities': returns volatility per communitieswork id (see communities). Also is returned per time-point and this may be changed in the future (with additional options)
+        'global' - (default): the average distance of all nodes for each consecutive time point).
+        'edge' - average distance between consecutive time points for each edge). Takes considerably longer
+        'node' - (i.e. returns the average per node output when calculating volatility per 'edge').
+        'time' - returns volatility per time point
+        'communities' - returns volatility per communitieswork id (see communities). Also is returned per time-point and this may be changed in the future (with additional options)
+        'event_displacement' - calculates the volatility from a specified point. Returns time-series.  
 
-    'communities' : array
+    communities : array
         Array of indicies for community (eiter (node) or (node,time) dimensions).
 
-    'subnet' : array
+    subnet : array
         Array of indicies for community (eiter (node) or (node,time) dimensions). To be removed. Use communities.
+
+    event_displacement : int 
+        if calc= event_displacement specify the index which the volatility is calculated to. 
 
     Note
     -----
@@ -37,10 +41,7 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
     ------
 
     vol : array
-        Volatility. Format: scalar (calc='global');
-            1d numpy array (calc='node');
-            2d numpy array (calc='edge').
-
+        
     """
 
     if subnet is not None:
@@ -77,11 +78,12 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
     distance_func = teneto.utils.getDistanceFunction(distance_func_name)
 
     if calc == 'global':
-        vol = np.mean([distance_func(net[ind[0], ind[1], t], net[ind[0],
-                                                                       ind[1], t + 1]) for t in range(0, net.shape[-1] - 1)])
+        vol = np.mean([distance_func(net[ind[0], ind[1], t], net[ind[0],ind[1], t + 1]) for t in range(0, net.shape[-1] - 1)])
     elif calc == 'time':
         vol = [distance_func(net[ind[0], ind[1], t], net[ind[0], ind[1], t + 1])
                for t in range(0, net.shape[-1] - 1)]
+    elif calc == 'event_displacement': 
+        vol = [distance_func(net[ind[0], ind[1], event_displacement], net[ind[0],ind[1], t]) for t in range(0, net.shape[-1])]
     # This takes quite a bit of time to loop through. When calculating per edge/node.
     elif calc == 'edge' or calc == 'node':
         vol = np.zeros([net.shape[0], net.shape[1]])
