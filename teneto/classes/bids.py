@@ -1898,40 +1898,41 @@ class TenetoBIDS:
             base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/'
             measure_sub = measure
             # Get files
-            file_list=os.listdir(base_path)
-            # Get tags in filename
-            for f in file_list:
-                if os.path.isfile(base_path + f):
-                    if calc in f and all([t + '_' in f or t + '.' in f for t in tag]):
-                        bids_tags=re.findall('[a-zA-Z]*-',f)
-                        bids_tag_dict = {}
-                        for t in bids_tags:
-                            key = t[:-1]
-                            bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
-                        # Get data
-                        if f.split('.')[-1] == 'pkl':
-                            df = pd.read_pickle(base_path+f)
-                            data = df[measure_sub].values
-                            trialinfo = df.drop(measure_sub, 1)
-                            for k in bids_tag_dict.keys():
-                                trialinfo[k] = bids_tag_dict[k]
-                            trialinfo_list.append(trialinfo)
-                            for d in data:
-                                data_list.append(d)
-                        elif f.split('.')[-1] == 'npy':
-                            data = np.load(base_path+f)
-                            data_list.append(data)
-                            trialinfo = pd.DataFrame(bids_tag_dict,index=[0])
-                            trialinfo_list.append(trialinfo)
+            if os.path.exists(base_path):
+                file_list=os.listdir(base_path)
+                # Get tags in filename
+                for f in file_list:
+                    if os.path.isfile(base_path + f):
+                        if calc in f and all([t + '_' in f or t + '.' in f for t in tag]):
+                            bids_tags=re.findall('[a-zA-Z]*-',f)
+                            bids_tag_dict = {}
+                            for t in bids_tags:
+                                key = t[:-1]
+                                bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
+                            # Get data
+                            if f.split('.')[-1] == 'pkl':
+                                df = pd.read_pickle(base_path+f)
+                                data = df[measure_sub].values
+                                trialinfo = df.drop(measure_sub, 1)
+                                for k in bids_tag_dict.keys():
+                                    trialinfo[k] = bids_tag_dict[k]
+                                trialinfo_list.append(trialinfo)
+                                for d in data:
+                                    data_list.append(d)
+                            elif f.split('.')[-1] == 'npy':
+                                data = np.load(base_path+f)
+                                data_list.append(data)
+                                trialinfo = pd.DataFrame(bids_tag_dict,index=[0])
+                                trialinfo_list.append(trialinfo)
 
-                        else:
-                            print('Warning: Could not find pickle data')
+                            else:
+                                print('Warning: Could not find pickle data')
 
-            self.networkmeasure_ = np.array(data_list)
-            if trialinfo_list:
-                out_trialinfo = pd.concat(trialinfo_list)
-                out_trialinfo.reset_index(inplace=True,drop=True)
-                self.trialinfo_ = out_trialinfo
+        self.networkmeasure_ = np.array(data_list)
+        if trialinfo_list:
+            out_trialinfo = pd.concat(trialinfo_list)
+            out_trialinfo.reset_index(inplace=True,drop=True)
+            self.trialinfo_ = out_trialinfo
 
 
 
@@ -1995,11 +1996,13 @@ class TenetoBIDS:
 
         for s in self.subjects:
 
-            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
+            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline + '/sub-' + s + '/func/'
             if measure == 'tvc':    
-                base_path += '/sub-' + s + '/func/tvc/'
+                base_path += 'tvc/'
+            elif not measure: 
+                pass 
             else:
-                base_path += '/sub-' + s + '/func/tvc/temporal-network-measures/' + measure + '/'
+                base_path += 'tvc/temporal-network-measures/' + measure + '/'
 
             if not os.path.exists(base_path):
                 print('Warning: cannot find data for subject: ' + s)
