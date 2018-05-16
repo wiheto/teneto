@@ -2,6 +2,8 @@
 
 ## V0.3.4 (pending)
 
+- Added missing warnings import in networkmeasures
+
 - Added more TenetoBIDS functions that use _load_data 
 
 - Changed file_hdr and file_idx in _load_data
