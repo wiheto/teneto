@@ -4,7 +4,7 @@ networkmeasures.bursty_coeff
 
 import numpy as np
 from teneto.networkmeasures.intercontacttimes import intercontacttimes
-
+import warnings
 
 def bursty_coeff(data, calc='edge', nodes='all', communities=None, subnet=None):
     """

@@ -1,6 +1,6 @@
 import teneto
 import numpy as np
-
+import warnings
 
 def volatility(net, distance_func_name='default', calc='global', communities=None, subnet=None, event_displacement=None):
     """

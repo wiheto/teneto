@@ -3,7 +3,7 @@
 import teneto.utils as utils
 import numpy as np
 from teneto.networkmeasures.temporal_degree_centrality import temporal_degree_centrality
-
+import warnings
 
 def sid(net, communities, subnet=None, axis=0, calc='global', decay=None):
     """
