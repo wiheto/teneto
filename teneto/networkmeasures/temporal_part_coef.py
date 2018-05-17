@@ -1,7 +1,7 @@
 import teneto.utils as utils
 import numpy as np
 
-def temporal_part_coef(net, communities=None):
+def temporal_part_coef(net, communities=None, removeneg=False):
     '''
     Temporal participation coefficient is a measure of diversity of connections across communities for individual nodes.
 
@@ -19,6 +19,8 @@ def temporal_part_coef(net, communities=None):
         graphlet or contact sequence input. Only positive matrices considered.
     communities : array
         community vector. Either 1D (node) community index or 2D (node,time).
+    removeneg : bool (default false)
+        If true, all values < 0 are made to be 0. 
 
     Note
     ----
@@ -50,8 +52,10 @@ def temporal_part_coef(net, communities=None):
     # Get input in right format
     net, netinfo = utils.process_input(net, ['C', 'G', 'TO'])
 
-    if np.sum(net<0) > 0:
+    if np.sum(net<0) > 0 and not removeneg:
         raise ValueError('Negative connections found')
+    if removeneg:
+        net[net<0] = 0
 
     k_is = np.zeros([netinfo['netshape'][0],netinfo['netshape'][2]])
     part = np.ones([netinfo['netshape'][0],netinfo['netshape'][2]])

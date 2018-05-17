@@ -6,7 +6,7 @@ import numpy as np
 import teneto.utils as utils
 import warnings
 
-def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet=None, decay=None):
+def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet=None, decay=None,ignorediagonal=True):
     """
 
     temporal degree of network. Sum of all connections each node has through time.
@@ -28,6 +28,9 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet
         'time' (returns a node x time matrix),
         'module_degree_zscore' returns the Z-scored within community degree centrality (communities argument required). This is done for each time-point
      i.e. 'time' returns static degree centrality per time-point.
+
+    ignorediagonal: bool
+        if true, diagonal is made to 0. 
 
     communities : array (Nx1)
         Vector of community assignment.
@@ -60,7 +63,8 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet
 
     # Get input in right format
     net, netinfo = utils.process_input(net, ['C', 'G', 'TO'])
-
+    if ignorediagonal:
+        net = utils.set_diagonal(net,0)
     # sum sum net
     if calc == 'time' and communities is None:
         tdeg = np.squeeze(np.sum(net, axis=axis))
@@ -81,10 +85,19 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet
                 tdeg[C == c,t] = (k_i - np.mean(k_i)) / np.std(k_i)
         tdeg[np.isnan(tdeg)==1] = 0
     elif calc == 'time' and communities is not None:
-        unique_communities = np.unique(communities)
-        tdeg_communities = [np.sum(np.sum(net[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
-                       for s1 in unique_communities for s2 in unique_communities]
-
+        tdeg_communities = np.zeros([communities.max()+1,communities.max()+1,communities.shape[-1]])
+        if len(communities.shape)==2:
+            for t in range(len(communities[-1])):
+                C = communities[:,t] 
+                unique_communities = np.unique(C)
+                for s1 in unique_communities:
+                    for s2 in unique_communities:
+                        tdeg_communities[s1,s2,t] = np.sum(np.sum(net[C == s1, :, t][:, C == s2], axis=1), axis=0) 
+        else: 
+            unique_communities = np.unique(communities)
+            tdeg_communities = [np.sum(np.sum(net[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
+                        for s1 in unique_communities for s2 in unique_communities]
+            
 
         tdeg = np.array(tdeg_communities)
         tdeg = np.reshape(tdeg, [len(np.unique(communities)), len(

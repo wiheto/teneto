@@ -44,7 +44,12 @@
 
 - Added event related displacement (option in networkmeasures.volatility)
 
+- Added variable community number per time point compatibility for teneto.networkmeasures.sid and tnet.networkmeasures.temporal_degree_centrality 
+
 - Other minor selection/load imprvement of tenetoBIDS.
+
+- removezeros option added to teneto.networkmeasures.temporal_part_coef 
+
 
 ## V0.3.3 
 

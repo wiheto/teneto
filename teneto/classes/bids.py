@@ -1208,7 +1208,7 @@ class TenetoBIDS:
 
     def networkmeasures(self, measure=None, measure_params={}, load_tag=None, save_tag=None, njobs=None):
         """
-        Runs a network measure
+        Calculates a network measure
 
         For available funcitons see: teneto.networkmeasures
 
@@ -1220,14 +1220,21 @@ class TenetoBIDS:
 
         measure_params : dict or list of dctionaries)
             Containing kwargs for the argument in measure.
+            See note regarding Communities key. 
 
-        tag : str
-            Add additional tag to filenames.
+        load_tag : str
+            Add additional tag to loaded filenames.
+
+        save_tag : str
+            Add additional tag to saved filenames.
 
         Note
         ----
-        If self.network_communities exist, communities=True can be specified for communities options instead of supplying the network atlas.
-
+        In measure_params, if communities can equal 'template', 'static', or 'temporal'. 
+        These options must be precalculated. If template, Teneto tries to load default for parcellation. If static, loads static communities 
+        in BIDS_dir/teneto_<version>/sub-.../func/communities/..._communitytype-static....npy. If temporal, loads static communities 
+        in BIDS_dir/teneto_<version>/sub-.../func/communities/..._communitytype-temporal....npy 
+ 
         Returns
         -------
 
@@ -1245,7 +1252,7 @@ class TenetoBIDS:
         if isinstance(measure, str):
             measure = [measure]
         # measure_params can be dictionaary or list of dictionaries
-        if     isinstance(measure_params, dict):
+        if isinstance(measure_params, dict):
             measure_params = [measure_params]
         if measure_params and len(measure) != len(measure_params):
             raise ValueError('Number of identified measure_params (' + str(len(measure_params)) + ') differs from number of identified measures (' + str(len(measure)) + '). Leave black dictionary if default methods are wanted')
@@ -1303,13 +1310,24 @@ class TenetoBIDS:
                 dimord_str = '_dimord-' + dimord
 
             if 'communities' in measure_params[i]:
-                if measure_params[i]['communities'] == True:
-                    measure_params[i]['communities'] = list(self.network_communities_['network_id'].values)
+                if isinstance(measure_params[i]['communities'],str):
+                    save_tag += '_communitytype-' + measure_params[i]['communities']
+                    if measure_params[i]['communities'] == 'template':
+                        measure_params[i]['communities'] = list(self.network_communities_['network_id'].values)
+                    elif measure_params[i]['communities'] == 'static':
+                        self.load_community_data('static',tag=file_name.split('tvc')[0].split('_'))
+                        measure_params[i]['communities'] = np.squeeze(self.community_data_) 
+                    elif measure_params[i]['communities'] == 'temporal':  
+                        self.load_community_data('temporal',tag=file_name)
+                        measure_params[i]['communities'] = np.squeeze(self.community_data_)
+                    else: 
+                        raise ValueError('Unknown community string')
 
             sname = m.replace('_','-')
             if not os.path.exists(save_dir_base + sname):
                 os.makedirs(save_dir_base + sname)
 
+            
             save_name = file_name + '_' + sname + cs + dimord_str + save_tag
             netmeasure = module_dict[m](data,**measure_params[i])
 
@@ -1882,6 +1900,8 @@ class TenetoBIDS:
         data_list=[]
         trialinfo_list = []
 
+        measure = measure.replace('_','-')
+
         if not calc:
             calc = ''
         else:
@@ -1909,6 +1929,10 @@ class TenetoBIDS:
                             for t in bids_tags:
                                 key = t[:-1]
                                 bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
+                                if bids_tag_dict[key].endswith('.npy'): 
+                                    bids_tag_dict[key] = bids_tag_dict[key].split('.npy')[0]        
+                                elif bids_tag_dict[key].endswith('.pkl'): 
+                                    bids_tag_dict[key] = bids_tag_dict[key].split('.pkl')[0]        
                             # Get data
                             if f.split('.')[-1] == 'pkl':
                                 df = pd.read_pickle(base_path+f)
@@ -1928,7 +1952,30 @@ class TenetoBIDS:
                             else:
                                 print('Warning: Could not find pickle data')
 
-        self.networkmeasure_ = np.array(data_list)
+        flag = 0
+        if not all([n.shape == m.shape for n in data_list for m in data_list]): 
+            if not all([n.shape[-1] == m.shape[-1] for n in data_list for m in data_list]) and flag==0:
+                shape_max = max([n.shape[-1] for n in data_list])
+                for n in range(len(data_list)): 
+                    if shape_max - data_list[n].shape[-1] > 0: 
+                        ladd = np.ceil((shape_max - data_list[n].shape[-1]) / 2)
+                        radd = np.floor((shape_max - data_list[n].shape[-1]) / 2)
+                        if len(data_list[n].shape) == 2:  
+                            data_list[n] = np.hstack([np.array(np.zeros([data_list[n].shape[0],int(ladd)])*np.nan,ndmin=2),data_list[n],np.array(np.zeros([data_list[n].shape[0],int(radd)])*np.nan,ndmin=2)])
+                        if len(data_list[n].shape) == 3:
+                            data_list[n] = np.dstack([np.array(np.zeros([data_list[n].shape[0],data_list[n].shape[1],int(ladd)])*np.nan,ndmin=3),data_list[n],np.array(np.zeros([data_list[n].shape[0],data_list[n].shape[1],int(radd)])*np.nan,ndmin=3)])
+                        if len(data_list[n].shape) == 1:
+                            data_list[n] = np.hstack([np.array(np.zeros([int(ladd)])*np.nan,ndmin=1),data_list[n],np.array(np.zeros([int(radd)])*np.nan,ndmin=1)])
+                          
+            ax_len = np.max([len(n.shape) for n in data_list])
+            for dim in range(ax_len-1):
+                if not all([n.shape[dim] == m.shape[dim] for n in data_list for m in data_list]) and flag == 0:
+                    print('TENETO-WARNING: unequal non-time dimensions. Returning as list instead of array.')
+                    flag = 1 
+                    self.networkmeasure_ = data_list
+
+        if flag == 0:
+            self.networkmeasure_ = np.array(data_list)
         if trialinfo_list:
             out_trialinfo = pd.concat(trialinfo_list)
             out_trialinfo.reset_index(inplace=True,drop=True)

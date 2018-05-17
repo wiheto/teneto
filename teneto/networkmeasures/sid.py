@@ -58,6 +58,7 @@ def sid(net, communities, subnet=None, axis=0, calc='global', decay=None):
 
     net, netinfo = utils.process_input(net, ['C', 'G', 'TO'])
     D = temporal_degree_centrality(net, calc='time', communities=communities, decay=decay)
+
     # Check network output (order of communitiesworks)
     network_ids = np.unique(communities)
     communities_size = np.array([sum(communities==n) for n in network_ids])
@@ -73,6 +74,8 @@ def sid(net, communities, subnet=None, axis=0, calc='global', decay=None):
                 if n == m:
                     betweenmodulescaling = withinmodulescaling
             sid[n,m,:] = withinmodulescaling * D[n,n,:] - betweenmodulescaling * D[n,m,:]
+    # If nans emerge than there is no connection between networks at time point, so make these 0. 
+    sid[np.isnan(sid)] = 0
 
     if calc == 'global':
         return np.sum(np.sum(sid,axis=1),axis=0)
