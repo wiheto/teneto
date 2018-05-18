@@ -1887,7 +1887,6 @@ class TenetoBIDS:
                         data_list.append(data)
                     else:
                         print('Warning: Could not find data for a subject (expecting numpy array)')
-load_network_measure
             self.tvc_data_ = np.array(data_list)
             if trialinfo_list:
                 out_trialinfo = pd.concat(trialinfo_list)
