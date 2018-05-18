@@ -539,9 +539,9 @@ class TenetoBIDS:
             # Define base folder
             base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
             base_path += '/sub-' + s + '/func/communities/'
-            file_list=os.listdir(base_path)
-            for f in file_list:
-                if os.path.isfile(base_path + f):
+            if os.path.exists(base_path):
+                file_list=os.listdir(base_path)
+                for f in file_list:
                     # Include only if all analysis step tags are present
                     if community_type in f and all([t + '_' in f or t + '.' in f for t in tag]):
                         # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
