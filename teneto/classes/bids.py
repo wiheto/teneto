@@ -541,21 +541,22 @@ class TenetoBIDS:
             base_path += '/sub-' + s + '/func/communities/'
             file_list=os.listdir(base_path)
             for f in file_list:
-                # Include only if all analysis step tags are present
-                if community_type in f and all([t + '_' in f or t + '.' in f for t in tag]):
-                    # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
-                    bid_tags=re.findall('[a-zA-Z]*-',f)
-                    bids_tag_dict = {}
-                    for t in bid_tags:
-                        key = t[:-1]
-                        bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
-                    if f.split('.')[-1] == 'npy':
-                        data = np.load(base_path+f)
-                        data_list.append(data)
-                        info = pd.DataFrame(bids_tag_dict,index=[0])
-                        info_list.append(info)
-                    else:
-                        print('Warning: Could not find data for a subject')
+                if os.path.isfile(base_path + f):
+                    # Include only if all analysis step tags are present
+                    if community_type in f and all([t + '_' in f or t + '.' in f for t in tag]):
+                        # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
+                        bid_tags=re.findall('[a-zA-Z]*-',f)
+                        bids_tag_dict = {}
+                        for t in bid_tags:
+                            key = t[:-1]
+                            bids_tag_dict[key]=re.findall(t+'[A-Za-z0-9.,*+]*',f)[0].split('-')[-1]
+                        if f.split('.')[-1] == 'npy':
+                            data = np.load(base_path+f)
+                            data_list.append(data)
+                            info = pd.DataFrame(bids_tag_dict,index=[0])
+                            info_list.append(info)
+                        else:
+                            print('Warning: Could not find data for a subject')
 
         #Get time-shape of data loaded 
         if community_type == 'communitytype-' + 'temporal': 
@@ -1886,7 +1887,7 @@ class TenetoBIDS:
                         data_list.append(data)
                     else:
                         print('Warning: Could not find data for a subject (expecting numpy array)')
-
+load_network_measure
             self.tvc_data_ = np.array(data_list)
             if trialinfo_list:
                 out_trialinfo = pd.concat(trialinfo_list)

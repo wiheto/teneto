@@ -2,6 +2,8 @@
 
 ## V0.3.4 (pending)
 
+- Added check to TenetoBIDS.load_community_data() for file to exist 
+
 - Added missing warnings import in networkmeasures
 
 - Added more TenetoBIDS functions that use _load_data 
