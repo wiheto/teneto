@@ -1326,8 +1326,11 @@ class TenetoBIDS:
 
             sname = m.replace('_','-')
             if not os.path.exists(save_dir_base + sname):
-                os.makedirs(save_dir_base + sname)
-
+                #Received error when paralleled so throw a try/error 
+                try: 
+                    os.makedirs(save_dir_base + sname)
+                except: 
+                    pass
             
             save_name = file_name + '_' + sname + cs + dimord_str + save_tag
             netmeasure = module_dict[m](data,**measure_params[i])
