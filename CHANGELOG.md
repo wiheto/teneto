@@ -52,6 +52,7 @@
 
 - removezeros option added to teneto.networkmeasures.temporal_part_coef 
 
+- Fixed bug in decay in teneto.networkmeasures.temporal_degree_centrality
 
 ## V0.3.3 
 

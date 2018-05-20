@@ -111,7 +111,7 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet
     if decay and calc=='time':
         #Reshape so that time is first dimensions
         tdeg = tdeg.transpose(np.hstack([len(tdeg.shape)-1,np.arange(len(tdeg.shape)-1)]))
-        for n in range(1,tdeg.shape[-1]):
+        for n in range(1,tdeg.shape[0]):
             tdeg[n] = np.exp(-decay)*tdeg[n-1] + tdeg[n]
         tdeg = tdeg.transpose(np.hstack([np.arange(1,len(tdeg.shape)),0]))
     elif decay:
