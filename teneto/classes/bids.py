@@ -1314,7 +1314,7 @@ class TenetoBIDS:
                 if isinstance(measure_params[i]['communities'],str):
                     save_tag += '_communitytype-' + measure_params[i]['communities']
                     if measure_params[i]['communities'] == 'template':
-                        measure_params[i]['communities'] = list(self.network_communities_['network_id'].values)
+                        measure_params[i]['communities'] = np.array(self.network_communities_['network_id'].values)
                     elif measure_params[i]['communities'] == 'static':
                         self.load_community_data('static',tag=file_name.split('tvc')[0].split('_'))
                         measure_params[i]['communities'] = np.squeeze(self.community_data_) 
