@@ -1,4 +1,4 @@
 [report]
 omit = 
-	*/teneto/tests/*
 	*__init__*
+	*site-packages/*
