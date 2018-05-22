@@ -1,2 +1,3 @@
 include teneto/data/parcellation/*
 include teneto/data/parcellation_defaults/*
+recursive-include teneto/data/testdata/ *.nii.gz
