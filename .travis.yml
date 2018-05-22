@@ -9,10 +9,10 @@ install:
   - pip install -r requirements.txt
   - python setup.py install
   - pip install python-coveralls
-  - pip install coveralls
+  - pip install pytest
   - pip install pytest-cov
 # just put in empty script of now
 script: 
-  - python setup.py test --cov
+  - py.test --doctest-modules --cov
 after_success: 
   - coveralls
