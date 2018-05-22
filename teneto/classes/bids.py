@@ -97,13 +97,13 @@ class TenetoBIDS:
             self.sessions = []
         if tasks == 'all' and self.raw_data_exists:
             self.tasks = self.BIDS.get_tasks()
-        elif self.raw_data_exists:
+        elif tasks != 'all':
             self.set_tasks(tasks)
         else:
             self.tasks = []
         if runs == 'all' and self.raw_data_exists:
             self.runs = self.BIDS.get_runs()
-        elif self.raw_data_exists:
+        elif runs != 'all':
             self.set_runs(runs)
         else:
             self.runs = []
@@ -1527,7 +1527,7 @@ class TenetoBIDS:
             else:
                 raise ValueError('Specified run(s) not founds in BIDS dataset')
         else:
-            self.runs = sorted(list(tasks))
+            self.runs = sorted(list(runs))
 
     def set_sessions(self,sessions):
         """
