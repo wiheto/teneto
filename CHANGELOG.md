@@ -54,6 +54,10 @@
 
 - Fixed bug in decay in teneto.networkmeasures.temporal_degree_centrality
 
+- Added dummy bids test set to data 
+
+- Fixed set task and set run bug when raw_data_exists is false. 
+
 ## V0.3.3 
 
 - Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted.
