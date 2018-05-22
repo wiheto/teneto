@@ -1,8 +1,6 @@
 import teneto 
 
 def test_define(): 
-    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='fmriprep') 
-    assert len(tnet.get_selected_files(quiet=1)) == 6
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='fmriprep',raw_data_exists=False) 
     assert len(tnet.get_selected_files(quiet=1)) == 6
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='fmriprep',subjects='001',raw_data_exists=False) 
@@ -17,5 +15,4 @@ def test_define():
     assert len(tnet.get_selected_files(quiet=1)) == 4
     tnet.set_runs('beta')    
     assert len(tnet.get_selected_files(quiet=1)) == 2
-    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='fmriprep',raw_data_exists=False) 
     
