@@ -1,0 +1,4 @@
+[report]
+omit = 
+	*/teneto/tests/*
+	*__init__*
