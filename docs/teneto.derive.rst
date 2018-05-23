@@ -1,10 +1,7 @@
-teneto.derive package
+teneto.derive 
 =====================
 
-Submodules
-----------
-
-teneto.derive.derive module
+teneto.derive.derive
 ---------------------------
 
 .. automodule:: teneto.derive.derive
@@ -12,7 +9,7 @@ teneto.derive.derive module
     :undoc-members:
     :show-inheritance:
 
-teneto.derive.postprocess module
+teneto.derive.postprocess
 --------------------------------
 
 .. automodule:: teneto.derive.postprocess
@@ -20,7 +17,7 @@ teneto.derive.postprocess module
     :undoc-members:
     :show-inheritance:
 
-teneto.derive.report module
+teneto.derive.report
 ---------------------------
 
 .. automodule:: teneto.derive.report
@@ -28,11 +25,3 @@ teneto.derive.report module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: teneto.derive
-    :members:
-    :undoc-members:
-    :show-inheritance:

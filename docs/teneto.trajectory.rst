@@ -1,10 +1,8 @@
 teneto.trajectory package
 =========================
 
-Submodules
-----------
 
-teneto.trajectory.compression module
+teneto.trajectory.compression
 ------------------------------------
 
 .. automodule:: teneto.trajectory.compression

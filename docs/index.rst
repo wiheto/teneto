@@ -7,11 +7,10 @@ Welcome to teneto's documentation!
 ==================================
 
 .. toctree::
-   :maxdepth: 5
-   :caption: Contents:
+   :maxdepth: 1
 
    tutorial
-   modules
+   teneto
 
 Indices and tables
 ==================

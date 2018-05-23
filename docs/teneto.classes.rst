@@ -1,10 +1,7 @@
-teneto.classes package
+teneto.classes
 ======================
 
-Submodules
-----------
-
-teneto.classes.bids module
+teneto.classes.bids
 --------------------------
 
 .. automodule:: teneto.classes.bids
@@ -12,11 +9,3 @@ teneto.classes.bids module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: teneto.classes
-    :members:
-    :undoc-members:
-    :show-inheritance:

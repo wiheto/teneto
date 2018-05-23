@@ -1,10 +1,7 @@
-teneto.misc package
+teneto.misc
 ===================
 
-Submodules
-----------
-
-teneto.misc.corrcoef\_matrix module
+teneto.misc.corrcoef\_matrix
 -----------------------------------
 
 .. automodule:: teneto.misc.corrcoef_matrix
@@ -12,19 +9,10 @@ teneto.misc.corrcoef\_matrix module
     :undoc-members:
     :show-inheritance:
 
-teneto.misc.correct\_pvalues\_for\_multiple\_testing module
+teneto.misc.correct\_pvalues\_for\_multiple\_testing
 -----------------------------------------------------------
 
 .. automodule:: teneto.misc.correct_pvalues_for_multiple_testing
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: teneto.misc
     :members:
     :undoc-members:
     :show-inheritance:

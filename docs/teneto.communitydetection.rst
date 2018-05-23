@@ -1,13 +1,7 @@
-teneto.communitydetection package
+teneto.communitydetection
 =================================
 
-Subpackages
------------
-
-Submodules
-----------
-
-teneto.communitydetection.louvain module
+teneto.communitydetection.louvain
 ----------------------------------------
 
 .. automodule:: teneto.communitydetection.louvain
@@ -15,11 +9,3 @@ teneto.communitydetection.louvain module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: teneto.communitydetection
-    :members:
-    :undoc-members:
-    :show-inheritance:

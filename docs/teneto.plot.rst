@@ -1,10 +1,7 @@
-teneto.plot package
+teneto.plot 
 ===================
 
-Submodules
-----------
-
-teneto.plot.circle\_plot module
+teneto.plot.circle\_plot
 -------------------------------
 
 .. automodule:: teneto.plot.circle_plot
@@ -12,7 +9,7 @@ teneto.plot.circle\_plot module
     :undoc-members:
     :show-inheritance:
 
-teneto.plot.graphlet\_stack\_plot module
+teneto.plot.graphlet\_stack\_plot
 ----------------------------------------
 
 .. automodule:: teneto.plot.graphlet_stack_plot
@@ -20,7 +17,7 @@ teneto.plot.graphlet\_stack\_plot module
     :undoc-members:
     :show-inheritance:
 
-teneto.plot.slice\_plot module
+teneto.plot.slice\_plot
 ------------------------------
 
 .. automodule:: teneto.plot.slice_plot
@@ -28,11 +25,3 @@ teneto.plot.slice\_plot module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: teneto.plot
-    :members:
-    :undoc-members:
-    :show-inheritance:

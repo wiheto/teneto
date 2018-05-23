@@ -1,10 +1,8 @@
-teneto package
+Documentation
 ==============
 
-Subpackages
------------
-
 .. toctree::
+    :maxdepth: 2
 
     teneto.classes
     teneto.communitydetection
@@ -16,10 +14,3 @@ Subpackages
     teneto.trajectory
     teneto.utils
 
-Module contents
----------------
-
-.. automodule:: teneto
-    :members:
-    :undoc-members:
-    :show-inheritance:

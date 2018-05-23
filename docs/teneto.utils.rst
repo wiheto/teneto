@@ -1,10 +1,8 @@
 teneto.utils package
 ====================
 
-Submodules
-----------
 
-teneto.utils.utils module
+teneto.utils.utils
 -------------------------
 
 .. automodule:: teneto.utils.utils
@@ -12,11 +10,3 @@ teneto.utils.utils module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: teneto.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
