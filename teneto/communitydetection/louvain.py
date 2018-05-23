@@ -258,8 +258,7 @@ def make_temporal_consensus(communities):
     for t in range(1,communities.shape[-1]):
         community_possibilities = []
         jaccard_best = 1
-        cidx = list(itertools.permutations(np.unique(communities[:,t]),len(np.unique(communities[:,t]))))
-        for c in cidx:
+        for c in itertools.permutations(np.unique(communities[:,t]),len(np.unique(communities[:,t]))):
             ctmp = communities[:,t].copy()
             for i,n in enumerate(c):
                 ctmp[communities[:,t]==i]=n
