@@ -832,7 +832,7 @@ def create_traj_ranges(start, stop, N):
 
 
 
-def get_dimord(measure,calc=None,subnet=None):
+def get_dimord(measure,calc=None,community=None):
 
     """
     Get the dimension order of a network measure.
@@ -844,8 +844,8 @@ def get_dimord(measure,calc=None,subnet=None):
         Name of funciton in teneto.networkmeasures.
     calc : str, default=None
         Calc parameter for the function
-    subnet : bool, default=None
-        If not null, then subnet property is assumed to be believed.
+    community : bool, default=None
+        If not null, then community property is assumed to be believed.
 
     Returns
     -------
@@ -859,32 +859,32 @@ def get_dimord(measure,calc=None,subnet=None):
         calc = ''
     else:
         calc = '_' + calc
-    if not subnet:
-        subnet = ''
+    if not community:
+        community = ''
     else:
-        subnet = '_subnet'
-    if '_subnet' in calc and '_subnet' in subnet:
-        subnet = ''
-    if calc == 'subnet_avg' or calc == 'subnet_pairs':
-        subnet = ''
+        community = 'community'
+    if 'community' in calc and 'community' in community:
+        community = ''
+    if calc == 'community_avg' or calc == 'community_pairs':
+        community = ''
 
     dimord_dict = {
         'temporal_closeness_centrality': 'node',
         'temporal_degree_centrality': 'node',
         'temporal_degree_centralit_avg': 'node',
         'temporal_degree_centrality_time': 'node,time',
-        'temporal_degree_centrality_time_subnet': 'subnet,subnet,time',
-        'temporal_degree_centrality_subnet': 'subnet,subnet',
-        'temporal_degree_centrality_avg_subnet': 'subnet,subnet',
+        'community': 'community,community,time',
+        'community': 'community,community',
+        'community': 'community,community',
         'temporal_efficiency': 'global',
         'temporal_efficiency_global': 'global',
         'temporal_efficiency_node': 'node',
         'temporal_efficiency_to': 'node',
         'sid_global': 'global,time',
-        'sid_global_subnet': 'global,time',
-        'sid_subnet_pairs': 'subnet,subnet,time',
-        'sid_subnet_avg': 'subnet,time',
-        'sid': 'subnet,subnet,time',
+        'community': 'global,time',
+        'community_pairs': 'community,community,time',
+        'community_avg': 'community,time',
+        'sid': 'community,community,time',
         'reachability_latency_global': 'global',
         'reachability_latency': 'global',
         'reachability_latency_node': 'node',
@@ -893,12 +893,12 @@ def get_dimord(measure,calc=None,subnet=None):
         'bursty_coeff': 'edge,edge',
         'bursty_coeff_edge': 'edge,edge',
         'bursty_coeff_node': 'node',
-        'bursty_coeff_subnet': 'subnet,subnet',
+        'community': 'community,community',
         'bursty_coeff_meanEdgePerNode': 'node',
         'volatility_global': 'time',
     }
-    if measure + calc + subnet in dimord_dict:
-        return dimord_dict[measure + calc + subnet]
+    if measure + calc + community in dimord_dict:
+        return dimord_dict[measure + calc + community]
     else:
         print('WARNINGL: get_dimord() returned unknown dimension labels')
         return 'unknown'
