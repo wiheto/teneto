@@ -1,7 +1,8 @@
 
 import teneto 
+import matplotlib
+from matplotlib.testing.decorators import image_comparison
 import matplotlib.pyplot as plt 
-
 def test_sliceplot():
     G = teneto.generatenetwork.rand_binomial([4,2],0.5,'graphlet','wu')
     fig,ax = plt.subplots(1)
