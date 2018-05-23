@@ -22,9 +22,3 @@ def test_graphletconversion():
 def test_createtraj(): 
     traj = teneto.utils.create_traj_ranges(0,12,4)
     assert (traj == np.array([0,4,8,12],dtype=float)).all()
-
-def test_loadparc(): 
-    teneto.utils.load_parcellation_coords('gordon2014_333')    
-    teneto.utils.load_parcellation_coords('power2012_264')
-    teneto.utils.load_parcellation_coords('shen2013_278')
-    
