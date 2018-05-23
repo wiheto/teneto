@@ -38,5 +38,4 @@ def test_networkmeasures_stp():
     paths_true[2,1,3] = 1
     paths_true[2,0,3] = 1
     assert (sp['paths'] == paths_true).all()
-    #fig,ax = plt.subplots(1)
-    #ax = teneto.plot.slice_plot(G,ax)
+    
