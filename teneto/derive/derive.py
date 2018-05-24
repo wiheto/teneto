@@ -52,8 +52,8 @@ def derive(data, params):
         Dimension order: 'node,time' (default) or 'time,node'. People like to represent their data differently and this is an easy way to be sure that you are inputing the data in the correct way.
     analysis_id : str or int 
         add to identify specfic analysis. Generated report will be placed in './report/' + analysis_id + '/derivation_report.html
-    report : str 
-        Options: "yes" or "no" (default). A report is saved in ./report/[analysis_id]/derivation_report.html if "yes"
+    report : bool 
+        False by default. If true, A report is saved in ./report/[analysis_id]/derivation_report.html if "yes"
     report_path : str 
         String where the report is saved. Default is ./report/[analysis_id]/derivation_report.html 
 
@@ -143,7 +143,7 @@ def derive(data, params):
         params['dimord'] = 'node,time'
 
     if 'report' not in params.keys():
-        params['report'] = 'no'
+        params['report'] = False
 
     if 'analysis_id' not in params.keys():
         params['analysis_id'] = ''
@@ -151,7 +151,7 @@ def derive(data, params):
     if 'postpro' not in params.keys():
         params['postpro'] = 'no'
 
-    if params['report'] != 'no':
+    if params['report'] == 'yes' or  params['report'] == True:
 
         if 'analysis_id' not in params.keys():
             params['analysis_id'] = ''
@@ -232,7 +232,7 @@ def derive(data, params):
             R, params['postpro'], report)
         R = teneto.utils.set_diagonal(R,1)
 
-    if params['report'] == 'yes':
+    if params['report'] == 'yes' or params['report'] == True:
         teneto.derive.gen_report(report, params['report_path'], params['report_filename'])
     return R
 
