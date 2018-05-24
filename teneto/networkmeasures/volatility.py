@@ -94,7 +94,7 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
         if netinfo['nettype'][1] == 'u':
             vol = vol + np.transpose(vol)
         if calc == 'node':
-            vol = np.sum(vol, axis=1)
+            vol = np.mean(vol, axis=1)
     elif calc == 'communities':
         net_id = set(communities)
         vol = np.zeros([max(net_id) + 1, max(net_id) +
