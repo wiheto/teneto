@@ -770,6 +770,10 @@ class TenetoBIDS:
             f = np.load(fname)
             if output == 'pd': 
                 f = pd.DataFrame(f) 
+        elif dtype == 'pkl':
+            f = pd.read_pickle(fname)
+            if output == 'array': 
+                f = f.values     
         return f 
 
 
@@ -1740,14 +1744,22 @@ class TenetoBIDS:
         if isinstance(tag,str):
             tag = [tag]
 
+
         for s in self.subjects:
             # Define base folder
             base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
             base_path += '/sub-' + s + '/func/parcellation/'
             file_list=os.listdir(base_path)
             for f in file_list:
+                ok = True
+                if not any(['run-' + t in f for t in self.runs]) and self.runs:
+                    ok = False
+                if not any(['task-' + t in f for t in self.tasks if t]) and self.tasks:
+                    ok = False
+                if not any(['ses-' + t in f for t in self.sessions if t]) and self.sessions:
+                    ok = False
                 # Include only if all analysis step tags are present
-                if parc in f and all([t + '_' in f or t + '.' in f for t in tag]):
+                if parc in f and all([t + '_' in f or t + '.' in f for t in tag]) and ok:
                     # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
                     bid_tags=re.findall('[a-zA-Z]*-',f)
                     bids_tag_dict = {}
