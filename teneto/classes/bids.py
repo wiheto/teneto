@@ -10,8 +10,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pickle
 import traceback
-import concurrent
 import nilearn
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from scipy.interpolate import interp1d
 import time 
 
@@ -182,9 +182,9 @@ class TenetoBIDS:
         else:   
             tag = '_' + tag
 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+        with ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_derive,f,i,tag,params,confounds_exist,confound_files) for i,f in enumerate(files)}
-            for j in concurrent.futures.as_completed(job):
+            for j in as_completed(job):
                 j.result()
 
         if update_pipeline == True:
@@ -313,9 +313,9 @@ class TenetoBIDS:
 
         R_group = []
 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+        with ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_make_functional_connectivity,f,file_hdr,file_idx) for f in files}
-            for j in concurrent.futures.as_completed(job):
+            for j in as_completed(job):
                 R_group.append(j.result())
 
         if returngroup:
@@ -1030,9 +1030,9 @@ class TenetoBIDS:
         else:
             tag = '_' + tag
 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+        with ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_make_parcellation,f,i,tag,parcellation,parc_name,parc_type,parc_params) for i,f in enumerate(files)}
-            for j in concurrent.futures.as_completed(job):
+            for j in as_completed(job):
                 j.result()
 
         if update_pipeline == True:
@@ -1103,9 +1103,9 @@ class TenetoBIDS:
         elif community_type == 'static': 
             files = self.get_functional_connectivity_files(quiet=True) 
 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+        with ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_communitydetection,f,community_detection_params,community_type,file_hdr,file_idx) for i,f in enumerate(files) if all([t + '_' in f or t + '.' in f for t in tag])}
-            for j in concurrent.futures.as_completed(job):
+            for j in as_completed(job):
                 j.result()
 
     def _run_communitydetection(self,f,params,community_type,file_hdr=False,file_idx=False): 
@@ -1186,9 +1186,9 @@ class TenetoBIDS:
         if not clean_params:
             clean_params = {}
 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+        with ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_removeconfounds,f,confound_files[i],clean_params,transpose,confound_hdr,confound_idx,file_hdr,file_idx) for i,f in enumerate(files)}
-            for j in concurrent.futures.as_completed(job):
+            for j in as_completed(job):
                 j.result()
 
         if update_pipeline == True:
@@ -1280,9 +1280,9 @@ class TenetoBIDS:
         else:
             save_tag = '_' + save_tag
 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+        with ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._run_networkmeasures,f,load_tag,save_tag,measure,measure_params,module_dict) for f in files if load_tag in f}
-            for j in concurrent.futures.as_completed(job):
+            for j in as_completed(job):
                 j.result()
 
     def _run_networkmeasures(self,f,load_tag,save_tag,measure,measure_params,module_dict):
