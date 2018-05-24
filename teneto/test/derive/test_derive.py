@@ -13,7 +13,7 @@ def test_slidingwindow_postpro():
     R_sw = np.arctanh(teneto.misc.corrcoef_matrix(X[:10,:].transpose())[0][0,1])
     TR_sw_z = teneto.derive.derive(X.transpose(),{'method': 'slidingwindow', 'windowsize': 10,'dimord':'node,time','postpro':'fisher'})
     assert np.round(R_sw,12) == np.round(TR_sw_z[0,1,0],12)
-    TR_sw_box = teneto.derive.derive(X.transpose(),{'method': 'slidingwindow', 'windowsize': 10,'dimord':'node,time','postpro':'fisher+boxcox+standardize'},,report=True)
+    TR_sw_box = teneto.derive.derive(X.transpose(),{'method': 'slidingwindow', 'windowsize': 10,'dimord':'node,time','postpro':'fisher+boxcox+standardize'},report=True)
     assert TR_sw_box[0,1,:].std() == 1
 
 def test_taperedslidingwindow(): 
