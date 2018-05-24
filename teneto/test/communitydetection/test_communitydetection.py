@@ -16,3 +16,7 @@ def test_community():
     assert C[3,0] != C[0,0] 
     assert C[4,2] != C[0,2] 
     # Still need to test with interslive_weigt > 0
+    C = teneto.communitydetection.temporal_louvain_with_consensus(teneto.utils.graphlet2contact(G),quality_function='TraagVanDoorenNesterov2011',iter_n=10,interslice_weight=1)
+    assert isinstance(C,dict)
+    C = teneto.communitydetection.temporal_louvain_with_consensus(teneto.utils.graphlet2contact(G[:,:,0]),iter_n=10,interslice_weight=0,quality_function='TraagAldecoaDelvenne2015')
+
