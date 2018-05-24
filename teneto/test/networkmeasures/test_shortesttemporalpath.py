@@ -39,3 +39,17 @@ def test_networkmeasures_stp():
     paths_true[2,0,3] = 1
     assert (sp['paths'] == paths_true).all()
     
+def test_networkmeasures_teff(): 
+    # Test temporal efficiency  
+    E = teneto.networkmeasures.temporal_efficiency(G)
+    sp = teneto.networkmeasures.shortest_temporal_path(G)
+    E2 = teneto.networkmeasures.temporal_efficiency(sp)
+    assert E==E2
+    # Matrix symmetric so nodal measure is same regardless of how you calculate paths 
+    EN1 = teneto.networkmeasures.temporal_efficiency(sp,calc='node_to')
+    EN2 = teneto.networkmeasures.temporal_efficiency(sp,calc='node_from')
+    assert all(EN1==EN2)
+    # Change G so matrix is directed now index 0 should be less efficient in "from" (this feature isn't implemented in teneto yet)
+    #G[0,2,1] = 0    
+    #EN1 = teneto.networkmeasures.temporal_efficiency(G,calc='node_to')
+    #EN2 = teneto.networkmeasures.temporal_efficiency(G,calc='node_from')
