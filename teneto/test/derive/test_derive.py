@@ -2,6 +2,8 @@ import numpy as np
 import teneto 
 np.random.seed(20)
 
+#Where report:False, make true once matplotlib is working with ci.
+
 def test_slidingwindow(): 
     X = np.random.multivariate_normal([0,0],[[1,0.5],[0.5,1]],20)
     R_sw = teneto.misc.corrcoef_matrix(X[:10,:].transpose())[0][0,1]
@@ -13,12 +15,12 @@ def test_slidingwindow_postpro():
     R_sw = np.arctanh(teneto.misc.corrcoef_matrix(X[:10,:].transpose())[0][0,1])
     TR_sw_z = teneto.derive.derive(X.transpose(),{'method': 'slidingwindow', 'windowsize': 10,'dimord':'node,time','postpro':'fisher'})
     assert np.round(R_sw,12) == np.round(TR_sw_z[0,1,0],12)
-    TR_sw_box = teneto.derive.derive(X.transpose(),{'method': 'slidingwindow', 'windowsize': 10,'dimord':'node,time','postpro':'fisher+boxcox+standardize','report':True})
+    TR_sw_box = teneto.derive.derive(X.transpose(),{'method': 'slidingwindow', 'windowsize': 10,'dimord':'node,time','postpro':'fisher+boxcox+standardize','report':False})
     assert TR_sw_box[0,1,:].std() == 1
 
 def test_taperedslidingwindow(): 
     X = np.random.multivariate_normal([0,0],[[1,0.5],[0.5,1]],20)
-    TR_tsw = teneto.derive.derive(X,{'method': 'taperedslidingwindow', 'windowsize': 10,'dimord':'time,node','distribution':'norm','distribution_params':[0,5],'report':True})
+    TR_tsw = teneto.derive.derive(X,{'method': 'taperedslidingwindow', 'windowsize': 10,'dimord':'time,node','distribution':'norm','distribution_params':[0,5],'report':False})
     # Perhaps make a better test 
     assert TR_tsw.shape == (2,2,11)
 
