@@ -24,4 +24,4 @@ def test_volatility():
     v_edge=teneto.networkmeasures.volatility(G,calc='edge')
     assert np.all(v_edge == np.mean(np.abs(np.diff(G)),axis=-1))
     v_node=teneto.networkmeasures.volatility(G,calc='node')
-    assert np.all(v_node == np.sum(np.mean(np.abs(np.diff(G)),axis=-1),axis=-1))
+    assert np.all(v_node == np.mean(np.mean(np.abs(np.diff(G)),axis=-1),axis=-1))
