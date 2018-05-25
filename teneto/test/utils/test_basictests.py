@@ -42,3 +42,13 @@ def test_binarize():
     assert Gbin_perc[0,1,1] == Gbin_perc[1,2,1] == Gbin_perc[0,2,0] == 1 
     assert Gbin_perc[0,1,0] == Gbin_perc[1,2,0] == Gbin_perc[0,2,1] == 0 
     
+def test_cleancommunityindicies(): 
+    c = [5,3,4,5,5,5,3,3,3,4,4]
+    c_expected = [2,0,1,2,2,2,0,0,0,1,1]
+    c_cleaned = teneto.utils.clean_community_indexes(c)
+    assert np.all(c_cleaned == c_expected)
+
+
+def test_load_parc_cords(): 
+    parc = teneto.utils.load_parcellation_coords('power2012_264')
+    assert parc.shape == (264,3)
