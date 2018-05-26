@@ -23,3 +23,21 @@ def test_networkmeasures_tdc():
     assert (C3 == G.sum(axis=1)).all()
     assert (C4 == tC4).all()
 
+
+def test_sid(): 
+    communities = [0,0,1,1]
+    G = np.zeros([4,4,4])
+    G[0,1,[0,1,3]] = 1
+    G[2,3,[0,1,3]] = 1
+    G[1,2,[2,3]] = 1
+    G[0,3,[2,3]] = 1
+    G += G.transpose([1,0,2])
+    sid_g = teneto.networkmeasures.sid(G,np.array(communities))
+    sid_c = teneto.networkmeasures.sid(G,np.array(communities),calc='community_pairs')
+    #Calculated in head
+    sid_g_true = [2,2,-1,1]    
+    #Should be half sid_g since network is only calculated once
+    sid_c_true = [1,1,-0.5,0.5]
+    # Since only 2 networks this should be the same.
+    assert np.all(sid_c[0,1,:] == sid_c_true)
+    assert np.all(sid_g[0,1,:] == sid_g_true)
