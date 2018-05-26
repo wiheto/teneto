@@ -1,23 +1,30 @@
 import teneto 
 import numpy as np 
 
-def test_tnet_derive(): 
+def test_tnet_derive_and_preproc(): 
+    # load parc file with data
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
+    # Set the confound pipeline in fmriprep 
     tnet.set_confound_pipeline('fmriprep')
     alt = tnet.get_confound_alternatives()
     assert 'confound1' in alt
     assert 'confound2' in alt
+    #Set the confounds 
     tnet.set_confounds('confound1')
+    #Remove confounds
+    tnet.removeconfounds(transpose=True)
+    assert tnet.last_analysis_step == 'clean'
+    # derive
     tnet.load_parcellation_data()
     tnet.derive({'method':'jackknife','dimord':'node,time'},update_pipeline=True,confound_corr_report=False)
-    #tnet.removeconfounds()
     tnet.load_tvc_data()
     R_jc = teneto.misc.corrcoef_matrix(np.squeeze(tnet.parcellation_data_)[:,1:])[0][0,1]
     assert np.round(R_jc,12) == np.round(tnet.tvc_data_[0,0,1,0]*-1,12)
 
     
     
-def test_make_fc():
+def test_make_fc_and_tvc():
+    # Load parc data, make FC JC method
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
     tnet.load_parcellation_data()
     r = tnet.make_functional_connectivity(returngroup=True)[0,1] 
@@ -25,15 +32,18 @@ def test_make_fc():
     tnet.derive({'method':'jackknife','dimord':'node,time','postpro':'standardize'},update_pipeline=True,confound_corr_report=True)
     tnet.load_tvc_data()
     JC = tnet.tvc_data_[0,0,1,:]
+    # Load parc data, make FC JC method with FC dual weighting
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
     tnet.derive({'method':'jackknife','dimord':'node,time','weight-mean':'from-subject-fc','weight-var':'from-subject-fc'},update_pipeline=True,confound_corr_report=True)
     tnet.load_tvc_data()
     JCw = tnet.tvc_data_[0,0,1,:]
+    # Load parc data, make FC JC method with FC mean weighting
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
     tnet.make_functional_connectivity() 
     tnet.derive({'method':'jackknife','dimord':'node,time','weight-mean':'from-subject-fc'},update_pipeline=True,confound_corr_report=True)
     tnet.load_tvc_data()
     JCm = tnet.tvc_data_[0,0,1,:]
+    # Load parc data, make FC JC method with FC variance weighting
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
     tnet.make_functional_connectivity() 
     tnet.derive({'method':'jackknife','dimord':'node,time','weight-var':'from-subject-fc'},update_pipeline=True,confound_corr_report=True)
@@ -61,6 +71,7 @@ def test_communitydetection():
 
 
 def test_networkmeasure(): 
+    # calculate and load a network measure
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto_' + teneto.__version__,pipeline_subdir='tvc',last_analysis_step='tvc',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
     tnet.networkmeasures('volatility')
     tnet.load_network_measure('volatility')
