@@ -22,3 +22,8 @@ def test_define_task_then_run():
     tnet.set_runs('beta')    
     assert len(tnet.get_selected_files(quiet=1)) == 2
     
+def test_get_pipeline_alternatives(): 
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',tasks='a',raw_data_exists=False) 
+    pipeline = tnet.get_pipeline_alternatives() 
+    assert 'fmriprep' in pipeline
+    assert 'teneto-tests' in pipeline
