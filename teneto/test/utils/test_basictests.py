@@ -34,6 +34,7 @@ def test_binarize():
     G += G.transpose([1,0,2])
     G = teneto.utils.set_diagonal(G,1)
     Gbin_perc = teneto.utils.binarize(G,'percent',threshold_level=0.5)
+    Gbin_perc2 = teneto.utils.binarize(G,'percent',threshold_level=0.5,axis='graphlet')
     Gbin_mag = teneto.utils.binarize(G,'magnitude',threshold_level=0.45)
     G = teneto.utils.set_diagonal(G,0)
     Gt = np.zeros(G.shape) 
@@ -41,6 +42,8 @@ def test_binarize():
     assert np.all(Gt == Gbin_mag)
     assert Gbin_perc[0,1,1] == Gbin_perc[1,2,1] == Gbin_perc[0,2,0] == 1 
     assert Gbin_perc[0,1,0] == Gbin_perc[1,2,0] == Gbin_perc[0,2,1] == 0 
+    assert Gbin_perc2[0,1,0] == Gbin_perc2[1,2,1] == 1 
+    assert Gbin_perc2[0,1,1] == Gbin_perc2[1,2,0] == Gbin_perc2[0,2,1] == Gbin_perc2[0,1,1] == 0 
     
 def test_cleancommunityindicies(): 
     c = [5,3,4,5,5,5,3,3,3,4,4]
@@ -52,3 +55,4 @@ def test_cleancommunityindicies():
 def test_load_parc_cords(): 
     parc = teneto.utils.load_parcellation_coords('power2012_264')
     assert parc.shape == (264,3)
+
