@@ -58,6 +58,8 @@
 
 - Fixed set task and set run bug when raw_data_exists is false. 
 
+- Added graphlet based thresholding. 
+
 ## V0.3.3 
 
 - Added txt file generation to `temporal_exclusion_criteria` saying how many time-points are deleted.

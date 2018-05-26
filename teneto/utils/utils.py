@@ -226,7 +226,7 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
     axis : str, default='time'
-        Specify which dimension thresholding is applied against. Only 'time' option exists at present.
+        Specify which dimension thresholding is applied against. Can be 'time' (takes top % for each edge time-series) or 'graphlet' (takes top % for each graphlet)
 
     Returns
     -------
@@ -236,6 +236,12 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
 
     """
     netin, netinfo = teneto.utils.process_input(netin, ['C', 'G', 'TO'])
+    # Set diagonal to 0
+    netin = teneto.utils.set_diagonal(netin,0)
+    if axis == 'graphlet' and netinfo['nettype'][-1] == 'u': 
+        triu = np.triu_indices(netinfo['netshape'][0],k=1)
+        netin = netin[triu[0],triu[1],:]
+        netin = netin.transpose() 
     if sign == 'both':
         net_sorted = np.argsort(np.abs(netin),axis=-1)
     elif sign == 'pos':
@@ -246,13 +252,21 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
         raise ValueError('Unknown value for parameter: sign')
     # Predefine
     netout = np.zeros(netinfo['netshape'])
-    # These for loops can probabaly be removed for speed
-    for i in range(netinfo['netshape'][0]):
-        for j in range(netinfo['netshape'][1]):
-            netout[i,j,net_sorted[i,j,-int(round(net_sorted.shape[-1])*level):]] = 1
-    # Set diagonal to 0
-    netout = teneto.utils.set_diagonal(netout,0)
+    if axis == 'time':  
+        # These for loops can probabaly be removed for speed
+        for i in range(netinfo['netshape'][0]):
+            for j in range(netinfo['netshape'][1]):
+                netout[i,j,net_sorted[i,j,-int(round(net_sorted.shape[-1])*level):]] = 1
+    elif axis == 'graphlet':
+        netout_tmp = np.zeros(netin.shape)
+        for i in range(netout_tmp.shape[0]):
+            netout_tmp[i,net_sorted[i,-int(round(net_sorted.shape[-1])*level):]] = 1
+        netout_tmp = netout_tmp.transpose()
+        netout[triu[0],triu[1],:] = netout_tmp
+        netout[triu[1],triu[0],:] = netout_tmp
 
+    netout = teneto.utils.set_diagonal(netout,0)
+    
     # If input is contact, output contact
     if netinfo['inputtype'] == 'C':
         netinfo['nettype'] = 'b' + netinfo['nettype'][1]
@@ -360,7 +374,7 @@ def binarize_magnitude(netin, level, sign='pos'):
 
     return netout
 
-def binarize(netin, threshold_type, threshold_level, sign='pos'):
+def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
     """
     Binarizes a network, returning the network. General wrapper function for different binarization functions.
 
@@ -382,6 +396,9 @@ def binarize(netin, threshold_type, threshold_level, sign='pos'):
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
 
+    axis : str 
+        Threshold over specfied axis. Valid for percent and rdp. Can be time or graphlet. 
+
     Returns
     -------
 
@@ -390,11 +407,11 @@ def binarize(netin, threshold_type, threshold_level, sign='pos'):
 
     """
     if threshold_type == 'percent':
-        netout = teneto.utils.binarize_percent(netin,threshold_level,sign)
+        netout = teneto.utils.binarize_percent(netin,threshold_level,sign,axis)
     elif threshold_type == 'magnitude':
         netout = teneto.utils.binarize_magnitude(netin,threshold_level,sign)
     elif threshold_type == 'rdp':
-        netout = teneto.utils.binarize_rdp(netin,threshold_level,sign)
+        netout = teneto.utils.binarize_rdp(netin,threshold_level,sign,axis)
     else:
         raise ValueError('Unknown value to parameter: threshold_type.')
     return netout
