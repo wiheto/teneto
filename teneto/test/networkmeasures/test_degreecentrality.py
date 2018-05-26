@@ -40,4 +40,4 @@ def test_sid():
     sid_c_true = [1,1,-0.5,0.5]
     # Since only 2 networks this should be the same.
     assert np.all(sid_c[0,1,:] == sid_c_true)
-    assert np.all(sid_g[0,1,:] == sid_g_true)
+    assert np.all(sid_g == sid_g_true)
