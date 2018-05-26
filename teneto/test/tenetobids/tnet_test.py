@@ -3,12 +3,20 @@ import numpy as np
 
 def test_tnet_derive(): 
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
+    tnet.set_confound_pipeline('fmriprep')
+    alt = tnet.get_confound_alternatives()
+    assert 'confound1' in alt
+    assert 'confound2' in alt
+    tnet.set_confounds('confound1')
     tnet.load_parcellation_data()
-    tnet.derive({'method':'jackknife','dimord':'node,time',},update_pipeline=True,confound_corr_report=True)
+    tnet.derive({'method':'jackknife','dimord':'node,time'},update_pipeline=True,confound_corr_report=False)
+    #tnet.removeconfounds()
     tnet.load_tvc_data()
     R_jc = teneto.misc.corrcoef_matrix(np.squeeze(tnet.parcellation_data_)[:,1:])[0][0,1]
     assert np.round(R_jc,12) == np.round(tnet.tvc_data_[0,0,1,0]*-1,12)
 
+    
+    
 def test_make_fc():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
     tnet.load_parcellation_data()
@@ -36,7 +44,7 @@ def test_make_fc():
     assert all(JCm==(JC)+R)
 
 def test_communitydetection(): 
-    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='tvc',last_analysis_step='tvc',subjects='001',tasks='',runs='alpha',raw_data_exists=False) 
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='tvc',last_analysis_step='tvc',subjects='001',tasks='b',runs='alpha',raw_data_exists=False) 
     community_detection_params = {'resolution_parameter': 1, 'interslice_weight': 0, 'quality_function': 'ReichardtBornholdt2006'} 
     tnet.communitydetection(community_detection_params,'temporal')
     # Compensating for data not being in a versioen directory
