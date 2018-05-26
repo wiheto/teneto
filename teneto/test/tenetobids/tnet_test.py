@@ -36,7 +36,7 @@ def test_make_fc():
     assert all(JCm==(JC)+R)
 
 def test_communitydetection(): 
-    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='tvc',last_analysis_step='tvc',subjects='001',tasks='b',runs='alpha',raw_data_exists=False) 
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='tvc',last_analysis_step='tvc',subjects='001',tasks='',runs='alpha',raw_data_exists=False) 
     community_detection_params = {'resolution_parameter': 1, 'interslice_weight': 0, 'quality_function': 'ReichardtBornholdt2006'} 
     tnet.communitydetection(community_detection_params,'temporal')
     # Compensating for data not being in a versioen directory
@@ -50,3 +50,10 @@ def test_communitydetection():
     assert C[3,0] != C[0,0] 
     assert C[4,2] != C[0,2] 
 
+
+
+def test_networkmeasure(): 
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto_' + teneto.__version__,pipeline_subdir='tvc',last_analysis_step='tvc',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
+    tnet.networkmeasures('volatility')
+    tnet.load_network_measure('volatility')
+    assert len(tnet.networkmeasure_) == 1
