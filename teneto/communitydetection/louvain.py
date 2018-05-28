@@ -6,7 +6,7 @@ import itertools
 import numpy as np
 import teneto
 
-def temporal_louvain_with_consensus(net, iter_n=100, resolution_parameter=1, interslice_weight=0, quality_function='NewmanGirvan2004', seed=42, consensus_threshold=0.5):
+def temporal_louvain_with_consensus(net, iter_n=100, resolution_parameter=1, interslice_weight=0, quality_function='NewmanGirvan2004', seed=42, consensus_threshold=0.5, skip_temporal_consensus=False):
     """
     Temporal louvain clustering run for iter_n times and consenus matrix returned.
 
@@ -27,6 +27,8 @@ def temporal_louvain_with_consensus(net, iter_n=100, resolution_parameter=1, int
         Seed for reproduceability
     consensus_threshold : float
         Value between 0 and 1. When creating consensus matrix, ignore if value only occurs in specified fraction of iterations. If 0.5 two nodes must be in the same community 50% of the time to be considered in the consensus matrix.
+    skip_temporal_consensus : bool    
+        Temporal consensus tries to match communities at neighbouring time points with best matching indicies. This can take a long time. Set to false for speedup.  
 
     Returns
     -------
@@ -83,9 +85,9 @@ def temporal_louvain_with_consensus(net, iter_n=100, resolution_parameter=1, int
             D = teneto.communitydetection.make_consensus_matrix(C,th=consensus_threshold)
         Gin = D
         #Only first iteration needs to be returned as consensus means they are all identical
-    if len(C.shape) == 3: 
+    if len(C.shape) == 3 and not skip_temporal_consensus: 
         communities = teneto.communitydetection.make_temporal_consensus(C[0,:,:])
-    else:
+    elif len(C.shape) == 2: 
         communities = C[0,:]
 
     if dict_input:
