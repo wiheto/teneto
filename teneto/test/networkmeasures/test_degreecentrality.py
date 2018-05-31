@@ -76,9 +76,6 @@ def tdeg_with_communities():
     assert C1[:,:,0] == np.array([[3,0],[0,3]])
     assert C1[:,:,2] == np.array([[6,0],[0,1]])
     assert C1[:,:,3] == np.array([[3,3],[3,1]])
-    # If time is not speicfied, an error should be raised
-    with pytest.raises(ValueError): 
-        teneto.networkmeasures.temporal_degree_centrality(G,communities=C)
     #module degree zscore
     a=np.array([[1,1,0,1,0,0],[1,1,1,0,0,0],[0,1,1,0,0,0],[1,0,0,1,1,1],[0,0,0,1,1,1],[0,0,0,1,1,1]])
     b=np.array([[1,1,1,1,0,0],[1,1,1,1,0,0],[1,1,1,1,0,0],[1,1,1,1,0,0],[0,0,0,0,1,1],[0,0,0,0,1,1]])
