@@ -120,7 +120,7 @@ def test_tnet_scrubbing_and_spline():
     # Future tests: test that the cubic spline is correct
 
 
-def test_tnet_set_bad_fil;es():
+def test_tnet_set_bad_files():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
     # Set the confound pipeline in fmriprep 
     tnet.load_parcellation_data()
