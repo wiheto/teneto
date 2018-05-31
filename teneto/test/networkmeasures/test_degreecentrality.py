@@ -48,17 +48,6 @@ def test_sid():
     assert np.all(sid_c[0,1,:] == sid_c_true)
     assert np.all(sid_g == sid_g_true)
 
-def test_degreefail(): 
-    G = np.zeros([3,3,4])
-    G[0,1,[0,2,3]] = 1
-    G[0,2,1] = 1
-    G[1,2,3] = 1
-    G += G.transpose([1,0,2]) 
-    G = teneto.utils.set_diagonal(G,1)
-    # Call different instances of temporal_degree_centrality 
-    with pytest.raises(ValueError): 
-        teneto.networkmeasures.temporal_degree_centrality(G,calc='module_degree_zscore')
-
 def tdeg_with_communities(): 
     # Two graphlets templates with definite community structure 
     a=np.array([[1,1,1,0,0,0],[1,1,1,0,0,0],[1,1,1,0,0,0],[0,0,0,1,1,1],[0,0,0,1,1,1],[0,0,0,1,1,1]])
@@ -89,3 +78,14 @@ def tdeg_with_moduledegreezscore():
     assert C2[0,0] == (1-np.mean([1,2,1]))/np.std([1,2,1])
     assert C2[1,0] == (2-np.mean([1,2,1]))/np.std([1,2,1])
     assert C2[4,1] == (1-np.mean([1,1,0]))/np.std([1,1,0])
+
+def test_degreefail(): 
+    G = np.zeros([3,3,4])
+    G[0,1,[0,2,3]] = 1
+    G[0,2,1] = 1
+    G[1,2,3] = 1
+    G += G.transpose([1,0,2]) 
+    G = teneto.utils.set_diagonal(G,1)
+    # Call different instances of temporal_degree_centrality 
+    with pytest.raises(ValueError): 
+        teneto.networkmeasures.temporal_degree_centrality(G,calc='module_degree_zscore')
