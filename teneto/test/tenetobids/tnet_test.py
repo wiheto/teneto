@@ -19,6 +19,9 @@ def test_make_fc_and_tvc():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
     tnet.load_parcellation_data()
     r = tnet.make_functional_connectivity(returngroup=True)[0,1] 
+    fc_files = tnet.get_functional_connectivity_files() 
+    assert 'roi_fc' in fc_files[0]
+    assert len(fc_files) == 1
     R = teneto.misc.corrcoef_matrix(np.squeeze(tnet.parcellation_data_))[0][0,1]
     tnet.derive({'method':'jackknife','dimord':'node,time','postpro':'standardize'},update_pipeline=True,confound_corr_report=False)
     tnet.load_tvc_data()
@@ -85,3 +88,32 @@ def test_tnet_derive_with_removeconfounds():
     tnet.removeconfounds(transpose=True)
     assert tnet.last_analysis_step == 'clean'
     
+def test_tnet_scrubbing():
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
+    # Set the confound pipeline in fmriprep 
+    tnet.set_confound_pipeline('fmriprep')
+    alt = tnet.get_confound_alternatives()
+    tnet.set_exclusion_timepoint('confound1','>1',replace_with='nan')
+    tnet.load_parcellation_data(tag='scrub')
+    dat = np.where(np.isnan(np.squeeze(tnet.parcellation_data_)))
+    targ = np.array([[0, 0, 1, 1],[4,5,4,5]])
+    assert np.all(targ == dat)
+
+def test_tnet_scrubbing_and_spline():
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',pipeline_subdir='parcellation',last_analysis_step='roi',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
+    # Set the confound pipeline in fmriprep 
+    tnet.load_parcellation_data()
+    dat_orig = np.squeeze(tnet.parcellation_data_)
+    tnet.set_confound_pipeline('fmriprep')
+    alt = tnet.get_confound_alternatives()
+    tnet.set_exclusion_timepoint('confound1','>1',replace_with='cubicspline')
+    tnet.load_parcellation_data(tag='scrub')
+    dat_scrub = np.squeeze(tnet.parcellation_data_)
+    targ = np.array([[0, 0, 1, 1],[4,5,4,5]])
+    # Make sure there is a difference 
+    assert np.sum(dat_scrub != dat_orig)
+    # Show that the difference between the original data at scrubbed time point is larger in data_orig
+    assert np.sum(np.abs(np.diff(dat_orig[0]))-np.abs(np.diff(dat_scrub[0]))) > 0
+    # Future tests: test that the cubic spline is correct
+
+
