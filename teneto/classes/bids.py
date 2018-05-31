@@ -247,7 +247,7 @@ class TenetoBIDS:
                 delimiter = ','
             elif confound_files[i].split('.')[-1] == 'tsv':
                 delimiter = '\t'
-            df = pd.read_csv(confound_files[i],sep=delimiter,index_col=0)
+            df = pd.read_csv(confound_files[i],sep=delimiter)
             df = df.fillna(df.median())
             ind = np.triu_indices(dfc.shape[0], k=1)
             dfc_df = pd.DataFrame(dfc[ind[0],ind[1],:].transpose())
@@ -1758,6 +1758,9 @@ class TenetoBIDS:
                     ok = False
                 if not any(['ses-' + t in f for t in self.sessions if t]) and self.sessions:
                     ok = False
+                if self.last_analysis_step: 
+                    if not f.split('.')[-2].endswith(self.last_analysis_step):
+                        ok = False
                 # Include only if all analysis step tags are present
                 if parc in f and all([t + '_' in f or t + '.' in f for t in tag]) and ok:
                     # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
