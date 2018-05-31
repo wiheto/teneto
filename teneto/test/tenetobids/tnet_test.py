@@ -1,7 +1,8 @@
 import teneto 
 import numpy as np 
 import os 
-
+from PyQt5 import QtCore
+QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_X11InitThreads, True) 
 
 def test_tnet_derive(): 
     # load parc file with data
