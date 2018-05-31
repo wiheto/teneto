@@ -48,7 +48,7 @@ def test_sid():
     assert np.all(sid_c[0,1,:] == sid_c_true)
     assert np.all(sid_g == sid_g_true)
 
-def tdeg_with_communities(): 
+def test_tdeg_with_communities(): 
     # Two graphlets templates with definite community structure 
     a=np.array([[1,1,1,0,0,0],[1,1,1,0,0,0],[1,1,1,0,0,0],[0,0,0,1,1,1],[0,0,0,1,1,1],[0,0,0,1,1,1]])
     b=np.array([[1,1,1,1,0,0],[1,1,1,1,0,0],[1,1,1,1,0,0],[1,1,1,1,0,0],[0,0,0,0,1,1],[0,0,0,0,1,1]])
@@ -64,7 +64,7 @@ def tdeg_with_communities():
     assert np.all(C1[:,:,2] == np.array([[6,0],[0,1]]))
     assert np.all(C1[:,:,3] == np.array([[3,3],[3,1]]))
 
-def tdeg_with_moduledegreezscore(): 
+def test_tdeg_with_moduledegreezscore(): 
     #module degree zscore
     a=np.array([[1,1,0,1,0,0],[1,1,1,0,0,0],[0,1,1,0,0,0],[1,0,0,1,1,1],[0,0,0,1,1,1],[0,0,0,1,1,1]])
     b=np.array([[1,1,1,1,0,0],[1,1,1,1,0,0],[1,1,1,1,0,0],[1,1,1,1,0,0],[0,0,0,0,1,1],[0,0,0,0,1,1]])
