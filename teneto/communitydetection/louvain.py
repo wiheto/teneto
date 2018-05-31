@@ -89,6 +89,8 @@ def temporal_louvain_with_consensus(net, iter_n=100, resolution_parameter=1, int
         communities = teneto.communitydetection.make_temporal_consensus(C[0,:,:])
     elif len(C.shape) == 2: 
         communities = C[0,:]
+    else:
+        communities = C[0,:,:]
 
     if dict_input:
         C = teneto.utils.graphlet2contact(net,netinfo)
