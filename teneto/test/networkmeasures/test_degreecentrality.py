@@ -80,7 +80,6 @@ def tdeg_with_moduledegreezscore():
     a=np.array([[1,1,0,1,0,0],[1,1,1,0,0,0],[0,1,1,0,0,0],[1,0,0,1,1,1],[0,0,0,1,1,1],[0,0,0,1,1,1]])
     b=np.array([[1,1,1,1,0,0],[1,1,1,1,0,0],[1,1,1,1,0,0],[1,1,1,1,0,0],[0,0,0,0,1,1],[0,0,0,0,1,1]])
     C = np.array([[0,0,0,1,1,1],[0,0,0,1,1,1]]).transpose()
-    # Make into 3 time points 
     G = np.stack([a,b]).transpose([1,2,0])
     C2 = teneto.networkmeasures.temporal_degree_centrality(G,calc='module_degree_zscore',communities=C)
     # Shape should be node x time 
