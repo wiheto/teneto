@@ -58,8 +58,6 @@ def test_degreefail():
     # Call different instances of temporal_degree_centrality 
     with pytest.raises(ValueError): 
         teneto.networkmeasures.temporal_degree_centrality(G,calc='module_degree_zscore')
-    with pytest.raises(ValueError): 
-        teneto.networkmeasures.temporal_degree_centrality(G,calc='something_unknown')
 
 def tdeg_with_communities(): 
     # Two graphlets templates with definite community structure 
