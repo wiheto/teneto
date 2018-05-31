@@ -71,9 +71,11 @@ def tdeg_with_communities():
     # SHape should be communities,communities,time 
     assert (len(np.unique(C)),len(np.unique(C)),G.shape[-1]) == C1.shape
     # Hardcode the answer which should be [[3,0],[0,3]] at t=0 and [[6,1],[1,6]] at t=2 and [[3,3],[3,1]] at t=3
-    assert C1[:,:,0] == np.array([[3,0],[0,3]])
-    assert C1[:,:,2] == np.array([[6,0],[0,1]])
-    assert C1[:,:,3] == np.array([[3,3],[3,1]])
+    assert np.all(C1[:,:,0] == np.array([[3,0],[0,3]]))
+    assert np.all(C1[:,:,2] == np.array([[6,0],[0,1]]))
+    assert np.all(C1[:,:,3] == np.array([[3,3],[3,1]]))
+
+def tdeg_with_moduledegreezscore(): 
     #module degree zscore
     a=np.array([[1,1,0,1,0,0],[1,1,1,0,0,0],[0,1,1,0,0,0],[1,0,0,1,1,1],[0,0,0,1,1,1],[0,0,0,1,1,1]])
     b=np.array([[1,1,1,1,0,0],[1,1,1,1,0,0],[1,1,1,1,0,0],[1,1,1,1,0,0],[0,0,0,0,1,1],[0,0,0,0,1,1]])
