@@ -68,11 +68,11 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet
     # sum sum net
     if calc == 'time' and communities is None:
         tdeg = np.squeeze(np.sum(net, axis=axis))
+    elif calc == 'module_degree_zscore' and communities is None:
+        raise ValueError('Communities must be specified when calculating module degree z-score.')
     elif calc != 'time' and communities is None:
         tdeg = np.sum(
             np.sum(net, axis=2), axis=axis)
-    elif calc == 'module_degree_zscore' and communities is None:
-        raise ValueError('Communities must be specified when calculating module degree z-score.')
     elif calc == 'module_degree_zscore' and communities is not None:
         tdeg = np.zeros([net.shape[0],net.shape[2]])
         for t in range(net.shape[2]):
