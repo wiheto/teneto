@@ -128,6 +128,7 @@ class TenetoBIDS:
         else:
             self.njobs = njobs
         self.bad_files = []
+        self.confounds = None
 
     def add_history(self, fname, fargs, init=0):
         """
@@ -875,7 +876,7 @@ class TenetoBIDS:
             sdir += '/'.join(files[i].split('/')[:-1])
             with open(files[i][:-4] + '_scrub_exclusion_info.txt', 'w') as text_file:
                 text_file.write(deleted_timepoints_txt)
-        self.analysis_steps += [self.last_analysis_step]
+        self.analysis_steps += list(self.last_analysis_step)
         self.last_analysis_step = 'scrub'
         self.set_bad_files(bad_files)
         print('Removed ' + str(bs) + ' files from inclusion.')
@@ -1040,7 +1041,7 @@ class TenetoBIDS:
                 self.set_confound_pipeline(self.pipeline)
             self.set_pipeline('teneto_' + teneto.__version__)
             self.set_pipeline_subdir('parcellation')
-            self.analysis_steps += self.last_analysis_step
+            self.analysis_steps += list(self.last_analysis_step)
             if tag:
                 self.analysis_steps += [tag[1:]]
             self.set_last_analysis_step('roi')
@@ -1192,7 +1193,7 @@ class TenetoBIDS:
                 j.result()
 
         if update_pipeline == True:
-            self.analysis_steps += self.last_analysis_step
+            self.analysis_steps += list(self.last_analysis_step)
             self.set_last_analysis_step('clean')
 
     def _run_removeconfounds(self,file_path,confound_path,clean_params,transpose=False,confound_hdr=True,confound_idx=True,file_hdr=False,file_idx=False): 
@@ -1413,7 +1414,7 @@ class TenetoBIDS:
             elif file_format == 'csv':
                 sub_confounds = list(pd.read_csv(f,delimiter=',').keys())
             for c in confounds:
-                if c not in sub_confounds:
+                if c not in sub_confouanalysis_stepsnds:
                     print('Warning: the confound (' + c + ') not found in file: ' + f)
 
         self.confounds = confounds
@@ -1481,7 +1482,7 @@ class TenetoBIDS:
         self.add_history(inspect.stack()[0][3], locals(), 1)
         if isinstance(analysis_step,str):
             if add_step:
-                self.analysis_steps.append()
+                self.analysis_steps = [self.analysis_steps, analysis_step]
             else:
                 self.analysis_steps = [analysis_step]
         elif isinstance(analysis_step,list):
