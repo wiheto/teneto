@@ -1414,7 +1414,7 @@ class TenetoBIDS:
             elif file_format == 'csv':
                 sub_confounds = list(pd.read_csv(f,delimiter=',').keys())
             for c in confounds:
-                if c not in sub_confouanalysis_stepsnds:
+                if c not in sub_confounds:
                     print('Warning: the confound (' + c + ') not found in file: ' + f)
 
         self.confounds = confounds
