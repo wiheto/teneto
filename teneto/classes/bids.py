@@ -788,8 +788,6 @@ class TenetoBIDS:
                 string or list of confound name(s) from confound files. Assumes data is node,time
             exclusion_criteria  : str or list
                 for each confound, an exclusion_criteria should be expressed as a string. It starts with >,<,>= or <= then the numerical threshold. Ex. '>0.2' will entail every subject with the avg greater than 0.2 of confound will be rejected.
-            confound_stat : str
-                Can be median, mean, std. How the confound data is aggregated (so if there is a meaasure per time-point, this is averaged over all time points).
             replace_with : str
                 Can be 'nan' (bad values become nans) or 'cubicspline' (bad values are interpolated). If bad value occurs at 0 or -1 index, then these values are kept and no interpolation occurs.
             tol = float 
