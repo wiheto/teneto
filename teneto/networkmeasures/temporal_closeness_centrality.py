@@ -12,32 +12,20 @@ def temporal_closeness_centrality(data):
     As temporalPaths only works with binary undirected edges at the moment,
      this is required for temporal closeness centrality.
 
-    **PARAMETERS**
+    Parameters 
+    -----------
 
-    :data: This is either:
-
-        :netIn: temporal network input (graphlet or contact).
-
-            :nettype: 'bu'
-
-        :paths: Dictionary of paths (output of shortest_temporal_path).
+    data : array or dict 
+    
+        Temporal network input (graphlet or contact). nettype: 'bu'. Can also be a dictionary of paths (output of TenetoBIDS.networkmeasure.shortest_temporal_paths)
 
 
-    **OUTPUT**
+    Returns 
+    --------
 
-    :C: temporal closness centrality (nodal measure)
-
-        :format: 1d numpy array
-
-    **See Also**
-
-    - *temporalPaths*
-    - *temporalDegree*
-
-    **History**
-
-    Modified - Dec 2016, WHT (documentation, cleanup)
-    Created - Nov 2016, WHT
+    :close: array 
+    
+        temporal closness centrality (nodal measure)
 
     '''
 
@@ -50,7 +38,6 @@ def temporal_closeness_centrality(data):
     if pathdata == 0:
         data = shortest_temporal_path(data)
 
-    closeness = np.nansum(
-        1 / np.nanmean(data['paths'], axis=2), axis=1) / (data['paths'].shape[1] - 1)
+    closeness = np.nansum(1 / np.nanmean(data['paths'], axis=2), axis=1) / (data['paths'].shape[1] - 1)
 
     return closeness
