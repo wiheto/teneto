@@ -167,3 +167,15 @@ def test_tnet_set_bad_files():
     assert tnet.bad_files[0] == tnet.BIDS_dir + 'derivatives/' + tnet.pipeline + \
         '/sub-001/func/' + tnet.pipeline_subdir + \
         '/sub-001_task-a_run-alpha_bold_preproc_roi'
+
+
+def test_tnet_make_parcellation():
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
+                            last_analysis_step='preproc', subjects='001', tasks='a', runs='alpha', raw_data_exists=False)
+    # Set the confound pipeline in fmriprep
+    tnet.make_parcellation('gordon2014_333')
+    tnet.load_parcellation_data()
+    # Hard coded facts about dummy data
+    assert tnet.parcellation_data_.max() == 1 
+    assert tnet.parcellation_data_.shape() == (1,333,2) 
+    
