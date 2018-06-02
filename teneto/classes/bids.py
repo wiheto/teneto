@@ -2036,8 +2036,8 @@ class TenetoBIDS:
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         #Make sure that event_onsets and event_names are lists
-        if  np.any(event_onsets[0]):
-            [e.tolist() for e in event_onsets[0]]   
+        #if  np.any(event_onsets[0]):
+        #    event_onsets = [e.tolist() for e in event_onsets[0]]   
         if isinstance(event_onsets[0],int) or isinstance(event_onsets[0],float): 
             event_onsets = [event_onsets]
         if isinstance(event_names,str): 
