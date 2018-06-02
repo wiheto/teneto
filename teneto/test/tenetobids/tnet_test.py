@@ -70,10 +70,18 @@ def test_communitydetection():
 def test_networkmeasure(): 
     # calculate and load a network measure
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto_' + teneto.__version__,pipeline_subdir='tvc',last_analysis_step='tvc',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
-    tnet.networkmeasures('volatility')
-    tnet.load_network_measure('volatility')
-    assert len(tnet.networkmeasure_) == 1
+    tnet.networkmeasures('volatility',{'calc':'time'},save_tag='time')
+    tnet.load_network_measure('volatility',tag='time')
+    assert tnet.networkmeasure_.shape == (1,19)
 
+
+def test_timelockednetworkmeasure(): 
+    # calculate and load a network measure
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto_' + teneto.__version__,pipeline_subdir='tvc',last_analysis_step='tvc',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
+    tnet.make_timelocked_events('volatility','testevents',[1],[-1,1],tag='time')
+    tnet.load_timelocked_data('testevents')
+    tnet.load_network_measure('volatility')
+    assert np.all(np.squeeze(tnet.timelocked_data_) == np.squeeze(tnet.networkmeasure_[0,0:3]))
 
 def test_tnet_derive_with_removeconfounds(): 
     # load parc file with data
