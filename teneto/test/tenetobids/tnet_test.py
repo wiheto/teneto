@@ -78,8 +78,9 @@ def test_networkmeasure():
 def test_timelockednetworkmeasure(): 
     # calculate and load a network measure
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto_' + teneto.__version__,pipeline_subdir='tvc',last_analysis_step='tvc',subjects='001',tasks='a',runs='alpha',raw_data_exists=False) 
+    tnet.networkmeasures('volatility',{'calc':'time'},save_tag='time')
     tnet.make_timelocked_events('volatility','testevents',[1],[-1,1],tag='time')
-    tnet.load_timelocked_data('testevents')
+    tnet.load_timelocked_data('volatility')
     tnet.load_network_measure('volatility')
     assert np.all(np.squeeze(tnet.timelocked_data_) == np.squeeze(tnet.networkmeasure_[0,0:3]))
 
