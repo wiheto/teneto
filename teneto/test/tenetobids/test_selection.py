@@ -27,3 +27,14 @@ def test_get_pipeline_alternatives():
     pipeline = tnet.get_pipeline_alternatives() 
     assert 'fmriprep' in pipeline
     assert 'teneto-tests' in pipeline
+
+    
+def test_get_pipeline_alternatives(): 
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',tasks='a',raw_data_exists=False) 
+    tnet.set_bad_subjects('001')
+    tnet.set_bad_subjects(['002'])
+    assert len(tnet.bad_subjects) == 2
+
+def test_print():
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',pipeline='teneto-tests',tasks='a',raw_data_exists=False) 
+    tnet.print_dataset_summary()
