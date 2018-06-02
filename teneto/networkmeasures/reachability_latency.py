@@ -8,45 +8,31 @@ from teneto.networkmeasures.shortest_temporal_path import shortest_temporal_path
 
 def reachability_latency(data, rratio=1, calc='global'):
     """
-    returns global reachability latency.
-    This is the r-th longest temporal path. Where r is the number of time If r=1,
+    returns global reachability latency. This is the r-th longest temporal path. 
 
-    **PARAMETERS**
+    Parameters
 
-    :data: This is either:
+    data : array or dict 
 
-        :netIn: temporal network input (graphlet or contact).
+        Can either be a network (graphlet or contact), binary unidrected only. Alternative can be a paths dictionary (output of teneto.networkmeasure.shortest_temporal_path)
 
-            :nettype: 'bu'
-
-        :paths: Dictionary of paths (output of shortest_temporal_path).
-
-    :rratio: reachability ratio that the latency is calculated in relation to.
+    rratio: int (1 default) 
+        reachability ratio that the latency is calculated in relation to.
         Value must be over 0 and up to 1.
         1 (default) - all nodes must be reached.
         Other values (e.g. .5 imply that 50% of nodes are reached)
         This is rounded to the nearest node inter.
         E.g. if there are 6 nodes [1,2,3,4,5,6], it will be node 4 (due to round upwards)
 
-    :calc: what to calculate R for:
-        :'global': entire network.
-        :'nodes': each node.
+    :calc: str 
+        what to calculate. Alternatives: 'global' entire network; 'nodes': for each node.
 
 
-    **OUTPUT**
+    Returns 
+    --------
 
-    :R: readability latency
-        :format: integer (numpy array)
-
-    **SEE ALSO**
-
-    - *temporal_efficiency*
-    - *shortest_temporal_path*
-
-    **HISTORY**
-
-    :Modified: Dec 2016, WHT (Documentation)
-    :Created: Dec 2016, WHT
+    reach_lat : array 
+        Reachability latency
 
     """
 
