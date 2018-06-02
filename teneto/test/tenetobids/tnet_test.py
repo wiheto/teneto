@@ -177,5 +177,5 @@ def test_tnet_make_parcellation():
     tnet.load_parcellation_data()
     # Hard coded facts about dummy data
     assert tnet.parcellation_data_.max() == 1 
-    assert tnet.parcellation_data_.shape() == (1,333,2) 
+    assert tnet.parcellation_data_.shape == (1,333,2) 
     
