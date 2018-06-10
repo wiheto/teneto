@@ -2,6 +2,8 @@
 
 ## V0.3.4 (pending)
 
+- Removing __main__.py and some misc files not used
+
 - Added check to TenetoBIDS.load_community_data() for file to exist 
 
 - Added missing warnings import in networkmeasures
