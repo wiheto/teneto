@@ -10,6 +10,8 @@
 
 - Added more TenetoBIDS functions that use _load_data 
 
+- Correct caclulation of within-volatility when calc=communities
+
 - Changed file_hdr and file_idx in _load_data
 
 - Improved matching of confound files and file in TenetoBIDS 
