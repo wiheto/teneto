@@ -919,3 +919,18 @@ def get_dimord(measure,calc=None,community=None):
     else:
         print('WARNINGL: get_dimord() returned unknown dimension labels')
         return 'unknown'
+
+def test_contactmultiplevalues():
+
+    g = teneto.generatenetwork.rand_binomial([2,1],1,initialize=1) 
+    c = teneto.utils.graphlet2contact(g)
+    c['contacts']=np.vstack([c['contacts'],c['contacts']])
+    cnew = teneto.utils.multiple_contacts_get_values(c)
+    assert cnew['values'] == [2]    
+    assert len(cnew['contacts']) == 1
+
+
+def test_getdimord(): 
+    dimord = teneto.utils.get_dimord('volatility','global')
+    assert dimord == 'time'
+    # Need to impove a lot of the dimord settings!!
