@@ -154,6 +154,7 @@ def test_tnet_scrubbing_and_spline():
     # Future tests: test that the cubic spline is correct
 
 
+
 def test_tnet_set_bad_files():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
                              pipeline_subdir='parcellation', last_analysis_step='roi', subjects='001', tasks='a', runs='alpha', raw_data_exists=False)
@@ -192,3 +193,32 @@ def test_tnet_io():
     assert tnet2.get_selected_files()==tnet.get_selected_files()
 
     
+def test_tnet_scrubbing_and_exclusion_options():
+    # <= 
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
+                             pipeline_subdir='parcellation', last_analysis_step='roi', subjects='001', tasks='a', runs='alpha', raw_data_exists=False)
+    tnet.set_confound_pipeline('fmriprep')
+    tnet.set_exclusion_timepoint('confound1', '<=0', replace_with='nan')
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
+                             pipeline_subdir='parcellation', last_analysis_step='roi', subjects='001', tasks='a', runs='alpha', raw_data_exists=False)
+    tnet.set_confound_pipeline('fmriprep')
+    tnet.set_exclusion_file('confound2', '<=1')
+    # <
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
+                             pipeline_subdir='parcellation', last_analysis_step='roi', subjects='001', tasks='a', runs='alpha', raw_data_exists=False)
+    tnet.set_confound_pipeline('fmriprep')
+    tnet.set_exclusion_timepoint('confound1', '<0', replace_with='nan')
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
+                             pipeline_subdir='parcellation', last_analysis_step='roi', subjects='001', tasks='a', runs='alpha', raw_data_exists=False)
+    tnet.set_confound_pipeline('fmriprep')
+    tnet.set_exclusion_file('confound2', '<1')
+    # >=
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
+                             pipeline_subdir='parcellation', last_analysis_step='roi', subjects='001', tasks='a', runs='alpha', raw_data_exists=False)
+    tnet.set_confound_pipeline('fmriprep')
+    tnet.set_exclusion_timepoint('confound2', '>=2', replace_with='nan')
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
+                             pipeline_subdir='parcellation', last_analysis_step='roi', subjects='001', tasks='a', runs='alpha', raw_data_exists=False)
+    tnet.set_confound_pipeline('fmriprep')
+    tnet.set_exclusion_file('confound2', '>=1')
+
