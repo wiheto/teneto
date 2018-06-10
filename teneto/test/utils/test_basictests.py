@@ -36,6 +36,9 @@ def test_binarize():
     Gbin_perc = teneto.utils.binarize(G,'percent',threshold_level=0.5)
     Gbin_perc2 = teneto.utils.binarize(G,'percent',threshold_level=0.5,axis='graphlet')
     Gbin_mag = teneto.utils.binarize(G,'magnitude',threshold_level=0.45)
+    Gbin_mag_c = teneto.utils.binarize(teneto.utils.graphlet2contact(G),'magnitude',threshold_level=0.45)
+    Gbin_perc_c = teneto.utils.binarize(teneto.utils.graphlet2contact(G),'percent',threshold_level=0.5)
+    Gbin_mag = teneto.utils.binarize(G,'magnitude',threshold_level=0.45)
     G = teneto.utils.set_diagonal(G,0)
     Gt = np.zeros(G.shape) 
     Gt[G>0.45] = 1
@@ -44,6 +47,10 @@ def test_binarize():
     assert Gbin_perc[0,1,0] == Gbin_perc[1,2,0] == Gbin_perc[0,2,1] == 0 
     assert Gbin_perc2[0,1,0] == Gbin_perc2[1,2,1] == 1 
     assert Gbin_perc2[0,1,1] == Gbin_perc2[1,2,0] == Gbin_perc2[0,2,1] == Gbin_perc2[0,1,1] == 0 
+    assert isinstance(Gbin_mag_c,dict)
+    assert isinstance(Gbin_perc_c,dict)
+    assert np.all(teneto.utils.contact2graphlet(Gbin_perc_c) == Gbin_perc)
+    assert np.all(teneto.utils.contact2graphlet(Gbin_mag_c) == Gbin_mag)
     
 def test_cleancommunityindicies(): 
     c = [5,3,4,5,5,5,3,3,3,4,4]
