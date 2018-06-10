@@ -464,7 +464,7 @@ class TenetoBIDS:
                 ses = '/ses-' + self.sessions + '/'
             else:
                 ses = ''
-            for s in self.BIDS.get_subjects():
+            for s in self.subjects:
                 derdir_files = os.listdir(self.BIDS_dir + '/derivatives/' + self.pipeline + '/' + self.pipeline_subdir +'/sub-' + s + '/' + ses + 'func/')
                 space_alternatives += [re.split('[_.]',f.split('_space-')[1])[0] for f in derdir_files if re.search('_space-',f)]
             space_alternatives = set(space_alternatives)
@@ -501,7 +501,7 @@ class TenetoBIDS:
             self.get_pipeline_alternatives()
         else:
             pipeline_subdir_alternatives = []
-            for s in self.BIDS.get_subjects():
+            for s in self.subjects:
                 derdir_files = os.listdir(self.BIDS_dir + '/derivatives/' + self.pipeline + '/' + s + '/')
                 pipeline_subdir_alternatives += [f for f in derdir_files if os.path.isdir(f)]
             pipeline_subdir_alternatives = set(pipeline_subdir_alternatives)
@@ -1480,7 +1480,7 @@ class TenetoBIDS:
         self.add_history(inspect.stack()[0][3], locals(), 1)
         if isinstance(analysis_step,str):
             if add_step:
-                self.analysis_steps = [self.analysis_steps, analysis_step]
+                self.analysis_steps = self.analysis_steps + [analysis_step]
             else:
                 self.analysis_steps = [analysis_step]
         elif isinstance(analysis_step,list):

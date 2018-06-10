@@ -51,3 +51,22 @@ def test_print():
     tnet = teneto.TenetoBIDS(teneto.__path__[
                              0] + '/data/testdata/dummybids/', pipeline='teneto-tests', tasks='a', raw_data_exists=False)
     tnet.print_dataset_summary()
+
+def test_setanalysisstep():
+    tnet = teneto.TenetoBIDS(teneto.__path__[
+                             0] + '/data/testdata/dummybids/', pipeline='teneto-tests', tasks='a', raw_data_exists=False)
+    tnet.set_analysis_steps('a')
+    tnet.set_analysis_steps('b',add_step=True)
+    assert tnet.analysis_steps == ['a','b']
+    tnet.set_analysis_steps(['a','b'])
+    assert tnet.analysis_steps == ['a','b']
+    tnet.set_analysis_steps(['c','d'],add_step=True)
+    assert tnet.analysis_steps == ['a','b','c','d']
+    
+def test_halftests():
+    #these tests could be made better
+    tnet = teneto.TenetoBIDS(teneto.__path__[
+                             0] + '/data/testdata/dummybids/', pipeline='teneto-tests', tasks='a', raw_data_exists=False)
+    
+    tnet.get_pipeline_subdir_alternatives()
+    tnet.get_space_alternatives()
