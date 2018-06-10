@@ -1,5 +1,5 @@
 import teneto
-
+import pytest
 
 def test_define():
     tnet = teneto.TenetoBIDS(teneto.__path__[
@@ -45,6 +45,13 @@ def test_set_bad_subjects():
     tnet.set_bad_subjects('001')
     tnet.set_bad_subjects(['002'])
     assert len(tnet.bad_subjects) == 2
+
+
+def test_set_space_error():
+    tnet = teneto.TenetoBIDS(teneto.__path__[
+                             0] + '/data/testdata/dummybids/', pipeline='teneto-tests', tasks='a', raw_data_exists=False,njobs=1)
+    with pytest.raises(ValueError):
+        tnet.set_space('bla')
 
 
 def test_print():
