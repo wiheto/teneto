@@ -174,6 +174,8 @@ def test_tnet_make_parcellation():
                             last_analysis_step='preproc', subjects='001', tasks='a', runs='alpha', raw_data_exists=False)
     # Set the confound pipeline in fmriprep
     tnet.make_parcellation('gordon2014_333+sub-maxprob-thr25-1mm')
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
+                            last_analysis_step='preproc', subjects='001', tasks='a', runs='alpha', raw_data_exists=False)
     tnet.make_parcellation('gordon2014_333')
     tnet.load_parcellation_data()
     # Hard coded facts about dummy data

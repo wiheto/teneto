@@ -2,6 +2,8 @@
 import teneto
 import numpy as np
 import matplotlib.pyplot as plt
+import pytest
+
 
 def test_graphletconversion():
     # For reproduceability
@@ -62,4 +64,50 @@ def test_cleancommunityindicies():
 def test_load_parc_cords(): 
     parc = teneto.utils.load_parcellation_coords('power2012_264')
     assert parc.shape == (264,3)
+
+
+def test_contact2graphletfail():
+
+    C = {} 
+    # Error that dimord must be present
+    with pytest.raises(ValueError):
+        teneto.utils.contact2graphlet(C)
+    C['dimord'] = 'blablabla'
+    # Error that dimord must be correct
+    with pytest.raises(ValueError):
+        teneto.utils.contact2graphlet(C)
+    C['dimord'] = 'node,node,time'
+    # Error that nettype is missing
+    with pytest.raises(ValueError):
+        teneto.utils.contact2graphlet(C)
+    C['nettype'] = 'blablablabl'
+    #Specify incorrect nettype
+    with pytest.raises(ValueError):
+        teneto.utils.contact2graphlet(C)
+    C['nettype'] = 'wu'
+    #Netshape missing
+    with pytest.raises(ValueError):
+        teneto.utils.contact2graphlet(C)
+    C['netshape'] = 'wu'
+    #Netshape incorrectly specified
+    with pytest.raises(ValueError):
+        teneto.utils.contact2graphlet(C)
+    C['netshape'] = (3,10)
+    #Netshape not long enough
+    with pytest.raises(ValueError):
+        teneto.utils.contact2graphlet(C)
+    C['netshape'] = (3,3,10)
+    #values field is missing, since weighted
+    with pytest.raises(ValueError):
+        teneto.utils.contact2graphlet(C)
+    C['values'] = [1]
+    #contacts field missing
+    with pytest.raises(ValueError):
+        teneto.utils.contact2graphlet(C)
+    C['contacts'] = [[0,1,1]]
+    C['timetype'] = 'discrete'
+    C['diagonal'] = 1
+    teneto.utils.contact2graphlet(C)
+
+
 
