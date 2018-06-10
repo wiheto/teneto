@@ -101,17 +101,20 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
                         1, netinfo['netshape'][-1] - 1])
         for net1 in net_id:
             for net2 in net_id:
-                vol[net1, net2, :] = [distance_func(net[communities == net1][:, communities == net2, t].flatten(),
+                if net1 != net2: 
+                    vol[net1, net2, :] = [distance_func(net[communities == net1][:, communities == net2, t].flatten(),
                                                     net[communities == net1][:, communities == net2, t + 1].flatten()) for t in range(0, net.shape[-1] - 1)]
+                else: 
+                    nettmp = net[communities == net1][:, communities == net2, :]
+                    triu = np.triu_indices(nettmp.shape[0],k=1)
+                    nettmp = nettmp[triu[0], triu[1], :]
+                    vol[net1,net2, :] = [distance_func(nettmp[:,t].flatten(),nettmp[:,t + 1].flatten()) for t in range(0, net.shape[-1] - 1)] 
+
     elif calc == 'withincommunities':
-        within_ind = np.array([[ind[0][n], ind[1][n]] for n in range(
-            0, len(ind[0])) if communities[ind[0][n]] == communities[ind[1][n]]])
-        vol = [distance_func(net[within_ind[:, 0], within_ind[:, 1], t], net[within_ind[:, 0],
-                                                                                   within_ind[:, 1], t + 1]) for t in range(0, net.shape[-1] - 1)]
+        within_ind = np.array([[ind[0][n], ind[1][n]] for n in range(0, len(ind[0])) if communities[ind[0][n]] == communities[ind[1][n]]])
+        vol = [distance_func(net[within_ind[:, 0], within_ind[:, 1], t], net[within_ind[:, 0], within_ind[:, 1], t + 1]) for t in range(0, net.shape[-1] - 1)]
     elif calc == 'betweencommunities':
-        between_ind = np.array([[ind[0][n], ind[1][n]] for n in range(
-            0, len(ind[0])) if communities[ind[0][n]] != communities[ind[1][n]]])
-        vol = [distance_func(net[between_ind[:, 0], between_ind[:, 1], t], net[between_ind[:,
-                                                                                                 0], between_ind[:, 1], t + 1]) for t in range(0, net.shape[-1] - 1)]
+        between_ind = np.array([[ind[0][n], ind[1][n]] for n in range(0, len(ind[0])) if communities[ind[0][n]] != communities[ind[1][n]]])
+        vol = [distance_func(net[between_ind[:, 0], between_ind[:, 1], t], net[between_ind[:, 0], between_ind[:, 1], t + 1]) for t in range(0, net.shape[-1] - 1)]
 
     return vol
