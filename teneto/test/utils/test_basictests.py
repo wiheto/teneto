@@ -53,7 +53,19 @@ def test_binarize():
     assert isinstance(Gbin_perc_c,dict)
     assert np.all(teneto.utils.contact2graphlet(Gbin_perc_c) == Gbin_perc)
     assert np.all(teneto.utils.contact2graphlet(Gbin_mag_c) == Gbin_mag)
-    
+
+def test_binarize_rdp(): 
+    G = np.zeros([2,2,5])
+    G[0,1,0] = 1
+    G[0,1,1] = 0
+    G[0,1,2] = 0.5
+    G[0,1,3] = 0    
+    G[0,1,4] = 1    
+    Gbin1 = teneto.utils.binarize(G,'rdp',0.49)
+    Gbin2 = teneto.utils.binarize(G,'rdp',0.51)
+    assert (np.all(Gbin1[0,1,:] == [1,0,1,0,1]))
+    assert (np.all(Gbin2[0,1,:] == [1,0,0,0,1]))
+
 def test_cleancommunityindicies(): 
     c = [5,3,4,5,5,5,3,3,3,4,4]
     c_expected = [2,0,1,2,2,2,0,0,0,1,1]
