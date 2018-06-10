@@ -48,6 +48,5 @@ def test_volatility_communities():
     # Hardcode answer due to hamming distance and predefined matrix 
     assert np.all(v_within == [0.5, 1])
     assert np.all(v_bet == [0.25, 0])
-    assert np.all(v_communities == [0.5, 1])
     assert np.all(v_communities[:,:,0] == np.array([[1, 0.25], [0.25, 0]]))
     assert np.all(v_communities[:,:,1] == np.array([[1, 0], [0, 1]]))
