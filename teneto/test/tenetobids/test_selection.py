@@ -67,6 +67,4 @@ def test_halftests():
     #these tests could be made better
     tnet = teneto.TenetoBIDS(teneto.__path__[
                              0] + '/data/testdata/dummybids/', pipeline='teneto-tests', tasks='a', raw_data_exists=False)
-    
-    tnet.get_pipeline_subdir_alternatives()
     tnet.get_space_alternatives()
