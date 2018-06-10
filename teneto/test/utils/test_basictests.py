@@ -66,6 +66,24 @@ def test_binarize_rdp():
     assert (np.all(Gbin1[0,1,:] == [1,0,1,0,1]))
     assert (np.all(Gbin2[0,1,:] == [1,0,0,0,1]))
 
+
+
+def test_contactmultiplevalues():
+
+    g = teneto.generatenetwork.rand_binomial([2,1],1,initialize=1) 
+    c = teneto.utils.graphlet2contact(g)
+    c['contacts']=np.vstack([c['contacts'],c['contacts']])
+    cnew = teneto.utils.multiple_contacts_get_values(c)
+    assert cnew['values'] == [2]    
+    assert len(cnew['contacts']) == 1
+
+
+def test_getdimord(): 
+    dimord = teneto.utils.get_dimord('volatility','global')
+    assert dimord == 'time'
+    # Need to impove a lot of the dimord settings!!
+
+
 def test_cleancommunityindicies(): 
     c = [5,3,4,5,5,5,3,3,3,4,4]
     c_expected = [2,0,1,2,2,2,0,0,0,1,1]
