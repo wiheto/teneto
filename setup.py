@@ -5,7 +5,7 @@ General setup for module
 from setuptools import setup, find_packages
 
 setup(name='teneto',
-      version='0.3.3',
+      version='0.3.4',
       python_requires='>3.5',
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],

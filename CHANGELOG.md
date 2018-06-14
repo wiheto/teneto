@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.3.4 (pending)
+## V0.3.4 
 
 - Removing __main__.py and some misc files not used
 
