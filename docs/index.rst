@@ -6,6 +6,12 @@
 Welcome to teneto's documentation!
 ==================================
 
+.. image:: tutorial/images/gennet_example1.png
+    :align: center
+
+Teneto is a python package for temporal network theory. 
+
+
 .. toctree::
    :maxdepth: 1
 
