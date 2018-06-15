@@ -2,6 +2,7 @@ Tutorial
 --------
 
 .. toctree::
+    :maxdepth: 1
 
     tutorial/graphlets_and_contactrepresentations
     tutorial/generating_a_random_network
