@@ -13,7 +13,7 @@ from . import generatenetwork
 from . import derive
 from . import misc
 from . import trajectory
-from . import communitydetection
+#from . import communitydetection
 from .classes import TenetoBIDS
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering
