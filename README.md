@@ -21,13 +21,13 @@ to upgrade teneto:
 
 `pip install teneto -U`
 
-Requires: Python 3.5 or python 3.6. Other versions of python (2.7 and <3.5) may work, but not tested.
+Requires: Python 3.5 or python 3.6. 
 
 Installing teneto installs all python package requirements as well. However, for community detection, iGraph is used which can need some seperate C compilers installed. See ([python-iGraph installation page](http://igraph.org/python/#startpy) for more details regarding what needs to be installed).
 
-##
+## Documentation 
 
-Documentation for the functions can be found at  [teneto.readthedocs.io](https://teneto.readthedocs.io) and includes tutorials.
+More detailed documentation can be found at  [teneto.readthedocs.io](https://teneto.readthedocs.io) and includes tutorials.
 
 ## Outlook.
 
