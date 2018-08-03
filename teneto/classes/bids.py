@@ -1057,79 +1057,79 @@ class TenetoBIDS:
 
 
 
-    def communitydetection(self,community_detection_params,community_type='temporal',tag=None,file_hdr=False,file_idx=False,njobs=None):
-        """
-        Calls temporal_louvain_with_consensus on connectivity data
+    # def communitydetection(self,community_detection_params,community_type='temporal',tag=None,file_hdr=False,file_idx=False,njobs=None):
+    #     """
+    #     Calls temporal_louvain_with_consensus on connectivity data
 
-        Parameters
-        ----------
+    #     Parameters
+    #     ----------
 
-        community_detection_params : dict 
-            kwargs for detection. See teneto.communitydetection.louvain.temporal_louvain_with_consensus
-        community_type : str
-            Either 'temporal' or 'static'. If temporal, community is made per time-point for each timepoint.         
-        file_idx : bool (default false) 
-            if true, index column present in data and this will be ignored 
-        file_hdr : bool (default false) 
-            if true, header row present in data and this will be ignored 
-        njobs : int 
-            number of processes to run. Overrides TenetoBIDS.njobs
+    #     community_detection_params : dict 
+    #         kwargs for detection. See teneto.communitydetection.louvain.temporal_louvain_with_consensus
+    #     community_type : str
+    #         Either 'temporal' or 'static'. If temporal, community is made per time-point for each timepoint.         
+    #     file_idx : bool (default false) 
+    #         if true, index column present in data and this will be ignored 
+    #     file_hdr : bool (default false) 
+    #         if true, header row present in data and this will be ignored 
+    #     njobs : int 
+    #         number of processes to run. Overrides TenetoBIDS.njobs
 
-        Note 
-        ----
-        All non-positive edges are made to zero. 
+    #     Note 
+    #     ----
+    #     All non-positive edges are made to zero. 
 
 
-        Returns 
-        ------- 
-        List of communities for each subject. Saved in BIDS_dir/derivatives/teneto/communitydetection/
-        """
-        if not njobs:
-            njobs = self.njobs
-        self.add_history(inspect.stack()[0][3], locals(), 1)
+    #     Returns 
+    #     ------- 
+    #     List of communities for each subject. Saved in BIDS_dir/derivatives/teneto/communitydetection/
+    #     """
+    #     if not njobs:
+    #         njobs = self.njobs
+    #     self.add_history(inspect.stack()[0][3], locals(), 1)
 
-        if not tag:
-            tag = ['']
-        if isinstance(tag,str):
-            tag = [tag]        
+    #     if not tag:
+    #         tag = ['']
+    #     if isinstance(tag,str):
+    #         tag = [tag]        
 
-        if community_type == 'temporal':
-            files = self.get_selected_files(quiet=True) 
-            # Run check to make sure files are tvc input
-            for f in files: 
-                    if 'tvc' not in f: 
-                        raise ValueError('tvc tag not found in filename. TVC data must be used in communitydetection (perhaps run TenetoBIDS.derive first?).')
-        elif community_type == 'static': 
-            files = self.get_functional_connectivity_files(quiet=True) 
+    #     if community_type == 'temporal':
+    #         files = self.get_selected_files(quiet=True) 
+    #         # Run check to make sure files are tvc input
+    #         for f in files: 
+    #                 if 'tvc' not in f: 
+    #                     raise ValueError('tvc tag not found in filename. TVC data must be used in communitydetection (perhaps run TenetoBIDS.derive first?).')
+    #     elif community_type == 'static': 
+    #         files = self.get_functional_connectivity_files(quiet=True) 
 
-        with ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_communitydetection,f,community_detection_params,community_type,file_hdr,file_idx) for i,f in enumerate(files) if all([t + '_' in f or t + '.' in f for t in tag])}
-            for j in as_completed(job):
-                j.result()
+    #     with ProcessPoolExecutor(max_workers=njobs) as executor:
+    #         job = {executor.submit(self._run_communitydetection,f,community_detection_params,community_type,file_hdr,file_idx) for i,f in enumerate(files) if all([t + '_' in f or t + '.' in f for t in tag])}
+    #         for j in as_completed(job):
+    #             j.result()
 
-    def _run_communitydetection(self,f,params,community_type,file_hdr=False,file_idx=False): 
-        tag = 'communitytype-' + community_type
-        if 'resolution_parameter' in params:    
-            tag += '_gamma-' + str(np.round(params['resolution_parameter'],5))
-        if 'interslice_weight' in params: 
-            tag += '_omega-' + str(np.round(params['interslice_weight'],5))
-        tag += '_louvain'
-        if community_type == 'temporal': 
-            save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,tag,'communities')
-        else: 
-            save_name, a, b = self._save_namepaths_bids_derivatives(f,tag,'')
-            save_dir = f.split('fc')[0] + '/communities/'
-        if not os.path.exists(save_dir): 
-            try: 
-                os.makedirs(save_dir)
-            except: 
-                #Wait 2 seconds so that the error does not try and save something in the directory before it is created
-                time.sleep(2)
-        data = self._load_file(f,output='array',header=file_idx,index_col=file_idx) 
-        # Only put positive edges into clustering (more advanced methods can be added here later )
-        data[data<0] = 0
-        C = teneto.communitydetection.temporal_louvain_with_consensus(data, **params)
-        np.save(save_dir + save_name,C)
+    # def _run_communitydetection(self,f,params,community_type,file_hdr=False,file_idx=False): 
+    #     tag = 'communitytype-' + community_type
+    #     if 'resolution_parameter' in params:    
+    #         tag += '_gamma-' + str(np.round(params['resolution_parameter'],5))
+    #     if 'interslice_weight' in params: 
+    #         tag += '_omega-' + str(np.round(params['interslice_weight'],5))
+    #     tag += '_louvain'
+    #     if community_type == 'temporal': 
+    #         save_name, save_dir, base_dir = self._save_namepaths_bids_derivatives(f,tag,'communities')
+    #     else: 
+    #         save_name, a, b = self._save_namepaths_bids_derivatives(f,tag,'')
+    #         save_dir = f.split('fc')[0] + '/communities/'
+    #     if not os.path.exists(save_dir): 
+    #         try: 
+    #             os.makedirs(save_dir)
+    #         except: 
+    #             #Wait 2 seconds so that the error does not try and save something in the directory before it is created
+    #             time.sleep(2)
+    #     data = self._load_file(f,output='array',header=file_idx,index_col=file_idx) 
+    #     # Only put positive edges into clustering (more advanced methods can be added here later )
+    #     data[data<0] = 0
+    #     C = teneto.communitydetection.temporal_louvain_with_consensus(data, **params)
+    #     np.save(save_dir + save_name,C)
 
 
     def removeconfounds(self,confounds=None,clean_params=None,transpose=False,njobs=None,update_pipeline=True,confound_hdr=True,confound_idx=False,file_hdr=False,file_idx=False): 

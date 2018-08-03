@@ -12,7 +12,6 @@ setup(name='teneto',
       install_requires=[
 		'nilearn>=0.4.0',
 		'pybids>=0.4.2',
-        'louvain>=0.6.1',
         'statsmodels>=0.8.0'],
       description='Temporal network tools',
       packages=find_packages(),

@@ -18,4 +18,3 @@ from .classes import TenetoBIDS
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering
 
-del classes

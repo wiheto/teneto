@@ -1,5 +1,9 @@
 # Changelog
 
+## V0.3.5 
+
+- Due to problems with installation of iGraph, temporarily removing communitydetection (commenting out code in TenetoBIDS, communitydetection module is not imported and tests commented.) This is until a more user friendly louvain detection is implemented (and is quick). 
+
 ## V0.3.4 
 
 - Removing __main__.py and some misc files not used

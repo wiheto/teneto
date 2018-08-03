@@ -23,7 +23,11 @@ to upgrade teneto:
 
 Requires: Python 3.5 or python 3.6. 
 
-Installing teneto installs all python package requirements as well. However, for community detection, iGraph is used which can need some seperate C compilers installed. See ([python-iGraph installation page](http://igraph.org/python/#startpy) for more details regarding what needs to be installed).
+Installing teneto via pip installs all python package requirements as well. 
+
+## Installation notes. 
+
+Version 0.3.5+: community detection has been temporarily removed until a better solution than using iGraph is found. iGraph has lead to multiple problems on non-linux systems. Community detection can still be imported (import teneto.communitydeteciton) but it has been removed from TenetoBIDS. If required in TenetoBIDS the code still exists but is commented uncomment ./teneto/classes/bids.py line 1060-1132 to get working again.  
 
 ## Documentation 
 

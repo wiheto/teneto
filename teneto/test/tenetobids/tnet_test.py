@@ -61,22 +61,22 @@ def test_make_fc_and_tvc():
     assert all(JCm == (JC)+R)
 
 
-def test_communitydetection():
-    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
-                             pipeline_subdir='tvc', last_analysis_step='tvc', subjects='001', tasks='b', runs='alpha', raw_data_exists=False)
-    community_detection_params = {'resolution_parameter': 1,
-                                  'interslice_weight': 0, 'quality_function': 'ReichardtBornholdt2006'}
-    tnet.communitydetection(community_detection_params, 'temporal')
-    # Compensating for data not being in a versioen directory
-    tnet.set_pipeline('teneto_' + teneto.__version__)
-    tnet.load_community_data('temporal')
-    C = np.squeeze(tnet.community_data_)
-    assert C[0, 0] == C[1, 0] == C[2, 0]
-    assert C[3, 0] == C[4, 0] == C[5, 0]
-    assert C[0, 2] == C[1, 2] == C[2, 2] == C[3, 2]
-    assert C[4, 2] == C[5, 2]
-    assert C[3, 0] != C[0, 0]
-    assert C[4, 2] != C[0, 2]
+# def test_communitydetection():
+#     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
+#                              pipeline_subdir='tvc', last_analysis_step='tvc', subjects='001', tasks='b', runs='alpha', raw_data_exists=False)
+#     community_detection_params = {'resolution_parameter': 1,
+#                                   'interslice_weight': 0, 'quality_function': 'ReichardtBornholdt2006'}
+#     tnet.communitydetection(community_detection_params, 'temporal')
+#     # Compensating for data not being in a versioen directory
+#     tnet.set_pipeline('teneto_' + teneto.__version__)
+#     tnet.load_community_data('temporal')
+#     C = np.squeeze(tnet.community_data_)
+#     assert C[0, 0] == C[1, 0] == C[2, 0]
+#     assert C[3, 0] == C[4, 0] == C[5, 0]
+#     assert C[0, 2] == C[1, 2] == C[2, 2] == C[3, 2]
+#     assert C[4, 2] == C[5, 2]
+#     assert C[3, 0] != C[0, 0]
+#     assert C[4, 2] != C[0, 2]
 
 
 def test_networkmeasure():
