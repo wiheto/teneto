@@ -18,9 +18,5 @@ Teneto is a python package for temporal network theory.
    tutorial
    teneto
 
-Indices and tables
-==================
-
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
