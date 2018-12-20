@@ -5,7 +5,7 @@ import numpy as np
 import warnings
 from .temporal_degree_centrality import temporal_degree_centrality
 
-def sid(net, communities, axis=0, calc='global', decay=None):
+def sid(net, communities, axis=0, calc='global', decay=0):
     """
 
     Segregation integration difference (SID). An estimation of each community or global difference of within versus between community strength.
@@ -16,7 +16,7 @@ def sid(net, communities, axis=0, calc='global', decay=None):
     net: array, dict
         Temporal network input (graphlet or contact). Allowerd nettype: 'bu', 'bd', 'wu', 'wd'
 
-    communities :
+    communities : array
         a Nx1 vector or NxT array of community assignment.
 
     axis : int
@@ -30,7 +30,7 @@ def sid(net, communities, axis=0, calc='global', decay=None):
          'community_pairs' returns a community x community x time matrix, which is the SID for each community pairing;
          'community_avg' (returns a community x time matrix). Which is the normalized average of each community to all other communities.
 
-    decay: str
+    decay: int
         if calc = 'time', then decay is possible where the centrality of
         the previous time point is carried over to the next time point but decays
         at a value of $e^decay$ such that the temporal centrality measure becomes: $D_d(t+1) = e^{-decay}D_d(t) + D(t+1)$.
