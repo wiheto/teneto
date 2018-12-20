@@ -3,7 +3,6 @@
 ## V0.4.0 (development)
 
 - Fixed relative import paths
-- Moved tests for each module to module folder (started)
 - Subnet argument for certain functions have been removed.
 
 ## V0.3.5
