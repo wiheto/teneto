@@ -1,11 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from teneto.utils import contact2graphlet, checkInput
-
 from scipy import ndimage
+from ..utils import contact2graphlet, checkInput
 
 plt.rcParams['axes.facecolor'] = 'white'
-
 
 def graphlet_stack_plot(netIn, ax, q=10, cmap='Reds', gridcolor='k', borderwidth=2, bordercolor=[0, 0, 0], Fs=1, timeunit='', t0=1, sharpen='yes', vminmax='minmax'):
     '''

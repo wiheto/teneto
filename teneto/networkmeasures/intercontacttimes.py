@@ -3,7 +3,7 @@ networkmeasures: intercontacttimes
 """
 
 import numpy as np
-import teneto.utils as utils
+from ..utils import process_input
 
 
 def intercontacttimes(netin):
@@ -38,7 +38,7 @@ def intercontacttimes(netin):
     """
 
     # Process input
-    netin, netinfo = utils.process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
 
     if netinfo['nettype'][0] == 'd':
         print('WARNING: assuming connections to be binary when computing intercontacttimes')

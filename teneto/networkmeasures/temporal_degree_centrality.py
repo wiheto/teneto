@@ -3,10 +3,11 @@ Network mesures: temporal degree centrality
 """
 
 import numpy as np
-import teneto.utils as utils
 import warnings
+from ..utils import process_input, set_diagonal
 
-def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet=None, decay=None,ignorediagonal=True):
+
+def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, decay=0, ignorediagonal=True):
     """
 
     temporal degree of network. Sum of all connections each node has through time.
@@ -27,7 +28,7 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet
         'avg' (returns temporal degree centrality (a 1xnode vector))
         'time' (returns a node x time matrix),
         'module_degree_zscore' returns the Z-scored within community degree centrality (communities argument required). This is done for each time-point
-     i.e. 'time' returns static degree centrality per time-point.
+    i.e. 'time' returns static degree centrality per time-point.
 
     ignorediagonal: bool
         if true, diagonal is made to 0. 
@@ -35,9 +36,6 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet
     communities : array (Nx1)
         Vector of community assignment.
         If this is given and calc='time', then the strength within and between each communities is returned (technically not degree centrality).
-
-    subnet : array (Nx1)
-        Vector of community assignment (deprecated)
 
     decay : int
         if calc = 'time', then decay is possible where the centrality of
@@ -56,48 +54,46 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet
     - *temporal_closeness_centrality*
 
     """
-    if subnet is not None:
-        warnings.warn(
-        "Subnet argument will be removed in v0.3.5. Use communities instead.", FutureWarning)
-        communities = subnet
 
     # Get input in right format
-    net, netinfo = utils.process_input(net, ['C', 'G', 'TO'])
+    net, netinfo = process_input(net, ['C', 'G', 'TO'])
     if ignorediagonal:
-        net = utils.set_diagonal(net,0)
+        net = set_diagonal(net, 0)
     # sum sum net
     if calc == 'time' and communities is None:
         tdeg = np.squeeze(np.sum(net, axis=axis))
     elif calc == 'module_degree_zscore' and communities is None:
-        raise ValueError('Communities must be specified when calculating module degree z-score.')
+        raise ValueError(
+            'Communities must be specified when calculating module degree z-score.')
     elif calc != 'time' and communities is None:
         tdeg = np.sum(
             np.sum(net, axis=2), axis=axis)
     elif calc == 'module_degree_zscore' and communities is not None:
-        tdeg = np.zeros([net.shape[0],net.shape[2]])
+        tdeg = np.zeros([net.shape[0], net.shape[2]])
         for t in range(net.shape[2]):
-            if len(communities.shape)==2:
-                C = communities[:,t]
+            if len(communities.shape) == 2:
+                C = communities[:, t]
             else:
                 C = communities
             for c in np.unique(C):
-                k_i = np.sum(net[:, C == c,t][C== c], axis=axis)
-                tdeg[C == c,t] = (k_i - np.mean(k_i)) / np.std(k_i)
-        tdeg[np.isnan(tdeg)==1] = 0
+                k_i = np.sum(net[:, C == c, t][C == c], axis=axis)
+                tdeg[C == c, t] = (k_i - np.mean(k_i)) / np.std(k_i)
+        tdeg[np.isnan(tdeg) == 1] = 0
     elif calc == 'time' and communities is not None:
-        tdeg_communities = np.zeros([communities.max()+1,communities.max()+1,communities.shape[-1]])
-        if len(communities.shape)==2:
+        tdeg_communities = np.zeros(
+            [communities.max()+1, communities.max()+1, communities.shape[-1]])
+        if len(communities.shape) == 2:
             for t in range(len(communities[-1])):
-                C = communities[:,t] 
+                C = communities[:, t]
                 unique_communities = np.unique(C)
                 for s1 in unique_communities:
                     for s2 in unique_communities:
-                        tdeg_communities[s1,s2,t] = np.sum(np.sum(net[C == s1, :, t][:, C == s2], axis=1), axis=0) 
-        else: 
+                        tdeg_communities[s1, s2, t] = np.sum(
+                            np.sum(net[C == s1, :, t][:, C == s2], axis=1), axis=0)
+        else:
             unique_communities = np.unique(communities)
             tdeg_communities = [np.sum(np.sum(net[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
-                        for s1 in unique_communities for s2 in unique_communities]
-            
+                                for s1 in unique_communities for s2 in unique_communities]
 
         tdeg = np.array(tdeg_communities)
         tdeg = np.reshape(tdeg, [len(np.unique(communities)), len(
@@ -105,16 +101,17 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, subnet
         # Divide diagonal by 2 if undirected to correct for edges being present twice
         if netinfo['nettype'][1] == 'u':
             for s in range(tdeg.shape[0]):
-                tdeg[s,s,:] = tdeg[s,s,:]/2
+                tdeg[s, s, :] = tdeg[s, s, :]/2
     else:
         raise ValueError("invalid calc argument")
-    if decay and calc=='time':
-        #Reshape so that time is first dimensions
-        tdeg = tdeg.transpose(np.hstack([len(tdeg.shape)-1,np.arange(len(tdeg.shape)-1)]))
-        for n in range(1,tdeg.shape[0]):
+    if decay > 0 and calc == 'time':
+        # Reshape so that time is first dimensions
+        tdeg = tdeg.transpose(
+            np.hstack([len(tdeg.shape)-1, np.arange(len(tdeg.shape)-1)]))
+        for n in range(1, tdeg.shape[0]):
             tdeg[n] = np.exp(-decay)*tdeg[n-1] + tdeg[n]
-        tdeg = tdeg.transpose(np.hstack([np.arange(1,len(tdeg.shape)),0]))
-    elif decay:
+        tdeg = tdeg.transpose(np.hstack([np.arange(1, len(tdeg.shape)), 0]))
+    elif decay > 0:
         print('WARNING: decay cannot be applied unless calc=time, ignoring decay')
 
     return tdeg

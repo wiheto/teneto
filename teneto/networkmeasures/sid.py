@@ -2,10 +2,10 @@
 
 import teneto.utils as utils
 import numpy as np
-from teneto.networkmeasures.temporal_degree_centrality import temporal_degree_centrality
 import warnings
+from .temporal_degree_centrality import temporal_degree_centrality
 
-def sid(net, communities, subnet=None, axis=0, calc='global', decay=None):
+def sid(net, communities, axis=0, calc='global', decay=None):
     """
 
     Segregation integration difference (SID). An estimation of each community or global difference of within versus between community strength.
@@ -18,9 +18,6 @@ def sid(net, communities, subnet=None, axis=0, calc='global', decay=None):
 
     communities :
         a Nx1 vector or NxT array of community assignment.
-
-    subnet : array
-        a Nx1 vector or NxT array  of community assignment (will be removed in v0.3.5).
 
     axis : int
         Dimension that is returned 0 or 1 (default 0).
@@ -44,17 +41,12 @@ def sid(net, communities, subnet=None, axis=0, calc='global', decay=None):
     sid: array
         segregation-integration difference. Format: 2d or 3d numpy array (depending on calc) representing (community,community,time) or (community,time)
 
-    Source
-    ------
-
+    Citation
+    --------
     Fransson et al (2018) Brain network segregation and integration during an epoch-related working memory fMRI experiment.
     https://www.biorxiv.org/content/early/2018/01/23/252338
 
     """
-    if subnet is not None:
-        warnings.warn(
-        "Subnet argument will be removed in v0.3.5. Use communities instead.", FutureWarning)
-        communities = subnet
 
     net, netinfo = utils.process_input(net, ['C', 'G', 'TO'])
     D = temporal_degree_centrality(net, calc='time', communities=communities, decay=decay)

@@ -3,7 +3,7 @@ generatenetwork.rand_binomial
 """
 
 import numpy as np
-from teneto.utils import graphlet2contact
+from ..utils import graphlet2contact
 
 
 def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero', netinfo=None):

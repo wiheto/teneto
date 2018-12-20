@@ -1,7 +1,7 @@
 # Main function to draw a slice_graph
 import matplotlib.pyplot as plt
 import numpy as np
-from teneto.utils import *
+from ..utils import *
 
 
 def slice_plot(netIn, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=None, nodesize=100):

@@ -9,7 +9,9 @@ import numpy as np
 from statsmodels.stats.weightstats import DescrStatsW
 import teneto
 import scipy.stats as sps
-
+from ..utils import set_diagonal, getDistanceFunction
+from .postprocess import postpro_pipeline
+from .report import gen_report
 
 def derive(data, params):
     """
@@ -167,21 +169,21 @@ def derive(data, params):
 
     if isinstance(params['method'], str):
         if params['method'] == 'jackknife':
-            weights, report = weightfun_jackknife(data.shape[0], report)
+            weights, report = _weightfun_jackknife(data.shape[0], report)
             relation = 'weight'
         elif params['method'] == 'sliding window' or params['method'] == 'slidingwindow':
-            weights, report = weightfun_sliding_window(
+            weights, report = _weightfun_sliding_window(
                 data.shape[0], params, report)
             relation = 'weight'
         elif params['method'] == 'tapered sliding window' or params['method'] == 'taperedslidingwindow':
-            weights, report = weightfun_tapered_sliding_window(
+            weights, report = _weightfun_tapered_sliding_window(
                 data.shape[0], params, report)
             relation = 'weight'
         elif params['method'] == 'distance' or params['method'] == "spatial distance" or params['method'] == "node distance" or params['method'] == "nodedistance" or params['method'] == "spatialdistance":
-            weights, report = weightfun_spatial_distance(data, params, report)
+            weights, report = _weightfun_spatial_distance(data, params, report)
             relation = 'weight'
         elif params['method'] == 'mtd' or params['method'] == 'multiply temporal derivative' or params['method'] == 'multiplytemporalderivative' or params['method'] == 'temporal derivative' or params['method'] == "temporalderivative":
-            R, report = temporal_derivative(data, params, report)
+            R, report = _temporal_derivative(data, params, report)
             relation = 'coupling'
         else:
             raise ValueError(
@@ -223,21 +225,21 @@ def derive(data, params):
                 R = (R - R.mean(axis=0)) / R.std(axis=0)
             R = R + params['weight-mean']
             R = np.transpose(R, [1, 2, 0])
-        R = teneto.utils.set_diagonal(R,1)
+        R = set_diagonal(R,1)
 
 
 
     if params['postpro'] != 'no':
-        R, report = teneto.derive.postpro_pipeline(
+        R, report = postpro_pipeline(
             R, params['postpro'], report)
-        R = teneto.utils.set_diagonal(R,1)
+        R = set_diagonal(R,1)
 
     if params['report'] == 'yes' or params['report'] == True:
-        teneto.derive.gen_report(report, params['report_path'], params['report_filename'])
+        gen_report(report, params['report_path'], params['report_filename'])
     return R
 
 
-def weightfun_jackknife(T, report):
+def _weightfun_jackknife(T, report):
     """ 
     Creates the weights for the jackknife method. See func: teneto.derive.derive. 
     """
@@ -249,7 +251,7 @@ def weightfun_jackknife(T, report):
     return weights, report
 
 
-def weightfun_sliding_window(T, params, report):
+def _weightfun_sliding_window(T, params, report):
     """ 
     Creates the weights for the sliding window method. See func: teneto.derive.derive. 
     """
@@ -263,7 +265,7 @@ def weightfun_sliding_window(T, params, report):
     return weights, report
 
 
-def weightfun_tapered_sliding_window(T, params, report):
+def _weightfun_tapered_sliding_window(T, params, report):
     """ 
     Creates the weights for the tapered method. See func: teneto.derive.derive. 
     """
@@ -283,11 +285,11 @@ def weightfun_tapered_sliding_window(T, params, report):
     return weights, report
 
 
-def weightfun_spatial_distance(data, params, report):
+def _weightfun_spatial_distance(data, params, report):
     """ 
     Creates the weights for the spatial distance method. See func: teneto.derive.derive. 
     """
-    distance = teneto.utils.getDistanceFunction(params['distance'])
+    distance = getDistanceFunction(params['distance'])
     weights = np.array([distance(data[n, :], data[t, :]) for n in np.arange(
         0, data.shape[0]) for t in np.arange(0, data.shape[0])])
     weights = np.reshape(weights, [data.shape[0], data.shape[0]])
@@ -299,7 +301,7 @@ def weightfun_spatial_distance(data, params, report):
     return weights, report
 
 
-def temporal_derivative(data, params, report):
+def _temporal_derivative(data, params, report):
     """ 
     Performs mtd method. See func: teneto.derive.derive. 
     """

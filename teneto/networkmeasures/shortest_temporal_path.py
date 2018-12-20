@@ -5,7 +5,7 @@ Networkmeasures: shortest temporal paths
 """
 
 import numpy as np
-import teneto.utils as utils
+from ..utils import process_input
 
 
 def shortest_temporal_path(netin, quiet=1):
@@ -57,7 +57,7 @@ def shortest_temporal_path(netin, quiet=1):
 
     # Get input type (C or G)
     # Process input
-    netin, netinfo = utils.process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
 
     if netinfo['nettype'] != 'bu':
         errormsg = ('It looks like your graph is not binary and undirected. '

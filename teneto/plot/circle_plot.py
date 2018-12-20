@@ -2,8 +2,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-from teneto.utils import *
-from teneto.plot.slice_plot import make_bezier, pascal_row
+from .slice_plot import make_bezier, pascal_row
+from ..utils import *
 
 
 def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):

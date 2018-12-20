@@ -3,16 +3,15 @@ networkmeasures.bursty_coeff
 """
 
 import numpy as np
-from teneto.networkmeasures.intercontacttimes import intercontacttimes
-import warnings
+from .intercontacttimes import intercontacttimes
 
-def bursty_coeff(data, calc='edge', nodes='all', communities=None, subnet=None):
+def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     """
     returns calculates the bursty coefficient. Value > 0
-     indicates bursty. Value < 0 periodic/tonic. Value = 0
-      implies random.
+    indicates bursty. Value < 0 periodic/tonic. Value = 0
+    implies random.
     As temporalPaths only works with binary undirected edges
-     at the moment, weighted edges are assumed to be binary.
+    at the moment, weighted edges are assumed to be binary.
 
     Parameters
     ----------
@@ -31,25 +30,18 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, subnet=None):
     communities : array, optoinal
         None (default) or Nx1 vector of communities assignment. This returns a "centrality" per communities instead of per node.
 
-    subnet : array, optoinal
-        None (default) or Nx1 vector of communities assignment. This returns a "centrality" per communities instead of per node. Will be removed. Use communities instead.
-
 
     Returns
     -------
     b_coeff : array
         bursty coefficienct per (edge or node measure)
 
-    Source
+    Cite
     ------
     Goh and Barabasi 2008
     Discrete formulation here from Holme 2012.
 
     """
-    if subnet is not None:
-        warnings.warn(
-        "Subnet argument will be removed in v0.3.5. Use communities instead.", FutureWarning)
-        communities = subnet
 
     if calc == 'communities' and not communities:
         raise ValueError("Specified calc='communities' but no communities argument provided (list of clusters/modules)")

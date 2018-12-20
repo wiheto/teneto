@@ -3,7 +3,7 @@ networkmeasures.reachability_latency
 """
 
 import numpy as np
-from teneto.networkmeasures.shortest_temporal_path import shortest_temporal_path
+from .shortest_temporal_path import shortest_temporal_path
 
 
 def reachability_latency(data, rratio=1, calc='global'):

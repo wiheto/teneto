@@ -4,7 +4,7 @@ File contains functions for postprocessing derivation of connectivity estimates
 
 import numpy as np
 import scipy as sp
-import teneto
+from ..utils import set_diagonal
 
 
 def postpro_fisher(data, report=None):
@@ -94,7 +94,7 @@ def postpro_standardize(data, report=None):
     report['standardize']['performed'] = 'yes'
     report['standardize']['method'] = 'Z-score'
     # The above makes self connections to nan, set to 1. 
-    data = teneto.utils.set_diagonal(data,1)
+    data = set_diagonal(data,1)
     return standardized_data, report
 
 
@@ -122,9 +122,9 @@ def postpro_pipeline(data, pipeline, report=None):
     """
 
     postpro_functions = {
-        'fisher': teneto.derive.postpro_fisher,
-        'boxcox': teneto.derive.postpro_boxcox,
-        'standardize': teneto.derive.postpro_standardize
+        'fisher': postpro_fisher,
+        'boxcox': postpro_boxcox,
+        'standardize': postpro_standardize
     }
 
     if not report:

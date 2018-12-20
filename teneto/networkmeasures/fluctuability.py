@@ -2,7 +2,7 @@
 networkmeasures.fluctuatbility
 """
 import numpy as np
-import teneto.utils as utils
+from ..utils import process_input
 
 
 def fluctuability(netin, calc='global'):
@@ -30,7 +30,7 @@ def fluctuability(netin, calc='global'):
     """
 
     # Get input type (C or G)
-    netin, netinfo = utils.process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
 
     netin[netin != 0] = 1
     unique_edges = np.sum(netin, axis=2)

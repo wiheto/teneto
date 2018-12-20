@@ -1,0 +1,10 @@
+
+
+update setup.py, teneto/__init__.py, docs.conf, CHANGELOG, readme
+
+python setup.py sdist upload -r pypi
+
+
+python setup.py bdist_wheel
+twine upload dist/*
+

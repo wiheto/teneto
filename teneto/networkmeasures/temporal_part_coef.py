@@ -1,5 +1,5 @@
-import teneto.utils as utils
 import numpy as np
+from ..utils import process_input
 
 def temporal_part_coef(net, communities=None, removeneg=False):
     '''
@@ -50,7 +50,7 @@ def temporal_part_coef(net, communities=None, removeneg=False):
             raise ValueError('Community must be provided for graphlet input')
 
     # Get input in right format
-    net, netinfo = utils.process_input(net, ['C', 'G', 'TO'])
+    net, netinfo = process_input(net, ['C', 'G', 'TO'])
 
     if np.sum(net<0) > 0 and not removeneg:
         raise ValueError('Negative connections found')

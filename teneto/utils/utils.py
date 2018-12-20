@@ -1,9 +1,10 @@
 import numpy as np
-import teneto
 import collections
 import scipy.spatial.distance as distance
 from nilearn.input_data import NiftiSpheresMasker, NiftiLabelsMasker
 from nilearn.datasets import fetch_atlas_harvard_oxford
+from ..trajectory import rdp
+from .. import __path__ as tenetopath
 import json
 
 """
@@ -235,9 +236,9 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
         Binarized network
 
     """
-    netin, netinfo = teneto.utils.process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
     # Set diagonal to 0
-    netin = teneto.utils.set_diagonal(netin,0)
+    netin = set_diagonal(netin,0)
     if axis == 'graphlet' and netinfo['nettype'][-1] == 'u': 
         triu = np.triu_indices(netinfo['netshape'][0],k=1)
         netin = netin[triu[0],triu[1],:]
@@ -265,12 +266,12 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
         netout[triu[0],triu[1],:] = netout_tmp
         netout[triu[1],triu[0],:] = netout_tmp
 
-    netout = teneto.utils.set_diagonal(netout,0)
+    netout = set_diagonal(netout,0)
     
     # If input is contact, output contact
     if netinfo['inputtype'] == 'C':
         netinfo['nettype'] = 'b' + netinfo['nettype'][1]
-        netout = teneto.utils.graphlet2contact(netout,netinfo)
+        netout = graphlet2contact(netout,netinfo)
         netout.pop('inputtype')
         netout.pop('values')
         netout['diagonal'] = 0
@@ -299,8 +300,8 @@ def binarize_rdp(netin, level, sign='pos', axis='time'):
     netout : array or dict (dependning on input)
         Binarized network
     """
-    netin, netinfo = teneto.utils.process_input(netin, ['C', 'G', 'TO'])
-    trajectory = teneto.trajectory.rdp(netin,level)
+    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
+    trajectory = rdp(netin,level)
 
     contacts = []
     # Use the trajectory points as threshold
@@ -325,7 +326,7 @@ def binarize_rdp(netin, level, sign='pos', axis='time'):
     netout['diagonal'] = 0
     # If input is graphlet, output graphlet
     if netinfo['inputtype'] == 'G':
-        netout = teneto.utils.contact2graphlet(netout)
+        netout = contact2graphlet(netout)
     else:
         netout.pop('inputtype')
 
@@ -352,7 +353,7 @@ def binarize_magnitude(netin, level, sign='pos'):
     netout : array or dict (depending on input)
         Binarized network
     """
-    netin, netinfo = teneto.utils.process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
     # Predefine
     netout = np.zeros(netinfo['netshape'])
 
@@ -362,12 +363,12 @@ def binarize_magnitude(netin, level, sign='pos'):
         netout[netin<level] = 1
 
     # Set diagonal to 0
-    netout = teneto.utils.set_diagonal(netout,0)
+    netout = set_diagonal(netout,0)
 
     # If input is contact, output contact
     if netinfo['inputtype'] == 'C':
         netinfo['nettype'] = 'b' + netinfo['nettype'][1]
-        netout = teneto.utils.graphlet2contact(netout,netinfo)
+        netout = graphlet2contact(netout,netinfo)
         netout.pop('inputtype')
         netout.pop('values')
         netout['diagonal'] = 0
@@ -407,11 +408,11 @@ def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
 
     """
     if threshold_type == 'percent':
-        netout = teneto.utils.binarize_percent(netin,threshold_level,sign,axis)
+        netout = binarize_percent(netin,threshold_level,sign,axis)
     elif threshold_type == 'magnitude':
-        netout = teneto.utils.binarize_magnitude(netin,threshold_level,sign)
+        netout = binarize_magnitude(netin,threshold_level,sign)
     elif threshold_type == 'rdp':
-        netout = teneto.utils.binarize_rdp(netin,threshold_level,sign,axis)
+        netout = binarize_rdp(netin,threshold_level,sign,axis)
     else:
         raise ValueError('Unknown value to parameter: threshold_type.')
     return netout
@@ -600,7 +601,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
         Metainformation about network.
 
     """
-    inputtype = teneto.utils.checkInput(netIn)
+    inputtype = checkInput(netIn)
     # Convert TO to C representation
     if inputtype == 'TO' and 'TO' in allowedformats:
         G = netIn.get_graphlet_representation()
@@ -608,7 +609,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
         netInfo.pop('contacts')
     # Convert C representation to G
     elif inputtype == 'C' and 'C' in allowedformats and outputformat != 'C':
-        G = teneto.utils.contact2graphlet(netIn)
+        G = contact2graphlet(netIn)
         netInfo = dict(netIn)
         netInfo.pop('contacts')
         nettype = netIn['nettype']
@@ -616,7 +617,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
     elif inputtype == 'G' and 'G' in allowedformats:
         netInfo = {}
         netInfo['netshape'] = netIn.shape
-        netInfo['nettype'] = teneto.utils.gen_nettype(netIn)
+        netInfo['nettype'] = gen_nettype(netIn)
         G = netIn
     elif inputtype == 'C' and outputformat == 'C':
         pass
@@ -624,7 +625,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
         raise ValueError('Input invalid.')
     netInfo['inputtype'] = inputtype
     if inputtype != 'C' and outputformat == 'C':
-        C = teneto.utils.graphlet2contact(netIn, netInfo)
+        C = graphlet2contact(netIn, netInfo)
     if outputformat == 'G':
         return G, netInfo
     elif outputformat == 'C':
@@ -755,7 +756,7 @@ def load_parcellation_coords(parcellation_name):
 
     """
 
-    path = teneto.__path__[0] + '/data/parcellation/' + parcellation_name + '.csv'
+    path = tenetopath[0] + '/data/parcellation/' + parcellation_name + '.csv'
     parc = np.loadtxt(path,skiprows=1,delimiter=',',usecols=[1,2,3])
 
     return parc
@@ -803,7 +804,7 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
             subcortical = None
 
         if not parc_type or not parc_params:
-            path = teneto.__path__[0] + '/data/parcellation_defaults/defaults.json'
+            path = tenetopath[0] + '/data/parcellation_defaults/defaults.json'
             with open(path) as data_file:
                 defaults = json.load(data_file)
         if not parc_type:
@@ -814,11 +815,11 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
             print('Using default parameters')
 
     if parc_type == 'sphere':
-        parcellation = teneto.utils.load_parcellation_coords(parcellation)
+        parcellation = load_parcellation_coords(parcellation)
         seed = NiftiSpheresMasker(np.array(parcellation),**parc_params)
         data = seed.fit_transform(data_path)
     elif parc_type == 'region':
-        path = teneto.__path__[0] + '/data/parcellation/' + parcellation + '.nii'
+        path = tenetopath[0] + '/data/parcellation/' + parcellation + '.nii'
         region = NiftiLabelsMasker(path,**parc_params)
         data = region.fit_transform(data_path)
     else:
@@ -890,15 +891,11 @@ def get_dimord(measure,calc=None,community=None):
         'temporal_degree_centrality': 'node',
         'temporal_degree_centralit_avg': 'node',
         'temporal_degree_centrality_time': 'node,time',
-        'community': 'community,community,time',
-        'community': 'community,community',
-        'community': 'community,community',
         'temporal_efficiency': 'global',
         'temporal_efficiency_global': 'global',
         'temporal_efficiency_node': 'node',
         'temporal_efficiency_to': 'node',
         'sid_global': 'global,time',
-        'community': 'global,time',
         'community_pairs': 'community,community,time',
         'community_avg': 'community,time',
         'sid': 'community,community,time',
@@ -910,7 +907,6 @@ def get_dimord(measure,calc=None,community=None):
         'bursty_coeff': 'edge,edge',
         'bursty_coeff_edge': 'edge,edge',
         'bursty_coeff_node': 'node',
-        'community': 'community,community',
         'bursty_coeff_meanEdgePerNode': 'node',
         'volatility_global': 'time',
     }
