@@ -12,6 +12,7 @@ def test_slidingwindow():
 
 
 def test_slidingwindow_postpro():
+    np.random.seed(2018)
     X = np.random.multivariate_normal([0, 0], [[1, 0.5], [0.5, 1]], 20)
     R_sw = np.arctanh(teneto.misc.corrcoef_matrix(
         X[:10, :].transpose())[0][0, 1])
@@ -32,6 +33,7 @@ def test_taperedslidingwindow():
 
 
 def test_jc():
+    np.random.seed(2018)
     X = np.random.multivariate_normal([0, 0], [[1, 0.5], [0.5, 1]], 20)
     R_jc = teneto.misc.corrcoef_matrix(X[1:, :].transpose())[0][0, 1]
     TR_jc = teneto.derive.derive(
