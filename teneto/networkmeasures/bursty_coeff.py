@@ -78,8 +78,8 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
 
     >>> B_bursty = teneto.networkmeasures.bursty_coeff(G_bursty)
     >>> B_bursty
-    array([[nan, 0.13311003],
-           [0.13311003, nan]])
+    array([[       nan, 0.13311003],
+           [0.13311003,        nan]])
 
     gives a positive value, indicating the inter-contact times between node 0 and 1 is bursty.
 
