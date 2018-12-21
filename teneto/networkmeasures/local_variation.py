@@ -34,7 +34,7 @@ def local_variation(data):
 
     Where :math:`\iota` are inter-contact times and i is the index of the inter-contact time (not a node index). n is the number of events, making n-1 the number of inter-contact times. 
 
-    The possible range is: :math:`0 \geq LV \geq 3`. 
+    The possible range is: :math:`0 \geq LV \gt 3`. 
     
     When periodic, LV=0, Poisson, LV=1 Larger LVs indicate bursty process.     
 
