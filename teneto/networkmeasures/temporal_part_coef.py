@@ -5,14 +5,6 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
     '''
     Temporal participation coefficient is a measure of diversity of connections across communities for individual nodes.
 
-    Static participatoin coefficient is:
-
-    .. math:: P_i = 1 - \sum_s^{N_M}({{k_{is}}\over{k_i}})^2
-
-    Where s is the index of each community (:math:`N_M`). :math:`k_i` is total degree of node. And :math:`k_{is}` is degree of connections within community.[1]_
-
-    This "temporal" version only loops through temporal snapshots and calculates :math:`P_i` for each t.
-
     Parameters
     ----------
     tnet : array, dict
@@ -22,13 +14,6 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
     removeneg : bool (default false)
         If true, all values < 0 are made to be 0. 
 
-    Note
-    ----
-    If directed, function sums axis=1, so G may want to be transposed before hand depending on what type of directed part_coef you are interested in.
-
-    Note
-    ----
-    Adding negative connections is easy possible addition.
 
     Returns
     -------
@@ -36,9 +21,17 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
         participation coefficient
 
 
-    .. [1] Guimera et al (2005) Functional cartography of complex metabolic networks. Nature. 433: 7028, p895-900. [Link_] 
+    Static participatoin coefficient is:
 
-    .. _Link: http://doi.org/10.1038/nature03288
+    .. math:: P_i = 1 - \sum_s^{N_M}({{k_{is}}\over{k_i}})^2 
+
+    Where s is the index of each community (:math:`N_M`). :math:`k_i` is total degree of node. And :math:`k_{is}` is degree of connections within community.[1]_
+
+    This "temporal" version only loops through temporal snapshots and calculates :math:`P_i` for each t.
+
+    If directed, function sums axis=1, so tnet may need to be transposed before hand depending on what type of directed part_coef you are interested in.
+
+    .. [1] Guimera et al (2005) Functional cartography of complex metabolic networks. Nature. 433: 7028, p895-900. [`Link <http://doi.org/10.1038/nature03288>`_]
     '''
 
     if communities is None:

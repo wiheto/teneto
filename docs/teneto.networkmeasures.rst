@@ -97,6 +97,5 @@ teneto.networkmeasures.volatility
 
 .. automodule:: teneto.networkmeasures.volatility
     :members:
-    :undoc-members:
     :show-inheritance:
 

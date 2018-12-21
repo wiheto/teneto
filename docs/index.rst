@@ -9,8 +9,6 @@ Welcome to teneto's documentation!
 .. image:: tutorial/images/gennet_example1.png
     :align: center
 
-Teneto is a python package for temporal network theory. 
-
 
 .. toctree::
    :maxdepth: 1
@@ -18,5 +16,4 @@ Teneto is a python package for temporal network theory.
    tutorial
    teneto
 
-* :ref:`genindex`
-* :ref:`search`
+.. mdinclude:: ../README.md
