@@ -77,6 +77,8 @@ def local_variation(data):
 
     When the value is greater than 1, it indicates a bursty process.
     
+    nans are returned if there are no intercontacttimes
+
     References 
     ----------
 
@@ -111,8 +113,12 @@ def local_variation(data):
 
     for n in range(len(ind[0])): 
         icts = data['intercontacttimes'][ind[0][n],ind[1][n]]
-        lv_nonnorm = np.sum(np.power((icts[:-1] - icts[1:]) / (icts[:-1] + icts[1:]),2))
-        lv[ind[0][n],ind[1][n]] = (3/len(icts)) * lv_nonnorm
+        # make sure there is some contact
+        if len(icts) > 0:
+            lv_nonnorm = np.sum(np.power((icts[:-1] - icts[1:]) / (icts[:-1] + icts[1:]),2))
+            lv[ind[0][n],ind[1][n]] = (3/len(icts)) * lv_nonnorm
+        else: 
+            lv[ind[0][n],ind[1][n]] = np.nan
 
     # Make symetric if undirected
     if data['nettype'][1] == 'u': 
