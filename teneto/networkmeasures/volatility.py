@@ -1,8 +1,7 @@
 import numpy as np
-import warnings
 from ..utils import process_input, check_distance_funciton_input, getDistanceFunction
 
-def volatility(net, distance_func_name='default', calc='global', communities=None, event_displacement=None):
+def volatility(tnet, distance_func_name='default', calc='global', communities=None, event_displacement=None):
     """
     Volatility of temporal networks. 
     
@@ -11,7 +10,7 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
     Parameters
     ----------
 
-    net : array or dict
+    tnet : array or dict
         temporal network input (graphlet or contact). Nettype: 'bu','bd','wu','wd'
 
     D : str
@@ -44,7 +43,7 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
     """
 
     # Get input (C or G)
-    net, netinfo = process_input(net, ['C', 'G', 'TO'])
+    tnet, netinfo = process_input(tnet, ['C', 'G', 'TO'])
 
     distance_func_name = check_distance_funciton_input(
         distance_func_name, netinfo)
@@ -54,9 +53,9 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
 
     # If not directional, only calc on the uppertriangle
     if netinfo['nettype'][1] == 'd':
-        ind = np.triu_indices(net.shape[0], k=-net.shape[0])
+        ind = np.triu_indices(tnet.shape[0], k=-tnet.shape[0])
     elif netinfo['nettype'][1] == 'u':
-        ind = np.triu_indices(net.shape[0], k=1)
+        ind = np.triu_indices(tnet.shape[0], k=1)
 
     if calc == 'communities':
         # Make sure communities is np array for indexing later on.
@@ -72,21 +71,21 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
     distance_func = getDistanceFunction(distance_func_name)
 
     if calc == 'global':
-        vol = np.mean([distance_func(net[ind[0], ind[1], t], net[ind[0], ind[1], t + 1])
-            for t in range(0, net.shape[-1] - 1)])
+        vol = np.mean([distance_func(tnet[ind[0], ind[1], t], tnet[ind[0], ind[1], t + 1])
+            for t in range(0, tnet.shape[-1] - 1)])
     elif calc == 'time':
-        vol = [distance_func(net[ind[0], ind[1], t], net[ind[0], ind[1], t + 1])
-            for t in range(0, net.shape[-1] - 1)]
+        vol = [distance_func(tnet[ind[0], ind[1], t], tnet[ind[0], ind[1], t + 1])
+            for t in range(0, tnet.shape[-1] - 1)]
     elif calc == 'event_displacement':
-        vol = [distance_func(net[ind[0], ind[1], event_displacement],
-            net[ind[0], ind[1], t]) for t in range(0, net.shape[-1])]
+        vol = [distance_func(tnet[ind[0], ind[1], event_displacement],
+            tnet[ind[0], ind[1], t]) for t in range(0, tnet.shape[-1])]
     # This takes quite a bit of time to loop through. When calculating per edge/node.
     elif calc == 'edge' or calc == 'node':
-        vol = np.zeros([net.shape[0], net.shape[1]])
+        vol = np.zeros([tnet.shape[0], tnet.shape[1]])
         for i in ind[0]:
             for j in ind[1]:
                 vol[i, j] = np.mean([distance_func(
-                    net[i, j, t], net[i, j, t + 1]) for t in range(0, net.shape[-1] - 1)])
+                    tnet[i, j, t], tnet[i, j, t + 1]) for t in range(0, tnet.shape[-1] - 1)])
         if netinfo['nettype'][1] == 'u':
             vol = vol + np.transpose(vol)
         if calc == 'node':
@@ -98,24 +97,24 @@ def volatility(net, distance_func_name='default', calc='global', communities=Non
         for net1 in net_id:
             for net2 in net_id:
                 if net1 != net2:
-                    vol[net1, net2, :] = [distance_func(net[communities == net1][:, communities == net2, t].flatten(),
-                        net[communities == net1][:, communities == net2, t + 1].flatten()) for t in range(0, net.shape[-1] - 1)]
+                    vol[net1, net2, :] = [distance_func(tnet[communities == net1][:, communities == net2, t].flatten(),
+                        tnet[communities == net1][:, communities == net2, t + 1].flatten()) for t in range(0, tnet.shape[-1] - 1)]
                 else:
-                    nettmp = net[communities == net1][:, communities == net2, :]
+                    nettmp = tnet[communities == net1][:, communities == net2, :]
                     triu = np.triu_indices(nettmp.shape[0], k=1)
                     nettmp = nettmp[triu[0], triu[1], :]
                     vol[net1, net2, :] = [distance_func(nettmp[:, t].flatten(
-                    ), nettmp[:, t + 1].flatten()) for t in range(0, net.shape[-1] - 1)]
+                    ), nettmp[:, t + 1].flatten()) for t in range(0, tnet.shape[-1] - 1)]
 
     elif calc == 'withincommunities':
         withi = np.array([[ind[0][n], ind[1][n]] for n in range(
             0, len(ind[0])) if communities[ind[0][n]] == communities[ind[1][n]]])
-        vol = [distance_func(net[withi[:, 0], withi[:, 1], t], net[withi[:, 0],
-            withi[:, 1], t + 1]) for t in range(0, net.shape[-1] - 1)]
+        vol = [distance_func(tnet[withi[:, 0], withi[:, 1], t], tnet[withi[:, 0],
+            withi[:, 1], t + 1]) for t in range(0, tnet.shape[-1] - 1)]
     elif calc == 'betweencommunities':
         beti = np.array([[ind[0][n], ind[1][n]] for n in range(
             0, len(ind[0])) if communities[ind[0][n]] != communities[ind[1][n]]])
-        vol = [distance_func(net[beti[:, 0], beti[:, 1], t], net[beti[:, 0],
-            beti[:, 1], t + 1]) for t in range(0, net.shape[-1] - 1)]
+        vol = [distance_func(tnet[beti[:, 0], beti[:, 1], t], tnet[beti[:, 0],
+            beti[:, 1], t + 1]) for t in range(0, tnet.shape[-1] - 1)]
 
     return vol

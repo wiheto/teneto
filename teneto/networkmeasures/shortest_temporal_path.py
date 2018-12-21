@@ -8,56 +8,36 @@ import numpy as np
 from ..utils import process_input
 
 
-def shortest_temporal_path(netin, quiet=1):
+def shortest_temporal_path(tnet, quiet=1):
     """
     Calculates the shortest temporal path when all possible routes can be travelled
-     at each time point.
+    at each time point.
     Currently only works for binary undirected edges (but can be expanded).
 
-    **PARAMETERS**
+    Parameters
+    ----------
 
-    :netin: temporal network input (graphlet or contact)
+    tnet : array, dict 
+        temporal network input (graphlet or contact). Nettype: 'bu'
+    quiet : int (default = 1). 
+        Turn to 0 if you want progress update.
 
-        :nettype: 'bu'
+    Returns
+    --------
+    paths : dict 
+        Shortest temporal paths. Dictionary is in the form, path['paths'][i,j,t] - shortest path for i to reach j starting at time t.
 
-    :quiet: quiet (default = 1). Turn to 0 if you want progree update.
-
-    **OUTPUT**
-
-    :paths_dict: shortest temporal paths
-
-        :format: dictionary
-
-    Paths are of the struction, path['paths'][i,j,t] - shortest path for i to reach j,
-     starting at time t.
-
-    **NOTE**
-
+    Note
+    --------
     This function assumes all paths can be taken per time point.
     In a future update, this function temporalPaths will allow for
-     only a portion of edges to be travelled
-     per time point.
-    This will be implmeneted with no change to the funcitonality of calling
-     this function as it is today,
-     with the defaults being all edges can be travelled.
-
-    **SEE ALSO**
-
-    - *temporal_efficiency*
-    - *reachability_latency*
-    - *temporal_closeness_centrality*
-
-    **HISTORY**
-
-    Modified - Aug 2017, WHT (PEP8)
-    Modified - Dec 2016, WHT (documentation)
-    Created - Nov 2016, WHT
+    only a portion of edges to be travelled per time point.
 
     """
 
     # Get input type (C or G)
     # Process input
-    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
+    tnet, netinfo = process_input(tnet, ['C', 'G', 'TO'])
 
     if netinfo['nettype'] != 'bu':
         errormsg = ('It looks like your graph is not binary and undirected. '
@@ -75,7 +55,7 @@ def shortest_temporal_path(netin, quiet=1):
     for t_ind in list(reversed(range(0, netinfo['netshape'][2]))):
         if quiet == 0:
             print('--- Running for time: ' + str(t_ind) + ' ---')
-        fid = np.where(netin[:, :, t_ind] >= 1)
+        fid = np.where(tnet[:, :, t_ind] >= 1)
         # Update time step
         # Note to self: Add a conditional to prevent nan warning
         # that can pop out if no path is there straight away.

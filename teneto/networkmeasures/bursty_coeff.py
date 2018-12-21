@@ -36,10 +36,14 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     b_coeff : array
         bursty coefficienct per (edge or node measure)
 
-    Cite
-    ------
-    Goh and Barabasi 2008
-    Discrete formulation here from Holme 2012.
+    Citations
+    ---------
+    Goh, KI & Barabasi, AL (2008) Burstiness and Memory in Complex Systems.
+    EPL (Europhysics Letters), 81: 4
+    `[arxiv link] <https://www.sciencedirect.com/science/article/pii/S1053811918304476>`_
+
+    Holme, P & Saramäki J (2012) Temporal networks. Physics Reports. 519: 3. 
+    `[arxiv link] <https://arxiv.org/pdf/1108.1780.pdf>`_ (Discrete formulation used here) 
 
     """
 

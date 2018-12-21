@@ -6,39 +6,26 @@ import numpy as np
 from ..utils import process_input
 
 
-def intercontacttimes(netin):
+def intercontacttimes(tnet):
     """
     Calculates the intercontacttimes of each edge in a network
 
-    **PARAMETERS**
+    Parameters
+    -----------
 
-    :netin: Temporal network (craphlet or contact).
+    tnet : array, dict
+        Temporal network (craphlet or contact). Nettype: 'bu', 'bd'
 
-        :nettype: 'bu', 'bd'
+    Returns
+    ---------
 
-    **OUTPUT**
-
-    :contacts: intercontact times as numpy array
-
-        :format: dictionary
-
-    **NOTES**
-
-    Connections are assumed to be binary
-
-    **SEE ALSO**
-
-    *bursty_coeff*
-
-    **History**
-
-    :Modified: Dec 2016, WHT
-    :Created: Nov 2016, WHT
+    contacts : dict
+        Intercontact times as numpy array in dictionary. contacts['intercontacttimes'] 
 
     """
 
     # Process input
-    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
+    tnet, netinfo = process_input(tnet, ['C', 'G', 'TO'])
 
     if netinfo['nettype'][0] == 'd':
         print('WARNING: assuming connections to be binary when computing intercontacttimes')
@@ -51,7 +38,7 @@ def intercontacttimes(netin):
     if netinfo['nettype'][1] == 'u':
         for i in range(0, netinfo['netshape'][0]):
             for j in range(i + 1, netinfo['netshape'][0]):
-                edge_on = np.where(netin[i, j, :] > 0)[0]
+                edge_on = np.where(tnet[i, j, :] > 0)[0]
                 edge_on = np.append(0, edge_on)
                 edge_on = np.append(edge_on, 0)
                 edge_on_diff = edge_on[2:-1] - edge_on[1:-2]
@@ -60,7 +47,7 @@ def intercontacttimes(netin):
     elif netinfo['nettype'][1] == 'd':
         for i in range(0, netinfo['netshape'][0]):
             for j in range(0, netinfo['netshape'][0]):
-                edge_on = np.where(netin[i, j, :] > 0)[0]
+                edge_on = np.where(tnet[i, j, :] > 0)[0]
                 edge_on = np.append(0, edge_on)
                 edge_on = np.append(edge_on, 0)
                 edge_on_diff = edge_on[2:-1] - edge_on[1:-2]

@@ -11,6 +11,7 @@ def reachability_latency(data, rratio=1, calc='global'):
     returns global reachability latency. This is the r-th longest temporal path. 
 
     Parameters
+    ---------
 
     data : array or dict 
 
@@ -30,7 +31,6 @@ def reachability_latency(data, rratio=1, calc='global'):
 
     Returns 
     --------
-
     reach_lat : array 
         Reachability latency
 

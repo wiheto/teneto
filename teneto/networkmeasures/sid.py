@@ -5,7 +5,7 @@ import numpy as np
 import warnings
 from .temporal_degree_centrality import temporal_degree_centrality
 
-def sid(net, communities, axis=0, calc='global', decay=0):
+def sid(tnet, communities, axis=0, calc='global', decay=0):
     """
 
     Segregation integration difference (SID). An estimation of each community or global difference of within versus between community strength.
@@ -13,7 +13,7 @@ def sid(net, communities, axis=0, calc='global', decay=0):
     Parameters
     ----------
 
-    net: array, dict
+    tnet: array, dict
         Temporal network input (graphlet or contact). Allowerd nettype: 'bu', 'bd', 'wu', 'wd'
 
     communities : array
@@ -43,19 +43,19 @@ def sid(net, communities, axis=0, calc='global', decay=0):
 
     Citation
     --------
-    Fransson et al (2018) Brain network segregation and integration during an epoch-related working memory fMRI experiment.
-    https://www.biorxiv.org/content/early/2018/01/23/252338
+    Fransson et al (2018) Brain network segregation and integration during an epoch-related working memory fMRI experiment. 
+    Neuroimage. 178. `[link] <https://www.sciencedirect.com/science/article/pii/S1053811918304476>`_
 
     """
 
-    net, netinfo = utils.process_input(net, ['C', 'G', 'TO'])
-    D = temporal_degree_centrality(net, calc='time', communities=communities, decay=decay)
+    tnet, netinfo = utils.process_input(tnet, ['C', 'G', 'TO'])
+    D = temporal_degree_centrality(tnet, calc='time', communities=communities, decay=decay)
 
     # Check network output (order of communitiesworks)
     network_ids = np.unique(communities)
     communities_size = np.array([sum(communities==n) for n in network_ids])
 
-    sid = np.zeros([network_ids.max()+1,network_ids.max()+1,net.shape[-1]])
+    sid = np.zeros([network_ids.max()+1,network_ids.max()+1,tnet.shape[-1]])
     for n in network_ids:
         for m in network_ids:
             betweenmodulescaling = 1/(communities_size[n]*communities_size[m])

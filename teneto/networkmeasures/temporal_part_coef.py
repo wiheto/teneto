@@ -1,7 +1,7 @@
 import numpy as np
 from ..utils import process_input
 
-def temporal_part_coef(net, communities=None, removeneg=False):
+def temporal_part_coef(tnet, communities=None, removeneg=False):
     '''
     Temporal participation coefficient is a measure of diversity of connections across communities for individual nodes.
 
@@ -15,7 +15,7 @@ def temporal_part_coef(net, communities=None, removeneg=False):
 
     Parameters
     ----------
-    net : array, dict
+    tnet : array, dict
         graphlet or contact sequence input. Only positive matrices considered.
     communities : array
         community vector. Either 1D (node) community index or 2D (node,time).
@@ -41,21 +41,21 @@ def temporal_part_coef(net, communities=None, removeneg=False):
     '''
 
     if communities is None:
-        if isinstance(net,dict):
-            if 'communities' in net.keys():
-                communities = net['communities']
+        if isinstance(tnet,dict):
+            if 'communities' in tnet.keys():
+                communities = tnet['communities']
             else:
                 raise ValueError('Community index not found')
         else:
             raise ValueError('Community must be provided for graphlet input')
 
     # Get input in right format
-    net, netinfo = process_input(net, ['C', 'G', 'TO'])
+    tnet, netinfo = process_input(tnet, ['C', 'G', 'TO'])
 
-    if np.sum(net<0) > 0 and not removeneg:
+    if np.sum(tnet<0) > 0 and not removeneg:
         raise ValueError('Negative connections found')
     if removeneg:
-        net[net<0] = 0
+        tnet[tnet<0] = 0
 
     k_is = np.zeros([netinfo['netshape'][0],netinfo['netshape'][2]])
     part = np.ones([netinfo['netshape'][0],netinfo['netshape'][2]])
@@ -66,9 +66,9 @@ def temporal_part_coef(net, communities=None, removeneg=False):
         else:
             C = communities
         for i in np.unique(C):
-            k_is[:,t] += np.square(np.sum(net[:,C == i,t], axis=1))
+            k_is[:,t] += np.square(np.sum(tnet[:,C == i,t], axis=1))
 
-    part = part - (k_is / np.square(np.sum(net, axis=1)))
+    part = part - (k_is / np.square(np.sum(tnet, axis=1)))
     # Set any division by 0 to 0
     part[np.isnan(part)==1] = 0
 

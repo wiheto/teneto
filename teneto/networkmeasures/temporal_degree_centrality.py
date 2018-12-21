@@ -7,36 +7,33 @@ import warnings
 from ..utils import process_input, set_diagonal
 
 
-def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, decay=0, ignorediagonal=True):
+def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay=0, ignorediagonal=True):
     """
 
     temporal degree of network. Sum of all connections each node has through time.
 
-    **PARAMETERS**
+    Parameters
+    -----------
 
-    :net: temporal network input (graphlet or contact).
-
-        :nettype: 'bu', 'bd', 'wu', 'wd'
-
-    :axis: Dimension that is returned 0 or 1 (default 0).
+    net : array, dict
+        temporal network input (graphlet or contact). Can have nettype: 'bu', 'bd', 'wu', 'wd'
+    axis : int 
+        Dimension that is returned 0 or 1 (default 0).
         Note, only relevant for directed networks.
         i.e. if 0, node i has Aijt summed over j and t.
         and if 1, node j has Aijt summed over i and t.
-
     calc : str
         options: 'avg', 'time', 'module_degree_zscore'
         'avg' (returns temporal degree centrality (a 1xnode vector))
         'time' (returns a node x time matrix),
-        'module_degree_zscore' returns the Z-scored within community degree centrality (communities argument required). This is done for each time-point
-    i.e. 'time' returns static degree centrality per time-point.
-
+        'module_degree_zscore' returns the Z-scored within community degree centrality 
+        (communities argument required). This is done for each time-point
+        i.e. 'time' returns static degree centrality per time-point.
     ignorediagonal: bool
         if true, diagonal is made to 0. 
-
     communities : array (Nx1)
         Vector of community assignment.
         If this is given and calc='time', then the strength within and between each communities is returned (technically not degree centrality).
-
     decay : int
         if calc = 'time', then decay is possible where the centrality of
         the previous time point is carried over to the next time point but decays
@@ -44,39 +41,41 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, decay=
         decay is 0 then the final D will equal D when calc='avg', if decay = inf
         then this will equal calc='time'.
 
-    **OUTPUT**
+    Returns
+    ---------
 
     D : array
         temporal degree centrality (nodal measure). Array is 1D ('avg'), 2D ('time', 'module_degree_zscore') or 3D ('time' + communities (non-nodal/community measures))
 
-    **SEE ALSO**
+    See also 
+    ---------
 
     - *temporal_closeness_centrality*
 
     """
 
     # Get input in right format
-    net, netinfo = process_input(net, ['C', 'G', 'TO'])
+    tnet, netinfo = process_input(tnet, ['C', 'G', 'TO'])
     if ignorediagonal:
-        net = set_diagonal(net, 0)
-    # sum sum net
+        tnet = set_diagonal(tnet, 0)
+    # sum sum tnet
     if calc == 'time' and communities is None:
-        tdeg = np.squeeze(np.sum(net, axis=axis))
+        tdeg = np.squeeze(np.sum(tnet, axis=axis))
     elif calc == 'module_degree_zscore' and communities is None:
         raise ValueError(
             'Communities must be specified when calculating module degree z-score.')
     elif calc != 'time' and communities is None:
         tdeg = np.sum(
-            np.sum(net, axis=2), axis=axis)
+            np.sum(tnet, axis=2), axis=axis)
     elif calc == 'module_degree_zscore' and communities is not None:
-        tdeg = np.zeros([net.shape[0], net.shape[2]])
-        for t in range(net.shape[2]):
+        tdeg = np.zeros([tnet.shape[0], tnet.shape[2]])
+        for t in range(tnet.shape[2]):
             if len(communities.shape) == 2:
                 C = communities[:, t]
             else:
                 C = communities
             for c in np.unique(C):
-                k_i = np.sum(net[:, C == c, t][C == c], axis=axis)
+                k_i = np.sum(tnet[:, C == c, t][C == c], axis=axis)
                 tdeg[C == c, t] = (k_i - np.mean(k_i)) / np.std(k_i)
         tdeg[np.isnan(tdeg) == 1] = 0
     elif calc == 'time' and communities is not None:
@@ -89,15 +88,15 @@ def temporal_degree_centrality(net, axis=0, calc='avg', communities=None, decay=
                 for s1 in unique_communities:
                     for s2 in unique_communities:
                         tdeg_communities[s1, s2, t] = np.sum(
-                            np.sum(net[C == s1, :, t][:, C == s2], axis=1), axis=0)
+                            np.sum(tnet[C == s1, :, t][:, C == s2], axis=1), axis=0)
         else:
             unique_communities = np.unique(communities)
-            tdeg_communities = [np.sum(np.sum(net[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
+            tdeg_communities = [np.sum(np.sum(tnet[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
                                 for s1 in unique_communities for s2 in unique_communities]
 
         tdeg = np.array(tdeg_communities)
         tdeg = np.reshape(tdeg, [len(np.unique(communities)), len(
-            np.unique(communities)), net.shape[-1]])
+            np.unique(communities)), tnet.shape[-1]])
         # Divide diagonal by 2 if undirected to correct for edges being present twice
         if netinfo['nettype'][1] == 'u':
             for s in range(tdeg.shape[0]):
