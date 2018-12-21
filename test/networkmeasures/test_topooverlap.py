@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 
-def test_topooverlap(G): 
+def test_topooverlap(): 
     # Define test data
     G = np.array(
         [[[0., 0., 0., 0.],
