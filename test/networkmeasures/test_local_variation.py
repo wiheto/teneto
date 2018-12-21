@@ -17,11 +17,7 @@ def test_bursty():
 
     assert B1[0, 1] == B2[0, 1]
     assert B1[1, 2] == B2[1, 2]
-    assert B1[0, 1] == -1
-    assert B1[0, 1] == B3[0, 1]
-    assert np.isnan(B3[1, 2]) == 1
-    assert B1[1, 2] == (np.std(np.diff(t2))-np.mean(np.diff(t2))) / \
-        (np.mean(np.diff(t2))+np.std(np.diff(t2)))
-
-    with pytest.raises(ValueError):
-        teneto.networkmeasures.local_variation(G, calc='communities')
+    assert B1[0, 1] == 0
+    assert np.isnan(B1[2, 1]) == 1
+    # Just known 
+    assert B1[1, 2] == 1.2874874780866514
