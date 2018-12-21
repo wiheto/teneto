@@ -30,9 +30,9 @@ def local_variation(data):
 
     It is defined as: 
     
-    .. math:: LV = {3 \over {n-1}} \sum_{i=1}^{n-1}{{\{tau}_i - \{tau}{i+1} \over {\{tau}_i + \{tau}{i+1}}^2} 
+    .. math:: LV = {3 \over {n-1}} \sum_{i=1}^{n-1}{{\uptau_i - \uptau{i+1} \over {\uptau_i + \uptau{i+1}}^2} 
 
-    Where :math:`\{tau}` are inter-contact times and i is the index of the inter-contact time (not a node index). n is the number of events, making n-1 the number of inter-contact times. 
+    Where :math:`\uptau` are inter-contact times and i is the index of the inter-contact time (not a node index). n is the number of events, making n-1 the number of inter-contact times. 
 
     The possible range is: :math:`0 \geq LV \geq 3`. 
     
