@@ -111,6 +111,8 @@ html_static_path = ['_static']
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'tenetodoc'
 
+# Remove module names in documentation
+add_module_names = False 
 
 # -- Options for LaTeX output ------------------------------------------------
 
