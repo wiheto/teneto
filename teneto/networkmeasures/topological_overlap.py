@@ -76,7 +76,7 @@ def topological_overlap(tnet, calc='time'):
     >>> topo_overlap[0,0]
     1.0
     >>> topo_overlap[2,0]
-    0.0 
+    0.0
 
     At t=2, there is now also an edge between (0,2), this means node 0's topological overlap at t=1 decreases as 
     its edges have decreased in their persistency at the next time point (i.e. some change has occured). It equals ca. 0.71
