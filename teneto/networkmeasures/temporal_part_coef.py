@@ -7,7 +7,7 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
 
     Static participatoin coefficient is:
 
-    .. math:: P_i = 1 - sum_s^{N_M}({\over{k_{is}}{k_i}}^2)
+    .. math:: P_i = 1 - sum_s^{N_M}({{k_{is}}\over{k_i}}^2)
 
     Where s is the index of each community (N_M). k_i is total degree of node. And k_is is degree of connections within community.[1]_
 
