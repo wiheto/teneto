@@ -23,7 +23,7 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     nodes: list or str
         Options: 'all': do for all nodes (default) or list of node indexes to calculate.
 
-    communities : array, optoinal
+    communities : array, optional
         None (default) or Nx1 vector of communities assignment. This returns a "centrality" per communities instead of per node.
 
 
@@ -33,10 +33,20 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
         Bursty coefficienct per (edge or node measure). 
 
 
+    Notes 
+    ------ 
+
+    The burstiness coefficent, B, is defined in refs [1,2] as:  
+
+    .. math:: B = {{\sigma_{ICT} - \mu_{ICT}} \over {\sigma_{ICT} + \mu_{ICT}}}
+
+    Where :math:`\sigma_{ICT}` and :math:`\mu_{ICT}` are the standard deviation and mean of the inter-contact times respectively (see teneto.networkmeasures.intercontacttimes)
+
     When B > 0, indicates bursty intercontact times. When B < 0, indicates periodic/tonic intercontact times. When B = 0, indicates random.
 
-    Example: Bursty vs periodic edges
-    ---------------------------------
+
+    Examples
+    ---------
 
     First import all necessary packages 
 
