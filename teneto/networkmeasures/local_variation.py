@@ -7,7 +7,7 @@ from .intercontacttimes import intercontacttimes
 from ..utils import set_diagonal
 
 def local_variation(data):
-    '''
+    """
     Calculates the local variaiont of inter-contact times.[LV-1][LV-2]
 
     Parameters
@@ -29,14 +29,15 @@ def local_variation(data):
     The local variation is like the bursty coefficient and quantifies if a series of inter-contact times are periodic, random or Poisson distributed or bursty. 
 
     It is defined as: 
-    
-    .. math:: LV = {3 \over {n-1}} \sum_{i=1}^{n-1}{{\uptau_i - \uptau{i+1} \over {\uptau_i + \uptau{i+1}}^2} 
 
-    Where :math:`\uptau` are inter-contact times and i is the index of the inter-contact time (not a node index). n is the number of events, making n-1 the number of inter-contact times. 
+    .. math:: LV = {3 \over {n-1}} \sum_{i=1}^{n-1}{{({\iota_i - \iota{i+1} \over {\iota_i + \iota{i+1}}})^2} 
+
+    Where :math:`\iota` are inter-contact times and i is the index of the inter-contact time (not a node index). n is the number of events, making n-1 the number of inter-contact times. 
 
     The possible range is: :math:`0 \geq LV \geq 3`. 
     
     When periodic, LV=0, Poisson, LV=1 Larger LVs indicate bursty process.     
+
 
     Examples
     ---------
@@ -82,7 +83,8 @@ def local_variation(data):
     .. [LV-1] Shinomoto et al (2003) Differences in spiking patterns among cortical neurons. Neural Computation 15.12 [`Link <https://www.mitpressjournals.org/doi/abs/10.1162/089976603322518759>`_]
     .. [LV-2] Followed eq., 4.34 in Masuda N & Lambiotte (2016) A guide to temporal networks. World Scientific. Series on Complex Networks. Vol 4 [`Link <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_] 
 
-    '''
+
+    """
 
     ict = 0  # are ict present
     if isinstance(data, dict):
