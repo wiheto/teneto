@@ -15,12 +15,14 @@ def topological_overlap(tnet, calc='time'):
         'time' - (default) calculates for each node per time points.
         'global' - (default) calculates for each node per time points.
 
+
     Returns
     -------
     topo_overlap : array 
         if calc = 'time', array is (node,time) in size.
         if calc = 'node', array is (node) in size. 
         if calc = 'global', array is (1) in size. 
+
 
     Citation 
     ---------

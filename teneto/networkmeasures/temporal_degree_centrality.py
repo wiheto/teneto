@@ -47,11 +47,6 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     D : array
         temporal degree centrality (nodal measure). Array is 1D ('avg'), 2D ('time', 'module_degree_zscore') or 3D ('time' + communities (non-nodal/community measures))
 
-    See also 
-    ---------
-
-    - *temporal_closeness_centrality*
-
     """
 
     # Get input in right format

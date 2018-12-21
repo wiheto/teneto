@@ -35,7 +35,8 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
     P : array
         participation coefficient
 
-    Source
+
+    Citation
     ------
     Guimera et al (2005) Functional cartography of complex metabolic networks. Nature.
     '''
