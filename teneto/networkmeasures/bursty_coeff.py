@@ -16,8 +16,8 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
         This is either (1) temporal network input (graphlet or contact) with nettype: 'bu', 'bd'. (2) dictionary of ICTs (output of *intercontacttimes*).
 
     calc : str
-        Caclulate the bursty coeff over what. Options include 'edge': calculate b_coeff on all ICTs between node i and j. (Default); 'node': caclulate b_coeff on all ICTs connected to node i.;
-        'communities': calculate b_coeff for each communities (argument communities then required);
+        Caclulate the bursty coeff over what. Options include 'edge': calculate B on all ICTs between node i and j. (Default); 'node': caclulate B on all ICTs connected to node i.;
+        'communities': calculate B for each communities (argument communities then required);
         'meanEdgePerNode': first calculate the ICTs between node i and j, then take the mean over all j.
 
     nodes: list or str
@@ -29,14 +29,52 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
 
     Returns
     -------
-    b_coeff : array
-        Bursty coefficienct per (edge or node measure). When b_coeff > 0, indicates bursty. When b_coeff < 0, indicates periodic/tonic. When b_coeff = 0, indicates random. 
+    B : array
+        Bursty coefficienct per (edge or node measure). 
 
 
-    .. [1] Goh, KI & Barabasi, AL (2008) Burstiness and Memory in Complex Systems. EPL (Europhysics Letters), 81: 4 [arxiv-link_]
-    .. arxiv-link: https://www.sciencedirect.com/science/article/pii/S1053811918304476
-    .. [2] Holme, P & Saramäki J (2012) Temporal networks. Physics Reports. 519: 3. [arxiv-link_] (Discrete formulation used here) 
-    .. arxiv-link: https://arxiv.org/pdf/1108.1780.pdf
+    When B > 0, indicates bursty intercontact times. When B < 0, indicates periodic/tonic intercontact times. When B = 0, indicates random.
+
+    Example: Bursty vs periodic edges
+    ---------------------------------
+
+    First import all necessary packages 
+
+    >>> import teneto  
+    >>> import numpy as np 
+
+    Now create 2 temporal network of 2 nodes and 60 time points. The first has periodict edges, repeating every other time-point:
+
+    >>> G_periodic = np.zeros([2, 2, 60])
+    >>> ts_periodic = np.arange(0, 60, 2)
+    >>> G_periodic[:,:,ts_periodic] = 1
+
+    The second has a more bursty pattern of edges: 
+
+    >>> ts_bursty = [1, 8, 9, 32, 33, 34, 39, 40, 50, 51, 52, 55]
+    >>> G_bursty = np.zeros([2, 2, 60])
+    >>> G_bursty[:,:,ts_bursty] = 1
+
+    Now we call bursty_coeff. 
+
+    >>> B_periodic = teneto.networkmeasures.bursty_coeff(G_periodic)
+    array([[nan, -1.],
+        [-1., nan]])
+
+    Above we can see that between node 0 and 1, B=-1 (the diagonal is nan). 
+    Doing the same for the second example: 
+
+    >>> B_bursty = teneto.networkmeasures.bursty_coeff(G_bursty)
+    array([[nan, 0.13311003],
+        [0.13311003, nan]])    
+
+    gives a positive value, indicating the inter-contact times between node 0 and 1 is bursty.
+
+    References 
+    ----------
+
+    .. [1] Goh, KI & Barabasi, AL (2008) Burstiness and Memory in Complex Systems. EPL (Europhysics Letters), 81: 4 [`Link <https://arxiv.org/pdf/physics/0610233.pdf>`_]
+    .. [2] Holme, P & Saramäki J (2012) Temporal networks. Physics Reports. 519: 3. [`Link <https://arxiv.org/pdf/1108.1780.pdf>`_] (Discrete formulation used here) 
 
     """
 
