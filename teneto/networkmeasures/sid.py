@@ -8,7 +8,7 @@ from .temporal_degree_centrality import temporal_degree_centrality
 def sid(tnet, communities, axis=0, calc='global', decay=0):
     """
 
-    Segregation integration difference (SID). An estimation of each community or global difference of within versus between community strength.
+    Segregation integration difference (SID). An estimation of each community or global difference of within versus between community strength.[1]_
 
     Parameters
     ----------
@@ -41,10 +41,9 @@ def sid(tnet, communities, axis=0, calc='global', decay=0):
     sid: array
         segregation-integration difference. Format: 2d or 3d numpy array (depending on calc) representing (community,community,time) or (community,time)
 
-    Citation
-    --------
-    Fransson et al (2018) Brain network segregation and integration during an epoch-related working memory fMRI experiment. 
-    Neuroimage. 178. `[link] <https://www.sciencedirect.com/science/article/pii/S1053811918304476>`_
+    .. [1] Fransson et al (2018) Brain network segregation and integration during an epoch-related working memory fMRI experiment. 
+    Neuroimage. 178. [Link_] 
+    .. _Link: https://www.sciencedirect.com/science/article/pii/S1053811918304476
 
     """
 
