@@ -30,7 +30,7 @@ def local_variation(data):
 
     It is defined as: 
 
-    .. math:: LV = {3 \over {n-1}}\sum_{i=1}^{n-1}{{{\iota_i - \iota{i+1}} \over {\iota_i + \iota{i+1}}}^2} 
+    .. math:: LV = {3 \over {n-1}}\sum_{i=1}^{n-1}{{{\iota_i - \iota_{i+1}} \over {\iota_i + \iota_{i+1}}}^2} 
 
     Where :math:`\iota` are inter-contact times and i is the index of the inter-contact time (not a node index). n is the number of events, making n-1 the number of inter-contact times. 
 
