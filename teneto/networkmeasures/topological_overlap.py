@@ -28,9 +28,9 @@ def topological_overlap(tnet, calc='time'):
 
     References
     ----------
-    [topo-1]: Tang et al (2010) Small-world behavior in time-varying graphs. Phys. Rev. E 81, 055101(R) `[arxiv link] <https://arxiv.org/pdf/0909.1712.pdf>`_
-    [topo-2]: Nicosia et al (2013) "Graph Metrics for Temporal Networks" In: Holme P., Saramäki J. (eds) Temporal Networks. Understanding Complex Systems. Springer. 
-        `[arxiv link] <https://arxiv.org/pdf/1306.0493.pdf>`_
+    .. [topo-1]: Tang et al (2010) Small-world behavior in time-varying graphs. Phys. Rev. E 81, 055101(R) [`arxiv link <https://arxiv.org/pdf/0909.1712.pdf>`_]
+    .. [topo-2]: Nicosia et al (2013) "Graph Metrics for Temporal Networks" In: Holme P., Saramäki J. (eds) Temporal Networks. Understanding Complex Systems. Springer. 
+        [`arxiv link <https://arxiv.org/pdf/1306.0493.pdf>`_]
     """
 
     tnet = process_input(tnet, ['C', 'G', 'TO'])[0]
