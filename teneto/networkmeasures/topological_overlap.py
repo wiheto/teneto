@@ -23,7 +23,7 @@ def topological_overlap(tnet, calc='time'):
     topo_overlap : array 
         if calc = 'time', array is (node,time) in size.
         if calc = 'node', array is (node) in size. 
-        if calc = 'global', array is (1) in size. 
+        if calc = 'global', array is (1) in size. The final time point returns as nan. 
 
     Notes 
     ------
@@ -46,6 +46,64 @@ def topological_overlap(tnet, calc='time'):
     where N is the number of nodes. 
 
     For all the three measures above, the value is between 0 and 1 where 0 entails "all edges changes" and 1 entails "no edges change". 
+
+
+    Examples
+    ---------
+
+    First import all necessary packages 
+
+    >>> import teneto  
+    >>> import numpy as np 
+
+    Then make an temporal network with 3 nodes and 4 time-points. 
+
+    >>> G = np.zeros([3, 3, 3])
+    >>> i_ind = np.array([0, 0, 0, 0,])
+    >>> j_ind = np.array([1, 1, 1, 2,])
+    >>> t_ind = np.array([0, 1, 2, 2,])
+    >>> G[i_ind, j_ind, t_ind] = 1
+    >>> G = G + G.transpose([1,0,2]) # Make symmetric
+
+    Now the topological overlap can be calculated: 
+
+    >>> topo_overlap = teneto.networkmeasures.topological_overlap(G)
+
+    This returns *topo_overlap* which is a (node,time) array. Looking above at how we defined G,
+    when t = 0, there is only the edge (0,1). When t = 1, this edge still remains. This means 
+    topo_overlap should equal 1 for node 0 at t=0 and 0 for node 2: 
+
+    >>> topo_overlap[0,0]
+    1.0 
+    >>> topo_overlap[2,0]
+    0.0 
+
+    At t=2, there is now also an edge between (0,2), this means node 0's topological overlap at t=1 decreases as 
+    its edges have decreased in their persistency at the next time point (i.e. some change has occured). It equals ca. 0.71
+
+    >>> topo_overlap[0,1] 
+    0.7071067811865475
+
+    If we want the average topological overlap, we simply add the calc argument to be 'node'.
+
+    >>> avg_topo_overlap = teneto.networkmeasures.topological_overlap(G, calc='node')
+
+    Now this is an array with a length of 3 (one per node). 
+
+    >>> avg_topo_overlap
+    array([0.85355339, 1.        , 0.        ])
+
+    Here we see that node 1 had all its connections persist, node 2 had no connections persisting, and node 0 was in between.  
+
+    To calculate the temporal correlation coefficient, 
+
+    >>> temp_corr_coeff = teneto.networkmeasures.topological_overlap(G, calc='global')
+
+    This produces one value reflecting all of G
+
+    >>> temp_corr_coeff
+    0.617851130197758
+
 
     References
     ----------
