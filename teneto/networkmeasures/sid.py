@@ -26,9 +26,9 @@ def sid(tnet, communities, axis=0, calc='global', decay=0):
         and if 1, node j has Aijt summed over i and t.
 
     calc : str
-        'global' returns temporal degree centrality (a 1xnode vector) (default);
-         'community_pairs' returns a community x community x time matrix, which is the SID for each community pairing;
-         'community_avg' (returns a community x time matrix). Which is the normalized average of each community to all other communities.
+        'global' returns temporal degree centrality (a 1xnode vector) (default); 'community_pairs' returns a 
+        community x community x time matrix, which is the SID for each community pairing; 'community_avg' 
+        (returns a community x time matrix). Which is the normalized average of each community to all other communities.
 
     decay: int
         if calc = 'time', then decay is possible where the centrality of
@@ -40,6 +40,7 @@ def sid(tnet, communities, axis=0, calc='global', decay=0):
 
     sid: array
         segregation-integration difference. Format: 2d or 3d numpy array (depending on calc) representing (community,community,time) or (community,time)
+
 
     .. [1] Fransson et al (2018) Brain network segregation and integration during an epoch-related working memory fMRI experiment. 
     Neuroimage. 178. [Link_] 
