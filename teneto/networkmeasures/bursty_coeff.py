@@ -7,11 +7,7 @@ from .intercontacttimes import intercontacttimes
 
 def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     """
-    returns calculates the bursty coefficient. Value > 0
-    indicates bursty. Value < 0 periodic/tonic. Value = 0
-    implies random.
-    As temporalPaths only works with binary undirected edges
-    at the moment, weighted edges are assumed to be binary.
+    Calculates the bursty coefficient.[1][2]
 
     Parameters
     ----------
@@ -34,16 +30,17 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     Returns
     -------
     b_coeff : array
-        bursty coefficienct per (edge or node measure)
+        Bursty coefficienct per (edge or node measure). When b_coeff > 0, indicates bursty. When b_coeff < 0, indicates periodic/tonic. When b_coeff = 0, indicates random. 
 
     Citations
     ---------
-    Goh, KI & Barabasi, AL (2008) Burstiness and Memory in Complex Systems.
-    EPL (Europhysics Letters), 81: 4
-    `[arxiv link] <https://www.sciencedirect.com/science/article/pii/S1053811918304476>`_
+    .. [1] Goh, KI & Barabasi, AL (2008) Burstiness and Memory in Complex Systems. EPL (Europhysics Letters), 81: 4 [arxiv-link_]
 
-    Holme, P & Saramäki J (2012) Temporal networks. Physics Reports. 519: 3. 
-    `[arxiv link] <https://arxiv.org/pdf/1108.1780.pdf>`_ (Discrete formulation used here) 
+    .. arxiv-link: https://www.sciencedirect.com/science/article/pii/S1053811918304476
+
+    .. [2] Holme, P & Saramäki J (2012) Temporal networks. Physics Reports. 519: 3. [arxiv-link_] (Discrete formulation used here) 
+
+    .. arxiv-link: https://arxiv.org/pdf/1108.1780.pdf
 
     """
 
