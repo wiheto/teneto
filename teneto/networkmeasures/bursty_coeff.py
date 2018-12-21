@@ -70,7 +70,8 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     >>> B_periodic = teneto.networkmeasures.bursty_coeff(G_periodic)
     >>> B_periodic
     array([[nan, -1.],
-        [-1., nan]])
+           [-1., nan]])
+
 
     Above we can see that between node 0 and 1, B=-1 (the diagonal is nan). 
     Doing the same for the second example: 
@@ -78,7 +79,7 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     >>> B_bursty = teneto.networkmeasures.bursty_coeff(G_bursty)
     >>> B_bursty
     array([[nan, 0.13311003],
-        [0.13311003, nan]])
+           [0.13311003, nan]])
 
     gives a positive value, indicating the inter-contact times between node 0 and 1 is bursty.
 
