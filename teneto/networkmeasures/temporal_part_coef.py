@@ -37,7 +37,7 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
 
 
     Citation
-    ------
+    ----------
     Guimera et al (2005) Functional cartography of complex metabolic networks. Nature.
     '''
 
