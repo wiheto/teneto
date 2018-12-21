@@ -11,7 +11,7 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
 
     Where s is the index of each community (:math:`N_M`). :math:`k_i` is total degree of node. And :math:`k_{is}` is degree of connections within community.[1]_
 
-    This "temporal" version only loops through temporal snapshots and calculates P_i for each t.
+    This "temporal" version only loops through temporal snapshots and calculates :math:`P_i` for each t.
 
     Parameters
     ----------
