@@ -1,7 +1,7 @@
 teneto.generatenetwork
 ==============================
 
-teneto.generatenetwork.rand\_binomial
+rand\_binomial
 --------------------------------------------
 
 .. automodule:: teneto.generatenetwork.rand_binomial

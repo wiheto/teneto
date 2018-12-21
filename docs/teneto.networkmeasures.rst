@@ -2,7 +2,7 @@ teneto.networkmeasures
 ==============================
 
 
-teneto.networkmeasures.bursty\_coeff
+bursty\_coeff
 -------------------------------------------
 
 .. automodule:: teneto.networkmeasures.bursty_coeff
@@ -11,7 +11,7 @@ teneto.networkmeasures.bursty\_coeff
     :show-inheritance:
 
 
-teneto.networkmeasures.fluctuability
+fluctuability
 -------------------------------------------
 
 .. automodule:: teneto.networkmeasures.fluctuability
@@ -20,7 +20,7 @@ teneto.networkmeasures.fluctuability
     :show-inheritance:
 
 
-teneto.networkmeasures.intercontacttimes
+intercontacttimes
 -----------------------------------------------
 
 .. automodule:: teneto.networkmeasures.intercontacttimes
@@ -29,7 +29,7 @@ teneto.networkmeasures.intercontacttimes
     :show-inheritance:
 
 
-teneto.networkmeasures.reachability\_latency
+reachability\_latency
 ---------------------------------------------------
 
 .. automodule:: teneto.networkmeasures.reachability_latency
@@ -38,7 +38,7 @@ teneto.networkmeasures.reachability\_latency
     :show-inheritance:
 
 
-teneto.networkmeasures.shortest\_temporal\_path
+shortest\_temporal\_path
 ------------------------------------------------------
 
 .. automodule:: teneto.networkmeasures.shortest_temporal_path
@@ -47,7 +47,7 @@ teneto.networkmeasures.shortest\_temporal\_path
     :show-inheritance:
 
 
-teneto.networkmeasures.sid
+sid
 ---------------------------------
 
 .. automodule:: teneto.networkmeasures.sid
@@ -56,7 +56,7 @@ teneto.networkmeasures.sid
     :show-inheritance:
 
 
-teneto.networkmeasures.temporal\_closeness\_centrality
+temporal\_closeness\_centrality
 -------------------------------------------------------------
 
 .. automodule:: teneto.networkmeasures.temporal_closeness_centrality
@@ -65,7 +65,7 @@ teneto.networkmeasures.temporal\_closeness\_centrality
     :show-inheritance:
 
 
-teneto.networkmeasures.temporal\_degree\_centrality
+temporal\_degree\_centrality
 ----------------------------------------------------------
 
 .. automodule:: teneto.networkmeasures.temporal_degree_centrality
@@ -74,7 +74,7 @@ teneto.networkmeasures.temporal\_degree\_centrality
     :show-inheritance:
 
 
-teneto.networkmeasures.temporal\_efficiency
+temporal\_efficiency
 --------------------------------------------------
 
 .. automodule:: teneto.networkmeasures.temporal_efficiency
@@ -83,7 +83,7 @@ teneto.networkmeasures.temporal\_efficiency
     :show-inheritance:
 
 
-teneto.networkmeasures.temporal\_part\_coef
+temporal\_part\_coef
 --------------------------------------------------
 
 .. automodule:: teneto.networkmeasures.temporal_part_coef
@@ -92,10 +92,20 @@ teneto.networkmeasures.temporal\_part\_coef
     :show-inheritance:
 
 
-teneto.networkmeasures.volatility
+topological\_overlap
+--------------------------------------------------
+
+.. automodule:: teneto.networkmeasures.topological_overlap
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+volatility
 ----------------------------------------
 
 .. automodule:: teneto.networkmeasures.volatility
     :members:
+    :undoc-members:
     :show-inheritance:
 

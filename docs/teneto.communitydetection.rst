@@ -1,7 +1,7 @@
 teneto.communitydetection
 =================================
 
-teneto.communitydetection.louvain
+Louvain
 ----------------------------------------
 
 .. automodule:: teneto.communitydetection.louvain

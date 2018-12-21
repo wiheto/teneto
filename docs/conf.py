@@ -14,8 +14,6 @@
 #
 import os
 import sys
-sys.path.insert(0, '/home/william/work/teneto/')
-
 
 # -- Project information -----------------------------------------------------
 
@@ -40,6 +38,7 @@ release = '0.3.5'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',

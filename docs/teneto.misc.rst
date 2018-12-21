@@ -1,7 +1,7 @@
 teneto.misc
 ===================
 
-teneto.misc.corrcoef\_matrix
+corrcoef\_matrix
 -----------------------------------
 
 .. automodule:: teneto.misc.corrcoef_matrix
@@ -9,7 +9,7 @@ teneto.misc.corrcoef\_matrix
     :undoc-members:
     :show-inheritance:
 
-teneto.misc.correct\_pvalues\_for\_multiple\_testing
+correct\_pvalues\_for\_multiple\_testing
 -----------------------------------------------------------
 
 .. automodule:: teneto.misc.correct_pvalues_for_multiple_testing

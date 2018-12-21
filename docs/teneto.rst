@@ -2,9 +2,10 @@ Documentation
 ==============
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     teneto.classes
+    teneto.communitydetection
     teneto.derive
     teneto.generatenetwork
     teneto.misc

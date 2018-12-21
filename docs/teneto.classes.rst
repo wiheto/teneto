@@ -1,7 +1,7 @@
 teneto.classes
 ======================
 
-teneto.classes.bids
+bids
 --------------------------
 
 .. automodule:: teneto.classes.bids

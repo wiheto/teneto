@@ -2,7 +2,7 @@ teneto.utils package
 ====================
 
 
-teneto.utils.utils
+utils
 -------------------------
 
 .. automodule:: teneto.utils.utils

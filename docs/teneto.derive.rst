@@ -1,7 +1,7 @@
 teneto.derive 
 =====================
 
-teneto.derive.derive
+derive
 ---------------------------
 
 .. automodule:: teneto.derive.derive
@@ -9,7 +9,7 @@ teneto.derive.derive
     :undoc-members:
     :show-inheritance:
 
-teneto.derive.postprocess
+postprocess
 --------------------------------
 
 .. automodule:: teneto.derive.postprocess
@@ -17,7 +17,7 @@ teneto.derive.postprocess
     :undoc-members:
     :show-inheritance:
 
-teneto.derive.report
+report
 ---------------------------
 
 .. automodule:: teneto.derive.report

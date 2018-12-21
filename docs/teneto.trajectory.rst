@@ -2,7 +2,7 @@ teneto.trajectory package
 =========================
 
 
-teneto.trajectory.compression
+compression
 ------------------------------------
 
 .. automodule:: teneto.trajectory.compression
