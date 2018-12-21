@@ -4,6 +4,8 @@ from ..utils import process_input
 def topological_overlap(tnet, calc='time'): 
     """
     Topological overlap quantifies the persistency of edges through time. If two consequtive time-points have similar edges, this becomes high (max 1). If there is high change, this becomes 0. 
+    
+    References: [topo-1], [topo-2]
 
     Parameters
     ----------
@@ -24,10 +26,10 @@ def topological_overlap(tnet, calc='time'):
         if calc = 'global', array is (1) in size. 
 
 
-    Citation 
-    ---------
-    Tang et al (2010) Small-world behavior in time-varying graphs. Phys. Rev. E 81, 055101(R) `[arxiv link] <https://arxiv.org/pdf/0909.1712.pdf>`_
-    Nicosia et al (2013) "Graph Metrics for Temporal Networks" In: Holme P., Saramäki J. (eds) Temporal Networks. Understanding Complex Systems. Springer. 
+    References
+    ----------
+    [topo-1]: Tang et al (2010) Small-world behavior in time-varying graphs. Phys. Rev. E 81, 055101(R) `[arxiv link] <https://arxiv.org/pdf/0909.1712.pdf>`_
+    [topo-2]: Nicosia et al (2013) "Graph Metrics for Temporal Networks" In: Holme P., Saramäki J. (eds) Temporal Networks. Understanding Complex Systems. Springer. 
         `[arxiv link] <https://arxiv.org/pdf/1306.0493.pdf>`_
     """
 
