@@ -31,18 +31,21 @@ def topological_overlap(tnet, calc='time'):
 
     When calc='time', then the topological overlap is:   
 
-    .. math:: TopoOverlap_{i,t} =  {\sum_j G_{i,j,t} G_{i,j,(t+1)} \over \sqrt{\sum_j G{i,j,t} \sum_j G{i,j,t}}}
+    .. math:: TopoOverlap_{i,t} =  {\sum_j G_{i,j,t} G_{i,j,(t+1)} \over \sqrt{\sum_j G_{i,j,t} \sum_j G_{i,j,t}}}
 
     When calc='node', then the topological overlap is the mean of math:`TopoOverlap_{i,t}`:   
 
-    .. math:: \text{AvgTopoOverlap}_{i} = {1 \over T-1} \sum_t TopoOverlap
+    .. math:: AvgTopoOverlap_{i} = {1 \over T-1} \sum_t TopoOverlap_{i,t}
 
-    where T is the number of time-points. This is called the _average topological overlap_.
+    where T is the number of time-points. This is called the *average topological overlap*.
 
     When calc='node', the *temporal-correlation coefficient* is calculated
 
-    .. math:: \text{TempCorrCoeff}_{i,t} = \sum_j {G_{i,j,t} \over G_{i,j,(t+1)}}
+    .. math:: TempCorrCoeff = {1 \over N} \sum_i AvgTopoOverlap_i
 
+    where N is the number of nodes. 
+
+    For all the three measures above, the value is between 0 and 1 where 0 entails "all edges changes" and 1 entails "no edges change". 
 
     References
     ----------
