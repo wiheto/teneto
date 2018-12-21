@@ -32,14 +32,10 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     b_coeff : array
         Bursty coefficienct per (edge or node measure). When b_coeff > 0, indicates bursty. When b_coeff < 0, indicates periodic/tonic. When b_coeff = 0, indicates random. 
 
-    Citations
-    ---------
+
     .. [1] Goh, KI & Barabasi, AL (2008) Burstiness and Memory in Complex Systems. EPL (Europhysics Letters), 81: 4 [arxiv-link_]
-
     .. arxiv-link: https://www.sciencedirect.com/science/article/pii/S1053811918304476
-
     .. [2] Holme, P & Saramäki J (2012) Temporal networks. Physics Reports. 519: 3. [arxiv-link_] (Discrete formulation used here) 
-
     .. arxiv-link: https://arxiv.org/pdf/1108.1780.pdf
 
     """
