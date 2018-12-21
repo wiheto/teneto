@@ -31,7 +31,7 @@ def topological_overlap(tnet, calc='time'):
 
     When calc='time', then the topological overlap is:   
 
-    .. math:: TopoOverlap_{i,t} =  {\sum_j G_{i,j,t} G_{i,j,(t+1)} \over \sqrt{\sum_j G_{i,j,t} \sum_j G_{i,j,t}}}
+    .. math:: TopoOverlap_{i,t} =  {\sum_j G_{i,j,t} G_{i,j,t+1} \over \sqrt{\sum_j G_{i,j,t} \sum_j G_{i,j,t+1}}}
 
     When calc='node', then the topological overlap is the mean of math:`TopoOverlap_{i,t}`:   
 
