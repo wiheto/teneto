@@ -36,7 +36,8 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
         participation coefficient
 
 
-    .. [1] Guimera et al (2005) Functional cartography of complex metabolic networks. Nature. 433: 7028, p895-900. [`Link`_] 
+    .. [1] Guimera et al (2005) Functional cartography of complex metabolic networks. Nature. 433: 7028, p895-900. [Link_] 
+
     .. _Link: http://doi.org/10.1038/nature03288
     '''
 
