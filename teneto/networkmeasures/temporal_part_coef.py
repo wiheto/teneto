@@ -7,7 +7,7 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
 
     Static participatoin coefficient is:
 
-    $P_i = 1 - sum_s^{N_M}({(k_is)/k_i}^2)$
+    $P_i = 1 - sum_s^{N_M}({(k_is)/k_i}^2)$ [1]_
 
     Where s is the index of each community (N_M). k_i is total degree of node. And k_is is degree of connections within community.
 
@@ -36,9 +36,7 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
         participation coefficient
 
 
-    Citation
-    ----------
-    Guimera et al (2005) Functional cartography of complex metabolic networks. Nature.
+    .. [1] Guimera et al (2005) Functional cartography of complex metabolic networks. Nature.
     '''
 
     if communities is None:
