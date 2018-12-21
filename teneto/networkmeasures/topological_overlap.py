@@ -74,7 +74,7 @@ def topological_overlap(tnet, calc='time'):
     topo_overlap should equal 1 for node 0 at t=0 and 0 for node 2: 
 
     >>> topo_overlap[0,0]
-    1.0 
+    1.0
     >>> topo_overlap[2,0]
     0.0 
 
