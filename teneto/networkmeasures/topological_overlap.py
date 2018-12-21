@@ -39,7 +39,7 @@ def topological_overlap(tnet, calc='time'):
 
     where T is the number of time-points. This is called the *average topological overlap*.
 
-    When calc='node', the *temporal-correlation coefficient* is calculated
+    When calc='global', the *temporal-correlation coefficient* is calculated
 
     .. math:: TempCorrCoeff = {1 \over N} \sum_i AvgTopoOverlap_i
 
