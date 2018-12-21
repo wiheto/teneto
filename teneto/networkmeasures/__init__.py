@@ -14,3 +14,4 @@ from .reachability_latency import reachability_latency
 from .sid import sid
 from .temporal_part_coef import temporal_part_coef
 from .topological_overlap import topological_overlap
+from .local_variation import local_variation

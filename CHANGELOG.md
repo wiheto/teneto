@@ -7,7 +7,8 @@
 - Changing default value of decay argument (temporal_degree_centrality, sid) to 0 instead of None
 - topological_overlap added to networkmeasures
 - documentation improvements 
-- renamed net variable to tnet in networkmeasures. 
+- renamed net variable to tnet in networkmeasures.
+- added local_variation to networkmeasures
 
 ## V0.3.5
 

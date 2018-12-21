@@ -29,6 +29,15 @@ intercontacttimes
     :show-inheritance:
 
 
+local\_variation
+---------------------------------------------------
+
+.. automodule:: teneto.networkmeasures.local_variation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 reachability\_latency
 ---------------------------------------------------
 
