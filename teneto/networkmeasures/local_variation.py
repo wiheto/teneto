@@ -30,9 +30,9 @@ def local_variation(data):
 
     It is defined as: 
     
-    .. math:: LV = {3 \over {n-1}} \sum_{i=1}}^{n-1}{({{\tau_i - \tau{i+1}}\over{{\tau_i + \tau{i+1}}})^2} 
+    .. math:: LV = {3 \over {n-1}} \sum_{i=1}^{n-1}{{\tau_i - \tau{i+1} \over {\tau_i + \tau{i+1}}^2} 
 
-    Where :math:`\tau` are inter-contact times. n is the number of events, making n-1 the number of inter-contact times. 
+    Where :math:`\tau` are inter-contact times and i is the index of the inter-contact time (not a node index). n is the number of events, making n-1 the number of inter-contact times. 
 
     The possible range is: :math:`0 \geq LV \geq 3`. 
     
@@ -65,16 +65,16 @@ def local_variation(data):
     array([[nan,  0.],
            [ 0., nan]])
 
-
-    Above we can see that between node 0 and 1, B=-1 (the diagonal is nan). 
+    Above we can see that between node 0 and 1, LV=0 (the diagonal is nan).
+    This is indicative of a periodic contacts (which is what we defined).  
     Doing the same for the second example: 
 
-    >>> B_bursty = teneto.networkmeasures.local_variation(G_bursty)
-    >>> B_bursty
+    >>> LV_bursty = teneto.networkmeasures.local_variation(G_bursty)
+    >>> LV_bursty
     array([[       nan, 1.28748748],
-          [1.28748748,        nan]])
+           [1.28748748,        nan]])
 
-    gives a positive value, indicating the inter-contact times between node 0 and 1 is bursty.
+    When the value is greater than 1, it indicates a bursty process.
     
     References 
     ----------
