@@ -75,8 +75,7 @@ def fluctuability(netin, calc='global'):
     Reference
     ---------
 
-    .. [fluct-1] Thompson et al (2017) "From static to temporal network theory applications to functional brain connectivity." 
-    Network Neuroscience, 2: 1. p.69-99 [`Link <https://www.mitpressjournals.org/doi/abs/10.1162/NETN_a_00011>`_]
+    .. [fluct-1] Thompson et al (2017) "From static to temporal network theory applications to functional brain connectivity." Network Neuroscience, 2: 1. p.69-99 [`Link <https://www.mitpressjournals.org/doi/abs/10.1162/NETN_a_00011>`_]
     
     """
 
