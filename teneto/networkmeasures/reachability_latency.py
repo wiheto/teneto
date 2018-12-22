@@ -17,7 +17,7 @@ def reachability_latency(data, rratio=1, calc='global'):
 
         Can either be a network (graphlet or contact), binary unidrected only. Alternative can be a paths dictionary (output of teneto.networkmeasure.shortest_temporal_path)
 
-    rratio: int (1 default) 
+    rratio: float (default: 1) 
         reachability ratio that the latency is calculated in relation to.
         Value must be over 0 and up to 1.
         1 (default) - all nodes must be reached.
@@ -25,7 +25,7 @@ def reachability_latency(data, rratio=1, calc='global'):
         This is rounded to the nearest node inter.
         E.g. if there are 6 nodes [1,2,3,4,5,6], it will be node 4 (due to round upwards)
 
-    :calc: str 
+    calc : str 
         what to calculate. Alternatives: 'global' entire network; 'nodes': for each node.
 
 

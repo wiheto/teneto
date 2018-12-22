@@ -21,17 +21,20 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
         participation coefficient
 
 
+    Notes
+    -----
+
     Static participatoin coefficient is:
 
     .. math:: P_i = 1 - \sum_s^{N_M}({{k_{is}}\over{k_i}})^2 
 
-    Where s is the index of each community (:math:`N_M`). :math:`k_i` is total degree of node. And :math:`k_{is}` is degree of connections within community.[1]_
+    Where s is the index of each community (:math:`N_M`). :math:`k_i` is total degree of node. And :math:`k_{is}` is degree of connections within community.[part-1]_
 
     This "temporal" version only loops through temporal snapshots and calculates :math:`P_i` for each t.
 
     If directed, function sums axis=1, so tnet may need to be transposed before hand depending on what type of directed part_coef you are interested in.
 
-    .. [1] Guimera et al (2005) Functional cartography of complex metabolic networks. Nature. 433: 7028, p895-900. [`Link <http://doi.org/10.1038/nature03288>`_]
+    .. [part-1] Guimera et al (2005) Functional cartography of complex metabolic networks. Nature. 433: 7028, p895-900. [`Link <http://doi.org/10.1038/nature03288>`_]
     '''
 
     if communities is None:
