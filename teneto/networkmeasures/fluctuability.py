@@ -6,9 +6,9 @@ from ..utils import process_input
 
 
 def fluctuability(netin, calc='global'):
-    """
-    Fluctuability of temporal networks. This is the variation of the network's edges over time.[fluct-1]_ 
-    THis is the unique number of edges through time divided by the overall number of edges.
+    r"""
+    Fluctuability of temporal networks. This is the variation of the network's edges over time. [fluct-1]_ 
+    This is the unique number of edges through time divided by the overall number of edges.
 
     Parameters
     ----------
@@ -35,20 +35,53 @@ def fluctuability(netin, calc='global'):
 
     .. math:: F = {{\sum_{i,j} H_{i,j}} \over {\sum_{i,j,t} G_{i,j,t}}}
 
-    where H_{i,j} is a binary matrix where it is 1 if there is at least one t such that G_{i,j,t} = 1 (i.e. at least one temporal edge exists). 
+    where :math:`H_{i,j}` is a binary matrix where it is 1 if there is at least one t such that G_{i,j,t} = 1 (i.e. at least one temporal edge exists). 
 
     F is not normalized which makes comparisions of F across very different networks difficult (could be added). 
 
+    Examples
+    --------
+
+    This example compares the fluctability of two different networks with the same number of edges. 
+    Below two temporal networks, both with 3 nodes and 4 time-points. 
+    Both get 5 connections. One between 
+
+    >>> import teneto
+    >>> import numpy as np 
+    >>> # Manually specify node (i,j) and temporal (t) indicies.
+    >>> ind_highF_i = [0,0,0,0,1]
+    >>> ind_highF_j = [1,2,1,2,2]
+    >>> ind_highF_t = [0,1,1,2,2]
+    >>> ind_lowF_i = [0,0,0,0,0]
+    >>> ind_lowF_j = [1,1,1,2,2]
+    >>> ind_lowF_t = [0,1,2,1,2]
+    >>> # Define 2 networks below and set above edges to 1
+    >>> G_highF = np.zeros([3,3,4])
+    >>> G_lowF = np.zeros([3,3,4])
+    >>> G_highF[ind_highF_i,ind_highF_j,ind_highF_t] = 1
+    >>> G_lowF[ind_lowF_i,ind_lowF_j,ind_lowF_t] = 1
+
+    Now calculate the fluctability of the two networks above.  
+    
+    >>> F_high = teneto.networkmeasures.fluctuability(G_highF)
+    >>> F_high
+    0.6
+    >>> F_low = teneto.networkmeasures.fluctuability(G_lowF)
+    >>> F_low
+    0.4
+
+    Here we see that the network with more unique connections has the higher fluctuability. 
 
     Reference
     ---------
 
-    .. [fluct-1] Thompson et al (2017) "From static to temporal network theory applications to functional brain connectivity." Network Neuroscience, 2: 1. p.69-99 [`Link <https://www.mitpressjournals.org/doi/abs/10.1162/NETN_a_00011>`_]
+    .. [fluct-1] Thompson et al (2017) "From static to temporal network theory applications to functional brain connectivity." 
+    Network Neuroscience, 2: 1. p.69-99 [`Link <https://www.mitpressjournals.org/doi/abs/10.1162/NETN_a_00011>`_]
     
     """
 
     # Get input type (C or G)
-    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
+    netin, _ = process_input(netin, ['C', 'G', 'TO'])
 
     netin[netin != 0] = 1
     unique_edges = np.sum(netin, axis=2)
