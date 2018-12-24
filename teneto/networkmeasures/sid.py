@@ -41,6 +41,36 @@ def sid(tnet, communities, axis=0, calc='global', decay=0):
     sid: array
         segregation-integration difference. Format: 2d or 3d numpy array (depending on calc) representing (community,community,time) or (community,time)
 
+    Notes
+    ------
+    SID tries to quantify if there is more segergation or intgration compared to other time-points. 
+    If SID > 0, then there is more segregation than usual. If SID < 0, then there is more integration than usual. 
+
+    There are three different variants of SID, one is a global measure (calc='global'), the second is a value per community (calc='community_avg'), 
+    the third is a value for each community-community pairing (calc='community_pairs'). 
+
+    First we calculate the temporal strength for each edge. This is calculate by 
+
+    .. math:: S_{i,t} = \sum_j G_{i,j,t}
+
+    The pairwise SID, when the network is undirected, is calculated by 
+
+    .. math:: SID_{A,B,t} = ({2 \over {N_A (N_A - 1)}}) S_{A,t} - ({{1} \over {N_A * N_B}}) S_{A,B,t}) 
+
+    Where :math:`S_{A,t}` is the average temporal strength at time-point t for community A. :math:`N_A` is the number of nodes in community A. 
+
+    When calculating the SID for a community, it is calculated byL 
+
+    .. math:: SID_{A,t} = \sum_b^C({2 \over {N_A (N_A - 1)}}) S_{A,t} - ({{1} \over {N_A * N_b}}) S_{A,b,t})
+
+    Where C is the number of communities. 
+
+    When calculating the SID globally, it is calculated byL 
+
+    .. math:: SID_{t} = \sum_a^C\sum_b^C({2 \over {N_a (N_a - 1)}}) S_{A,t} - ({{1} \over {N_a * N_b}}) S_{a,b,t})
+
+    References
+    -----------
 
     .. [sid-1] Fransson et al (2018) Brain network segregation and integration during an epoch-related working memory fMRI experiment. Neuroimage. 178. [`Link <https://www.sciencedirect.com/science/article/pii/S1053811918304476>`_]
 
