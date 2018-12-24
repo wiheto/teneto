@@ -50,7 +50,7 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
     Import everything needed. 
 
     >>> import teneto 
-    >>> tnet = teneto.TemporalNetwork() 
+    >>> tnet = teneto.TemporalNetwork(nettype='bu') 
     
     Here we generate a binary network where edges have a 0.5 change of going "on", and once on a 0.2 change to go "off"
 
@@ -58,8 +58,8 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
 
     Calculate the volatility 
 
-    >>> tnet.calc_networkmeasure('volatility')
-    0.26666666666666666
+    >>> tnet.calc_networkmeasure('volatility', distance_func_name='hamming')
+    0.5555555555555556
 
     If we change the probabilities to instead be certain edges disapeared the time-point after the appeared:
 
@@ -67,7 +67,7 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
 
     This will make a more volatile network 
 
-    >>> tnet.calc_networkmeasure('volatility')
+    >>> tnet.calc_networkmeasure('volatility', distance_func_name='hamming')
     0.1111111111111111
 
     We can calculate the volatility per time instead
@@ -80,7 +80,7 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
 
     Or per node: 
 
-    >>> vol_node = tnet.calc_networkmeasure('volatility', calc='node')
+    >>> vol_node = tnet.calc_networkmeasure('volatility', calc='node', distance_func_name='hamming')
     >>> vol_node
     array([0.07407407, 0.07407407, 0.07407407])
     
@@ -89,7 +89,7 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
     It is also possible to pass a community vector and the function will return volatility both within and between each community. 
     So the following has two communities:
     
-    >>> vol_com = tnet.calc_networkmeasure('volatility', calc='communities', communities=[0,1,1])
+    >>> vol_com = tnet.calc_networkmeasure('volatility', calc='communities', communities=[0,1,1], distance_func_name='hamming')
     >>> vol_com.shape
     (2,2,9)
     >>> vol_com[:,:,0]

@@ -10,6 +10,7 @@
 - renamed net variable to tnet in networkmeasures.
 - added local_variation to networkmeasures.
 - added TemporalNetwork class.
+- Added randomseed to binomial.
 
 ## V0.3.5
 

@@ -6,7 +6,7 @@ import numpy as np
 from ..utils import graphlet2contact
 
 
-def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero', netinfo=None):
+def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero', netinfo=None, randomseed=None):
     """
 
     Creates a random binary network following a binomial distribution.
@@ -39,6 +39,8 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
         Input percentage (in decimal) for how many nodes start activated. Alternative specify 'zero' (default) for all nodes to start deactivated.      
     netinfo : dict 
         Dictionary for contact representaiton information. 
+    randomseed : int 
+        Set random seed. 
  
     Returns 
     -------
@@ -56,10 +58,12 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
     Read more
     ---------
 
-    There is some work on the properties on the graphs with birth/death rates (called edge-Markovian Dynamic graphs) as described here. Clementi et al (2008) Flooding Time in edge-Markovian Dynamic Graphs *PODC*
+    .. [1] Clementi et al (2008) Flooding Time in edge-Markovian Dynamic Graphs *PODC* This function was written without reference to this paper. But this paper discusses a lot of properties of these types of graphs. 
 
     """
 
+    if randomseed: 
+        np.random.seed(randomseed)
     size = np.atleast_1d(size)
     prob = np.atleast_1d(prob)
     if len(size) == 2 or (len(size) == 3 and size[0] == size[1]):
