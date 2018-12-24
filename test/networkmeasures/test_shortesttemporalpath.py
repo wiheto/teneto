@@ -7,13 +7,11 @@ def test_sp_error():
     G = np.zeros([3, 3, 4])
     G[0, 1, [0, 2, 3]] = 1
     G[0, 2, 1] = 1
-    G[1, 2, 3] = 1
+    G[1, 2, 3] = 0.5
     G += G.transpose([1, 0, 2])
     G = teneto.utils.set_diagonal(G, 1)
-    C = teneto.utils.graphlet2contact(G)
-    C['nettype'] = 'wu'
     with pytest.raises(ValueError):
-        sp = teneto.networkmeasures.shortest_temporal_path(C, quiet=0)
+        sp = teneto.networkmeasures.shortest_temporal_path(G, quiet=0)
 
 def test_networkmeasures_stp():
     # Make simple network
