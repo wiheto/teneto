@@ -28,6 +28,11 @@ def test_errors():
         teneto.TemporalNetwork(N='s')
     with pytest.raises(ValueError):
         teneto.TemporalNetwork(T='s')
+    edgelist = [[0,1,2,0.5],[0,2,1,0.5]]
+    tnet = teneto.TemporalNetwork(from_edgelist=edgelist)
+    with pytest.raises(ValueError):
+        tnet.calc_networkmeasure('skmdla')
+
 
 def test_define_tnet_unweighted(): 
     tnet = teneto.TemporalNetwork(nettype='wu', timetype='discrete')
@@ -74,6 +79,12 @@ def test_define_tnet_weighted():
 def test_tnet_functions(): 
     G = np.zeros([3,3,3]) 
     G[[0,0],[1,2],[2,1]] = 1
+    G = G + G.transpose([1, 0, 2])
+    tnet = teneto.TemporalNetwork(from_array=G)
+    D = tnet.calc_networkmeasure('temporal_degree_centrality')
+    assert all(G.sum(axis=-1).sum(axis=-1) == D)
+    G = np.zeros([3,3,3]) 
+    G[[0,0],[1,2],[2,1]] = 0.5
     G = G + G.transpose([1, 0, 2])
     tnet = teneto.TemporalNetwork(from_array=G)
     D = tnet.calc_networkmeasure('temporal_degree_centrality')
