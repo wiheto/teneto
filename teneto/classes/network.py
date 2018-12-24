@@ -57,8 +57,6 @@ class TemporalNetwork:
             if 'values' in from_dict: 
                 self.network['w'] = from_dict['values']            
 
-        self._calc_netshape()
-        
         if not nettype:
             print('No network type set: assuming it to be undirected, set nettype if directed') 
             if self.network.shape[-1] == 4:
@@ -73,6 +71,7 @@ class TemporalNetwork:
                 colnames = ['i','j','t']                
             self.network = pd.DataFrame(columns=colnames)
         
+        self._calc_netshape()
         self.nettype = nettype
         if self.nettype[1] == 'u':
             self._drop_duplicate_ij()
