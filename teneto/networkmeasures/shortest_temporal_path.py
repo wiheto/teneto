@@ -27,11 +27,44 @@ def shortest_temporal_path(tnet, quiet=1):
     paths : dict 
         Shortest temporal paths. Dictionary is in the form, path['paths'][i,j,t] - shortest path for i to reach j starting at time t.
 
-    Note
-    --------
-    This function assumes all paths can be taken per time point.
-    In a future update, this function temporalPaths will allow for
-    only a portion of edges to be travelled per time point.
+    Examples
+    ---------
+
+    This example shows how to calculate the shortest temporal paths for a network 
+
+    >>> import teneto 
+    >>> import numpy as np 
+
+    Make a network with 3 nodes and 4 time-points. 
+
+    >>> G = np.zeros([3,3,4])
+    >>> G[0,1,0] = 1
+    >>> G[0,1,2] = 1
+    >>> G[1,2,1] = 1
+    >>> G[1,2,3] = 1
+    >>> G = G + G.transpose([1,0,2])
+
+    Calculting the intercontact times produces a dictionary. 
+
+    >>> paths = teneto.networkmeasures.shortest_temporal_path(G)
+
+    The key 'paths' in the dictionary that is NxNxT. The values 
+    say how long it takes for a path to go from i to j. Values are nans 
+    along the diagonal and when there are no paths available. 
+    If we consider node 0 and 2 at time-point 0, it should take 2 time-points to get there (from node-0 to node-1 at time-point 0 and from node-1 to node-2 at time-point 1).
+
+    >>> paths['paths'][0,2,0]
+    2.0 
+
+    While the path from node 2 to 0 at time-point 0 will take 3 time-points (from node-2 to node-1 at time-point 1 and from node-1 to node-0 at time-point 3).
+
+    >>> paths['paths'][2,0,0]
+    3.0 
+
+    As paths some node-time-points do not have any paths, you can check when nodes are missing the shortest paths. 
+
+    >>> paths['percentReached'] 
+    0.7916666666666666
 
     """
 
