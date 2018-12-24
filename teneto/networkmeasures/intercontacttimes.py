@@ -8,7 +8,7 @@ from ..utils import process_input
 
 def intercontacttimes(tnet):
     """
-    Calculates the intercontacttimes of each edge in a network
+    Calculates the intercontacttimes of each edge in a network. 
 
     Parameters
     -----------
@@ -21,6 +21,36 @@ def intercontacttimes(tnet):
 
     contacts : dict
         Intercontact times as numpy array in dictionary. contacts['intercontacttimes'] 
+
+    Notes
+    ------
+
+    The inter-contact times is calculated by the time between consequecutive "active" edges (where active means
+    that the value is 1 in a binary network).
+
+    Examples
+    --------
+    
+    This example shows 
+
+    >>> import teneto 
+    >>> import numpy as np 
+
+    Make a network with 2 nodes and 4 time-points  with 4 edges spaced out. 
+
+    >>> G = np.zeros([2,2,10])
+    >>> edge_on = [1,3,5,9]
+    >>> G[0,1,edge_on] = 1
+
+    Calculating the inter-contact times of these edges becomes: 2,2,4 between nodes 0 and 1. 
+
+    >>> ict = teneto.networkmeasures.intercontacttimes(G)
+
+    The function returns a dictionary with the icts in the key: intercontacttimes. This is of the size NxN. 
+    So the icts between nodes 0 and 1 are found by:   
+
+    >>> ict['intercontacttimes'][0,1]
+    array([2, 2, 4])
 
     """
 
