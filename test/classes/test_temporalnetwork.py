@@ -93,3 +93,8 @@ def test_tnet_functions():
     tnet = teneto.TemporalNetwork(from_array=G)
     D = tnet.calc_networkmeasure('temporal_degree_centrality')
     assert all(G.sum(axis=-1).sum(axis=-1) == D)
+
+def test_generatenetwork():
+    tnet = teneto.TemporalNetwork()
+    tnet.generatenetwork('rand_binomial', size=(5,10), prob=1)
+    assert tnet.netshape == (5,10)
