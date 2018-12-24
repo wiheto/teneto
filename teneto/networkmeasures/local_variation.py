@@ -8,7 +8,7 @@ from ..utils import set_diagonal
 
 def local_variation(data):
     """
-    Calculates the local variaiont of inter-contact times.[LV-1]_,[LV-2]_
+    Calculates the local variaiont of inter-contact times. [LV-1]_, [LV-2]_
 
     Parameters
     ----------

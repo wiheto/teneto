@@ -34,6 +34,10 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
 
     If directed, function sums axis=1, so tnet may need to be transposed before hand depending on what type of directed part_coef you are interested in.
 
+
+    References
+    ----------
+
     .. [part-1] Guimera et al (2005) Functional cartography of complex metabolic networks. Nature. 433: 7028, p895-900. [`Link <http://doi.org/10.1038/nature03288>`_]
     '''
 

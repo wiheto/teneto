@@ -8,7 +8,7 @@ from .shortest_temporal_path import shortest_temporal_path
 
 def reachability_latency(data, rratio=1, calc='global'):
     """
-    returns global reachability latency. This is the r-th longest temporal path. 
+    Reachability latency. This is the r-th longest temporal path. 
 
     Parameters
     ---------
@@ -33,6 +33,12 @@ def reachability_latency(data, rratio=1, calc='global'):
     --------
     reach_lat : array 
         Reachability latency
+
+    Notes
+    ------
+    Reachability latency calculates the time it takes for the paths. 
+
+    
 
     """
 
