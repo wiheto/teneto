@@ -62,8 +62,6 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
 
     """
 
-    if randomseed: 
-        np.random.seed(randomseed)
     size = np.atleast_1d(size)
     prob = np.atleast_1d(prob)
     if len(size) == 2 or (len(size) == 3 and size[0] == size[1]):
@@ -82,6 +80,8 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
     network_size = size[0]
     nr_time_points = size[-1]
     connmat = network_size * network_size
+    if randomseed: 
+        np.random.seed(randomseed)
     if len(prob) == 1:
         net = np.random.binomial(1, prob, connmat * nr_time_points)
         net = net.reshape(network_size * network_size, nr_time_points)
