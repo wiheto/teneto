@@ -24,11 +24,11 @@ class TemporalNetwork:
             self._check_input_edgelist(from_edgelist, 'edgelist')
 
         if N: 
-            if isinstance(N, int):
+            if not isinstance(N, int):
                 raise ValueError('Number of nodes must be an interger')
 
         if T: 
-            if isinstance(T, int):
+            if not isinstance(T, int):
                 raise ValueError('Number of time-points must be an interger')
 
         if timetype: 
