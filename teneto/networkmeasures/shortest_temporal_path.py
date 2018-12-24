@@ -54,12 +54,12 @@ def shortest_temporal_path(tnet, quiet=1):
     If we consider node 0 and 2 at time-point 0, it should take 2 time-points to get there (from node-0 to node-1 at time-point 0 and from node-1 to node-2 at time-point 1).
 
     >>> paths['paths'][0,2,0]
-    2.0 
+    2.0
 
     While the path from node 2 to 0 at time-point 0 will take 3 time-points (from node-2 to node-1 at time-point 1 and from node-1 to node-0 at time-point 3).
 
     >>> paths['paths'][2,0,0]
-    3.0 
+    3.0
 
     As paths some node-time-points do not have any paths, you can check when nodes are missing the shortest paths. 
 
