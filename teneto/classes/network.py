@@ -55,7 +55,7 @@ class TemporalNetwork:
         elif from_dict is not None: 
             self.network = pd.DataFrame(from_dict['contacts'], columns=['i', 'j', 't'])
             if 'values' in from_dict: 
-                self.network['w'] = from_dict['values']            
+                self.network['weight'] = from_dict['values']            
 
         if not nettype:
             print('No network type set: assuming it to be undirected, set nettype if directed') 
