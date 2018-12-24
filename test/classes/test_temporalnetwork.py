@@ -24,8 +24,12 @@ def test_errors():
         teneto.TemporalNetwork(nettype='s')
     with pytest.raises(ValueError):
         teneto.TemporalNetwork(timetype='s')
+    with pytest.raises(ValueError):
+        teneto.TemporalNetwork(N='s')
+    with pytest.raises(ValueError):
+        teneto.TemporalNetwork(T='s')
 
-def test_define_tnet(): 
+def test_define_tnet_unweighted(): 
     tnet = teneto.TemporalNetwork(nettype='wu', timetype='discrete')
     assert tnet.network.shape[1] == 4
     tnet = teneto.TemporalNetwork(nettype='bu')
@@ -43,6 +47,29 @@ def test_define_tnet():
     tnet_edgelist.add_edge([[0,3,1]])
     assert all(tnet_edgelist.network.iloc[-1].values == [0,3,1])
     assert tnet_edgelist.network.shape == (3,3)
+
+
+def test_define_tnet_weighted(): 
+    tnet = teneto.TemporalNetwork(nettype='wu', timetype='discrete')
+    assert tnet.network.shape[1] == 4
+    tnet = teneto.TemporalNetwork(nettype='bu')
+    assert tnet.network.shape[1] == 3
+    edgelist = [[0,1,2,0.5],[0,2,1,0.5]]
+    tnet_edgelist = teneto.TemporalNetwork(from_edgelist=edgelist)
+    assert tnet_edgelist.network.shape == (2,4)
+    G = np.zeros([3,3,3]) 
+    G[[0,0],[1,2],[2,1]] = 0.5
+    tnet_array = teneto.TemporalNetwork(from_array=G)
+    assert all(tnet_array.network == tnet_edgelist.network)
+    C = teneto.utils.graphlet2contact(G)
+    tnet_dict = teneto.TemporalNetwork(from_dict=C)
+    assert all(tnet_dict.network == tnet_edgelist.network)
+    tnet_edgelist.add_edge([[0,3,1,0.8]])
+    assert all(tnet_edgelist.network.iloc[-1].values == [0,3,1,0.8])
+    assert tnet_edgelist.network.shape == (3,4)
+    tnet_edgelist.drop_edge([[0,3,1]])
+    assert tnet_edgelist.network.shape == (2,4)
+
 
 def test_tnet_functions(): 
     G = np.zeros([3,3,3]) 
