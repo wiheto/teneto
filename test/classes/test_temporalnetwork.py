@@ -52,7 +52,11 @@ def test_define_tnet_unweighted():
     tnet_edgelist.add_edge([[0,3,1]])
     assert all(tnet_edgelist.network.iloc[-1].values == [0,3,1])
     assert tnet_edgelist.network.shape == (3,3)
-
+    tnet_edgelist.add_edge([0,3,1])
+    assert all(tnet_edgelist.network.iloc[-1].values == [0,3,1])
+    tnet_edgelist.drop_edge([0,3,1])
+    assert tnet_edgelist.network.shape == (2,3)
+    
 
 def test_define_tnet_weighted(): 
     tnet = teneto.TemporalNetwork(nettype='wu', timetype='discrete')
