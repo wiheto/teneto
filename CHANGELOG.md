@@ -5,10 +5,11 @@
 - Fixed relative import paths
 - Subnet argument for certain functions have been removed.
 - Changing default value of decay argument (temporal_degree_centrality, sid) to 0 instead of None
-- topological_overlap added to networkmeasures
-- documentation improvements 
+- topological_overlap added to networkmeasures.
+- documentation improvements.
 - renamed net variable to tnet in networkmeasures.
-- added local_variation to networkmeasures
+- added local_variation to networkmeasures.
+- added TemporalNetwork class.
 
 ## V0.3.5
 

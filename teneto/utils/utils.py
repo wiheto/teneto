@@ -152,7 +152,7 @@ def contact2graphlet(C):
     Returns
     -------
 
-    G: array
+    G : array
         Graphlet representation of temporal network.
 
     Note
@@ -211,6 +211,7 @@ def contact2graphlet(C):
         G = set_diagonal(G, C['diagonal'])
 
     return G
+
 
 
 def binarize_percent(netin, level, sign='pos', axis='time'):
@@ -516,10 +517,8 @@ def checkInput(netIn, raiseIfU=1, conMat=0):
                 inputIs = 'C'
 
     elif isinstance(netIn, object):
-        if isinstance(netIn.contact, dict):
-            if 'nettype' in netIn.contact and 'contacts' in netIn.contact and 'dimord' in netIn.contact and 'timetype' in netIn.contact:
-                if netIn.contact['nettype'] in {'bd', 'bu', 'wd', 'wu'} and netIn.contact['timetype'] == 'discrete' and netIn.contact['dimord'] == 'node,node,time':
-                    inputIs = 'TO'
+        if hasattr(netIn, 'network'):
+            inputIs = 'TO'
 
     if raiseIfU == 1 and inputIs == 'U':
         raise ValueError(
@@ -602,12 +601,10 @@ def process_input(netIn, allowedformats, outputformat='G'):
 
     """
     inputtype = checkInput(netIn)
-    # Convert TO to C representation
+    # Convert TO to G representation
     if inputtype == 'TO' and 'TO' in allowedformats:
-        G = netIn.get_graphlet_representation()
-        netInfo = dict(netIn.contact)
-        netInfo.pop('contacts')
-    # Convert C representation to G
+        G = netIn.to_graphlet()
+        netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
     elif inputtype == 'C' and 'C' in allowedformats and outputformat != 'C':
         G = contact2graphlet(netIn)
         netInfo = dict(netIn)
