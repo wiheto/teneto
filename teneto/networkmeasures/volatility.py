@@ -2,7 +2,7 @@ import numpy as np
 from ..utils import process_input, check_distance_funciton_input, getDistanceFunction
 
 def volatility(tnet, distance_func_name='default', calc='global', communities=None, event_displacement=None):
-    """
+    r"""
     Volatility of temporal networks. 
     
     Volatility is the average distance between consecutive time points of graphlets (difference is caclualted either globally or per edge).
@@ -31,9 +31,73 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
     event_displacement : int 
         if calc = event_displacement specify the temporal index where all other time-points are calculated in relation too. 
 
-    Note
+    Notes
     -----
+    
+    Volatility calculates the difference between network snapshots. 
+
+    .. math:: V_t = D(G_t,G_{t+1})
+
+    Where D is some distance function (e.g. Hamming distance for binary matrices). 
+
+    V can be calculated for the entire network (global), but can also be calculated for individual edges, nodes or given a community vector. 
+    
     Index of communities are returned "as is" with a shape of [max(communities)+1,max(communities)+1]. So if the indexes used are [1,2,3,5], V.shape==(6,6). The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns). If this behaviour is unwanted, call clean_communitiesdexes first. This will probably change.
+
+    Examples
+    --------
+
+    Import everything needed. 
+
+    >>> import teneto 
+    >>> tnet = teneto.TemporalNetwork() 
+    
+    Here we generate a binary network where edges have a 0.5 change of going "on", and once on a 0.2 change to go "off"
+
+    >>> tnet.generatenetwork('rand_binomial', size=(3,10), prob=(0.5,0.2), randomseed=1)
+
+    Calculate the volatility 
+
+    >>> tnet.calc_networkmeasure('volatility')
+    0.26666666666666666
+
+    If we change the probabilities to instead be certain edges disapeared the time-point after the appeared:
+
+    >>> tnet.generatenetwork('rand_binomial', size=(3,10), prob=(0.5,1), randomseed=1)
+
+    This will make a more volatile network 
+
+    >>> tnet.calc_networkmeasure('volatility')
+    0.1111111111111111
+
+    We can calculate the volatility per time instead
+
+    >>> vol_time = tnet.calc_networkmeasure('volatility', calc='time')
+    >>> len(vol_time)
+    9
+    >>> vol_time[0]
+    0.3333333333333333
+
+    Or per node: 
+
+    >>> vol_node = tnet.calc_networkmeasure('volatility', calc='node')
+    >>> vol_node
+    array([0.07407407, 0.07407407, 0.07407407])
+    
+    Here we see the volatility for each node was the same. 
+    
+    It is also possible to pass a community vector and the function will return volatility both within and between each community. 
+    So the following has two communities:
+    
+    >>> vol_com = tnet.calc_networkmeasure('volatility', calc='communities', communities=[0,1,1])
+    >>> vol_com.shape
+    (2,2,9)
+    >>> vol_com[:,:,0]
+    array([[nan, 0.5],
+           [0.5, 0. ]])
+    
+    And we see that, at time-point 0, there is some volatility between community 0 and 1 but no volatility within community 1. The reason for nan appearing is due to there only being 1 node in community 0. 
+
 
     Output
     ------
