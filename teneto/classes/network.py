@@ -184,7 +184,7 @@ class TemporalNetwork:
 
     def to_graphlet(self):
         idx = np.array(list(map(list, self.network.values)))
-        G = np.zeros([self.netshape[0] + 1, self.netshape[0] + 1, self.netshape[1] + 1])
+        G = np.zeros([self.netshape[0], self.netshape[0], self.netshape[1]])
         if idx.shape[1] == 3:
             G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
         elif idx.shape[1] == 4:
