@@ -38,6 +38,7 @@ def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
 
     .. plot::
         Circle plot example: 
+        >>> import matplotlib.pyplot as plt
         >>> fig, ax = plt.subplots(1)
         >>> teneto.plot.circle_plot(G, ax)
         >>> fig.show()
