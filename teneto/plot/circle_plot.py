@@ -25,7 +25,7 @@ def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
 
     Returns
     -------
-    ax : axis handle of slice graph
+    ax : axis handle
 
     Example
     -------

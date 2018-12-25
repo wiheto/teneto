@@ -4,73 +4,124 @@ import numpy as np
 from ..utils import *
 
 
-def slice_plot(netIn, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=None, nodesize=100):
+def slice_plot(netin, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=None, nodesize=100):
     '''
 
     Fuction draws "slice graph" and exports axis handles
 
 
-    **PARAMETERS**
+    Parameters
+    ----------
 
-    :netIn: temporal network input (graphlet or contact)
-    :ax: matplotlib figure handles.
-    :nLabs: nodes labels. List of strings.
-    :tLabs: labels of dimension Graph is expressed across. List of strings.
-    :timeunit: unit time axis is in.
-    :linestyle: line style of Bezier curves.
-    :nodesize: size of nodes
-
-
-    **OUTPUT**
-
-    :ax: axis handle of slice graph
-
-
-    **SEE ALSO**
-
-    - *circle_plot*
-    - *graphlet_stack_plot*
+    netin : array, dict
+        temporal network input (graphlet or contact)
+    ax : matplotlib figure handles.
+    nLabs : list
+        nodes labels. List of strings.
+    tLabs : list
+        labels of dimension Graph is expressed across. List of strings.
+    timeunit : string 
+        unit time axis is in.
+    linestyle : string
+        line style of Bezier curves.
+    nodesize : int
+        size of nodes
 
 
-    **HISTORY**
+    Returns
+    ---------
+    ax : axis handle of slice graph
 
-    :modified: Dec 2016, WHT (documentation, improvments)
-    :created: Sept 2016, WHT
+
+    Examples
+    ---------
+
+    
+    Create a network with some metadata
+
+    >>> import numpy as np 
+    >>> import teneto 
+    >>> import matplotlib.pyplot as plt
+    >>> np.random.seed(2017) # For reproduceability
+    >>> N = 5 # Number of nodes
+    >>> T = 10 # Number of timepoints
+    >>> # Probability of edge activation
+    >>> birth_rate = 0.2
+    >>> death_rate = .9
+    >>> # Add node names into the network and say time units are years, go 1 year per graphlet and startyear is 2007
+    >>> cfg={}
+    >>> cfg['Fs'] = 1
+    >>> cfg['timeunit'] = 'Years'
+    >>> cfg['t0'] = 2007 #First year in network
+    >>> cfg['nLabs'] = ['Ashley','Blake','Casey','Dylan','Elliot'] # Node names
+    >>> #Generate network
+    >>> C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
+
+    Now this network can be plotted
+
+    >>> fig,ax = plt.subplots(figsize=(10,3))
+    >>> ax = teneto.plot.slice_plot(C, ax, cmap='Pastel2')
+    >>> fig.show() 
+
+    .. plot::
+
+        import numpy as np 
+        import teneto 
+        import matplotlib.pyplot as plt
+        np.random.seed(2017) # For reproduceability
+        N = 5 # Number of nodes
+        T = 10 # Number of timepoints
+        # Probability of edge activation
+        birth_rate = 0.2
+        death_rate = .9
+        # Add node names into the network and say time units are years, go 1 year per graphlet and startyear is 2007
+        cfg={}
+        cfg['Fs'] = 1
+        cfg['timeunit'] = 'Years'
+        cfg['t0'] = 2007 #First year in network
+        cfg['nLabs'] = ['Ashley','Blake','Casey','Dylan','Elliot']
+        #Generate network
+        C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
+        fig,ax = plt.subplots(figsize=(10,3))
+        cmap = 'Pastel2'
+        ax = teneto.plot.slice_plot(C,ax,cmap=cmap)
+        fig.show() 
+
 
     '''
     # Get input type (C or G)
-    inputType = checkInput(netIn)
+    inputType = checkInput(netin)
     nettype = 'xx'
     # Convert C representation to G
 
     if inputType == 'G':
         cfg = {}
-        netIn = graphlet2contact(netIn)
+        netin = graphlet2contact(netin)
         inputType = 'C'
-    edgeList = [tuple(np.array(e[0:2]) + e[2] * netIn['netshape'][0])
-                for e in netIn['contacts']]
+    edgeList = [tuple(np.array(e[0:2]) + e[2] * netin['netshape'][0])
+                for e in netin['contacts']]
 
-    if nLabs != '' and len(nLabs) == netIn['netshape'][0]:
+    if nLabs != '' and len(nLabs) == netin['netshape'][0]:
         pass
-    elif nLabs != '' and len(nLabs) != netIn['netshape'][0]:
+    elif nLabs != '' and len(nLabs) != netin['netshape'][0]:
         raise ValueError('specified node label length does not match netshape')
-    elif nLabs == '' and netIn['nLabs'] == '':
-        nLabs = np.arange(1, netIn['netshape'][0] + 1)
+    elif nLabs == '' and netin['nLabs'] == '':
+        nLabs = np.arange(1, netin['netshape'][0] + 1)
     else:
-        nLabs = netIn['nLabs']
+        nLabs = netin['nLabs']
 
-    if tLabs != '' and len(tLabs) == netIn['netshape'][-1]:
+    if tLabs != '' and len(tLabs) == netin['netshape'][-1]:
         pass
-    elif tLabs != '' and len(tLabs) != netIn['netshape'][-1]:
+    elif tLabs != '' and len(tLabs) != netin['netshape'][-1]:
         raise ValueError('specified time label length does not match netshape')
-    elif tLabs == '' and str(netIn['t0']) == '':
-        tLabs = np.arange(1, netIn['netshape'][-1] + 1)
+    elif tLabs == '' and str(netin['t0']) == '':
+        tLabs = np.arange(1, netin['netshape'][-1] + 1)
     else:
-        tLabs = np.arange(netIn['t0'], netIn['Fs'] *
-                          netIn['netshape'][-1] + netIn['t0'], netIn['Fs'])
+        tLabs = np.arange(netin['t0'], netin['Fs'] *
+                          netin['netshape'][-1] + netin['t0'], netin['Fs'])
 
     if timeunit == '':
-        timeunit = netIn['timeunit']
+        timeunit = netin['timeunit']
 
     timeNum = len(tLabs)
     nodeNum = len(nLabs)
