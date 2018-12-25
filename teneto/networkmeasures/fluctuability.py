@@ -83,7 +83,7 @@ def fluctuability(netin, calc='global'):
         fig, ax = plt.subplots(1,2)
         teneto.plot.slice_plot(G_highF, ax[0], cmap='Pastel2', nodesize=20, nLabs=['0', '1', '2'])
         teneto.plot.slice_plot(G_lowF, ax[1], cmap='Pastel2', nodesize=20, nLabs=['0', '1', '2'])
-        ax[0].set_title('G_lowF')
+        ax[0].set_title('G_highF')
         ax[1].set_title('G_lowF')
         ax[0].set_ylim([-0.25,2.25])
         ax[1].set_ylim([-0.25,2.25])     
