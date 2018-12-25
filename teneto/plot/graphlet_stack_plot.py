@@ -5,50 +5,125 @@ from ..utils import contact2graphlet, checkInput
 
 plt.rcParams['axes.facecolor'] = 'white'
 
-def graphlet_stack_plot(netIn, ax, q=10, cmap='Reds', gridcolor='k', borderwidth=2, bordercolor=[0, 0, 0], Fs=1, timeunit='', t0=1, sharpen='yes', vminmax='minmax'):
-    '''
+def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth=2, bordercolor=[0, 0, 0], Fs=1, timeunit='', t0=1, sharpen='yes', vminmax='minmax'):
+    r'''
     Returns matplotlib axis handle for graphlet_stack_plot. This is a row of transformed connectivity matrices to look like a 3D stack.
-    **PARAMETERS**
-    :netIn: network input (graphlet or contact)
-    :ax: matplotlib ax handles.
-    :q: quality. Increaseing this will lead to smoother axis but take up more memory.
-    :cmap: colormap (matplotlib) of graphlets
-    :Fs: sampling rate. Same as contact-representation (if netIn is contact, and input is unset, contact dictionary is used)
-    :timeunit: for plotting. Same as contact-representation (if netIn is contact, and input is unset, contact dictionary is used)
-    :t0: what should the first time point be called. Should be integer. Default 1.
-    :gridcolor: The color of the grid section of the graphlets. Set to 'none' if not wanted.
-    :borderwidth: Integer that scales the size of border. (at the moment it cannot be set to 0.)
-    :bordorcolor: color of the border (at the moment it must be in RGB values between 0 and 1 -> this will be changed sometime in the future)
-    :vminmax: 'maxabs', 'minmax' (default), or list/array with length of 2. Specifies the min and max colormap value of graphlets. Maxabs entails [-max(abs(G)),max(abs(G))], minmax entails [min(G), max(G)].
-    **OUTPUT**
-    :ax: matplotlib ax handle
-    **NOTE**
+
+    Parameters 
+    ----------
+
+    netin : array, dict 
+        network input (graphlet or contact)
+    ax : matplotlib ax handles.
+    q : int 
+        Quality. Increaseing this will lead to smoother axis but take up more memory.
+    cmap : str 
+        Colormap (matplotlib) of graphlets
+    Fs : int 
+        Sampling rate. Same as contact-representation (if netin is contact, and input is unset, contact dictionary is used)
+    timeunit : str 
+        Unit of time for xlabel. Same as contact-representation (if netin is contact, and input is unset, contact dictionary is used)
+    t0 : int 
+        What should the first time point be called. Should be integer. Default 1.
+    gridcolor : str 
+        The color of the grid section of the graphlets. Set to 'none' if not wanted.
+    borderwidth : int
+        Scales the size of border. (at the moment it cannot be set to 0.)
+    bordorcolor :  
+        color of the border (at the moment it must be in RGB values between 0 and 1 -> this will be changed sometime in the future)
+    vminmax : str
+         'maxabs', 'minmax' (default), or list/array with length of 2. Specifies the min and max colormap value of graphlets. Maxabs entails [-max(abs(G)),max(abs(G))], minmax entails [min(G), max(G)].
+    
+    Returns
+    -------- 
+    ax : matplotlib ax handle
+    
+    Note
+    ------
     This function can require a lot of RAM with larger networks.
+    
+    Notes
+    ------
     At the momenet bordercolor cannot be set to zero. To remove border, set bordorwidth=1 and bordercolor=[1,1,1] for temporay workaround.
-    **SEE ALSO**
-    - *circle_plot*
-    - *slice_plot*
-    **HISTORY**
-    :Created: Dec 2016, WHT
+
+    Examples
+    -------
+    
+    Create a network with some metadata
+
+    >>> import numpy as np 
+    >>> import teneto 
+    >>> import matplotlib as plt
+    >>> np.random.seed(2017) # For reproduceability
+    >>> N = 5 # Number of nodes
+    >>> T = 10 # Number of timepoints
+    >>> # Probability of edge activation
+    >>> birth_rate = 0.2
+    >>> death_rate = .9
+    >>> # Add node names into the network and say time units are years, go 1 year per graphlet and startyear is 2007
+    >>> cfg={}
+    >>> cfg['Fs'] = 1
+    >>> cfg['timeunit'] = 'Years'
+    >>> cfg['nLabs'] = ['Ashley','Blake','Casey','Dylan','Elliot']
+    >>> cfg['t0'] = 2007 #First year in network
+    >>> #Generate network
+    >>> C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
+
+    Now this network can be plotted
+
+    >>> fig,ax = plt.subplots(figsize=(10,3))
+    >>> ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap='seismic',gridcolor='none',borderwidth=12,bordercolor=[.3,.3,.3])
+    >>> fig.show() 
+
+    .. plot::
+
+        import numpy as np 
+        import teneto 
+        import matplotlib as plt
+        np.random.seed(2017) # For reproduceability
+        N = 5 # Number of nodes
+        T = 10 # Number of timepoints
+        # Probability of edge activation
+        birth_rate = 0.2
+        death_rate = .9
+        # Add node names into the network and say time units are years, go 1 year per graphlet and startyear is 2007
+        cfg={}
+        cfg['Fs'] = 1
+        cfg['timeunit'] = 'Years'
+        cfg['nLabs'] = ['Ashley','Blake','Casey','Dylan','Elliot']
+        cfg['t0'] = 2007 #First year in network
+        #Generate network
+        C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
+        fig,ax = plt.subplots(figsize=(10,3))
+        cmap = 'seismic'
+        ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap=cmap,gridcolor='none',borderwidth=12,bordercolor=[.3,.3,.3])
+        fig.show() 
+
+    .. plot::
+
+        fig,ax = plt.subplots(figsize=(10,3))
+        ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap='inferno',gridcolor='none',borderwidth=12,bordercolor=[.3,.3,.3])
+        fig.show() 
+
     '''
 
     # Get input type (C, G, TO)
-    inputType = checkInput(netIn)
+    inputType = checkInput(netin)
 
     # Convert TO to C representation
     if inputType == 'TO':
-        netIn = netIn.contact
+        netin = netin.contact
         inputType = 'C'
     # Convert C representation to G
     if inputType == 'C':
-        nettype = netIn['nettype']
+        nettype = netin['nettype']
         if timeunit == '':
-            timeunit = netIn['timeunit']
+            timeunit = netin['timeunit']
         if t0 == 1:
-            t0 = netIn['t0']
+            t0 = netin['t0']
         if Fs == 1:
-            Fs = netIn['Fs']
-        netIn = contact2graphlet(netIn)
+            Fs = netin['Fs']
+        netin = contact2graphlet(netin)
 
     if timeunit != '':
         timeunit = ' (' + timeunit + ')'
@@ -58,22 +133,22 @@ def graphlet_stack_plot(netIn, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         print('Warning: borderwidth should be an integer. Converting to integer.')
 
     # x and y ranges for each of the graphlet plots
-    v = np.arange(0, netIn.shape[0] + 1)
-    vr = np.arange(netIn.shape[0], -1, -1)
+    v = np.arange(0, netin.shape[0] + 1)
+    vr = np.arange(netin.shape[0], -1, -1)
     # Preallocatie matrix
 
     if vminmax == '' or vminmax == 'absmax' or vminmax == 'maxabs':
-        vminmax = [-np.nanmax(np.abs(netIn)), np.nanmax(np.abs(netIn))]
+        vminmax = [-np.nanmax(np.abs(netin)), np.nanmax(np.abs(netin))]
     elif vminmax == 'minmax':
-        vminmax = [np.nanmin(netIn), np.nanmax(netIn)]
+        vminmax = [np.nanmin(netin), np.nanmax(netin)]
 
     qb = q * borderwidth
-    figmat = np.zeros([80 * q + (qb * 2), int(((netIn.shape[-1]) *
-                                               (80 * q) + (qb * 2)) - ((netIn.shape[-1] - 1) * q * 80) / 2), 4])
-    for n in range(0, netIn.shape[-1]):
+    figmat = np.zeros([80 * q + (qb * 2), int(((netin.shape[-1]) *
+                                               (80 * q) + (qb * 2)) - ((netin.shape[-1] - 1) * q * 80) / 2), 4])
+    for n in range(0, netin.shape[-1]):
         # Create graphlet
         figtmp, axtmp = plt.subplots(1, facecolor='white', figsize=(q, q), dpi=80)
-        axtmp.pcolormesh(v, vr, netIn[:, :, n], cmap=cmap, edgecolor=gridcolor,
+        axtmp.pcolormesh(v, vr, netin[:, :, n], cmap=cmap, edgecolor=gridcolor,
                          linewidth=q * 2, vmin=vminmax[0], vmax=vminmax[1])
         axtmp.set_xticklabels('')
         axtmp.set_yticklabels('')
@@ -159,7 +234,7 @@ def graphlet_stack_plot(netIn, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     fid = np.where(figmat[:, :, -1] > 0)
     ymin = np.min(fid[0])
     topfig = np.where(figmat[ymin, :, -1] > 0)[0]
-    topfig = topfig[0:len(topfig):int(len(topfig) / netIn.shape[-1])]
+    topfig = topfig[0:len(topfig):int(len(topfig) / netin.shape[-1])]
 
     # Make squares of non transparency around each figure (this fixes transparency issues when white is in the colormap)
     # for n in range(0,len(topfig)):
@@ -181,8 +256,8 @@ def graphlet_stack_plot(netIn, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     ax.set_xticks([])
     ax.set_yticks([])
 
-    L = int((((netIn.shape[-1] - 3) + 1) * (80 * q) +
-             (qb * 2)) - ((netIn.shape[-1] - 3) * q * 80) / 2 - q)
+    L = int((((netin.shape[-1] - 3) + 1) * (80 * q) +
+             (qb * 2)) - ((netin.shape[-1] - 3) * q * 80) / 2 - q)
     [ax.plot(range(topfig[i], xt), np.zeros(len(range(topfig[i], xt))) + yright,
              color='k', linestyle=':', zorder=2) for i, xt in enumerate(xtickloc[1:])]
     ax.plot(range(0, L), np.zeros(L) + ymax,
