@@ -38,7 +38,7 @@ release = '0.3.5'
 # ones.
 extensions = [
     'matplotlib.sphinxext.only_directives',
-    'matplotlib.sphinxext.plot_directive'
+    'matplotlib.sphinxext.plot_directive',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
