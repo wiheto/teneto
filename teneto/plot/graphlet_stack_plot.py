@@ -53,7 +53,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
 
     >>> import numpy as np 
     >>> import teneto 
-    >>> import matplotlib as plt
+    >>> import matplotlib.pyplot as plt
     >>> np.random.seed(2017) # For reproduceability
     >>> N = 5 # Number of nodes
     >>> T = 10 # Number of timepoints
@@ -72,14 +72,14 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     Now this network can be plotted
 
     >>> fig,ax = plt.subplots(figsize=(10,3))
-    >>> ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap='seismic',gridcolor='none',borderwidth=12,bordercolor=[.3,.3,.3])
+    >>> ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap='Greys')
     >>> fig.show() 
 
     .. plot::
 
         import numpy as np 
         import teneto 
-        import matplotlib as plt
+        import matplotlib.pyplot as plt
         np.random.seed(2017) # For reproduceability
         N = 5 # Number of nodes
         T = 10 # Number of timepoints
@@ -95,14 +95,14 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         #Generate network
         C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
         fig,ax = plt.subplots(figsize=(10,3))
-        cmap = 'seismic'
-        ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap=cmap,gridcolor='none',borderwidth=12,bordercolor=[.3,.3,.3])
+        cmap = 'Greys'
+        ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap=cmap)
         fig.show() 
 
     .. plot::
 
         fig,ax = plt.subplots(figsize=(10,3))
-        ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap='inferno',gridcolor='none',borderwidth=12,bordercolor=[.3,.3,.3])
+        ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap='inferno')
         fig.show() 
 
     '''
@@ -116,7 +116,6 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         inputType = 'C'
     # Convert C representation to G
     if inputType == 'C':
-        nettype = netin['nettype']
         if timeunit == '':
             timeunit = netin['timeunit']
         if t0 == 1:
