@@ -41,7 +41,6 @@ def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
         >>> import matplotlib.pyplot as plt
         >>> fig, ax = plt.subplots(1)
         >>> teneto.plot.circle_plot(G, ax)
-        >>> fig.show()
 
     '''
     # Get input type (C or G)
