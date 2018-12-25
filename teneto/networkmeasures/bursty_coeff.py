@@ -67,6 +67,8 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
 
     The two graphs look like this: 
 
+    .. plot::
+
         import numpy as np 
         import teneto 
         import matplotlib.pyplot as plt
