@@ -31,16 +31,28 @@ def intercontacttimes(tnet):
     Examples
     --------
     
-    This example shows 
+    This example goes through how inter-contact times are calculated. 
 
     >>> import teneto 
     >>> import numpy as np 
 
-    Make a network with 2 nodes and 4 time-points  with 4 edges spaced out. 
+    Make a network with 2 nodes and 4 time-points with 4 edges spaced out. 
 
     >>> G = np.zeros([2,2,10])
     >>> edge_on = [1,3,5,9]
     >>> G[0,1,edge_on] = 1
+
+    The network looks like this: 
+
+    .. plot:: 
+        import teneto 
+        import numpy as np     
+        G = np.zeros([2,2,10])
+        edge_on = [1,3,5,9]
+        G[0,1,edge_on] = 1
+        fig, ax = plt.subplots(1)
+        teneto.plot.slice_plot(G, ax=ax)
+        fig.show()
 
     Calculating the inter-contact times of these edges becomes: 2,2,4 between nodes 0 and 1. 
 
