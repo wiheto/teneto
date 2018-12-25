@@ -37,10 +37,16 @@ def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
     >>> G[i, j] = 1
 
     .. plot::
-        Circle plot example: 
-        >>> import matplotlib.pyplot as plt
-        >>> fig, ax = plt.subplots(1)
-        >>> teneto.plot.circle_plot(G, ax)
+        import teneto 
+        import numpy 
+        import matplotlib.pyplot as plt
+        G = np.zeros([6, 6])
+        i = [0, 0, 0, 1, 2, 3, 4]
+        j = [3, 4, 5, 5, 4, 5, 5]
+        G[i, j] = 1
+        fig, ax = plt.subplots(1)
+        teneto.plot.circle_plot(G, ax)
+        fig.show()
 
     '''
     # Get input type (C or G)
