@@ -46,7 +46,8 @@ def intercontacttimes(tnet):
 
     .. plot:: 
         import teneto 
-        import numpy as np     
+        import numpy as np    
+        import matplotlib.pyplot as plt 
         G = np.zeros([2,2,10])
         edge_on = [1,3,5,9]
         G[0,1,edge_on] = 1
