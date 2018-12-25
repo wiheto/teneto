@@ -65,7 +65,7 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     >>> G_bursty = np.zeros([2, 2, 60])
     >>> G_bursty[:,:,ts_bursty] = 1
 
-    The two graphs look like this: 
+    The two networks look like this: 
 
     .. plot::
 

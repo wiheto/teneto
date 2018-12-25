@@ -43,32 +43,62 @@ def fluctuability(netin, calc='global'):
     --------
 
     This example compares the fluctability of two different networks with the same number of edges. 
-    Below two temporal networks, both with 3 nodes and 4 time-points. 
-    Both get 5 connections. One between 
+    Below two temporal networks, both with 3 nodes and 3 time-points. 
+    Both get 3 connections. 
 
     >>> import teneto
     >>> import numpy as np 
     >>> # Manually specify node (i,j) and temporal (t) indicies.
-    >>> ind_highF_i = [0,0,0,0,1]
-    >>> ind_highF_j = [1,2,1,2,2]
-    >>> ind_highF_t = [0,1,1,2,2]
-    >>> ind_lowF_i = [0,0,0,0,0]
-    >>> ind_lowF_j = [1,1,1,2,2]
-    >>> ind_lowF_t = [0,1,2,1,2]
+    >>> ind_highF_i = [0,0,1]
+    >>> ind_highF_j = [1,2,2]
+    >>> ind_highF_t = [1,2,2]
+    >>> ind_lowF_i = [0,0,0]
+    >>> ind_lowF_j = [1,1,1]
+    >>> ind_lowF_t = [0,1,2]
     >>> # Define 2 networks below and set above edges to 1
-    >>> G_highF = np.zeros([3,3,4])
-    >>> G_lowF = np.zeros([3,3,4])
+    >>> G_highF = np.zeros([3,3,3])
+    >>> G_lowF = np.zeros([3,3,3])
     >>> G_highF[ind_highF_i,ind_highF_j,ind_highF_t] = 1
     >>> G_lowF[ind_lowF_i,ind_lowF_j,ind_lowF_t] = 1
+
+    The two different networks look like this: 
+
+    .. plot::
+
+        import teneto
+        import numpy as np 
+        import matplotlib.pyplot as plt 
+        # Manually specify node (i,j) and temporal (t) indicies.
+        ind_highF_i = [0,0,1]
+        ind_highF_j = [1,2,2]
+        ind_highF_t = [1,2,2]
+        ind_lowF_i = [0,0,0]
+        ind_lowF_j = [1,1,1]
+        ind_lowF_t = [0,1,2]
+        # Define 2 networks below and set above edges to 1
+        G_highF = np.zeros([3,3,3])
+        G_lowF = np.zeros([3,3,3])
+        G_highF[ind_highF_i,ind_highF_j,ind_highF_t] = 1
+        G_lowF[ind_lowF_i,ind_lowF_j,ind_lowF_t] = 1
+        fig, ax = plt.subplots(1,2)
+        teneto.plot.slice_plot(G_highF, ax[0], cmap='Pastel2', nodesize=20, nLabs=['0', '1', '2'])
+        teneto.plot.slice_plot(G_lowF, ax[1], cmap='Pastel2', nodesize=20, nLabs=['0', '1', '2'])
+        ax[0].set_title('G_lowF')
+        ax[1].set_title('G_lowF')
+        ax[0].set_ylim([-0.25,2.25])
+        ax[1].set_ylim([-0.25,2.25])     
+        plt.tight_layout()
+        fig.show() 
+
 
     Now calculate the fluctability of the two networks above.  
     
     >>> F_high = teneto.networkmeasures.fluctuability(G_highF)
     >>> F_high
-    0.6
+    1.0
     >>> F_low = teneto.networkmeasures.fluctuability(G_lowF)
     >>> F_low
-    0.4
+    0.3333333333333333
 
     Here we see that the network with more unique connections has the higher fluctuability. 
 
