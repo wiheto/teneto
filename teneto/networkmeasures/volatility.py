@@ -93,7 +93,7 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
     
     >>> vol_com = tnet.calc_networkmeasure('volatility', calc='communities', communities=[0,1,1], distance_func_name='hamming')
     >>> vol_com.shape
-    (2,2,9)
+    (2, 2, 9)
     >>> vol_com[:,:,0]
     array([[nan, 0.5],
            [0.5, 0. ]])
