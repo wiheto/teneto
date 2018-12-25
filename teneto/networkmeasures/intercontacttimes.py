@@ -42,7 +42,7 @@ def intercontacttimes(tnet):
     >>> edge_on = [1,3,5,9]
     >>> G[0,1,edge_on] = 1
 
-    The network looks like this where we can easily see : 
+    The network visualised below make it clear what the inter-contact times are between the two nodes: 
 
     .. plot:: 
 
