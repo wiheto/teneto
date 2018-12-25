@@ -37,6 +37,8 @@ release = '0.3.5'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'matplotlib.sphinxext.only_directives',
+    'matplotlib.sphinxext.plot_directive'
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
