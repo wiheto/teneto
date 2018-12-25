@@ -106,7 +106,7 @@ def test_generatenetwork():
     tnet.generatenetwork('rand_binomial', size=(5,10), prob=1)
     assert tnet.netshape == (5,10)
 
-def test_plot()
+def test_plot():
     tnet = teneto.TemporalNetwork()
     tnet.generatenetwork('rand_binomial', size=(5,10), prob=1)
     tnet.plot('graphlet_stack_plot')
