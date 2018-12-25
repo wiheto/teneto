@@ -61,6 +61,7 @@ def slice_plot(netin, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=
 
     >>> fig,ax = plt.subplots(figsize=(10,3))
     >>> ax = teneto.plot.slice_plot(C, ax, cmap='Pastel2')
+    >>> plt.tight_layout()
     >>> fig.show() 
 
     .. plot::
@@ -85,6 +86,7 @@ def slice_plot(netin, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=
         fig,ax = plt.subplots(figsize=(10,3))
         cmap = 'Pastel2'
         ax = teneto.plot.slice_plot(C,ax,cmap=cmap)
+        plt.tight_layout()
         fig.show() 
 
 
