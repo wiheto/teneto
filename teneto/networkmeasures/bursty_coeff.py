@@ -65,6 +65,29 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     >>> G_bursty = np.zeros([2, 2, 60])
     >>> G_bursty[:,:,ts_bursty] = 1
 
+    The two graphs look like this: 
+
+        import numpy as np 
+        import teneto 
+        import matplotlib.pyplot as plt
+        ts_bursty = [1, 8, 9, 32, 33, 34, 39, 40, 50, 51, 52, 55]
+        G_bursty = np.zeros([2, 2, 60])
+        G_bursty[:,:,ts_bursty] = 1
+        G_periodic = np.zeros([2, 2, 60])
+        ts_periodic = np.arange(0, 60, 2)
+        G_periodic[:,:,ts_periodic] = 1
+        fig,ax = plt.subplots(2, 1, figsize=(10,3))
+        teneto.plot.slice_plot(G_bursty, ax[0], cmap='Pastel2', nodesize=20, nLabs=['0', '1'])
+        teneto.plot.slice_plot(G_periodic, ax[1], cmap='Pastel2', nodesize=20, nLabs=['0', '1'])
+        ax[0].set_title('G_bursty')
+        ax[1].set_title('G_periodic')
+        ax[0].set_ylim([-0.25,1.25])
+        ax[1].set_ylim([-0.25,1.25])        
+        ax[0].set_xticklabels([])
+        ax[1].set_xticklabels([])
+        plt.tight_layout()
+        fig.show() 
+
     Now we call bursty_coeff. 
 
     >>> B_periodic = teneto.networkmeasures.bursty_coeff(G_periodic)
