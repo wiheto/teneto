@@ -50,11 +50,13 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
     Import everything needed. 
 
     >>> import teneto 
+    >>> import numpy 
+    >>> np.random.seed(1)
     >>> tnet = teneto.TemporalNetwork(nettype='bu') 
     
     Here we generate a binary network where edges have a 0.5 change of going "on", and once on a 0.2 change to go "off"
 
-    >>> tnet.generatenetwork('rand_binomial', size=(3,10), prob=(0.5,0.2), randomseed=1)
+    >>> tnet.generatenetwork('rand_binomial', size=(3,10), prob=(0.5,0.2))
 
     Calculate the volatility 
 
@@ -63,7 +65,7 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
 
     If we change the probabilities to instead be certain edges disapeared the time-point after the appeared:
 
-    >>> tnet.generatenetwork('rand_binomial', size=(3,10), prob=(0.5,1), randomseed=1)
+    >>> tnet.generatenetwork('rand_binomial', size=(3,10), prob=(0.5,1))
 
     This will make a more volatile network 
 

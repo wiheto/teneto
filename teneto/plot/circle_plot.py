@@ -11,31 +11,35 @@ def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
 
     Function draws "circle plot" and exports axis handles
 
-
-    **PARAMETERS**
-
-    :netIn: temporal network input (graphlet or contact)
-    :ax: matplotlib ax handles.
-    :nlabs: nodes labels. List of strings
-    :linestyle: bezier line style
-    :nodesize: size of nodes
-
-
-    **OUTPUT**
-
-    :ax: axis handle of slice graph
+    Parameters 
+    -------------
+    netIn : temporal network input (graphlet or contact)
+    ax : matplotlib ax handles.
+    nlabs : list 
+        nodes labels. List of strings
+    linestyle : str
+        line style
+    nodesize : int
+        size of nodes
 
 
-    **SEE ALSO**
+    Returns
+    -------
+    ax : axis handle of slice graph
 
-    - *slice_plot*
-    - *graphlet_stack_plot*
+    Example
+    -------
+    >>> import teneto 
+    >>> import numpy 
+    >>> G = np.zeros([6, 6])
+    >>> i = [0, 0, 0, 1, 2, 3, 4]
+    >>> j = [3, 4, 5, 5, 4, 5, 5]
+    >>> G[i, j] = 1
 
-
-    **HISTORY**
-
-    :updated: Dec 2016, WHT
-    :created: Sept 2016, WHT
+    .. plot: 
+        Circle plot example: 
+        >>> fig, ax = plt.subplots(1)
+        >>> teneto.plot.circle_plot(G, ax)
 
     '''
     # Get input type (C or G)
@@ -65,10 +69,10 @@ def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
     posx = [math.cos((2 * math.pi * i) / n) for i in range(0, n)]
     posy = [math.sin((2 * math.pi * i) / n) for i in range(0, n)]
     # Get Bezier lines in a circle
-    for edge in edgeList:
-        bvx, bvy = bezier_circle(
-            (posx[edge[0]], posy[edge[0]]), (posx[edge[1]], posy[edge[1]]), 20)
-        ax.plot(bvx, bvy, linestyle)
+    for edge in edgeList :
+        bvx, bv y  =  be zi er _circle(
+            (po sx [e dg e[ 0] ], posy[edge[0]]), (posx[edge[1]], posy[edge[1]]), 20)
+        ax.p lot(bvx, bvy, linestyle)
     ax.scatter(posx, posy, s=nodesize, c=range(0, n))
     # Remove things that make plot unpretty
     ax.set_yticklabels([])
