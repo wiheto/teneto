@@ -97,7 +97,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap=cmap)
         fig.show() 
 
-    Changing the parameter q (to 30) leads to a slightly sharper image, but will take longer to create and use more RAM: 
+    Changing the parameter q (to 20) leads to a slightly sharper image, but will take longer to create and use more RAM: 
 
     .. plot::
 
@@ -119,7 +119,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
         fig,ax = plt.subplots(figsize=(10,3))
         cmap = 'Greys'
-        ax = teneto.plot.graphlet_stack_plot(C,ax,q=30,cmap=cmap)
+        ax = teneto.plot.graphlet_stack_plot(C,ax,q=20,cmap=cmap)
         fig.show() 
 
     '''
