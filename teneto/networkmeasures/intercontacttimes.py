@@ -45,6 +45,7 @@ def intercontacttimes(tnet):
     The network looks like this: 
 
     .. plot:: 
+    
         import teneto 
         import numpy as np    
         import matplotlib.pyplot as plt 
