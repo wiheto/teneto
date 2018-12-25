@@ -37,6 +37,7 @@ def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
     >>> G[i, j] = 1
 
     .. plot::
+    
         import teneto 
         import numpy 
         import matplotlib.pyplot as plt
