@@ -32,6 +32,10 @@ def test_errors():
     tnet = teneto.TemporalNetwork(from_edgelist=edgelist)
     with pytest.raises(ValueError):
         tnet.calc_networkmeasure('skmdla')
+    with pytest.raises(ValueError):
+        tnet.generatenetwork('skmdla')
+    with pytest.raises(ValueError):
+        tnet.plot('skmdla')
 
 
 def test_define_tnet_unweighted(): 
@@ -101,3 +105,8 @@ def test_generatenetwork():
     tnet = teneto.TemporalNetwork()
     tnet.generatenetwork('rand_binomial', size=(5,10), prob=1)
     assert tnet.netshape == (5,10)
+
+def test_plot()
+    tnet = teneto.TemporalNetwork()
+    tnet.generatenetwork('rand_binomial', size=(5,10), prob=1)
+    tnet.plot('graphlet_stack_plot')

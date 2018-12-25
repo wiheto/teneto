@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import teneto 
 import inspect
+import matplotlib.pyplot as plt
 
 class TemporalNetwork:
 
@@ -181,6 +182,17 @@ class TemporalNetwork:
         self.network_from_graphlet(network)
         if self.nettype[1] == 'u':
             self._drop_duplicate_ij()
+
+    def plot(self, plottype, ax=None, **plotparams): 
+        availabletypes = [f for f in dir(teneto.plot) if not f.startswith('__')]
+        if plottype not in availabletypes: 
+            raise ValueError('Unknown network measure. Available plotting functions are: ' + ', '.join(availabletypes))
+        funs = inspect.getmembers(teneto.plot)
+        funs={m[0]:m[1] for m in funs if not m[0].startswith('__')}
+        if not ax: 
+            _, ax = plt.subplots(1)
+        ax = funs[plottype](self.to_graphlet(), ax=ax, **plotparams)
+        return ax
 
     def to_graphlet(self):
         idx = np.array(list(map(list, self.network.values)))
