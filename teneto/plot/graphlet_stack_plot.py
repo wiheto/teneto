@@ -64,7 +64,6 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     >>> cfg={}
     >>> cfg['Fs'] = 1
     >>> cfg['timeunit'] = 'Years'
-    >>> cfg['nLabs'] = ['Ashley','Blake','Casey','Dylan','Elliot']
     >>> cfg['t0'] = 2007 #First year in network
     >>> #Generate network
     >>> C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
@@ -90,7 +89,6 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         cfg={}
         cfg['Fs'] = 1
         cfg['timeunit'] = 'Years'
-        cfg['nLabs'] = ['Ashley','Blake','Casey','Dylan','Elliot']
         cfg['t0'] = 2007 #First year in network
         #Generate network
         C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
@@ -99,10 +97,29 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap=cmap)
         fig.show() 
 
+    Changing the parameter q (to 30) leads to a slightly sharper image, but will take longer to create and use more RAM: 
+
     .. plot::
 
+        import numpy as np 
+        import teneto 
+        import matplotlib.pyplot as plt
+        np.random.seed(2017) # For reproduceability
+        N = 5 # Number of nodes
+        T = 10 # Number of timepoints
+        # Probability of edge activation
+        birth_rate = 0.2
+        death_rate = .9
+        # Add node names into the network and say time units are years, go 1 year per graphlet and startyear is 2007
+        cfg={}
+        cfg['Fs'] = 1
+        cfg['timeunit'] = 'Years'
+        cfg['t0'] = 2007 #First year in network
+        #Generate network
+        C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
         fig,ax = plt.subplots(figsize=(10,3))
-        ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap='inferno')
+        cmap = 'Greys'
+        ax = teneto.plot.graphlet_stack_plot(C,ax,q=30,cmap=cmap)
         fig.show() 
 
     '''
