@@ -86,13 +86,13 @@ def test_tnet_functions():
     G = G + G.transpose([1, 0, 2])
     tnet = teneto.TemporalNetwork(from_array=G)
     D = tnet.calc_networkmeasure('temporal_degree_centrality')
-    assert (G.sum(axis=-1).sum(axis=-1) == D).all()
+    assert (G.sum(axis=-1).sum(axis=-1) == D)
     G = np.zeros([3,3,3]) 
     G[[0,0],[1,2],[2,1]] = 0.5
     G = G + G.transpose([1, 0, 2])
     tnet = teneto.TemporalNetwork(from_array=G)
     D = tnet.calc_networkmeasure('temporal_degree_centrality')
-    assert (G.sum(axis=-1).sum(axis=-1) == D).all()
+    assert (G.sum(axis=-1).sum(axis=-1) == D)
 
 
 
