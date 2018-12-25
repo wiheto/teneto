@@ -71,10 +71,10 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
 
     >>> tnet.calc_networkmeasure('volatility', distance_func_name='hamming')
     0.1111111111111111
-    
+
     We can calculate the volatility per time instead
 
-    >>> vol_time = tnet.calc_networkmeasure('volatility', calc='time')
+    >>> vol_time = tnet.calc_networkmeasure('volatility', calc='time', distance_func_name='hamming')
     >>> len(vol_time)
     9
     >>> vol_time[0]
