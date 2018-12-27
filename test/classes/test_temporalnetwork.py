@@ -50,6 +50,8 @@ def test_define_tnet_unweighted():
     G[[0,0],[1,2],[2,1]] = 1
     tnet_array = teneto.TemporalNetwork(from_array=G)
     assert all(tnet_array.network == tnet_edgelist.network)
+    tnet_df = teneto.TemporalNetwork(from_df=tnet_array.network)
+    assert all(tnet_array.network == tnet_df.network)
     C = teneto.utils.graphlet2contact(G)
     tnet_dict = teneto.TemporalNetwork(from_dict=C)
     assert all(tnet_dict.network == tnet_edgelist.network)

@@ -6,13 +6,14 @@ import matplotlib.pyplot as plt
 
 class TemporalNetwork:
 
-    def __init__(self, N=None, T=None, nettype=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None): 
+    def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False): 
         # Check inputs 
         if nettype: 
             if nettype not in ['bu','bd','wu','wd']:
                 raise ValueError('Nettype string must be: \'bu\', \'bd\', \'wu\' or \'wd\' for binary, weighted, undirected and directed.')
 
-        if (from_array is not None and from_dict is not None) or (from_edgelist is not None and from_dict is not None) or (from_array is not None and from_edgelist is not None):
+        inputvars = locals()
+        if sum([1 for n in  inputvars.keys() if 'from' in n and inputvars[n] is not None]) > 1:
             raise ValueError('Cannot import from two sources at once.')
 
         if from_array is not None: 
@@ -37,7 +38,11 @@ class TemporalNetwork:
                 raise ValueError('timetype must be \'discrete\' or \'continuous\'')
             self.timetype = timetype
 
+        self.diagonal = diagonal
+
         # Input
+        if from_df is not None: 
+            self.network_from_df(from_df)
         if from_edgelist is not None: 
             self.network_from_edgelist(from_edgelist)
         elif from_array is not None: 
@@ -59,11 +64,13 @@ class TemporalNetwork:
         if not nettype:
             print('No network type set: assuming it to be undirected, set nettype if directed') 
 
-
+        # Update df 
         self._set_nettype()
         self._calc_netshape()
         if self.nettype[1] == 'u':
             self._drop_duplicate_ij()
+        if not self.diagonal:
+            self._drop_diagonal()
 
     def _set_nettype(self):
         if self.network.shape[-1] == 4:
@@ -82,6 +89,12 @@ class TemporalNetwork:
             w = array[array!=0]
             self.network = pd.DataFrame(data={'i': i, 'j': j, 't': t, 'weight': w}) 
         self.netshape = array.shape
+        self._set_nettype()
+        self._calc_netshape()
+
+    def network_from_df(self, df):
+        self._check_input(df, 'df')
+        self.network = df 
         self._set_nettype()
         self._calc_netshape()
     
@@ -108,6 +121,10 @@ class TemporalNetwork:
         self.network.drop_duplicates(['ij','t'], inplace=True)
         self.network.reset_index(inplace=True, drop=True)
         self.network.drop('ij', inplace=True, axis=1)
+
+    def _drop_diagonal(self): 
+        self.network = self.network.where(self.network['i'] != self.network['j']).dropna()
+        self.network.reset_index(inplace=True, drop=True)
 
     def _calc_netshape(self):
         if len(self.network) == 0: 
@@ -137,6 +154,11 @@ class TemporalNetwork:
                 raise ValueError('Contact should be dictionary')
             if 'contacts' not in datain: 
                 raise ValueError('Key \'contacts\' should be in dictionary')
+        elif datatype == 'df':
+            if not isinstance(datain, pd.DataFrame): 
+                raise ValueError('Contact should be Pandas Dataframe')
+            if ('i' and 'j' and 't') not in datain: 
+                raise ValueError('Columns must be \'i\' \'j\' and \'t\'')
         else:
             raise ValueError('Unknown datatype')
 
