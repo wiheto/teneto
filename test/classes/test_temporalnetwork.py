@@ -1,6 +1,7 @@
 import teneto 
 import pytest 
 import numpy as np 
+import pandas as pd
 
 def test_errors():
     # Make sure that only 1 of three different input methods is specified
@@ -14,11 +15,19 @@ def test_errors():
     # Make sure error raised from_dict if not a dictionary
     with pytest.raises(ValueError):
         teneto.TemporalNetwork(from_dict=[1,2,3])
-        # Make sure error raised from_dict if not a dictionary
+    with pytest.raises(ValueError):
+        teneto.TemporalNetwork(from_dict={})
+    # Make sure error raised edge_list if not a list of lists
     with pytest.raises(ValueError):
         teneto.TemporalNetwork(from_edgelist='1,2,3')
     with pytest.raises(ValueError):
         teneto.TemporalNetwork(from_edgelist=[[0,1],[0,1,2,3]])
+    # Make sure error raised df is not pandas
+    with pytest.raises(ValueError):
+        teneto.TemporalNetwork(from_df={})
+    with pytest.raises(ValueError):
+        df = pd.DataFrame({'i':[1,2],'j':[0,1]})
+        teneto.TemporalNetwork(from_df=df)
     # Make sure error raised when nettype is wrong
     with pytest.raises(ValueError):
         teneto.TemporalNetwork(nettype='s')
@@ -36,6 +45,8 @@ def test_errors():
         tnet.generatenetwork('skmdla')
     with pytest.raises(ValueError):
         tnet.plot('skmdla')
+    with pytest.raises(ValueError):
+        tnet._check_input(datain=edgelist,datatype='skmdla')
 
 
 def test_define_tnet_unweighted(): 

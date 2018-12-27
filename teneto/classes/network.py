@@ -156,7 +156,7 @@ class TemporalNetwork:
                 raise ValueError('Key \'contacts\' should be in dictionary')
         elif datatype == 'df':
             if not isinstance(datain, pd.DataFrame): 
-                raise ValueError('Contact should be Pandas Dataframe')
+                raise ValueError('Input should be Pandas Dataframe')
             if ('i' and 'j' and 't') not in datain: 
                 raise ValueError('Columns must be \'i\' \'j\' and \'t\'')
         else:
