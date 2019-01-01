@@ -706,7 +706,7 @@ class TenetoBIDS:
             sidecar['threshold'] = exclusion_criteria
             for af in ['.tsv','.nii.gz']: 
                 f = f.split(af)[0] 
-            f += + '.json'
+            f += '.json'
             with open(f, 'w') as fs:
                 json.dump(sidecar, fs)
         print('Removed ' + str(bs) + ' files from inclusion.')
