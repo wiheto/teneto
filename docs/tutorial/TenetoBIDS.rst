@@ -241,8 +241,8 @@ This contains 2 time-series which are 20 timepoints long. To see what we are wor
 .. plot::
 
     import teneto
-    import numpy as np 
     import matplotlib.pyplot as plt 
+    dataset_path = teneto.__path__[0] + '/data/testdata/dummybids/'
     pipeline='teneto-tests'
     data_directory = 'parcellation'
     bids_tags = {'sub': '001', 'task': 'a', 'run': 'alpha'}
@@ -301,8 +301,9 @@ Now as an array, we can easily visualise the connectivity time series between th
 .. plot::
 
     import teneto
-    import numpy as np 
     import matplotlib.pyplot as plt 
+    import numpy as np
+    dataset_path = teneto.__path__[0] + '/data/testdata/dummybids/'
     pipeline='teneto-tests'
     data_directory = 'parcellation'
     bids_tags = {'sub': '001', 'task': 'a', 'run': 'alpha'}
