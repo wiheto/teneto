@@ -12,6 +12,7 @@
 - added local_variation to networkmeasures.
 - added TemporalNetwork class.
 - Added randomseed to binomial.
+- Fixed layering of edges in circleplot
 
 ## V0.3.5
 

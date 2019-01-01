@@ -46,7 +46,7 @@ class TemporalNetwork:
         if from_edgelist is not None: 
             self.network_from_edgelist(from_edgelist)
         elif from_array is not None: 
-            self.network_from_graphlet(from_array)
+            self.network_from_array(from_array)
         elif from_dict is not None: 
             self.network_from_contact(from_dict)
 
@@ -63,9 +63,11 @@ class TemporalNetwork:
 
         if not nettype:
             print('No network type set: assuming it to be undirected, set nettype if directed') 
+            self._set_nettype()
+        else:
+            self.nettype = nettype
 
         # Update df 
-        self._set_nettype()
         self._calc_netshape()
         if self.nettype[1] == 'u':
             self._drop_duplicate_ij()
@@ -78,7 +80,7 @@ class TemporalNetwork:
         elif self.network.shape[-1] == 3:
             self.nettype = 'bu'
 
-    def network_from_graphlet(self, array):
+    def network_from_array(self, array):
         self._check_input(array, 'array')
         uvals = np.unique(array)
         if len(uvals) == 2 and 1 in uvals and 0 in uvals: 
@@ -201,7 +203,7 @@ class TemporalNetwork:
         funs = inspect.getmembers(teneto.generatenetwork)
         funs={m[0]:m[1] for m in funs if not m[0].startswith('__')}
         network = funs[networktype](**networkparams)
-        self.network_from_graphlet(network)
+        self.network_from_array(network)
         if self.nettype[1] == 'u':
             self._drop_duplicate_ij()
 
@@ -213,18 +215,20 @@ class TemporalNetwork:
         funs={m[0]:m[1] for m in funs if not m[0].startswith('__')}
         if not ax: 
             _, ax = plt.subplots(1)
-        ax = funs[plottype](self.to_graphlet(), ax=ax, **plotparams)
+        ax = funs[plottype](self.to_array(), ax=ax, **plotparams)
         return ax
 
-    def to_graphlet(self):
+    def to_array(self):
         idx = np.array(list(map(list, self.network.values)))
         G = np.zeros([self.netshape[0], self.netshape[0], self.netshape[1]])
         if idx.shape[1] == 3:
+            if self.nettype(-1) == 'u': 
+                idx = np.vstack([idx,idx[:,[1,0,2]]])
             G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
         elif idx.shape[1] == 4:
+            if self.nettype(-1) == 'u': 
+                idx = np.vstack([idx,idx[:,[1,0,2,3]]])
             weights = idx[:,3]
             idx = np.array(idx[:,:3], dtype=int)
             G[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
-        if self.nettype[-1] == 'u': 
-            G = G + G.transpose([1,0,2])
         return G

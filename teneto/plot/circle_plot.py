@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from .slice_plot import make_bezier, pascal_row
-from ..utils import *
+from ..utils import checkInput, graphlet2contact
 
 
 def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
@@ -56,7 +56,6 @@ def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
     '''
     # Get input type (C or G)
     inputType = checkInput(netIn, conMat=1)
-    nettype = 'xx'
     # Convert C representation to G
     if inputType == 'M':
         shape = np.shape(netIn)

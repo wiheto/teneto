@@ -1,14 +1,16 @@
-Load saved data
+Load/Save TenetoBIDS
 =================
 
-You can save you progress by using save_pickle 
+TenetoBIDS objects can be easily saved as a pickle file (.pkl). 
+
+You can save you progress by using *save_pickle*.
 
 .. code-block:: python
 
-    tnet.save_aspickle(dataset_path + '/tenetoobj.pkl')
+    tnet.save_aspickle('./tenetoobj.pkl')
 
-Then to load it you just need to write
+Then to load it you just need to call *load_frompickle*:
 
 .. code-block:: python
 
-    tnet = teneto.TenetoBIDS.load_frompickle(dataset_path + '/tenetoobj.pkl')
+    tnet = teneto.TenetoBIDS.load_frompickle('./tenetoobj.pkl')

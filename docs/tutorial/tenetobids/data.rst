@@ -1,7 +1,8 @@
 Data in tutorial
 ===================
 
-For this tutorial, we will use some dummy data. This is included with the teneto package in teneto/teneto/testdata/dummybids/.
+For this tutorial, we will use some dummy data. This is included with the teneto package in [pathtoteneteo]/teneto/data/testdata/dummybids/.
+To view the files we must first import the package and define thewhere the path is. 
 
     >>> import teneto
     >>> import os
@@ -17,7 +18,8 @@ And in the derivatives we see two different derivatives that exist:
     >>> os.listdir(dataset_path + '/derivatives')
     ['teneto-tests', 'fmriprep']
 
-What is relevant here is that there is fmriprep, which is where we have the dummy preprocessed data.
+Within the derivatives directory is where we find the preprocessed data. We will use both of these two directories throughout the tutorial. 
+The fmriprep directory has some dummy data with confounds and fMRI-like data.
 
 We can look at one of the subject:
 
@@ -31,8 +33,22 @@ We can look at one of the subject:
 
 Here we see there are two different tasks (a, b), and two different runs (alpha, beta).
 
-There are both preproccessd nifti files (fMRI images) and tsv files which contain conounds (ending with the suffix _confounds).
+There are both preproccessd nifti files (fMRI images) and tsv files which contain confounds (ending with the suffix _confounds).
 
 Within the confound files we have two confounds: "confound1" and "confound2"
 
-Note, here there is only one file with real data in. 
+In the teneto-tests directory there is also some dummy data time-series for regions of interest and time-varying connectivity. 
+
+    >>> os.listdir(dataset_path + '/derivatives/teneto-tests/sub-001/func/')
+    ['parcellation', 'tvc']
+
+Here we see two directories, one contains the ROI data, one contains the TVC data. We cann this directory in this tutorial for pipeline_subdir. 
+
+Within these directories we find data that has a similar name as above.
+
+Read More 
+--------
+
+`BIDS specification page`_.
+
+.. _a link: https://github.com/bids-standard/bids-specification
