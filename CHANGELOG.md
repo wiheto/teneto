@@ -2,6 +2,7 @@
 
 ## V0.4.0 (development)
 
+- Rewritten tenetobids to make more compatible with BIDS derivatives RC1 (note completley compatible yet).
 - Fixed relative import paths
 - Subnet argument for certain functions have been removed.
 - Changing default value of decay argument (temporal_degree_centrality, sid) to 0 instead of None

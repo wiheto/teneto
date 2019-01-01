@@ -6,7 +6,7 @@ import numpy as np
 from .shortest_temporal_path import shortest_temporal_path 
 
 def temporal_efficiency(data, calc='global'):
-    """
+    r"""
     Returns temporal efficiency estimate. BU networks only.
 
     Parameters

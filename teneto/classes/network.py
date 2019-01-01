@@ -132,7 +132,7 @@ class TemporalNetwork:
         else: 
             N = self.network[['i','j']].max().max()+1
             T = self.network['t'].max()+1
-            self.netshape = (N,T)
+            self.netshape = (int(N),int(T))
 
     def _check_input(self, datain, datatype):
         if datatype == 'edgelist': 

@@ -6,7 +6,7 @@ import numpy as np
 from .intercontacttimes import intercontacttimes
 
 def bursty_coeff(data, calc='edge', nodes='all', communities=None):
-    """
+    r"""
     Calculates the bursty coefficient.[1][2]
 
     Parameters
