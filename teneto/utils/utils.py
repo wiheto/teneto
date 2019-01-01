@@ -599,7 +599,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
     inputtype = checkInput(netIn)
     # Convert TO to G representation
     if inputtype == 'TO' and 'TO' in allowedformats:
-        G = netIn.to_graphlet()
+        G = netIn.to_array()
         netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
     elif inputtype == 'C' and 'C' in allowedformats and outputformat != 'C':
         G = contact2graphlet(netIn)
