@@ -1,15 +1,13 @@
 Teneto and BIDS: TenetoBIDS
 ---------------------------
 
-(This tutorial is under construction)
-
 The BIDS format for neuroimaging is a way to organize data. If your data is organized this way, then teneto can use this to efficiently process the data.  
 
 The aim of TenetoBIDS is a class of functions which run on preprocessed fMRI data and run some additional preprocessing steps, time-varying connectivity derivation and quantify temporal network properties.
 The compatiblity with the BIDS format allows for Teneto to run the analysis on all subjects/files/tasks with only a few lines of code.  
 
 Prerequisites 
-================= 
+===================
 
 The data used here should be from fMRI and preprocessed (e.g. fmriprep) and in the BIDS format. Whenever BIDS_dir is stated in the tutorial, it means the directory that points to the main BIDS directory.  
 
@@ -18,30 +16,65 @@ The output from Teneto is then ready to be placed in statistical models, machine
 
 If is also useful to know where confounds files are in your preprocessed data. In fmriprep for example, they are called _confounds.csv. 
 
+Data in tutorial
+===================
+
+For this tutorial, we will use some dummy data. This is included with the teneto package in teneto/teneto/testdata/dummybids/.
+
+    >>> import teneto
+    >>> import os
+    >>> dataset_path = teneto.__path__[0] + '/data/testdata/dummybids/'
+
+Here we see that there are two subjects.
+
+    >>> os.listdir(dataset_path)
+    ['participant.tsv', 'sub-001', 'derivatives', 'sub-002']
+
+And in the derivatives we see two different derivatives that exist:
+
+    >>> os.listdir(dataset_path + '/derivatives')
+    ['teneto-tests', 'fmriprep']
+
+What is relevant here is that there is fmriprep, which is where we have the dummy preprocessed data.
+
+We can look at one of the subject:
+
+    >>> os.listdir(dataset_path + '/derivatives/fmriprep/sub-001/func/')
+    ['sub-001_task-a_run-beta_bold_preproc.nii.gz',
+    'sub-001_task-a_run-beta_confounds.tsv',
+    'sub-001_task-b_run-alpha_confounds.tsv',
+    'sub-001_task-a_run-alpha_bold_preproc.nii.gz',
+    'sub-001_task-b_run-alpha_bold_preproc.nii.gz',
+    'sub-001_task-a_run-alpha_confounds.tsv']
+
+Here we see there are two different tasks (a, b), and two different runs (alpha, beta).
+
+There are both preproccessd nifti files (fMRI images) and tsv files which contain conounds (ending with the suffix _confounds).
+
+Within the confound files we have two confounds: "confound1" and "confound2"
+
+Note, here there is only one file with real data in. 
+
 Defining TenetoBIDS
 ===================
 
-The first step is to define a TenetoBIDS object. Here we always called such an object tnet. tnet is defined by calling the TenetoBIDS class. There are (at leas) two arguments 
+The first step is to create a TenetoBIDS object. Here we always called such an object tnet. tnet is defined by calling the TenetoBIDS class. There are (at leas) two arguments 
 that are needed, the BIDS_dir (i.e. the base directory) and the pipeline (the folder in the derivatives folder where the data is). 
 
-.. code-block:: python
+    >>> tnet = teneto.TenetoBIDS(dataset_path, pipeline='fmriprep', raw_data_exists=False)
 
-    tnet = teneto.TenetoBIDS('/directory_to_bids/', pipeline='fmriprep')
+Usually the argument raw_data_exists does not need to be passed, the reason for passing it is to ignore the data outside of the derivatives directories which is useful for how we have made this dummy data. But usually this can be ignored. 
 
-Certain arguments can be passed when calling the TenetoBIDS class. For example, if you only want to use a few subjects and a specific task you run: 
+Certain arguments can be passed when calling the TenetoBIDS class. 
+For example, the data consists of tasks, runs, and subjects. To choose specific ones of these we can pass a dictionary of BIDS tags: 
 
-.. code-block:: python
+    >>> tnet = teneto.TenetoBIDS(dataset_path, pipeline='fmriprep',  bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
 
-    tnet = teneto.TenetoBIDS('/directory_to_bids/', pipeline='fmriprep', subjects=['01','02','03'], tasks='mytask1')
+This will mean that only subject 001, task a and run alpha are loaded. 
 
-This will mean that only sub-01, sub-2, sub-03 are used and task-mytask1. Alternativelt the same can be achieved by splitting this up into subfuncitons  
-
-.. code-block:: python
-
-    tnet = teneto.TenetoBIDS('/directory_to_bids/')
-    tnet.set_pipeline('fmriprep')
-    tnet.set_subjects(['01','02','03'])
-    tnet.set_tasks('mytask1')
+    >>> tnet = teneto.TenetoBIDS(dataset_path, pipeline='fmriprep', raw_data_exists=False)
+    >>> tnet.set_bids_tags({'sub': '001'})
+    >>> tnet.set_bids_tags({'task': 'a', 'run': 'alpha'})
 
 To see which files tnet identified within the BIDS directory and provide a summary of which files are currently selected, type: 
 
@@ -49,21 +82,38 @@ To see which files tnet identified within the BIDS directory and provide a summa
 
     tnet.print_dataset_summary()
 
-Which will print general information about what the object can find in the dataset and which have been selected. 
+Which will print something like this: 
 
-Alternatively you can see which files are currently selected and (in most instances) these will be acted upon if calling a TenetoBIDS function.  
+    --- DATASET INFORMATION ---
+    --- Subjects ---
+    Number of subjects (selected): 1
+    Subjects (selected): 001
+    Bad subjects: 0
+    --- Tasks ---
+    Number of tasks (selected): 1
+    Tasks (selected): a
+    --- Runs ---
+    Number of runs (selected): 1
+    Rubs (selected): alpha
+    --- Sessions ---
+    Number of sessions (selected): 0
+    Sessions (selected): 
+    --- PREPROCESSED DATA (Pipelines/Derivatives) ---
+    Pipeline: fmriprep
+    --- SELECTED DATA ---
+    Numnber of selected files: 1
+    [list of files]
 
-.. code-block:: python
+This helps provide some information about the data. 
 
-    tnet.get_selected_files()
+If you ever want to retrive data from the BIDS structure, there are two that can be used. 
+tnet.load_data() and tnet.get_selected_files(). The former will be demonstrated later. 
 
-If there is a _confounds file within the preprocessed file (or an independent derivatives folder that is specified with TenetoBIDS.set_confound_pipeline())
+    >>> paths = tnet.get_selected_files(quiet=1)
 
-.. code-block:: python 
-    tnet.get_confound_files()
+Will produce a list of paths for the files that have been selected. The quiet argument states if this information is printed or not. 
 
-Note: while other preprocessing pipelines are compatible with teneto, all functions have been tested on fmriprep and some (e.g. confound removal) may not work. This will be made better when the BIDS derivative format is finalized. 
-
+Note: while other preprocessing pipelines are compatible with teneto, all functions have been tested on fmriprep and some (e.g. confound removal) may not work. This will be made better when the BIDS derivative formats are finalized. 
 
 Preprocessing steps
 ===================
@@ -71,8 +121,8 @@ Preprocessing steps
 Teneto can do the following preprocessing steps. 
 
 1. Remove confounds (e.g. global signal, movement, framewise displacement). 
-2. Exclude subjects that have too much of a specified  confound. 
-3. Remove time-points or simulation removed time-points that have too much of a specified confound. 
+2. Exclude files that exceed a certain confound. 
+3. Remove time-points that have too much of a specified confound. 
 4. Make regions of interest from a parcellation.  
 5. Manually set bad files or bad subjects 
 

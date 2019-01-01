@@ -48,7 +48,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'm2r'
+    'm2r',
+    'sphinx_automodapi.automodapi',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -115,6 +116,7 @@ htmlhelp_basename = 'tenetodoc'
 
 # Remove module names in documentation
 add_module_names = False 
+add_package_names = False
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -174,6 +176,6 @@ texinfo_documents = [
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-
+numpydoc_show_class_members = False 
 # MOCK MODULESS
 #autodoc_mock_imports = ['numpy', 'scipy', 'bids', 'igraph', 'louvain', 'python-igraph','seaborn', 'matplotlib.pyplot', 'pandas','scipy','nilearn']
