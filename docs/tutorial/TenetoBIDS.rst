@@ -242,6 +242,7 @@ This contains 2 time-series which are 20 timepoints long. To see what we are wor
 
     import teneto
     import matplotlib.pyplot as plt 
+    import numpy as np
     dataset_path = teneto.__path__[0] + '/data/testdata/dummybids/'
     pipeline='teneto-tests'
     data_directory = 'parcellation'
@@ -269,7 +270,7 @@ Now we have the time-varying estimates for each time-point, we can load and them
 
     >>> tnet.load_data('tvc')
 
-This produces a list of dataframes in tnet.tvc_data_. 
+This produces a list of dataframes in tnet.tvc_data\_. 
 
     >>> tnet.tvc_data_[0].head()
          i    j    t    weight
