@@ -167,10 +167,6 @@ def contact2graphlet(C):
         raise ValueError('\'dimord\' must be present in C.')
     if C['dimord'] != 'node,node,time':
         raise ValueError('\'dimord\' must be string \'node,node,time\'.')
-    if 'dimord' not in C.keys():
-        raise ValueError('\'dimord\' must be present in C.')
-    if C['dimord'] != 'node,node,time':
-        raise ValueError('\'dimord\' must be string \'node,node,time\'.')
     if 'nettype' not in C.keys():
         raise ValueError(
             'C must include parameter \'nettype\' (wd,bd,wu,bu). w: weighted network. b: binary network. u: undirected network. d: directed network')
