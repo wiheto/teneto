@@ -84,25 +84,25 @@ To see which files tnet identified within the BIDS directory and provide a summa
 
 Which will print something like this: 
 
-    --- DATASET INFORMATION ---
-    --- Subjects ---
-    Number of subjects (selected): 1
-    Subjects (selected): 001
-    Bad subjects: 0
-    --- Tasks ---
-    Number of tasks (selected): 1
-    Tasks (selected): a
-    --- Runs ---
-    Number of runs (selected): 1
-    Rubs (selected): alpha
-    --- Sessions ---
-    Number of sessions (selected): 0
-    Sessions (selected): 
-    --- PREPROCESSED DATA (Pipelines/Derivatives) ---
-    Pipeline: fmriprep
-    --- SELECTED DATA ---
-    Numnber of selected files: 1
-    [list of files]
+    |--- DATASET INFORMATION ---
+    |--- Subjects ---
+    |Number of subjects (selected): 1
+    |Subjects (selected): 001
+    |Bad subjects: 0
+    |--- Tasks ---
+    |Number of tasks (selected): 1
+    |Tasks (selected): a
+    |--- Runs ---
+    |Number of runs (selected): 1
+    |Rubs (selected): alpha
+    |--- Sessions ---
+    |Number of sessions (selected): 0
+    |Sessions (selected): 
+    |--- PREPROCESSED DATA (Pipelines/Derivatives) ---
+    |Pipeline: fmriprep
+    |--- SELECTED DATA ---
+    |Numnber of selected files: 1
+    |[list of files]
 
 This helps provide some information about the data. 
 
@@ -113,10 +113,12 @@ tnet.load_data() and tnet.get_selected_files(). The former will be demonstrated 
 
 Will produce a list of paths for the files that have been selected. The quiet argument states if this information is printed or not. 
 
-Note: while other preprocessing pipelines are compatible with teneto, all functions have been tested on fmriprep and some (e.g. confound removal) may not work. This will be made better when the BIDS derivative formats are finalized. 
-
 Preprocessing steps
 ===================
+
+Preprocessing software (e.g. fmriprep) often do the essential preprocessing steps for general fMRI analysis. 
+However there are additional preprocessing steps that can be done (e.g. confound removal).
+Teneto offers ways for this to be done. 
 
 Teneto can do the following preprocessing steps. 
 
@@ -192,17 +194,137 @@ Teneto uses nilearn to make the parcellation. *more needed here*
 Manually set bad files/bad subjects 
 ************************************
 
-Files or subjects can be manually set as bad using tnet.set_bad_files() or tnet.set_bad_subjects(). For the bad subjects, the subject id should be specified. For the bad_file, the start of the BIDS file name should be specified (including tasks, runs, sessions etc. if appropriate).  
+Files or subjects can be manually set as bad using tnet.set_bad_files() or tnet.set_bad_subjects(). 
+For the bad subjects, the subject id should be specified. 
+For the bad_file, the start of the BIDS file name should be specified (including tasks, runs, sessions etc. if appropriate).  
+
+BIDS files generally have a json file that contains the metainformation. When setting a bad_subject or bad_file this will also be set in the 
+json metadata and persists even if the BIDS object is redefined.
+
+If you accidently write the wrong subject name in set_bad_subjects, this may 
 
 Deriving time-varying representations 
 ======================================
 
-tnet.derive()
+To derive the time varying connectivity estimates, there are several available options in Teneto: 
+
+- Sliding window 
+- Tapered sliding window 
+- Jackknife correlatoin 
+- Spatial distance correlation 
+- Multiply temporal derivatives 
+
+Researchers have different preferences for different methods.
+
+In TenetoBIDS, you can call the derive function and it will calculate the TVC estimates for you and placed
+them in a tvc directory. 
+
+In this example, we start out by selecting some dummy ROI data which is prespecfied in the teneto-tests directory. 
+
+    >>> pipeline='teneto-tests'
+    >>> data_directory = 'parcellation'
+    >>> bids_tags = {'sub': '001', 'task': 'a', 'run': 'alpha'}
+    >>> tnet = teneto.TenetoBIDS(dataset_path, pipeline=pipeline, pipeline_subdir=data_directory, bids_suffix='roi', bids_tags=bids_tags, raw_data_exists=False)
+
+This contains 2 time-series which are 20 timepoints long. To see what we are working with, we can load the parcellation data and plot it. 
+
+    >>> import matplotlib.pyplot as plt
+    >>> tnet.load_data('parcellation')
+    >>> tnet.parcellation_data_[0]
+    >>> fig,ax = plt.subplots(1)
+    >>> ax.plot(np.arange(1,21),tnet.parcellation_data_[0].transpose())
+    >>> ax.set_ylabel('Amplitude')
+    >>> ax.set_xlabel('Time')
+    >>> plt.tight_layout()
+    >>> fig.show() 
+
+.. plot::
+
+    import teneto
+    import numpy as np 
+    import matplotlib.pyplot as plt 
+    pipeline='teneto-tests'
+    data_directory = 'parcellation'
+    bids_tags = {'sub': '001', 'task': 'a', 'run': 'alpha'}
+    tnet = teneto.TenetoBIDS(dataset_path, pipeline=pipeline, pipeline_subdir=data_directory, bids_suffix='roi', bids_tags=bids_tags, raw_data_exists=False)
+    tnet.load_data('parcellation')
+    fig,ax = plt.subplots(1)
+    ax.plot(np.arange(1,21),tnet.parcellation_data_[0].transpose())
+    ax.set_ylabel('Amplitude')
+    ax.set_xlabel('Time')
+    ax.set_xticks(np.arange(5,21,5))
+    plt.tight_layout()
+    fig.show() 
+
+Let us say we want to apply the jackknife correlation method to this. To do this we just need to specify a dictionary of parameters which goes into teneto.derive.derive.
+In the example below, we simply are saying we would to use the jackknife method and afterwards these estimates should be standerdized. 
+
+    >>> derive_params = {'method': 'jackknife', 'postpro': 'standardize'}
+    >>> tnet.derive(derive_params, confound_corr_report=False)
+    ...
+
+Setting confound_corr_report to true places a HTML showing histograms of each time-series each of the confounds so you can see how much the TVC is effected by them.
+
+Now we have the time-varying estimates for each time-point, we can load and them by: 
+
+    >>> tnet.load_data('tvc')
+
+This produces a list of dataframes in tnet.tvc_data_. 
+
+    >>> tnet.tvc_data_[0].head()
+         i    j    t    weight
+    0  0.0  1.0  0.0 -0.829939
+    1  0.0  1.0  1.0  1.830899
+    2  0.0  1.0  2.0 -0.278181
+    3  0.0  1.0  3.0  0.108855
+    4  0.0  1.0  4.0  0.417800
+
+Where we see the columns for nodes (i,j), time-points (t) and the connectivity estimate (weight). 
+
+These lists of connectivity estimates are for space purposes. They can be conveted to an array format (node,node,time) by 
+calling teneto.TemporalNetwork (this may be included within TenetoBIDS at a later release): 
+
+    >>> tvc = teneto.TemporalNetwork(from_df=tnet.tvc_data_[0])
+    >>> conn_time_series = tvc.to_graphlet() 
+    >>> conn_time_series
+    (2, 2, 20)
+
+Now as an array, we can easily visualise the connectivity time series between the two nodes. 
+
+    >>> fig,ax = plt.subplots(1)
+    >>> ax.plot(np.arange(1,21),conn_time_series[0,1,:])
+    >>> ax.set_ylabel('Connectivity estimate (Jackknife)')
+    >>> ax.set_xlabel('Time')
+    >>> plt.tight_layout()
+    >>> fig.show()     
+
+.. plot::
+
+    import teneto
+    import numpy as np 
+    import matplotlib.pyplot as plt 
+    pipeline='teneto-tests'
+    data_directory = 'parcellation'
+    bids_tags = {'sub': '001', 'task': 'a', 'run': 'alpha'}
+    tnet = teneto.TenetoBIDS(dataset_path, pipeline=pipeline, pipeline_subdir=data_directory, bids_suffix='roi', bids_tags=bids_tags, raw_data_exists=False)
+    derive_params = {'method': 'jackknife', 'postpro': 'standardize'}
+    tnet.derive(derive_params, confound_corr_report=False)  
+    tnet.load_data('tvc')  
+    tvc = teneto.TemporalNetwork(from_df=tnet.tvc_data_[0])
+    conn_time_series = tvc.to_graphlet() 
+    fig,ax = plt.subplots(1)
+    ax.plot(np.arange(1,21),conn_time_series[0,1,:])
+    ax.set_ylabel('Connectivity estimate (Jackknife)')
+    ax.set_xlabel('Time')
+    ax.set_xticks(np.arange(5,21,5))
+    plt.tight_layout()
+    fig.show()     
+
 
 Community Detection
 ===================
 
-tnet.communiydetection() 
+*Currently disabled, being rewritten*
 
 Temporal network properties
 ===========================
@@ -212,9 +334,45 @@ tnet.networkmeasures()
 Timelocked data 
 =================
 
-tnet.make_timelocked_data()
+*Currently disabled, being rewritten*
 
 Load saved data
 =================
 
-tnet.save_aspickle()
+You can save you progress by using save_pickle 
+
+.. code-block:: python
+
+    tnet.save_aspickle(dataset_path + '/tenetoobj.pkl')
+
+Then to load it you just need to write
+
+.. code-block:: python
+
+    tnet = teneto.TenetoBIDS.load_frompickle(dataset_path + '/tenetoobj.pkl')
+
+
+BIDS suffixes used in tenetoBIDS 
+========================
+
+=====     =====  
+Suffix    Description 
+=====     ===== 
+_conn     connectivity matrix
+_tvcconn  time-varying connectivity matrix
+_roi      regions of interest
+_tnet     temporal network estimate
+=====     =====
+
+File formats are all .tsv files. 
+
+Note: These are not approved in the BIDS derivaives/connectivity at the moment as the connectivity is not out.
+
+
+Information in JSON sidecars
+========================
+
+The JSON sidecars offer information about the different files. 
+All the input parameters for functions are listed there. 
+
+
