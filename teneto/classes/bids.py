@@ -698,7 +698,7 @@ class TenetoBIDS:
                 bad_files.append(files[s])
                 bs += 1
         self.set_bad_files(bad_files, reason='excluded file (confound over specfied stat threshold)')
-        for i, f in enumerate(badfiles): 
+        for i, f in enumerate(bad_files): 
             sidecar = get_sidecar(f)
             sidecar['file_exclusion'] = {}
             sidecar['exclusion_reason'] = confound[i]
