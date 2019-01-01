@@ -83,8 +83,8 @@ def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
     # Get Bezier lines in a circle
     for edge in edgeList :
         bvx, bvy  =  bezier_circle((posx [edge[0]], posy[edge[0]]), (posx[edge[1]], posy[edge[1]]), 20)
-        ax.plot(bvx, bvy, linestyle)
-    ax.scatter(posx, posy, s=nodesize, c=range(0, n))
+        ax.plot(bvx, bvy, linestyle, zorder=0)
+    ax.scatter(posx, posy, s=nodesize, c=range(0, n), zorder=1)
     # Remove things that make plot unpretty
     ax.set_yticklabels([])
     ax.set_xticklabels([])
