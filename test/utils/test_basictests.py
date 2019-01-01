@@ -141,3 +141,32 @@ def test_contact2graphletfail():
 
 
 
+
+def test_graphlet2contactfail():
+
+    G = np.zeros([3,2])
+    # 0th and 1st Dimensions should be equal
+    with pytest.raises(ValueError):
+        teneto.utils.graphlet2contact(G)
+    G = np.zeros([2,2,3,2])
+    # Cannot be more than 3 dimensions
+    with pytest.raises(ValueError):
+        teneto.utils.graphlet2contact(G)
+    G = np.zeros([2,2])
+    params = {'nLabs': ['a']} 
+    with pytest.raises(ValueError):
+        teneto.utils.graphlet2contact(G,params)   
+    G = np.zeros([2,2])
+    params = {'t0': [1,2]} 
+    with pytest.raises(ValueError):
+        teneto.utils.graphlet2contact(G,params)       
+    G = np.zeros([2,2])
+    params = {'nettype': 'mynetwork'} 
+    with pytest.raises(ValueError):
+        teneto.utils.graphlet2contact(G,params)   
+
+
+def test_utils_fails(): 
+    # When unknown distance function is specified
+    with pytest.raises(ValueError):
+        teneto.utils.getDistanceFunction('blabla')   
