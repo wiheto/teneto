@@ -57,9 +57,9 @@ def test_make_fc_and_tvc():
                  'weight-var': 'from-subject-fc'}, update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     JCv = tnet.tvc_data_[0].iloc[0].values[-1]
-    assert JCw == (JC*r)+R
-    assert JCv == (JC*r)
-    assert JCm == (JC)+R
+    assert np.round(JCw, 15) == np.round((JC*r)+R, 15)
+    assert np.round(JCv, 15) == np.round((JC*r), 15)
+    assert np.round(JCm, 15) == np.round((JC)+R, 15)
 
 
 # def test_communitydetection():
@@ -177,7 +177,7 @@ def test_tnet_set_bad_files():
     assert len(tnet.bad_files) == 1
     assert tnet.bad_files[0] == tnet.BIDS_dir + 'derivatives/' + tnet.pipeline + \
         '/sub-001/func/' + tnet.pipeline_subdir + \
-        '/sub-001_task-a_run-alpha_roi'
+        '/sub-001_task-a_run-alpha_roi.tsv'
 
 def test_tnet_make_parcellation():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
