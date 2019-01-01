@@ -1,11 +1,8 @@
 teneto.generatenetwork
 ==============================
 
-rand\_binomial
---------------------------------------------
-
-.. automodule:: teneto.generatenetwork.rand_binomial
-    :members:
+.. automodapi:: teneto.generatenetwork
+    :functions-only:
     :undoc-members:
-    :show-inheritance:
-
+    :members:
+    :no-inherited-members:

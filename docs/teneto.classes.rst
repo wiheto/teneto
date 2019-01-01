@@ -1,17 +1,8 @@
 teneto.classes
-======================
+==============================
 
-bids
---------------------------
-
-.. automodule:: teneto.classes.network
-    :members:
+.. automodapi:: teneto.classes
+    :classes-only:
     :undoc-members:
-    :show-inheritance:
-
-
-.. automodule:: teneto.classes.bids
     :members:
-    :undoc-members:
-    :show-inheritance:
-
+    :no-inherited-members:

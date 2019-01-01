@@ -1,27 +1,8 @@
-teneto.derive 
-=====================
+teneto.derive
+==============================
 
-derive
----------------------------
-
-.. automodule:: teneto.derive.derive
-    :members:
+.. automodapi:: teneto.derive
+    :functions-only:
     :undoc-members:
-    :show-inheritance:
-
-postprocess
---------------------------------
-
-.. automodule:: teneto.derive.postprocess
     :members:
-    :undoc-members:
-    :show-inheritance:
-
-report
----------------------------
-
-.. automodule:: teneto.derive.report
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+    :no-inherited-members:

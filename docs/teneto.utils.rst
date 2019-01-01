@@ -1,12 +1,8 @@
-teneto.utils package
-====================
+teneto.utils
+==============================
 
-
-utils
--------------------------
-
-.. automodule:: teneto.utils.utils
-    :members:
+.. automodapi:: teneto.utils
+    :functions-only:
     :undoc-members:
-    :show-inheritance:
-
+    :members:
+    :no-inherited-members:

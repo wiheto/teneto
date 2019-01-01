@@ -10,3 +10,4 @@ pybids==0.4.2
 #louvain >= 0.6.1
 statsmodels>=0.8.0
 m2r>=0.2.1
+sphinx-automodapi>=0.9
