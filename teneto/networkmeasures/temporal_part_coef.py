@@ -51,7 +51,7 @@ def temporal_part_coef(tnet, communities=None, removeneg=False):
             raise ValueError('Community must be provided for graphlet input')
 
     # Get input in right format
-    tnet, netinfo = process_input(tnet, ['C', 'G', 'TO'])
+    tnet, netinfo = process_input(tnet, ['C', 'G', 'TN'])
 
     if np.sum(tnet<0) > 0 and not removeneg:
         raise ValueError('Negative connections found')

@@ -110,7 +110,7 @@ def fluctuability(netin, calc='global'):
     """
 
     # Get input type (C or G)
-    netin, _ = process_input(netin, ['C', 'G', 'TO'])
+    netin, _ = process_input(netin, ['C', 'G', 'TN'])
 
     netin[netin != 0] = 1
     unique_edges = np.sum(netin, axis=2)

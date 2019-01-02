@@ -113,7 +113,7 @@ def topological_overlap(tnet, calc='time'):
 
     """
 
-    tnet = process_input(tnet, ['C', 'G', 'TO'])[0]
+    tnet = process_input(tnet, ['C', 'G', 'TN'])[0]
     
     numerator = np.sum(tnet[:,:,:-1] * tnet[:,:,1:],axis=1)
     denominator = np.sqrt(np.sum(tnet[:,:,:-1],axis=1) * np.sum(tnet[:,:,1:],axis=1))

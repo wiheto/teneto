@@ -50,7 +50,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     """
 
     # Get input in right format
-    tnet, netinfo = process_input(tnet, ['C', 'G', 'TO'])
+    tnet, netinfo = process_input(tnet, ['C', 'G', 'TN'])
     if ignorediagonal:
         tnet = set_diagonal(tnet, 0)
     # sum sum tnet

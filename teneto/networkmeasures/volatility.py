@@ -109,7 +109,7 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
     """
 
     # Get input (C or G)
-    tnet, netinfo = process_input(tnet, ['C', 'G', 'TO'])
+    tnet, netinfo = process_input(tnet, ['C', 'G', 'TN'])
 
     distance_func_name = check_distance_funciton_input(
         distance_func_name, netinfo)

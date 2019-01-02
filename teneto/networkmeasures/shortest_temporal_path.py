@@ -70,7 +70,7 @@ def shortest_temporal_path(tnet, quiet=1):
 
     # Get input type (C or G)
     # Process input
-    tnet, netinfo = process_input(tnet, ['C', 'G', 'TO'])
+    tnet, netinfo = process_input(tnet, ['C', 'G', 'TN'])
 
     if netinfo['nettype'] != 'bu':
         errormsg = ('It looks like your graph is not binary and undirected. '
