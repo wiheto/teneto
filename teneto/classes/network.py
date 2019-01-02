@@ -139,9 +139,16 @@ class TemporalNetwork:
             w = array[array!=0]
             self.network = pd.DataFrame(data={'i': i, 'j': j, 't': t, 'weight': w}) 
         self.netshape = array.shape
+        self._update_network()
+    
+    def _update_network(self):
         self._calc_netshape()
         self._set_nettype()
+        if self.nettype:
+            if self.nettype[1] == 'u':
+                self._drop_duplicate_ij()
 
+            
     def network_from_df(self, df):
         """
         Defines a network from an array. 
@@ -154,8 +161,8 @@ class TemporalNetwork:
         """
         self._check_input(df, 'df')
         self.network = df 
-        self._calc_netshape()
-        self._set_nettype()
+        self._update_network()
+
     
     def network_from_edgelist(self, edgelist):
         """
@@ -173,8 +180,7 @@ class TemporalNetwork:
         elif len(edgelist[0]) == 3: 
             colnames = ['i','j','t']
         self.network = pd.DataFrame(edgelist, columns=colnames) 
-        self._calc_netshape()
-        self._set_nettype()
+        self._update_network()
     
     def network_from_contact(self, contact):
     
@@ -252,9 +258,7 @@ class TemporalNetwork:
             colnames = ['i','j','t']
         newedges = pd.DataFrame(edgelist, columns=colnames) 
         self.network = pd.concat([self.network, newedges], ignore_index=True, sort=True)
-        self._calc_netshape()
-        if self.nettype[1] == 'u':
-            self._drop_duplicate_ij()
+        self._update_network()
 
     def drop_edge(self, edgelist): 
         if not isinstance(edgelist[0], list): 
@@ -264,6 +268,7 @@ class TemporalNetwork:
             idx = self.network[(self.network['i'] == e[0]) & (self.network['j'] == e[1]) & (self.network['t'] == e[2])].index
             self.network.drop(idx, inplace=True)
         self.network.reset_index(inplace=True, drop=True)
+        self._update_network()
 
     def calc_networkmeasure(self, networkmeasure, **measureparams): 
         availablemeasures = [f for f in dir(teneto.networkmeasures) if not f.startswith('__')]
