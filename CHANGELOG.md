@@ -14,6 +14,7 @@
 - Added randomseed to binomial.
 - Fixed layering of edges in circleplot
 - Fixed error in intercontacttimes where preset network was node,time not node,node
+- Rewritten intercontacttimes to be calculated through TemporalNetwork class' df-list instead of array. 
 
 ## V0.3.5
 

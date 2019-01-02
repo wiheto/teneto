@@ -12,8 +12,6 @@ install:
   - pip install pytest
   - pip install pytest-cov
   - pip install pyqt5
-  - pip install python-igraph
-  - pip install louvain 
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
