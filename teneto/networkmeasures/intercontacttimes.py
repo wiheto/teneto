@@ -79,7 +79,7 @@ def intercontacttimes(tnet):
     # Each time series is padded with a 0 at the start and end. Then t[0:-1]-[t:].
     # Then discard the noninformative ones (done automatically)
     # Finally return back as np array
-    contacts = np.array([[None] * netinfo['netshape'][0]] * netinfo['netshape'][1])
+    contacts = np.array([[None] * netinfo['netshape'][0]] * netinfo['netshape'][0])
 
     if netinfo['nettype'][1] == 'u':
         for i in range(0, netinfo['netshape'][0]):

@@ -13,6 +13,7 @@
 - added TemporalNetwork class.
 - Added randomseed to binomial.
 - Fixed layering of edges in circleplot
+- Fixed error in intercontacttimes where preset network was node,time not node,node
 
 ## V0.3.5
 

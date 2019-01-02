@@ -3,10 +3,12 @@ import numpy as np
 import teneto 
 import inspect
 import matplotlib.pyplot as plt
+import pickle
 
 class TemporalNetwork:
 
-    def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False): 
+    def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False,
+                unit=None, desc=None, starttime=None, nodelabels=None, timelabels=None): 
         # Check inputs 
         if nettype: 
             if nettype not in ['bu','bd','wu','wd']:
@@ -39,6 +41,32 @@ class TemporalNetwork:
             self.timetype = timetype
 
         self.diagonal = diagonal
+
+        #todo - add checks that labels are ok
+        if nodelabels: 
+            self.nodelabels = nodelabels
+        else: 
+            self.nodelabels = None
+
+        if timelabels: 
+            self.timelabels = timelabels
+        else: 
+            self.timelabels = None
+
+        if unit: 
+            self.unit = unit
+        else: 
+            self.unit = None
+
+        if starttime: 
+            self.starttime = starttime
+        else: 
+            self.starttime = 0
+
+        if desc: 
+            self.desc = desc
+        else: 
+            self.desc = None
 
         # Input
         if from_df is not None: 
@@ -132,7 +160,7 @@ class TemporalNetwork:
         if len(self.network) == 0: 
             self.netshape = (0,0)
         else: 
-            N = self.network[['i','j']].max().max()+1
+            N = self.network[['i','j']].max(axis=1).max()+1
             T = self.network['t'].max()+1
             self.netshape = (int(N),int(T))
 
@@ -222,13 +250,19 @@ class TemporalNetwork:
         idx = np.array(list(map(list, self.network.values)))
         G = np.zeros([self.netshape[0], self.netshape[0], self.netshape[1]])
         if idx.shape[1] == 3:
-            if self.nettype(-1) == 'u': 
+            if self.nettype[-1] == 'u': 
                 idx = np.vstack([idx,idx[:,[1,0,2]]])
             G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
         elif idx.shape[1] == 4:
-            if self.nettype(-1) == 'u': 
+            if self.nettype[-1] == 'u': 
                 idx = np.vstack([idx,idx[:,[1,0,2,3]]])
             weights = idx[:,3]
             idx = np.array(idx[:,:3], dtype=int)
             G[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
         return G
+
+    def save_aspickle(self, fname):
+        if fname[-4:] != '.pkl':
+            fname += '.pkl'
+        with open(fname, 'wb') as f:
+            pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
