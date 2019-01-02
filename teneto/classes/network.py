@@ -68,6 +68,9 @@ class TemporalNetwork:
         else: 
             self.desc = None
 
+        if nettype: 
+            self.nettype = nettype
+
         # Input
         if from_df is not None: 
             self.network_from_df(from_df)
@@ -87,28 +90,45 @@ class TemporalNetwork:
             else:
                 colnames = ['i','j','t']
             self.network = pd.DataFrame(columns=colnames)
-
-
-        if not nettype:
-            print('No network type set: assuming it to be undirected, set nettype if directed') 
-            self._set_nettype()
-        else:
-            self.nettype = nettype
-
+                
         # Update df 
         self._calc_netshape()
-        if self.nettype[1] == 'u':
-            self._drop_duplicate_ij()
         if not self.diagonal:
             self._drop_diagonal()
+        if nettype:
+            if nettype[1] == 'u':
+                self._drop_duplicate_ij()
 
     def _set_nettype(self):
-        if self.network.shape[-1] == 4:
-            self.nettype = 'wu'
-        elif self.network.shape[-1] == 3:
-            self.nettype = 'bu'
-
+        # Only run if not manually set and network values exist
+        if not hasattr(self,'nettype') and len(self.network) > 0:
+            # Predefine
+            nettype = 'xx'
+            # Then check if weighted
+            if 'weight' in self.network.columns: 
+                wb = 'w'
+            else: 
+                wb = 'b'
+            # Would be good to see if there was a way to this without going to array.
+            self.nettype = 'xu'
+            G1 = self.to_array()
+            self.nettype = 'xd'
+            G2 = self.to_array()
+            if np.all(G1==G2): 
+                ud = 'u'
+            else:
+                ud= 'd'
+            self.nettype = wb + ud
+        
     def network_from_array(self, array):
+        """impo
+        Defines a network from an array. 
+
+        Parameters
+        ----------
+        array : array 
+            3D numpy array. 
+        """
         self._check_input(array, 'array')
         uvals = np.unique(array)
         if len(uvals) == 2 and 1 in uvals and 0 in uvals: 
@@ -119,40 +139,70 @@ class TemporalNetwork:
             w = array[array!=0]
             self.network = pd.DataFrame(data={'i': i, 'j': j, 't': t, 'weight': w}) 
         self.netshape = array.shape
-        self._set_nettype()
         self._calc_netshape()
+        self._set_nettype()
 
     def network_from_df(self, df):
+        """
+        Defines a network from an array. 
+
+        Parameters
+        ----------
+        array : array 
+            Pandas dataframe. Should have columns: \'i\', \'j\', \'t\' where i and j are node indicies and t is the temporal index. 
+            If weighted, should also include \'weight\'. Each row is an edge.  
+        """
         self._check_input(df, 'df')
         self.network = df 
-        self._set_nettype()
         self._calc_netshape()
+        self._set_nettype()
     
     def network_from_edgelist(self, edgelist):
+        """
+        Defines a network from an array. 
+
+        Parameters
+        ----------
+        edgelist : list of lists.  
+            A list of lists which are 3 or 4 in length. For binary networks each sublist should be [i, j ,t] where i and j are node indicies and t is the temporal index.
+            For weighted networks each sublist should be [i, j, t, weight].
+        """
         self._check_input(edgelist, 'edgelist')
         if len(edgelist[0]) == 4: 
             colnames = ['i','j','t','weight']
         elif len(edgelist[0]) == 3: 
             colnames = ['i','j','t']
         self.network = pd.DataFrame(edgelist, columns=colnames) 
-        self._set_nettype()
         self._calc_netshape()
+        self._set_nettype()
     
     def network_from_contact(self, contact):
+    
         self._check_input(contact, 'dict')
         self.network = pd.DataFrame(contact['contacts'], columns=['i', 'j', 't'])
         if 'values' in contact: 
-            self.network['weight'] = contact['values']            
-        self._set_nettype()
-        self._calc_netshape()
+            self.network['weight'] = contact['values']     
+        self.nettype = contact['nettype']    
+        self.starttime = contact['t0']    
+        self.netshape = contact['netshape']
+        if contact['nLabs']:    
+            self.nodelabels = contact['nLabs'] 
+        if contact['timeunit']:
+            self.unit = contact['unit']    
 
     def _drop_duplicate_ij(self): 
+        """
+        Drops duplicate entries from the network dataframe. 
+        """
         self.network['ij'] = list(map(lambda x: tuple(sorted(x)),list(zip(*[self.network['i'].values, self.network['j'].values]))))
         self.network.drop_duplicates(['ij','t'], inplace=True)
         self.network.reset_index(inplace=True, drop=True)
         self.network.drop('ij', inplace=True, axis=1)
 
     def _drop_diagonal(self): 
+        """
+        Drops self-contacts from the network dataframe. 
+        """
         self.network = self.network.where(self.network['i'] != self.network['j']).dropna()
         self.network.reset_index(inplace=True, drop=True)
 
@@ -247,18 +297,21 @@ class TemporalNetwork:
         return ax
 
     def to_array(self):
-        idx = np.array(list(map(list, self.network.values)))
-        G = np.zeros([self.netshape[0], self.netshape[0], self.netshape[1]])
-        if idx.shape[1] == 3:
-            if self.nettype[-1] == 'u': 
-                idx = np.vstack([idx,idx[:,[1,0,2]]])
-            G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
-        elif idx.shape[1] == 4:
-            if self.nettype[-1] == 'u': 
-                idx = np.vstack([idx,idx[:,[1,0,2,3]]])
-            weights = idx[:,3]
-            idx = np.array(idx[:,:3], dtype=int)
-            G[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
+        if len(self.network) > 0: 
+            idx = np.array(list(map(list, self.network.values)))
+            G = np.zeros([self.netshape[0], self.netshape[0], self.netshape[1]])
+            if idx.shape[1] == 3:
+                if self.nettype[-1] == 'u': 
+                    idx = np.vstack([idx,idx[:,[1,0,2]]])
+                G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
+            elif idx.shape[1] == 4:
+                if self.nettype[-1] == 'u': 
+                    idx = np.vstack([idx,idx[:,[1,0,2,3]]])
+                weights = idx[:,3]
+                idx = np.array(idx[:,:3], dtype=int)
+                G[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
+        else: 
+            G = np.zeros([self.netshape[0],self.netshape[0],self.netshape[1]])
         return G
 
     def save_aspickle(self, fname):
@@ -266,3 +319,24 @@ class TemporalNetwork:
             fname += '.pkl'
         with open(fname, 'wb') as f:
             pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
+
+    def get_network_when(self, i=None, j=None, t=None, copy=False, asarray=False): 
+        if i is not None and j is not None and t is not None: 
+            df = self.network[(self.network['i'] == i) & (self.network['j'] == j) & (self.network['t'] == t)]
+        elif i is not None and j is not None: 
+            df = self.network[(self.network['i'] == i) & (self.network['j'] == j)]        
+        elif i is not None and t is not None: 
+            df = self.network[(self.network['i'] == i) & (self.network['t'] == t)]        
+        elif j is not None and t is not None: 
+            df = self.network[(self.network['j'] == j) & (self.network['t'] == t)]        
+        elif i is not None:
+            df = self.network[self.network['i'] == i]
+        elif j is not None:
+            df = self.network[self.network['j'] == t]
+        elif t is not None:
+            df = self.network[self.network['t'] == t]
+        if copy: 
+            df = df.copy()
+        if asarray: 
+            df = df.values
+        return df

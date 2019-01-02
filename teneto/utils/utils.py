@@ -5,6 +5,7 @@ from nilearn.input_data import NiftiSpheresMasker, NiftiLabelsMasker
 from nilearn.datasets import fetch_atlas_harvard_oxford
 from ..trajectory import rdp
 from .. import __path__ as tenetopath
+from ..classes import TemporalNetwork
 import json
 
 """
@@ -514,7 +515,7 @@ def checkInput(netIn, raiseIfU=1, conMat=0):
 
     elif isinstance(netIn, object):
         if hasattr(netIn, 'network'):
-            inputIs = 'TO'
+            inputIs = 'TN'
 
     if raiseIfU == 1 and inputIs == 'U':
         raise ValueError(
@@ -579,7 +580,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
     netIn : array, dict, or class
         Network (graphlet, contact or object)
     allowedformats : str
-        Which format of network objects that are allowed. Options: 'C', 'TO', 'G'.
+        Which format of network objects that are allowed. Options: 'C', 'TN', 'G'.
     outputformat: str, default=G
         Target output format. Options: 'C' or 'G'.
 
@@ -595,17 +596,28 @@ def process_input(netIn, allowedformats, outputformat='G'):
     netInfo : dict
         Metainformation about network.
 
+    OR
+
+    tnet : object 
+        object of TemporalNetwork class
+
     """
     inputtype = checkInput(netIn)
-    # Convert TO to G representation
-    if inputtype == 'TO' and 'TO' in allowedformats:
+    # Convert TN to G representation
+    if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
         G = netIn.to_array()
         netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
-    elif inputtype == 'C' and 'C' in allowedformats and outputformat != 'C':
+    elif  inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
+        TN = netIn
+    elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'G':
         G = contact2graphlet(netIn)
         netInfo = dict(netIn)
         netInfo.pop('contacts')
         nettype = netIn['nettype']
+    elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'TN':
+        TN = TemporalNetwork(from_dict=netIn)
+    elif inputtype == 'G' and 'G' in allowedformats and outputformat == 'TN':
+        TN = TemporalNetwork(from_array=netIn)
     # Get network type if not set yet
     elif inputtype == 'G' and 'G' in allowedformats:
         netInfo = {}
@@ -616,13 +628,15 @@ def process_input(netIn, allowedformats, outputformat='G'):
         pass
     else:
         raise ValueError('Input invalid.')
-    netInfo['inputtype'] = inputtype
+    #netInfo['inputtype'] = inputtype
     if inputtype != 'C' and outputformat == 'C':
-        C = graphlet2contact(netIn, netInfo)
+        C = graphlet2contact(G, netInfo)
     if outputformat == 'G':
         return G, netInfo
     elif outputformat == 'C':
         return C
+    elif outputformat == 'TN': 
+        return TN
 
 
 def clean_community_indexes(communityID):

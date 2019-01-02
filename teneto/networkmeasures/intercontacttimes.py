@@ -71,35 +71,33 @@ def intercontacttimes(tnet):
     """
 
     # Process input
-    tnet, netinfo = process_input(tnet, ['C', 'G', 'TO'])
+    tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
 
-    if netinfo['nettype'][0] == 'd':
+    if tnet.nettype[0] == 'w':
         print('WARNING: assuming connections to be binary when computing intercontacttimes')
 
     # Each time series is padded with a 0 at the start and end. Then t[0:-1]-[t:].
     # Then discard the noninformative ones (done automatically)
     # Finally return back as np array
-    contacts = np.array([[None] * netinfo['netshape'][0]] * netinfo['netshape'][0])
+    contacts = np.array([[None] * tnet.netshape[0]] * tnet.netshape[0])
 
-    if netinfo['nettype'][1] == 'u':
-        for i in range(0, netinfo['netshape'][0]):
-            for j in range(i + 1, netinfo['netshape'][0]):
-                edge_on = np.where(tnet[i, j, :] > 0)[0]
-                edge_on = np.append(0, edge_on)
-                edge_on = np.append(edge_on, 0)
-                edge_on_diff = edge_on[2:-1] - edge_on[1:-2]
-                contacts[i, j] = np.array(edge_on_diff)
-                contacts[j, i] = np.array(edge_on_diff)
-    elif netinfo['nettype'][1] == 'd':
-        for i in range(0, netinfo['netshape'][0]):
-            for j in range(0, netinfo['netshape'][0]):
-                edge_on = np.where(tnet[i, j, :] > 0)[0]
-                edge_on = np.append(0, edge_on)
-                edge_on = np.append(edge_on, 0)
-                edge_on_diff = edge_on[2:-1] - edge_on[1:-2]
-                contacts[i, j] = np.array(edge_on_diff)
+    if tnet.nettype[1] == 'u':
+        for i in range(0, tnet.netshape[0]):
+            for j in range(i + 1, tnet.netshape[0]):
+                edge_on = tnet.get_network_when(i=i,j=j)['t'].values
+                if len(edge_on) > 0:
+                    edge_on_diff = edge_on[1:] - edge_on[:-1]
+                    contacts[i, j] = np.array(edge_on_diff)
+                    contacts[j, i] = np.array(edge_on_diff)
+    elif tnet.nettype[1] == 'd':
+        for i in range(0, tnet.netshape[0]):
+            for j in range(0, tnet.netshape[0]):
+                edge_on = tnet.get_network_when(i=i,j=j)['t'].values
+                if len(edge_on) > 0:
+                    edge_on_diff = edge_on[1:] - edge_on[:-1]
+                    contacts[i, j] = np.array(edge_on_diff)
 
     out = {}
     out['intercontacttimes'] = contacts
-    out['nettype'] = netinfo['nettype']
+    out['nettype'] = tnet.nettype
     return out

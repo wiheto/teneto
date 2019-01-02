@@ -170,3 +170,18 @@ def test_utils_fails():
     # When unknown distance function is specified
     with pytest.raises(ValueError):
         teneto.utils.getDistanceFunction('blabla')   
+
+def test_process_input(): 
+    tnet = teneto.TemporalNetwork()
+    tnet.generatenetwork('rand_binomial',prob=[0.5,0.2],size=[5,12])
+    G = tnet.to_array()
+    tnet2 = teneto.utils.process_input(G, 'G', 'TN')
+    assert all(tnet2.network==tnet.network)
+    C = teneto.utils.process_input(G, 'G', 'C')
+    tnet3 = teneto.utils.process_input(C, 'C', 'TN')
+    assert all(tnet2.network==tnet3.network)
+    C2 = teneto.utils.process_input(tnet, 'TN', 'C')
+    G2, _ = teneto.utils.process_input(tnet, 'TN', 'G')
+    assert (C['contacts']==C2['contacts']).all()
+    assert (G==G2).all()
+    
