@@ -628,7 +628,8 @@ def process_input(netIn, allowedformats, outputformat='G'):
         pass
     else:
         raise ValueError('Input invalid.')
-    #netInfo['inputtype'] = inputtype
+    if outputformat == 'C' or outputformat == 'G': 
+        netInfo['inputtype'] = inputtype
     if inputtype != 'C' and outputformat == 'C':
         C = graphlet2contact(G, netInfo)
     if outputformat == 'G':
