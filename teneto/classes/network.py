@@ -308,6 +308,7 @@ class TemporalNetwork:
             if idx.shape[1] == 3:
                 if self.nettype[-1] == 'u': 
                     idx = np.vstack([idx,idx[:,[1,0,2]]])
+                idx = idx.astype(int)
                 G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
             elif idx.shape[1] == 4:
                 if self.nettype[-1] == 'u': 

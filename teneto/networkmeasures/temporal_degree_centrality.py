@@ -50,27 +50,51 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     """
 
     # Get input in right format
-    tnet, netinfo = process_input(tnet, ['C', 'G', 'TN'])
-    if ignorediagonal:
-        tnet = set_diagonal(tnet, 0)
+    tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
+    if axis == 1: 
+        fromax = 'j'
+        toax = 'i'
+    else: 
+        fromax = 'i'
+        toax = 'j'
+    # Diagonal is currently deleted. 
+    # if ignorediagonal:
+    #     tnet = set_diagonal(tnet, 0)
     # sum sum tnet
     if calc == 'time' and communities is None:
-        tdeg = np.squeeze(np.sum(tnet, axis=axis))
+        # Return node,time 
+        tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
+        df = tnet.network.groupby([fromax, 't']).count().reset_index()
+        df = df.astype(int)
+        tdeg[df[fromax], df['t']] = df[toax]
+        # If undirected, do reverse 
+        if tnet.nettype[1] == 'u':
+            df = tnet.network.groupby([toax, 't']).count().reset_index()
+            df = df.astype(int)
+            tdeg[df[toax], df['t']] += df[fromax]
     elif calc == 'module_degree_zscore' and communities is None:
         raise ValueError(
             'Communities must be specified when calculating module degree z-score.')
     elif calc != 'time' and communities is None:
-        tdeg = np.sum(
-            np.sum(tnet, axis=2), axis=axis)
+        # Return node 
+        tdeg = np.zeros([tnet.netshape[0]])
+        df = tnet.network.groupby([fromax]).count().reset_index()
+        df = df.astype(int)
+        tdeg[df[fromax]] = df[toax]
+        # If undirected, do reverse 
+        if tnet.nettype[1] == 'u':
+            df = tnet.network.groupby([toax]).count().reset_index()
+            df = df.astype(int)
+            tdeg[df[toax]] += df[fromax]
     elif calc == 'module_degree_zscore' and communities is not None:
-        tdeg = np.zeros([tnet.shape[0], tnet.shape[2]])
-        for t in range(tnet.shape[2]):
+        tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
+        for t in range(tnet.netshape[1]):
             if len(communities.shape) == 2:
                 C = communities[:, t]
             else:
                 C = communities
             for c in np.unique(C):
-                k_i = np.sum(tnet[:, C == c, t][C == c], axis=axis)
+                k_i = np.sum(tnet.to_array()[:, C == c, t][C == c], axis=axis)
                 tdeg[C == c, t] = (k_i - np.mean(k_i)) / np.std(k_i)
         tdeg[np.isnan(tdeg) == 1] = 0
     elif calc == 'time' and communities is not None:
@@ -83,17 +107,17 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
                 for s1 in unique_communities:
                     for s2 in unique_communities:
                         tdeg_communities[s1, s2, t] = np.sum(
-                            np.sum(tnet[C == s1, :, t][:, C == s2], axis=1), axis=0)
+                            np.sum(tnet.to_array()[C == s1, :, t][:, C == s2], axis=1), axis=0)
         else:
             unique_communities = np.unique(communities)
-            tdeg_communities = [np.sum(np.sum(tnet[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
+            tdeg_communities = [np.sum(np.sum(tnet.to_array()[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
                                 for s1 in unique_communities for s2 in unique_communities]
 
         tdeg = np.array(tdeg_communities)
         tdeg = np.reshape(tdeg, [len(np.unique(communities)), len(
-            np.unique(communities)), tnet.shape[-1]])
+            np.unique(communities)), tnet.netshape[-1]])
         # Divide diagonal by 2 if undirected to correct for edges being present twice
-        if netinfo['nettype'][1] == 'u':
+        if tnet.nettype[1] == 'u':
             for s in range(tdeg.shape[0]):
                 tdeg[s, s, :] = tdeg[s, s, :]/2
     else:

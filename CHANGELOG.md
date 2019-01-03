@@ -15,6 +15,7 @@
 - Fixed layering of edges in circleplot
 - Fixed error in intercontacttimes where preset network was node,time not node,node
 - Rewritten intercontacttimes to be calculated through TemporalNetwork class' df-list instead of array. 
+- Rewritten (partially) temporal_degree_centrality to be calculated through TemporalNetwork class' df-list instead of array. (communities still use array)
 
 ## V0.3.5
 

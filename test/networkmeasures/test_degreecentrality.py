@@ -10,7 +10,7 @@ def test_networkmeasures_tdc():
     G[0, 2, 1] = 1
     G[1, 2, 3] = 1
     G += G.transpose([1, 0, 2])
-    G = teneto.utils.set_diagonal(G, 1)
+    G = teneto.utils.set_diagonal(G, 0)
     # Call different instances of temporal_degree_centrality
     C1 = teneto.networkmeasures.temporal_degree_centrality(G)
     # Should directional also works
