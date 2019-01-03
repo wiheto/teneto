@@ -153,7 +153,7 @@ def test_graphlet2contactfail():
     with pytest.raises(ValueError):
         teneto.utils.graphlet2contact(G)
     G = np.zeros([2,2])
-    params = {'nLabs': ['a']} 
+    params = {'nodelabels': ['a']} 
     with pytest.raises(ValueError):
         teneto.utils.graphlet2contact(G,params)   
     G = np.zeros([2,2])
