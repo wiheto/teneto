@@ -61,7 +61,7 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
 
     >>> import teneto 
     >>> import numpy as np
-    >>> import matplotlib as plt
+    >>> import matplotlib.pyplot as plt
 
     To make the networks a little more complex, the probabailities of rand_binomial can be set so differently for edges that have previously been active. 
     Instead of passing a single integer to p, you can pass a list of 2 values. 
@@ -90,7 +90,7 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
 
         import teneto 
         import numpy as np
-        import matplotlib as plt        
+        import matplotlib.pyplot as plt        
         np.random.seed(2017) # For reproduceability
         N = 5 # Number of nodes
         T = 10 # Number of timepoints
@@ -124,7 +124,7 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
 
         import teneto 
         import numpy as np
-        import matplotlib as plt        
+        import matplotlib.pyplot as plt        
         np.random.seed(2017) # For reproduceability
         N = 5 # Number of nodes
         T = 10 # Number of timepoints
