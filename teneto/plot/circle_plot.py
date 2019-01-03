@@ -7,7 +7,7 @@ from ..utils import checkInput, graphlet2contact
 
 
 def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000):
-    '''
+    r'''
 
     Function draws "circle plot" and exports axis handles
 

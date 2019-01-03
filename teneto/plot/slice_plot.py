@@ -5,7 +5,7 @@ from ..utils import *
 
 
 def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='k-', cmap=None, nodesize=100):
-    '''
+    r'''
 
     Fuction draws "slice graph" and exports axis handles
 

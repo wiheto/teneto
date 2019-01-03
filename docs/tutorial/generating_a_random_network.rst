@@ -100,7 +100,7 @@ Which produces the following figure:
 To make the networks a little more complex, the probabailities of rand_binomial can be set so differently for edges that have previously been active. 
 Instead of passing a single integer to p, you can pass a list of 2 values. 
 The first value is the probabililty for edges who, at t-1=0 will be active at t (is sometimes called the birth-rate). 
-The second value is the probabaility of edges who, at t-1=0 will be active at t (sometimes called the death-rate). 
+The second value is the probabaility of edges who, at t-1=1 will be active at t (sometimes called the death-rate). 
 The latter value helps create an autocorrelation.
 
 .. code-block:: python

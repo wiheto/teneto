@@ -42,7 +42,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     ------
     This function can require a lot of RAM with larger networks.
     
-    Notes
+    Note
     ------
     At the momenet bordercolor cannot be set to zero. To remove border, set bordorwidth=1 and bordercolor=[1,1,1] for temporay workaround.
 
