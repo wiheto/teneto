@@ -85,6 +85,7 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
     >>> ax = teneto.plot.slice_plot(G, ax, cmap='Set2')
     >>> fig.tight_layout()
     >>> fig.show()
+    ...
 
     .. plot::
 
@@ -95,8 +96,7 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
         N = 5 # Number of nodes
         T = 10 # Number of timepoints
         birth_rate = 0.25
-        death_rate = 0.75
-        G = teneto.generatenetwork.rand_binomial([N,N,T], [birth_rate, death_rate])
+        G = teneto.generatenetwork.rand_binomial([N,N,T], [birth_rate])
         fig,ax = plt.subplots(figsize=(10,3))
         ax = teneto.plot.slice_plot(G, ax, cmap='Set2')
         fig.tight_layout()
@@ -119,6 +119,7 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
     >>> ax = teneto.plot.slice_plot(G, ax, cmap='Set2')
     >>> fig.tight_layout()
     >>> fig.show()
+    ...
 
     .. plot::
 
