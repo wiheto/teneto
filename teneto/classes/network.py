@@ -191,8 +191,8 @@ class TemporalNetwork:
         self.nettype = contact['nettype']    
         self.starttime = contact['t0']    
         self.netshape = contact['netshape']
-        if contact['nLabs']:    
-            self.nodelabels = contact['nLabs'] 
+        if contact['nodelabels']:    
+            self.nodelabels = contact['nodelabels'] 
         if contact['timeunit']:
             self.unit = contact['unit']    
 
