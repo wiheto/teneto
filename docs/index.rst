@@ -11,9 +11,10 @@ Welcome to teneto's documentation!
 
 
 .. toctree::
-   :maxdepth: 1
+    :hidden:
+    :maxdepth: 1
 
-   tutorial
-   teneto
+    tutorial
+    teneto
 
 .. mdinclude:: ../README.md

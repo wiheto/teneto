@@ -79,7 +79,7 @@ class TemporalNetwork:
         elif from_array is not None: 
             self.network_from_array(from_array)
         elif from_dict is not None: 
-            self.network_from_contact(from_dict)
+            self.network_from_dict(from_dict)
 
         if not hasattr(self,'network'):
             if nettype: 
@@ -182,7 +182,7 @@ class TemporalNetwork:
         self.network = pd.DataFrame(edgelist, columns=colnames) 
         self._update_network()
     
-    def network_from_contact(self, contact):
+    def network_from_dict(self, contact):
     
         self._check_input(contact, 'dict')
         self.network = pd.DataFrame(contact['contacts'], columns=['i', 'j', 't'])

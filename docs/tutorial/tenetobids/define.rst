@@ -70,7 +70,7 @@ Whenever data is manipulated, it gets copied to a new derivatives directory call
     >>> tnet.pipeline
     teneto...
 
-An important argument used in selection is called pipeline_subdir. If for some reaso files are not being found, it is probably because this is not specified or missspecified. 
+An important argument used in selection is called pipeline_subdir. If, for some reason, files are not being found, it is probably because this is not specified or missspecified. 
 In the directory [bidsdir]/derivatives/teneto\_[versionnumber]/sub-[xxx]/[ses-[xxx]]/func/[pipeline_subdir]/. This helps sort the data. (Note: it is unclear if this is BIDS compliant and may be removed.) 
 
     >>> tnet = teneto.TenetoBIDS(dataset_path, pipeline='teneto-tests', raw_data_exists=False, pipeline_subdir='tvc')
