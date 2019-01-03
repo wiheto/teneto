@@ -57,6 +57,8 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     else: 
         fromax = 'i'
         toax = 'j'
+    if tnet.nettype[0] == 'b':
+        tnet.network['weight'] = 1
     # Diagonal is currently deleted. 
     # if ignorediagonal:
     #     tnet = set_diagonal(tnet, 0)
@@ -64,28 +66,25 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     if calc == 'time' and communities is None:
         # Return node,time 
         tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
-        df = tnet.network.groupby([fromax, 't']).count().reset_index()
-        df = df.astype(int)
-        tdeg[df[fromax], df['t']] = df[toax]
+        df = tnet.network.groupby([fromax, 't']).sum().reset_index()
+        tdeg[df[fromax], df['t']] = df['weight']
         # If undirected, do reverse 
         if tnet.nettype[1] == 'u':
-            df = tnet.network.groupby([toax, 't']).count().reset_index()
-            df = df.astype(int)
-            tdeg[df[toax], df['t']] += df[fromax]
+            df = tnet.network.groupby([toax, 't']).sum().reset_index()
+            tdeg[df[toax], df['t']] += df['weight']
     elif calc == 'module_degree_zscore' and communities is None:
         raise ValueError(
             'Communities must be specified when calculating module degree z-score.')
     elif calc != 'time' and communities is None:
         # Return node 
         tdeg = np.zeros([tnet.netshape[0]])
-        df = tnet.network.groupby([fromax]).count().reset_index()
-        df = df.astype(int)
-        tdeg[df[fromax]] = df[toax]
+        # Strength if weighted
+        df = tnet.network.groupby([fromax])['weight'].sum().reset_index()
+        tdeg[df[fromax]] += df['weight']        
         # If undirected, do reverse 
         if tnet.nettype[1] == 'u':
-            df = tnet.network.groupby([toax]).count().reset_index()
-            df = df.astype(int)
-            tdeg[df[toax]] += df[fromax]
+            df = tnet.network.groupby([toax])['weight'].sum().reset_index()
+            tdeg[df[toax]] += df['weight']   
     elif calc == 'module_degree_zscore' and communities is not None:
         tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
         for t in range(tnet.netshape[1]):
