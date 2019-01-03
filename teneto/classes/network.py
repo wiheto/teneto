@@ -193,7 +193,7 @@ class TemporalNetwork:
         self.netshape = contact['netshape']
         if contact['nodelabels']:    
             self.nodelabels = contact['nodelabels'] 
-        if contact['timetimeunit']:
+        if contact['timeunit']:
             self.timeunit = contact['timeunit']    
 
     def _drop_duplicate_ij(self): 
