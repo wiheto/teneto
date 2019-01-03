@@ -97,7 +97,7 @@ def graphlet2contact(G, params=None):
             '\'nettype\' (in params) must be a string \'wd\',\'bd\',\'wu\',\'bu\'). w: weighted network. b: binary network. u: undirected network. d: directed network')
     if 'Fs' not in params.keys():
         params['Fs'] = 1
-        print('Warning, no sampling rate set. Assuming 1.')
+        #print('Warning, no sampling rate set. Assuming 1.')
     if 'timeunit' not in params.keys():
         params['timeunit'] = ''
     if 'diagonal' not in params.keys():
@@ -451,9 +451,10 @@ def gen_nettype(G, printWarning=0):
     G : array
         temporal network (graphlet)
 
-    printWarning : int, default=0
-        Options: 0 (default) or 1. Prints warning in console so user knows assumptions made about inputted data.
-
+    Returns
+    -------
+    nettype : str
+        \'wu\', \'bu\', \'wd\', or \'bd\' 
     """
 
     if set(np.unique(G)) == set([0, 1]):
@@ -467,12 +468,6 @@ def gen_nettype(G, printWarning=0):
         direction = 'd'
 
     nettype = weights + direction
-
-    if printWarning == 1:
-        netNames = {'w': 'weighted', 'b': 'binary',
-                    'u': 'undirected', 'd': 'directed'}
-        print('Assuming network is ' +
-              netNames[nettype[0]] + ' and ' + netNames[nettype[1]] + '.')
 
     return nettype
 

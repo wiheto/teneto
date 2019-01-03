@@ -83,7 +83,6 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
 
     >>> fig,ax = plt.subplots(figsize=(10,3))
     >>> ax = teneto.plot.slice_plot(G, ax, cmap='Set2')
-    ...
     >>> fig.tight_layout()
     >>> fig.show()
 
@@ -117,7 +116,6 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
 
     >>> fig,ax = plt.subplots(figsize=(10,3))
     >>> ax = teneto.plot.slice_plot(G, ax, cmap='Set2')
-    ...
     >>> fig.tight_layout()
     >>> fig.show()
 
