@@ -47,7 +47,7 @@ def graphlet2contact(G, params=None):
         *timetype* : str, default='discrete'
             Time units can be The params file becomes the foundation of 'C'. Any other information in params, will added to C.
 
-        *nLabs* : list
+        *nodelabels* : list
             Set nod labels.
 
         *t0*: int
@@ -77,9 +77,9 @@ def graphlet2contact(G, params=None):
         raise ValueError(
             'Input G must be three dimensions (node x node x time)')
     # Check number of nodes is correct, if specfied
-    if 'nLabs' in params.keys():
-        if params['nLabs']:
-            if len(params['nLabs']) != G.shape[0]:
+    if 'nodelabels' in params.keys():
+        if params['nodelabels']:
+            if len(params['nodelabels']) != G.shape[0]:
                 raise ValueError(
                     'Specified list of node names has to be equal in length to number of nodes')
     if 't0' in params.keys():
@@ -102,10 +102,10 @@ def graphlet2contact(G, params=None):
         params['timeunit'] = ''
     if 'diagonal' not in params.keys():
         params['diagonal'] = 0
-    if 'nLabs' not in params.keys():
-        params['nLabs'] = ''
+    if 'nodelabels' not in params.keys():
+        params['nodelabels'] = ''
     else:
-        params['nLabs'] = list(params['nLabs'])
+        params['nodelabels'] = list(params['nodelabels'])
 
     if 't0' not in params.keys():
         params['t0'] = 1

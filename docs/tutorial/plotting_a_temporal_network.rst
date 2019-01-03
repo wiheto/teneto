@@ -48,7 +48,7 @@ Then we need to generate a binary undirected network to work with. Here we have 
   >>> cfg={}
   >>> cfg['Fs'] = 1
   >>> cfg['timeunit'] = 'Years'
-  >>> cfg['nLabs'] = ['Ashley','Blake','Casey','Dylan','Elliot']
+  >>> cfg['nodelabels'] = ['Ashley','Blake','Casey','Dylan','Elliot']
   >>> cfg['t0'] = 2007 #First year in network
   >>> #Generate network
   >>> C = teneto.generatenetwork.rand_binomial([N,N,T],[p0to1, p1to1],'contact','bu',netinfo=cfg)

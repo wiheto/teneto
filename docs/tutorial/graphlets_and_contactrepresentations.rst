@@ -67,10 +67,12 @@ You can export the network back to a numpy array using.
   >>> G == G2
   True
 
-Array/graphlet/snapshot representation
+You can add some meta information using the nodelabels and timelabels arguments. 
+
+Array/snapshot representation
 ================================
 
-A graphlet/snapshort representation is a three dimensional numpy array. The dimensions are (node,node,time). 
+The array/snapshort representation is a three dimensional numpy array. The dimensions are (node,node,time). 
 
 The positives of this representation is that it is easy to understand and manipulate. The downside is that any metainformation about the network is lost. 
 
@@ -81,7 +83,9 @@ Contact representation
 The contact representations is a dictionary that includes more information about the network. 
 
 The keys in the dictionary include 'contact' which specified the network information (node,node,timestamp). A weights key is present in weighted networks containing the weights. 
-Other keys include: 'dimord' (dimension order), 'Fs' (sampling rate), 'timeunit', 'nettype' (if network is weighted/binary, undirected/directed), 'timetype', `nLabs` (node labels), `t0` (the first time point). 
+Other keys include: 'dimord' (dimension order), 'Fs' (sampling rate), 'timeunit', 'nettype' (if network is weighted/binary, undirected/directed), 'timetype', `nodelabels` (node labels), `t0` (the first time point). 
+
+Note, the contact representation is going to be phased out for the TemporalNetwork object with time. 
 
 Converting between contact and graphlet representations
 ======================================================

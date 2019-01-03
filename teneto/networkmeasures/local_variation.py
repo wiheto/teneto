@@ -7,7 +7,7 @@ from .intercontacttimes import intercontacttimes
 from ..utils import set_diagonal
 
 def local_variation(data):
-    """
+    r"""
     Calculates the local variaiont of inter-contact times. [LV-1]_, [LV-2]_
 
     Parameters

@@ -6,7 +6,7 @@ from .slice_plot import make_bezier, pascal_row
 from ..utils import checkInput, graphlet2contact
 
 
-def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
+def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000):
     '''
 
     Function draws "circle plot" and exports axis handles
@@ -15,7 +15,7 @@ def circle_plot(netIn, ax, nlabs=[], linestyle='k-', nodesize=1000):
     -------------
     netIn : temporal network input (graphlet or contact)
     ax : matplotlib ax handles.
-    nlabs : list 
+    nodelabels : list 
         nodes labels. List of strings
     linestyle : str
         line style

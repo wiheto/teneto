@@ -4,7 +4,7 @@ import numpy as np
 from ..utils import *
 
 
-def slice_plot(netin, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=None, nodesize=100):
+def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='k-', cmap=None, nodesize=100):
     '''
 
     Fuction draws "slice graph" and exports axis handles
@@ -16,9 +16,9 @@ def slice_plot(netin, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=
     netin : array, dict
         temporal network input (graphlet or contact)
     ax : matplotlib figure handles.
-    nLabs : list
+    nodelabels : list
         nodes labels. List of strings.
-    tLabs : list
+    timelabels : list
         labels of dimension Graph is expressed across. List of strings.
     timeunit : string 
         unit time axis is in.
@@ -53,7 +53,7 @@ def slice_plot(netin, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=
     >>> cfg['Fs'] = 1
     >>> cfg['timeunit'] = 'Years'
     >>> cfg['t0'] = 2007 #First year in network
-    >>> cfg['nLabs'] = ['Ashley','Blake','Casey','Dylan','Elliot'] # Node names
+    >>> cfg['nodelabels'] = ['Ashley','Blake','Casey','Dylan','Elliot'] # Node names
     >>> #Generate network
     >>> C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
 
@@ -80,7 +80,7 @@ def slice_plot(netin, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=
         cfg['Fs'] = 1
         cfg['timeunit'] = 'Years'
         cfg['t0'] = 2007 #First year in network
-        cfg['nLabs'] = ['Ashley','Blake','Casey','Dylan','Elliot']
+        cfg['nodelabels'] = ['Ashley','Blake','Casey','Dylan','Elliot']
         #Generate network
         C = teneto.generatenetwork.rand_binomial([N,T],[birth_rate, death_rate],'contact','bu',netinfo=cfg)
         fig,ax = plt.subplots(figsize=(10,3))
@@ -103,30 +103,30 @@ def slice_plot(netin, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=
     edgeList = [tuple(np.array(e[0:2]) + e[2] * netin['netshape'][0])
                 for e in netin['contacts']]
 
-    if nLabs != '' and len(nLabs) == netin['netshape'][0]:
+    if nodelabels != '' and len(nodelabels) == netin['netshape'][0]:
         pass
-    elif nLabs != '' and len(nLabs) != netin['netshape'][0]:
+    elif nodelabels != '' and len(nodelabels) != netin['netshape'][0]:
         raise ValueError('specified node label length does not match netshape')
-    elif nLabs == '' and netin['nLabs'] == '':
-        nLabs = np.arange(1, netin['netshape'][0] + 1)
+    elif nodelabels == '' and netin['nodelabels'] == '':
+        nodelabels = np.arange(1, netin['netshape'][0] + 1)
     else:
-        nLabs = netin['nLabs']
+        nodelabels = netin['nodelabels']
 
-    if tLabs != '' and len(tLabs) == netin['netshape'][-1]:
+    if timelabels != '' and len(timelabels) == netin['netshape'][-1]:
         pass
-    elif tLabs != '' and len(tLabs) != netin['netshape'][-1]:
+    elif timelabels != '' and len(timelabels) != netin['netshape'][-1]:
         raise ValueError('specified time label length does not match netshape')
-    elif tLabs == '' and str(netin['t0']) == '':
-        tLabs = np.arange(1, netin['netshape'][-1] + 1)
+    elif timelabels == '' and str(netin['t0']) == '':
+        timelabels = np.arange(1, netin['netshape'][-1] + 1)
     else:
-        tLabs = np.arange(netin['t0'], netin['Fs'] *
+        timelabels = np.arange(netin['t0'], netin['Fs'] *
                           netin['netshape'][-1] + netin['t0'], netin['Fs'])
 
     if timeunit == '':
         timeunit = netin['timeunit']
 
-    timeNum = len(tLabs)
-    nodeNum = len(nLabs)
+    timeNum = len(timelabels)
+    nodeNum = len(nodelabels)
     pos = []
     posy = np.tile(list(range(0, nodeNum)), timeNum)
     posx = np.repeat(list(range(0, timeNum)), nodeNum)
@@ -142,10 +142,10 @@ def slice_plot(netin, ax, nLabs='', tLabs='', timeunit='', linestyle='k-', cmap=
         bvx, bvy = bezier_points(
             (posx[edge[0]], posy[edge[0]]), (posx[edge[1]], posy[edge[1]]), nodeNum, 20)
         ax.plot(bvx, bvy, linestyle)
-    ax.set_yticks(range(0, len(nLabs)))
-    ax.set_xticks(range(0, len(tLabs)))
-    ax.set_yticklabels(nLabs)
-    ax.set_xticklabels(tLabs)
+    ax.set_yticks(range(0, len(nodelabels)))
+    ax.set_xticks(range(0, len(timelabels)))
+    ax.set_yticklabels(nodelabels)
+    ax.set_xticklabels(timelabels)
     ax.grid()
     ax.set_frame_on(False)
     ax.spines['top'].set_visible(False)

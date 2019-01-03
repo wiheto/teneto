@@ -2,7 +2,7 @@ import numpy as np
 from ..utils import process_input
 
 def topological_overlap(tnet, calc='time'): 
-    """
+    r"""
     Topological overlap quantifies the persistency of edges through time. If two consequtive time-points have similar edges, this becomes high (max 1). If there is high change, this becomes 0. 
     
     References: [topo-1]_, [topo-2]_
