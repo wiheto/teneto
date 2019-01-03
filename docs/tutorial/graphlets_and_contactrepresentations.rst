@@ -4,10 +4,12 @@ Network representation in Teneto
 There are three ways that network's are represented in Teneto:
 
 1. A TemporalNetwork object
-2. Numpy array/graphlet/snapshot
+2. Numpy array/snapshot
 3. Dictionary/contact representation
 
-This tutorial goes through what these different representations are and how to translate between them.
+This tutorial goes through what these different representations are and how to translate between them. 
+Teneto is migrating towards the TemporalNetwork object. 
+However, it is possible to still use with the other two representations. 
 
 TemporalNetwork object
 =======================
@@ -67,7 +69,28 @@ You can export the network back to a numpy array using.
   >>> G == G2
   True
 
-You can add some meta information using the nodelabels and timelabels arguments. 
+You can add some meta information using the *nodelabels*, *timelabels*, and *timeunit* labels, this information continues to plotting. 
+
+  >>> import matplotlib.pyplot as plt
+  >>> timelabels = ['2014','2015','2016','2017','2018']
+  >>> timeunit = 'years'
+  >>> nodelabels = ['Ashley', 'Blake', 'Casey'] 
+  >>> tnet = TemporalNetwork(nodelabels=nodelabels, timeunit=timeunit, timelabels=timelabels) # Define object
+  >>> tnet.generatenetwork('rand_binomial',size=(3,5), prob=0.5) # generate network
+  >>> tnet.plot('slice_plot', cmap='Set2')
+  >>> plt.show()
+
+.. plot::
+
+  import matplotlib.pyplot as plt
+  from teneto import TemporalNetwork
+  nodelabels = ['Ashley', 'Blake', 'Casey'] # Define node names 
+  timelabels = ['2014','2015','2016','2017','2018']
+  timeunit = 'years'
+  tnet = TemporalNetwork(nodelabels=nodelabels, timeunit=timeunit, timelabels=timelabels) # Define object
+  tnet.generatenetwork('rand_binomial',size=(3,5), prob=0.5) # generate network
+  tnet.plot('slice_plot', cmap='Set2')
+  plt.show()
 
 Array/snapshot representation
 ================================

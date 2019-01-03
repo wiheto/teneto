@@ -8,7 +8,7 @@ import pickle
 class TemporalNetwork:
 
     def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False,
-                unit=None, desc=None, starttime=None, nodelabels=None, timelabels=None): 
+                timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None): 
         # Check inputs 
         if nettype: 
             if nettype not in ['bu','bd','wu','wd']:
@@ -53,10 +53,10 @@ class TemporalNetwork:
         else: 
             self.timelabels = None
 
-        if unit: 
-            self.unit = unit
+        if timeunit: 
+            self.timeunit = timeunit
         else: 
-            self.unit = None
+            self.timeunit = None
 
         if starttime: 
             self.starttime = starttime
@@ -193,8 +193,8 @@ class TemporalNetwork:
         self.netshape = contact['netshape']
         if contact['nodelabels']:    
             self.nodelabels = contact['nodelabels'] 
-        if contact['timeunit']:
-            self.unit = contact['unit']    
+        if contact['timetimeunit']:
+            self.timeunit = contact['timeunit']    
 
     def _drop_duplicate_ij(self): 
         """
@@ -291,6 +291,12 @@ class TemporalNetwork:
             self._drop_duplicate_ij()
 
     def plot(self, plottype, ax=None, **plotparams): 
+        if 'nodelabels' not in plotparams and self.nodelabels:
+            plotparams['nodelabels'] = self.nodelabels 
+        if 'timeunit' not in plotparams and self.timeunit:
+            plotparams['timeunit'] = self.timeunit 
+        if 'timelabels' not in plotparams and self.timelabels:
+            plotparams['timelabels'] = self.timelabels 
         availabletypes = [f for f in dir(teneto.plot) if not f.startswith('__')]
         if plottype not in availabletypes: 
             raise ValueError('Unknown network measure. Available plotting functions are: ' + ', '.join(availabletypes))

@@ -16,6 +16,9 @@
 - Fixed error in intercontacttimes where preset network was node,time not node,node
 - Rewritten intercontacttimes to be calculated through TemporalNetwork class' df-list instead of array. 
 - Rewritten (partially) temporal_degree_centrality to be calculated through TemporalNetwork class' df-list instead of array. (communities still use array)
+- nLabs arugment changed to nodelabels
+- tLabs argument changed to timelabels
+- unit argument changed to timeunit
 
 ## V0.3.5
 
