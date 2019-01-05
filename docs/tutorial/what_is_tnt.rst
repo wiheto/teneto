@@ -67,11 +67,11 @@ Compare the following two figures representing meetings between friends:
     G[0,4,3] = 1
     G[3,4,3] = 1
     fig, ax = plt.subplots(1,2)
-    teneto.plot.slice_plot(G, ax=ax[0], cmap='Set2', timeunit='Event', nodelabels=['Ashley', 'Blake', 'Casey', 'Dylan', 'Elliot'])
+    teneto.plot.slice_plot(G, ax=ax[1], cmap='Set2', timeunit='Event', nodelabels=['Ashley', 'Blake', 'Casey', 'Dylan', 'Elliot'])
     ax[1].set_title('Temporal network')
     G2 = G.sum(axis=-1)
     G2[G2>0] = 1
-    teneto.plot.circle_plot(G2, ax=ax[1])
+    teneto.plot.circle_plot(G2, ax=ax[0])
     ax[0].set_title('Static network')
     fig.tight_layout() 
     fig.show()
