@@ -50,7 +50,7 @@ The time indices are an ordered sequence. This can have a consequence about how 
 For example, using friends' lists from social network profiles can be used to create a static network about who is friends with who. 
 However, imagine a friend being introduced to a group of friends, by seeing when they become friends this can explain more what happened. 
 
-Compare the following two picture: 
+Compare the following two figures representing meetings between friends: 
 
 .. plot::
 
@@ -59,21 +59,32 @@ Compare the following two picture:
     import teneto 
     G = np.zeros([5,5,4])
     G[0,1,0] = 1
-    G[1,3,1] = 1
+    G[2,3,1] = 1
+    G[0,3,1] = 1
     G[1,2,1] = 1
     G[0,3,1] = 1
     G[1,4,2] = 1
     G[0,4,3] = 1
     G[3,4,3] = 1
     fig, ax = plt.subplots(1,2)
-    teneto.plot.slice_plot(G, ax=ax[0], cmap='Set2')
-    ax[0].set_title('Temporal network')
+    teneto.plot.slice_plot(G, ax=ax[0], cmap='Set2', timeunit='Event', nodelabels=['Ashley', 'Blake', 'Casey', 'Dylan', 'Elliot'])
+    ax[1].set_title('Temporal network')
     G2 = G.sum(axis=-1)
     G2[G2>0] = 1
-    teneto.plot.circle_plot(G2, ax=ax[1], timeunit='Event', nodelabels=['Ashley', 'Blake', 'Casey', 'Dylon'])
-    ax[1].set_title('Static network')
+    teneto.plot.circle_plot(G2, ax=ax[1])
+    ax[0].set_title('Static network')
     fig.tight_layout() 
     fig.show()
+
+In the static network, on the left, each person (node) is a circle and each black line connecting the circles is an edge. 
+In this figure, we we can see that everyone has met everyone except Dylan (orange) and Casey (green). 
+
+The slice_plot on the left shows nodes (circles) at multiple "slices" (time-points). Each column represent of nodes represents one time-point. The black line connecting two nodes at a time-point
+ signifies that they met at that time-point. 
+
+In the temporal network, we can see a progression of who met who and when. At event 1, Ashley and Blake met. Then A-D all met together at event 2. At event 3, Blake met Dylan. 
+And at event 4, Elliot met Dylan and Ashley (but those two themselves did not meet). This allows for new properties to be quantified that are simply missed in the static network.
+
 
 What is time-varying connectivity? 
 -----------------------------------
@@ -82,6 +93,7 @@ Another concept that is often used within cognitive neuroscience is time-varying
 
 Time-varying connectivity is a larger domain of methods. 
 
+*More to come here*
 
 What is teneto?
 -----------------
