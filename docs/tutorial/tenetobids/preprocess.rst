@@ -86,4 +86,4 @@ For the bad_file, the start of the BIDS file name should be specified (including
 BIDS files generally have a json file that contains the metainformation. When setting a bad_subject or bad_file this will also be set in the 
 json metadata and persists even if the BIDS object is redefined.
 
-If you accidently write the wrong subject name in set_bad_subjects, this may 
+If you accidently write the wrong subject name in set_bad_subjects, can be erased by using the opps=True and reason='last' and it will remove the last reason subjects were considered bad. 

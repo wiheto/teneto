@@ -19,6 +19,7 @@
 - nLabs arugment changed to nodelabels
 - tLabs argument changed to timelabels
 - unit argument changed to timeunit
+- added cmap to circle_plot
 
 ## V0.3.5
 

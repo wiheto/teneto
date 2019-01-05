@@ -332,21 +332,71 @@ class TemporalNetwork:
         with open(fname, 'wb') as f:
             pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
 
-    def get_network_when(self, i=None, j=None, t=None, copy=False, asarray=False): 
-        if i is not None and j is not None and t is not None: 
-            df = self.network[(self.network['i'] == i) & (self.network['j'] == j) & (self.network['t'] == t)]
-        elif i is not None and j is not None: 
-            df = self.network[(self.network['i'] == i) & (self.network['j'] == j)]        
-        elif i is not None and t is not None: 
-            df = self.network[(self.network['i'] == i) & (self.network['t'] == t)]        
-        elif j is not None and t is not None: 
-            df = self.network[(self.network['j'] == j) & (self.network['t'] == t)]        
+    def get_network_when(self, i=None, j=None, t=None, ij=None, logic='and', copy=False, asarray=False): 
+        """
+        Returns subset of dataframe that matches index
+
+        Parameters
+        ----------
+        i : list or int
+            get nodes in column i (source nodes in directed networks)
+        j : list or int 
+            get nodes in column j (target nodes in directed networks)
+        t : list or int 
+            get edges at this time-points. 
+        ij : list or int 
+            get nodes for column i or j (logic and can still persist for t). Cannot be specified along with i or j
+        logic : str
+            options: \'and\' or \'or\'. If \'and\', functions returns rows that corrspond that match all i,j,t arguments. If \'or\', only has to match one of them
+        copy : bool 
+            default False. If True, returns a copy of the dataframe. 
+        asarray : bool 
+            default False. If True, returns the list of edges as an array. 
+
+        Returns
+        -------
+        df : pandas dataframe
+            Unless asarray are set to true. 
+        """
+        if ij is not None and (i is not None or j is not None): 
+            raise ValueError('ij cannoed be specifed along with i or j')
+        # Make non list inputs a list
+        if i is not None and not isinstance(i, list): 
+            i = [i]
+        if j is not None and not isinstance(j, list): 
+            j = [j]
+        if t is not None and not isinstance(t, list): 
+            t = [t]
+        if ij is not None and not isinstance(ij, list): 
+            ij = [ij]
+        if i is not None and j is not None and t is not None and logic == 'and': 
+            df = self.network[(self.network['i'].isin(i)) & (self.network['j'].isin(j)) & (self.network['t'].isin(t))]
+        elif ij is not None and t is not None and logic == 'and': 
+            df = self.network[((self.network['i'].isin(ij)) | (self.network['j'].isin(ij))) & (self.network['t'].isin(t))]
+        elif ij is not None and t is not None and logic == 'or': 
+            df = self.network[((self.network['i'].isin(ij)) | (self.network['j'].isin(ij))) | (self.network['t'].isin(t))]
+        elif i is not None and j is not None and logic == 'and': 
+            df = self.network[(self.network['i'].isin(i)) & (self.network['j'].isin(j))]        
+        elif i is not None and t is not None and logic == 'and': 
+            df = self.network[(self.network['i'].isin(i)) & (self.network['t'].isin(t))]        
+        elif j is not None and t is not None and logic == 'and': 
+            df = self.network[(self.network['j'].isin(j)) & (self.network['t'].isin(t))]   
+        elif i is not None and j is not None and t is not None and logic == 'or': 
+            df = self.network[(self.network['i'].isin(i)) | (self.network['j'].isin(j)) | (self.network['t'].isin(t))]
+        elif i is not None and j is not None and logic == 'or': 
+            df = self.network[(self.network['i'].isin(i)) | (self.network['j'].isin(j))]        
+        elif i is not None and t is not None and logic == 'or': 
+            df = self.network[(self.network['i'].isin(i)) | (self.network['t'].isin(t))]        
+        elif j is not None and t is not None and logic == 'or': 
+            df = self.network[(self.network['j'].isin(j)) | (self.network['t'].isin(t))]        
         elif i is not None:
-            df = self.network[self.network['i'] == i]
+            df = self.network[self.network['i'].isin(i)]
         elif j is not None:
-            df = self.network[self.network['j'] == t]
+            df = self.network[self.network['j'].isin(j)]
         elif t is not None:
-            df = self.network[self.network['t'] == t]
+            df = self.network[self.network['t'].isin(t)]
+        elif ij is not None:
+            df = self.network[(self.network['i'].isin(ij)) | (self.network['j'].isin(ij))]
         if copy: 
             df = df.copy()
         if asarray: 

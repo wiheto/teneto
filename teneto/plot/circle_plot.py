@@ -4,9 +4,9 @@ import numpy as np
 import math
 from .slice_plot import make_bezier, pascal_row
 from ..utils import checkInput, graphlet2contact
+import matplotlib.cm as cm
 
-
-def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000):
+def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000, cmap='Set2'):
     r'''
 
     Function draws "circle plot" and exports axis handles
@@ -21,6 +21,8 @@ def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000):
         line style
     nodesize : int
         size of nodes
+    cmap : str
+        matplotlib colormap
 
 
     Returns
@@ -80,10 +82,12 @@ def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000):
     posx = [math.cos((2 * math.pi * i) / n) for i in range(0, n)]
     posy = [math.sin((2 * math.pi * i) / n) for i in range(0, n)]
     # Get Bezier lines in a circle
+    cmap = cm.get_cmap(cmap)(np.linspace(0,1,n))
     for edge in edgeList :
         bvx, bvy  =  bezier_circle((posx [edge[0]], posy[edge[0]]), (posx[edge[1]], posy[edge[1]]), 20)
         ax.plot(bvx, bvy, linestyle, zorder=0)
-    ax.scatter(posx, posy, s=nodesize, c=range(0, n), zorder=1)
+    for i in range(n):
+        ax.scatter(posx[i], posy[i], s=nodesize, c=cmap[i], zorder=1)
     # Remove things that make plot unpretty
     ax.set_yticklabels([])
     ax.set_xticklabels([])

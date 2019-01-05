@@ -20,7 +20,7 @@ TemporalNetwork is a class in teneto.
   >>> tnet = TemporalNetwork()
   ... 
 
-As an input, you can pass it a 3D numpy array, a contact representation (see below), a list of edges or a pandas df. 
+As an input, you can pass it a 3D numpy array, a contact representation (see below), a list of edges or a pandas df (see below). 
 
 A feature of the TemporalNetwork class is that the different functions such as plotting and networkmeasures can be accessed within the object. 
 For example, the code below calls the function *teneto.generatenetwork.rand_binomial* with all subsequent arguments being arguments for the *rand_binomial* function
@@ -60,6 +60,30 @@ The different argument can also be combined.
      i  j  t
   6  1  2  0
   8  1  3  0
+
+Lists can also be specified as arguments:
+
+  >>> tnet.get_network_when(i=[0, 1], t=1)
+     i  j  t
+  1  0  1  1
+  3  0  2  1
+  5  0  4  1
+  9  1  4  1
+
+The logic within each argument is OR (i.e. get all where i == 1 or i == 0). 
+The logic between the different arguments, defaults to AND. (i.e. get when i == [0 or 1] AND t == 1).
+In some cases, you may want this between argument logic to be or. to specify this,  
+
+  >>> tnet.get_network_when(i=1, j=1, logic='or') 
+     i  j  t
+  0  0  1  0
+  1  0  1  1
+  6  1  2  0
+  7  1  2  2
+  8  1  3  0
+  9  1  4  1
+
+In the above case we select all edges where i or j == 1.
 
 Weighted networks 
 =========================
