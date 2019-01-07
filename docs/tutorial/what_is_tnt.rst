@@ -90,9 +90,9 @@ What is time-varying connectivity?
 
 Another concept that is often used within cognitive neuroscience is time-varying connectivity. 
 
-Time-varying connectivity is a larger domain of methods. 
-
-*More to come here*
+Time-varying connectivity can be seen as a larger domain of methods. Temporal network theory is a way to analyse time-varying connectivity representations 
+that consist of time-stamped edges between nodes, 
+but there are other alternatives to analyse such representations and other time-varying connectivity representations as well (e.g. temporal ICA).
 
 What is teneto?
 -----------------
@@ -102,3 +102,15 @@ It can also used methods from time-varying connectivity to derive connectivity e
 
 Further reading
 ---------------
+
+Holme, P., & Saramäki, J. (2012). Temporal networks. Physics reports, 519(3), 97-125. [`Arxiv link <https://arxiv.org/pdf/1108.1780.pdf>`_] - Comprehensive introduction about core concepts of temporal networks 
+
+Kivelä, M., Arenas, A., Barthelemy, M., Gleeson, J. P., Moreno, Y., & Porter, M. A. (2014). Multilayer networks. Journal of complex networks, 2(3), 203-271. [`Link <https://academic.oup.com/comnet/article/2/3/203/2841130>`_] - General overview of multilayer networks.
+
+Lurie, D., Kessler, D., Bassett, D., Betzel, R. F., Breakspear, M., Keilholz, S., ... & Calhoun, V. (2018). On the nature of resting fMRI and time-varying functional connectivity. [`Psyarxiv link <https://psyarxiv.com/xtzre/download?format=pdf>`_] - Review of time-varying connectivity in human neuroimaging.
+
+Masuda, N., & Lambiotte, R. (2016). A Guidance to Temporal Networks. [`Link to book's publisher <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_] - Book that covers a lot of the mathematics of temporal networks. 
+
+Nicosia, V., Tang, J., Mascolo, C., Musolesi, M., Russo, G., & Latora, V. (2013). Graph metrics for temporal networks. In Temporal networks (pp. 15-40). Springer, Berlin, Heidelberg. [`Arxiv link <https://arxiv.org/pdf/1306.0493>`_] - Review of some temporal network metrics.
+
+Thompson, W. H., Brantefors, P., & Fransson, P. (2017). From static to temporal network theory: Applications to functional brain connectivity. Network Neuroscience, 1(2), 69-99. [`Link <https://www.mitpressjournals.org/doi/full/10.1162/netn_a_00011>`_] - Article introducing temporal network's in cognitve neuroscience context.
