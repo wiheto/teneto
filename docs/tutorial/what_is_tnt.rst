@@ -79,7 +79,8 @@ Compare the following two figures representing meetings between friends:
 In the static network, on the left, each person (node) is a circle and each black line connecting the circles is an edge. 
 In this figure, we we can see that everyone has met everyone except Dylan (orange) and Casey (light green). 
 
-The slice_plot on the left shows nodes (circles) at multiple "slices" (time-points). Each column represent of nodes represents one time-point. The black line connecting two nodes at a time-point signifies that they met at that time-point. 
+The slice_plot on the left shows nodes (circles) at multiple "slices" (time-points). Each column represent of nodes represents one time-point. 
+The black line connecting two nodes at a time-point signifies that they met at that time-point. 
 
 In the temporal network, we can see a progression of who met who and when. At event 1, Ashley and Blake met. Then A-D all met together at event 2. At event 3, Blake met Dylan. 
 And at event 4, Elliot met Dylan and Ashley (but those two themselves did not meet). This allows for new properties to be quantified that are simply missed in the static network.
@@ -90,7 +91,8 @@ What is time-varying connectivity?
 
 Another concept that is often used within cognitive neuroscience is time-varying connectivity. 
 
-Time-varying connectivity can be seen as a larger domain of methods. Temporal network theory is a way to analyse time-varying connectivity representations 
+Time-varying connectivity can be seen as a larger domain of methods that analyse distributed patterns over time and temporal network theory is one set within it. 
+Temporal network theory is a way to analyse time-varying connectivity representations 
 that consist of time-stamped edges between nodes, 
 but there are other alternatives to analyse such representations and other time-varying connectivity representations as well (e.g. temporal ICA).
 

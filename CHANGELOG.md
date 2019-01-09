@@ -20,6 +20,7 @@
 - tLabs argument changed to timelabels
 - unit argument changed to timeunit
 - added cmap to circle_plot
+- rewritten shortest temporal paths. Now outputs pandas dataframe.
 
 ## V0.3.5
 

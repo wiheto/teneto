@@ -15,3 +15,4 @@ from .sid import sid
 from .temporal_part_coef import temporal_part_coef
 from .topological_overlap import topological_overlap
 from .local_variation import local_variation
+from .temporal_betweenness_centrality import temporal_betweenness_centrality

@@ -6,7 +6,7 @@ import numpy as np
 from .shortest_temporal_path import shortest_temporal_path
 
 
-def reachability_latency(data, rratio=1, calc='global'):
+def reachability_latency(tnet=None, paths=None, rratio=1, calc='global'):
     """
     Reachability latency. This is the r-th longest temporal path. 
 
@@ -42,22 +42,24 @@ def reachability_latency(data, rratio=1, calc='global'):
 
     """
 
-    pathdata = 0  # are shortest paths calculated
-    if isinstance(data, dict):
-        # This could be done better
-        if [k for k in list(data.keys()) if k == 'paths'] == ['paths']:
-            pathdata = 1
+    if tnet is not None and paths is not None: 
+        raise ValueError('Only network or path input allowed.')
+    if tnet is None and paths is None: 
+        raise ValueError('No input.')
     # if shortest paths are not calculated, calculate them
-    if pathdata == 0:
-        data = shortest_temporal_path(data)
+    if tnet is not None:
+        paths = shortest_temporal_path(tnet)
 
-    netshape = data['paths'].shape
+    pathmat = np.zeros([paths[['from','to']].max().max()+1, paths[['from','to']].max().max()+1, paths[['t_start']].max().max()+1]) * np.nan     
+    pathmat[paths['from'].values,paths['to'].values,paths['t_start'].values] = paths['temporal-distance']
+
+    netshape = pathmat.shape
 
     edges_to_reach = netshape[0] - np.round(netshape[0] * rratio)
 
     reach_lat = np.zeros([netshape[1], netshape[2]]) * np.nan
     for t_ind in range(0, netshape[2]):
-        paths_sort = -np.sort(-data['paths'][:, :, t_ind], axis=1)
+        paths_sort = -np.sort(-pathmat[:, :, t_ind], axis=1)
         reach_lat[:, t_ind] = paths_sort[:, edges_to_reach]
     if calc == 'global':
         reach_lat = np.nansum(reach_lat)
@@ -66,3 +68,6 @@ def reachability_latency(data, rratio=1, calc='global'):
         reach_lat = np.nansum(reach_lat, axis=1)
         reach_lat = reach_lat / (netshape[2])
     return reach_lat
+
+def reachability_ratio(paths): 
+    return len(paths['temporal-distance'].dropna())/len(paths)
