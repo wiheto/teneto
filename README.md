@@ -4,6 +4,7 @@
 [![PyPI version](https://badge.fury.io/py/Teneto.svg)](https://badge.fury.io/py/Teneto)
 [![Build Status](https://travis-ci.org/wiheto/teneto.svg?branch=master)](https://travis-ci.org/wiheto/teneto)
 [![Coverage Status](https://coveralls.io/repos/github/wiheto/teneto/badge.svg?branch=master)](https://coveralls.io/github/wiheto/teneto?branch=master)
+[![DOI](https://zenodo.org/badge/61498436.svg)](https://zenodo.org/badge/latestdoi/61498436)
 
 **Te**mporal **ne**twork **to**ols. Version 0.4.0
 
@@ -39,6 +40,6 @@ This package is under active development. And a lot of changes will still be mad
 
 ## Cite
 
-If using this, please cite us. At present we do not have a dedicated article about teneto, but teneto is introduced, a long with a considerable amount of the metrics in:
+If using this, please cite us. At present we do not have a dedicated article about teneto, but you can cite the software using the Zenendo DOI [![DOI](https://zenodo.org/badge/61498436.svg)](https://zenodo.org/badge/latestdoi/61498436) and/or the article where teneto is introduced, along with a considerable discussion about many of the measures in teneto:
 
 Thompson et al (2017) "From static to temporal network theory applications to functional brain connectivity." *Network Neuroscience*, 2: 1. p.69-99  [Link](https://www.mitpressjournals.org/doi/abs/10.1162/NETN_a_00011)
