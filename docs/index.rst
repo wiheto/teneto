@@ -16,5 +16,6 @@ Welcome to teneto's documentation!
 
     tutorial
     teneto
+    contributers
 
 .. mdinclude:: ../README.md

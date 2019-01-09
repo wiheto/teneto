@@ -9,6 +9,36 @@ class TemporalNetwork:
 
     def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False,
                 timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None): 
+        """
+        N : int
+            number of nodes in network 
+        T : int 
+            number of time-points in network 
+        nettype : str
+            description of network. Can be: bu, bd, wu, wd where the letters stand for binary, weighted, undirected and directed
+        from_df : pandas df 
+            input data frame with i,j,t,[weight] columns
+        from_array : array 
+            input data from an array with dimesnions node,node,time
+        from_dict : dict
+            input data is a contact sequence dictionary. 
+        from_edgelist : list
+            input data is a list of lists where each item in main list consists of [i,j,t,[weight]].  
+        timetype : str
+            discrete or continuous
+        diagonal : bool
+            if the diagonal should be included in the edge list.
+        timeunit : str
+            string (used in plots) 
+        desc : str
+            string to describe network. 
+        startime : int 
+            integer represents time of first index.
+        nodelabels : list
+            list of labels for naming the nodes 
+        timelabels : list
+            list of labels for time-points 
+        """
         # Check inputs 
         if nettype: 
             if nettype not in ['bu','bd','wu','wd']:
@@ -249,6 +279,19 @@ class TemporalNetwork:
             raise ValueError('Unknown datatype')
 
     def add_edge(self, edgelist): 
+        """
+        Adds an edge from network.
+
+        Parameters 
+        ----------
+
+        edgelist : list 
+            a list (or list of lists) containing the i,j and t indicies to be added. For weighted networks list should also contain a 'weight' key. 
+
+        Returns
+        --------
+            Updates TenetoBIDS.network dataframe with new edge
+        """
         if not isinstance(edgelist[0], list): 
             edgelist = [edgelist]
         self._check_input(edgelist, 'edgelist')
@@ -261,6 +304,19 @@ class TemporalNetwork:
         self._update_network()
 
     def drop_edge(self, edgelist): 
+        """
+        Removes an edge from network.
+
+        Parameters 
+        ----------
+
+        edgelist : list 
+            a list (or list of lists) containing the i,j and t indicies to be removes.
+
+        Returns
+        --------
+            Updates TenetoBIDS.network dataframe
+        """
         if not isinstance(edgelist[0], list): 
             edgelist = [edgelist]
         self._check_input(edgelist, 'edgelist')
@@ -271,6 +327,17 @@ class TemporalNetwork:
         self._update_network()
 
     def calc_networkmeasure(self, networkmeasure, **measureparams): 
+        """
+        Calculate network measure. 
+
+        Parameters
+        -----------
+        networkmeasure : str
+            Function to call. Functions available are in teneto.networkmeasures 
+
+        measureparams : kwargs
+            kwargs for teneto.networkmeasure.[networkmeasure]
+        """
         availablemeasures = [f for f in dir(teneto.networkmeasures) if not f.startswith('__')]
         if networkmeasure not in availablemeasures: 
             raise ValueError('Unknown network measure. Available network measures are: ' + ', '.join(availablemeasures))
@@ -280,6 +347,21 @@ class TemporalNetwork:
         return measure
 
     def generatenetwork(self, networktype, **networkparams): 
+        """
+        Generate a network
+
+        Parameters
+        -----------
+        networktype : str
+            Function to call. Functions available are in teneto.generatenetwork 
+
+        measureparams : kwargs
+            kwargs for teneto.generatenetwork.[networktype]
+
+        Returns
+        --------
+        TenetoBIDS.network is made with the generated network. 
+        """
         availabletypes = [f for f in dir(teneto.generatenetwork) if not f.startswith('__')]
         if networktype not in availabletypes: 
             raise ValueError('Unknown network measure. Available networks to generate are: ' + ', '.join(availabletypes))
@@ -308,6 +390,14 @@ class TemporalNetwork:
         return ax
 
     def to_array(self):
+        """
+        Returns a numpy array (snapshot representation) from thedataframe contact list
+
+        Returns: 
+        --------
+            G : array 
+                (node,node,time) array for the network
+        """
         if len(self.network) > 0: 
             idx = np.array(list(map(list, self.network.values)))
             G = np.zeros([self.netshape[0], self.netshape[0], self.netshape[1]])
@@ -327,6 +417,12 @@ class TemporalNetwork:
         return G
 
     def save_aspickle(self, fname):
+        """
+        Saves object as pickle. 
+
+        fname : str
+            file path.  
+        """
         if fname[-4:] != '.pkl':
             fname += '.pkl'
         with open(fname, 'wb') as f:
