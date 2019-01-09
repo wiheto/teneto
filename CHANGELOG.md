@@ -21,6 +21,7 @@
 - unit argument changed to timeunit
 - added cmap to circle_plot
 - rewritten shortest temporal paths. Now outputs pandas dataframe.
+- temporal_betweenness_centrality aded. 
 
 ## V0.3.5
 

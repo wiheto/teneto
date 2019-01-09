@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/wiheto/teneto.svg?branch=master)](https://travis-ci.org/wiheto/teneto)
 [![Coverage Status](https://coveralls.io/repos/github/wiheto/teneto/badge.svg?branch=master)](https://coveralls.io/github/wiheto/teneto?branch=master)
 
-**Te**mporal **ne**twork **to**ols. Version 0.4.0 (development)
+**Te**mporal **ne**twork **to**ols. Version 0.4.0
 
 ## What is the package
 

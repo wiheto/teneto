@@ -1,7 +1,6 @@
 
 import numpy as np
 from teneto.utils import process_input
-from numba import jit
 import itertools 
 import pandas as pd 
 
