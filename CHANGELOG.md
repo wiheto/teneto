@@ -1,6 +1,11 @@
 # Changelog
 
-## V0.4.0 (development)
+## V0.4.1
+
+- More documentation 
+- Contributers page added in docs
+
+## V0.4.0 
 
 - Rewritten tenetobids to make more compatible with BIDS derivatives RC1 (note completley compatible yet).
 - Fixed relative import paths
