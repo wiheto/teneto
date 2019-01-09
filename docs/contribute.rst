@@ -1,11 +1,11 @@
 Contributers
 --------------------
-William Hedley Thompson
-Vatika Harlalka
+- William Hedley Thompson
+- Vatika Harlalka
 
 
 Contribute to teneto?
------------------------
+======================
 
 Found a bug or want to add a feature? Feel free to contribute! Open up an issue on github with a suggestion/fix and then leave a pull request to submit your code. 
 
