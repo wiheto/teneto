@@ -1,5 +1,5 @@
 """
-generatenetwork.rand_binomial
+generatenetwork.rand_poisson
 """
 
 import numpy as np 
