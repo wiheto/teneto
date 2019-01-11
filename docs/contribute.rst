@@ -1,6 +1,7 @@
 Contributers
 --------------------
 - William Hedley Thompson
+- Peter Fransson
 - Vatika Harlalka
 
 

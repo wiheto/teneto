@@ -12,7 +12,7 @@ from .fluctuability import fluctuability
 from .temporal_efficiency import temporal_efficiency
 from .reachability_latency import reachability_latency
 from .sid import sid
-from .temporal_part_coef import temporal_part_coef
+from .temporal_part_coeff import temporal_part_coeff
 from .topological_overlap import topological_overlap
 from .local_variation import local_variation
 from .temporal_betweenness_centrality import temporal_betweenness_centrality

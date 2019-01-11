@@ -1,7 +1,7 @@
 import numpy as np
 from ..utils import process_input
 
-def temporal_part_coef(tnet, communities=None, removeneg=False):
+def temporal_part_coeff(tnet, communities=None, removeneg=False):
     r'''
     Temporal participation coefficient is a measure of diversity of connections across communities for individual nodes.
 

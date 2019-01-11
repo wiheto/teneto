@@ -23,12 +23,15 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
         i.e. if 0, node i has Aijt summed over j and t.
         and if 1, node j has Aijt summed over i and t.
     calc : str
-        options: 'avg', 'time', 'module_degree_zscore'
-        'avg' (returns temporal degree centrality (a 1xnode vector))
-        'time' (returns a node x time matrix),
-        'module_degree_zscore' returns the Z-scored within community degree centrality 
+
+        'avg' : (returns temporal degree centrality (a 1xnode vector))
+        
+        'time' : (returns a node x time matrix),
+        
+        'module_degree_zscore' : returns the Z-scored within community degree centrality 
         (communities argument required). This is done for each time-point
         i.e. 'time' returns static degree centrality per time-point.
+    
     ignorediagonal: bool
         if true, diagonal is made to 0. 
     communities : array (Nx1)

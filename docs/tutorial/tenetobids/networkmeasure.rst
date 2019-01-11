@@ -1,4 +1,4 @@
-Temporal network measure
+TenetoBIDS & Temporal network measure
 ========================
 
 Once a time-varying connectivity representation has been derived, different temporal network measures can be derived. 
@@ -16,7 +16,7 @@ to that hypothesis. But if you instead find a difference in _volatility_, withou
 it can be harder to translate back to a concrete interpretation. It is often best to start out with "what do I think is happening regarding the temporal properties in the brain" and 
 then see which measure best captures such actions than properties to identify abstract network representation.
 
-Network measure in TenetoBIDS
+Network measures in TenetoBIDS
 -------------------------------
 
 In TenetoBids, if there is tvc representation in the teneto derivatives directory, you only need to call the calc_networkmeasures attribute.
