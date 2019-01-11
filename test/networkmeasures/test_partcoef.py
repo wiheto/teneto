@@ -11,7 +11,7 @@ def test_partcoef():
     G[0, 3, [1, 2]] = 1
     G += G.transpose([1, 0, 2])
     G[1:,1:,0] = 0.5
-    part = teneto.networkmeasures.temporal_part_coeff(G, np.array(communities))
+    part = teneto.networkmeasures.temporal_participation_coeff(G, np.array(communities))
     # Hardcode the order
     assert np.all(np.argsort(part[:,0]) == [0,1,2,3])
     # Hardcode known partcoeff

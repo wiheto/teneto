@@ -27,7 +27,7 @@ Communities are an important part of network theory, where nodes are grouped int
 Here 
 
 -  :py:func:`.sid`, when *calc='community_avg'* or *calc='community_pairs'*
--  :py:func:`.bursty_coef`, when *calc='communities'*
+-  :py:func:`.bursty_coeff`, when *calc='communities'*
 -  :py:func:`.volatility`, when *calc='communities'*
 
 Node measures that are dependent on community vector 

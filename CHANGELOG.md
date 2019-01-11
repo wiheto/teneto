@@ -4,7 +4,7 @@
 
 - More documentation 
 - Contributers page added in docs
-- temporal_participation_coef renamed to temporal_participation_coeff
+- temporal_part_coef renamed to temporal_participation_coeff
 
 ## V0.4.0 
 

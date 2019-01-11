@@ -1,4 +1,4 @@
-Network representation in Teneto
+Tutorial: Network representation in Teneto
 ###############################
 
 There are three ways that network's are represented in Teneto:

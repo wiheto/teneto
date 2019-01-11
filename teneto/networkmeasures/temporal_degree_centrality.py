@@ -16,13 +16,14 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     -----------
 
     net : array, dict
-        temporal network input (graphlet or contact). Can have nettype: 'bu', 'bd', 'wu', 'wd'
+        Temporal network input (graphlet or contact). Can have nettype: 'bu', 'bd', 'wu', 'wd'
     axis : int 
         Dimension that is returned 0 or 1 (default 0).
         Note, only relevant for directed networks.
         i.e. if 0, node i has Aijt summed over j and t.
         and if 1, node j has Aijt summed over i and t.
     calc : str
+        Can be following alternatives: 
 
         'avg' : (returns temporal degree centrality (a 1xnode vector))
         
