@@ -5,6 +5,7 @@
 - More documentation 
 - Contributers page added in docs
 - temporal_part_coef renamed to temporal_participation_coeff
+- added: generatenetwork.rand_poisson
 
 ## V0.4.0 
 

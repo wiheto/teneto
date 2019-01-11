@@ -45,7 +45,7 @@ Create contact sequency representaiton
 
 Here different arguments can be placed in the params dictionary which stores information about the network.
 
-Generatnig a matrix from teneto.generatenetwork
+Generating a matrix from teneto.generatenetwork
 ===============================================
 
 Instead of manually specifying networks. It can be useful to generate networks. 
