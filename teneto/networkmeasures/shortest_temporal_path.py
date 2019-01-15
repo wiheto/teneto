@@ -52,10 +52,83 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
     it : list
         List of starting time-point indicies to restrict anlaysis. Default is all timepoints.
 
-    Returns 
+    minimise : str
+        Can be "time", returns the path that has the smallest temporal distance. It is possible there can be a path that is a smaller
+        topological distance (this option currently not available). 
 
+    Returns 
+    -------------------
     paths : pandas df 
         Dataframe consisting of information about all the paths found. 
+
+    Notes 
+    ---------------
+
+    The shortest temporal path calculates the temporal and topological distance there to be a path between nodes. 
+
+    The argument steps_per_t allows for multiple nodes to be travelled per time-point.
+
+    Topological distance is the number of edges that are travelled. Temporal distance is the number of time-points. 
+
+    This function returns the path that is the shortest temporal distance away.  
+
+    Examples
+    --------
+
+    Let us start by creating a small network. 
+
+    >>> import numpy as np 
+    >>> import matplotlib.pyplot as plt
+    >>> import teneto 
+    >>> G = np.zeros([4, 4, 3])
+    >>> G[0, 1, [0, 2]] = 1
+    >>> G[0, 3, [2]] = 1
+    >>> G[1, 2, [1]] = 1
+    >>> G[2, 3, [1]] = 1
+
+    Let us look at this network to see what is there. 
+
+    >>> fig,ax = plt.subplots(1)
+    >>> teneto.plot.slice_plot(G, ax, nodelabels=[0,1,2,3], timelabels=[0,1,2], cmap='Set2')
+    >>> plt.tight_layout()
+    >>> fig.show() 
+
+    .. plot::
+
+        import numpy as np 
+        import matplotlib.pyplot as plt
+        import teneto 
+        G = np.zeros([4, 4, 3])
+        G[0, 1, [0, 2]] = 1
+        G[0, 3, [2]] = 1
+        G[1, 2, [1]] = 1
+        G[2, 3, [1]] = 1 
+        fig,ax = plt.subplots(1)
+        teneto.plot.slice_plot(G,ax,nodelabels=[0,1,2,3],timelabels=[0,1,2],cmap='Set2')
+        plt.tight_layout()
+        fig.show() 
+
+    Here we can visualize what the shortest paths are. Let us start by starting at 
+    node 0 we want to find the path to node 3, starting at time 0. To do this we write:  
+
+    >>> teneto.networkmeasures.shortest_temporal_path(G, i=0, j=3, it=0) 
+        from  to  t_start  temporal-distance  topological-distance             path includes
+    0      0   3        0                  2                     3  [[0, 1], [1, 2], [2, 3]]
+
+    Here we see that the shortest path takes 3 steps (topological distance of 3) at 2 time points.
+
+    It starts by going from node 0 to 1 at t=0, then 1 to 2 and 2 to 3 at t=1. We can see all the nodes 
+    that were travelled in the "path includes" list. 
+
+    In the above example, it was possible to traverse multiple edges at a single time-point. 
+    It is possible to restrain that by setting the steps_per_t argument  
+
+    >>> teneto.networkmeasures.shortest_temporal_path(G, i=0, j=3, it=0, steps_per_t=1) 
+        from  to  t_start  temporal-distance  topological-distance path includes
+    0      0   3        0                  3                     1      [[0, 3]]
+
+    Here we see that the path is now only one edge, 0 to 3 at t=2. The quicker path is no longer possible.
+
     """
 
     tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
