@@ -21,6 +21,7 @@ Network measures in TenetoBIDS
 
 In TenetoBids, if there is tvc representation in the teneto derivatives directory, you only need to call the calc_networkmeasures attribute.
 
+    >>> import teneto 
     >>> dataset_path = teneto.__path__[0] + '/data/testdata/dummybids'
     >>> pipeline = 'teneto-tests'
     >>> tnet = teneto.TenetoBIDS(dataset_path, pipeline=pipeline, raw_data_exists=False)
@@ -41,7 +42,13 @@ Which is correct.
 
 Let us load this data to see what it looks like: 
 
-    >>> tnet.load_data()
+    >>> tnet.load_data('parcellation')
+    >>> fig, ax = plt.subplots(1)
+    >>> ax.plot(tnet.parcellation_data_)
+    >>> ax.set_xlabel('Time')
+    >>> ax.set_xticks(np.arange(49,200,50))
+    >>> ax.set_xticklabels(np.arange(50,201,50))
+    >>> fig.show() 
 
 .. plot:: 
     import numpy as np 
@@ -66,15 +73,14 @@ We can calculate the TVC data from this
 
     >>> tnet.derive({'method': 'jackknife', 'postpro': 'standardize'})
 
-We can now load this and plot it. 
+We can see the jackknife estimates for the relationship between the Green and Orange time series above. 
 
-    tnet.load('tvc')
+    tnet.load_data('tvc')
     # Note, there will be an easier function to do this soon. 
     # But the below creates an array from the loaded pandas dictionary 
-    G = tnet.TemporalNetwork(from_df=tnet.tvc_data_).to_array()
+    G = teneto.TemporalNetwork(from_df=tnet.tvc_data_[0]).to_array()
     fig, ax = plt.subplots(1)
-    ax.plot(G[0,2,:], label='Blue-Green', color='red')
-    ax.plot(G[0,1,:], label='Blue-Green', color='red')
+    ax.plot(G[1,2,:], color='green')
 
 
 .. plot:: 
@@ -86,9 +92,27 @@ We can now load this and plot it.
     dataset_path = teneto.__path__[0] + '/data/testdata/dummybids'
     data_path = '/derivatives/teneto-tests/sub-002/func/tvc/sub-002_task-b_run-alpha_tvcconn.tsv'
     data = pd.read_csv(dataset_path + data_path, sep='\t', index_col=[0])
+    G = teneto.TemporalNetwork(from_df=data).to_array()
     fig, ax = plt.subplots(1)
-    ax.plot(data.transpose())
+    ax.plot(G[1,2,:],color='green')
     ax.set_xlabel('Time')
+    ax.set_ylabel('Jackknife estimate')
     ax.set_xticks(np.arange(49,200,50))
     ax.set_xticklabels(np.arange(50,201,50))
     fig.show() 
+
+We can then use this measure to calculate the volatility of the network (i.e. rate of change). 
+
+    >>> tnet.networkmeasures('volatility')
+
+This then saves a new directory called: temporalnetwork-volatility with the file inside. To load this, simply type
+
+    >>> tnet.load_data('temporalnetwork',measure='volatility')
+
+The data is then found in the temporalnetwork_data_ argument. This is a dictionary, where the key is the name of the measure you loaded. 
+
+    >>>  tnet.temporalnetwork_data_['volatility']
+    [   volatility
+     0     0.93812]
+
+Here we see that the volatility of the network above is 0.938.
