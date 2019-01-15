@@ -88,8 +88,8 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
 
     Let us look at this network to see what is there. 
 
-    >>> fig,ax = plt.subplots(1)
-    >>> teneto.plot.slice_plot(G, ax, nodelabels=[0,1,2,3], timelabels=[0,1,2], cmap='Set2')
+    >>> fig, ax = plt.subplots(1)
+    >>> ax = teneto.plot.slice_plot(G, ax, nodelabels=[0,1,2,3], timelabels=[0,1,2], cmap='Set2')
     >>> plt.tight_layout()
     >>> fig.show() 
 
