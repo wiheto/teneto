@@ -111,9 +111,16 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
     Here we can visualize what the shortest paths are. Let us start by starting at 
     node 0 we want to find the path to node 3, starting at time 0. To do this we write:  
 
-    >>> teneto.networkmeasures.shortest_temporal_path(G, i=0, j=3, it=0) 
-        from  to  t_start  temporal-distance  topological-distance             path includes
-    0      0   3        0                  2                     3  [[0, 1], [1, 2], [2, 3]]
+    >>> sp = teneto.networkmeasures.shortest_temporal_path(G, i=0, j=3, it=0) 
+    >>> sp['temporal-distance']
+    0    2
+    Name: temporal-distance, dtype: int64
+    >>> sp['topological-distance']
+    0    3
+    Name: topological-distance, dtype: int64
+    >>> sp['path includes']
+    0    [[0, 1], [1, 2], [2, 3]]
+    Name: path includes, dtype: object
 
     Here we see that the shortest path takes 3 steps (topological distance of 3) at 2 time points.
 
@@ -123,9 +130,16 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
     In the above example, it was possible to traverse multiple edges at a single time-point. 
     It is possible to restrain that by setting the steps_per_t argument  
 
-    >>> teneto.networkmeasures.shortest_temporal_path(G, i=0, j=3, it=0, steps_per_t=1) 
-        from  to  t_start  temporal-distance  topological-distance path includes
-    0      0   3        0                  3                     1      [[0, 3]]
+    >>> sp = teneto.networkmeasures.shortest_temporal_path(G, i=0, j=3, it=0, steps_per_t=1) 
+    >>> sp['temporal-distance']
+    0    3
+    Name: temporal-distance, dtype: int64
+    >>> sp['topological-distance']
+    0    1
+    Name: topological-distance, dtype: int64
+    >>> sp['path includes']
+    0    [[0, 3]]
+    Name: path includes, dtype: object
 
     Here we see that the path is now only one edge, 0 to 3 at t=2. The quicker path is no longer possible.
 
