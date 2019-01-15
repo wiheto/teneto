@@ -11,8 +11,8 @@ hypothesis first. Network measures quantify an abstract representation (the netw
 concrete phenomena is, you can select the most appropriate network measure, and then it is easier to interpret what the abstract network measures represents. 
 
 Say for example, you think there are periods of high integration between two brain networks, then there are a couple of methods 
-that help indicate this (e.g. , _SID_, _temporal_ _degree_ _centrality_). Using one of those will help you translate 
-to that hypothesis. But if you instead find a difference in _volatility_, without considering what it represents in your use-case, 
+that help indicate this (e.g. :py:func:`.sid`, :py:func:`.temporal_participation_coeff`, :py:func:`.temporal_degree_centrality`). Using one of those will help you translate 
+to that hypothesis. But if you instead find a difference in :py:func:`.volatility`, without considering what it represents in your use-case, 
 it can be harder to translate back to a concrete interpretation. It is often best to start out with "what do I think is happening regarding the temporal properties in the brain" and 
 then see which measure best captures such actions than properties to identify abstract network representation.
 
