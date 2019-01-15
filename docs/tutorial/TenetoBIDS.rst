@@ -14,6 +14,7 @@ The compatiblity with the BIDS format allows for Teneto to run the analysis on a
     tenetobids/preprocess
     tenetobids/define
     tenetobids/derive
+    tenetobids/networkmeasure
     tenetobids/io
     tenetobids/bidsinfo
 
