@@ -110,7 +110,7 @@ This then saves a new directory called: temporalnetwork-volatility with the file
 
     >>> tnet.load_data('temporalnetwork',measure='volatility')
 
-The data is then found in the temporalnetwork_data_ argument. This is a dictionary, where the key is the name of the measure you loaded. 
+The data is then found in the temporalnetwork_data\_ argument. This is a dictionary, where the key is the name of the measure you loaded. 
 
     >>>  tnet.temporalnetwork_data_['volatility']
     [   volatility
