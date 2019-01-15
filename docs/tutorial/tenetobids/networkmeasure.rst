@@ -51,6 +51,7 @@ Let us load this data to see what it looks like:
     >>> fig.show() 
 
 .. plot:: 
+
     import numpy as np 
     import matplotlib.pyplot as plt
     import pandas as pd
@@ -75,15 +76,15 @@ We can calculate the TVC data from this
 
 We can see the jackknife estimates for the relationship between the Green and Orange time series above. 
 
-    tnet.load_data('tvc')
-    # Note, there will be an easier function to do this soon. 
-    # But the below creates an array from the loaded pandas dictionary 
-    G = teneto.TemporalNetwork(from_df=tnet.tvc_data_[0]).to_array()
-    fig, ax = plt.subplots(1)
-    ax.plot(G[1,2,:], color='green')
-
+    >>> tnet.load_data('tvc')
+    >>> # Note, there will be an easier function to do this soon. 
+    >>> # But the below creates an array from the loaded pandas dictionary 
+    >>> G = teneto.TemporalNetwork(from_df=tnet.tvc_data_[0]).to_array()
+    >>> fig, ax = plt.subplots(1)
+    >>> ax.plot(G[1,2,:], color='green')
 
 .. plot:: 
+
     import numpy as np 
     import matplotlib.pyplot as plt
     import pandas as pd
