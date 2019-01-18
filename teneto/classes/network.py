@@ -449,3 +449,6 @@ class TemporalNetwork:
 
     def get_network_when(self, **kwargs): 
         return teneto.utils.get_network_when(self, **kwargs)
+
+    def df_to_array(self): 
+        return teneto.utils.df_to_array(self.network, self.netshape, self.nettype)

@@ -174,7 +174,7 @@ def test_utils_fails():
 def test_process_input(): 
     tnet = teneto.TemporalNetwork()
     tnet.generatenetwork('rand_binomial',prob=[0.5,0.2],size=[5,12])
-    G = tnet.to_array()
+    G = tnet.df_to_array()
     tnet2 = teneto.utils.process_input(G, 'G', 'TN')
     assert all(tnet2.network==tnet.network)
     C = teneto.utils.process_input(G, 'G', 'C')

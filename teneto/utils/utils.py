@@ -601,7 +601,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
     inputtype = checkInput(netIn)
     # Convert TN to G representation
     if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
-        G = netIn.to_array()
+        G = netIn.df_to_array()
         netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
     elif  inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
         TN = netIn
