@@ -8,7 +8,7 @@ import pickle
 class TemporalNetwork:
 
     def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False,
-                timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None): 
+                timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None, hdf5=False, hdf5path=None): 
         """
         N : int
             number of nodes in network 
@@ -38,6 +38,10 @@ class TemporalNetwork:
             list of labels for naming the nodes 
         timelabels : list
             list of labels for time-points 
+        hdf5 : bool 
+            if true, pandas dataframe is stored and queried as a h5 file. 
+        hdf5path : str
+            Where the h5 files is saved if hdf5 is True. If left unset, the default is ./teneto_temporalnetwork.h5
         """
         # Check inputs 
         if nettype: 
@@ -69,6 +73,13 @@ class TemporalNetwork:
             if timetype not in ['discrete', 'continuous']:  
                 raise ValueError('timetype must be \'discrete\' or \'continuous\'')
             self.timetype = timetype
+
+        if hdf5:
+            if hdf5path is None: 
+                hdf5path = './teneto_temporalnetwork.h5'
+            if hdf5path[:-3:] == '.h5': 
+                hdf5path = hdf5path[:-3]
+
 
         self.diagonal = diagonal
 
@@ -129,6 +140,10 @@ class TemporalNetwork:
             if nettype[1] == 'u':
                 self._drop_duplicate_ij()
 
+        self.hdf5 = False
+        if hdf5:
+            self.hdf5_setup(hdf5path)
+            
     def _set_nettype(self):
         # Only run if not manually set and network values exist
         if not hasattr(self,'nettype') and len(self.network) > 0:
@@ -141,9 +156,9 @@ class TemporalNetwork:
                 wb = 'b'
             # Would be good to see if there was a way to this without going to array.
             self.nettype = 'xu'
-            G1 = self.to_array()
+            G1 = teneto.utils.df_to_array(self.network, self.netshape, self.nettype)
             self.nettype = 'xd'
-            G2 = self.to_array()
+            G2 = teneto.utils.df_to_array(self.network, self.netshape, self.nettype)
             if np.all(G1==G2): 
                 ud = 'u'
             else:
@@ -299,9 +314,19 @@ class TemporalNetwork:
             colnames = ['i','j','t','weight']
         elif len(edgelist[0]) == 3: 
             colnames = ['i','j','t']
-        newedges = pd.DataFrame(edgelist, columns=colnames) 
-        self.network = pd.concat([self.network, newedges], ignore_index=True, sort=True)
-        self._update_network()
+        if self.hdf5: 
+            with pd.HDFStore(self.network) as hdf: 
+                rows = hdf.get_storer('network').nrows
+                hdf.append('network', pd.DataFrame(edgelist, columns=colnames, index=np.arange(rows, rows+len(edgelist))), format='table', data_columns=True)    
+            edgelist = np.array(edgelist) 
+            if np.max(edgelist[:,:2]) > self.netshape[0]: 
+                self.netshape[0] = np.max(edgelist[:,:2])
+            if np.max(edgelist[:,2]) > self.netshape[1]: 
+                self.netshape[1] = np.max(edgelist[:,2])        
+        else: 
+            newedges = pd.DataFrame(edgelist, columns=colnames) 
+            self.network = pd.concat([self.network, newedges], ignore_index=True, sort=True)
+            self._update_network()
 
     def drop_edge(self, edgelist): 
         """
@@ -320,11 +345,17 @@ class TemporalNetwork:
         if not isinstance(edgelist[0], list): 
             edgelist = [edgelist]
         self._check_input(edgelist, 'edgelist')
-        for e in edgelist: 
-            idx = self.network[(self.network['i'] == e[0]) & (self.network['j'] == e[1]) & (self.network['t'] == e[2])].index
-            self.network.drop(idx, inplace=True)
-        self.network.reset_index(inplace=True, drop=True)
-        self._update_network()
+        if self.hdf5: 
+            with pd.HDFStore(self.network) as hdf: 
+                for e in edgelist: 
+                    hdf.remove('network', 'i == ' + str(e[0]) + ' & ' + 'j == ' + str(e[1]) + ' & ' + 't == ' + str(e[2]))
+            print('HDF5 delete warning. This will not reduce the size of the file.')
+        else: 
+            for e in edgelist: 
+                idx = self.network[(self.network['i'] == e[0]) & (self.network['j'] == e[1]) & (self.network['t'] == e[2])].index
+                self.network.drop(idx, inplace=True)
+            self.network.reset_index(inplace=True, drop=True)
+            self._update_network()
 
     def calc_networkmeasure(self, networkmeasure, **measureparams): 
         """
@@ -372,7 +403,7 @@ class TemporalNetwork:
         if self.nettype[1] == 'u':
             self._drop_duplicate_ij()
 
-    def plot(self, plottype, ax=None, **plotparams): 
+    def plot(self, plottype, ij=None, t=None, ax=None, **plotparams): 
         if 'nodelabels' not in plotparams and self.nodelabels:
             plotparams['nodelabels'] = self.nodelabels 
         if 'timeunit' not in plotparams and self.timeunit:
@@ -384,37 +415,18 @@ class TemporalNetwork:
             raise ValueError('Unknown network measure. Available plotting functions are: ' + ', '.join(availabletypes))
         funs = inspect.getmembers(teneto.plot)
         funs={m[0]:m[1] for m in funs if not m[0].startswith('__')}
+        if ij is None: 
+            ij = np.arange(self.netshape[0]).tolist()
+        if t is None: 
+            t = np.arange(self.netshape[1]).tolist()
         if not ax: 
             _, ax = plt.subplots(1)
-        ax = funs[plottype](self.to_array(), ax=ax, **plotparams)
+        data_plot = teneto.utils.get_network_when(self, ij=ij, t=t)
+        data_plot = teneto.utils.df_to_array(data_plot, self.netshape, self.nettype)
+        ax = funs[plottype](data_plot, ax=ax, **plotparams)
         return ax
 
-    def to_array(self):
-        """
-        Returns a numpy array (snapshot representation) from thedataframe contact list
 
-        Returns: 
-        --------
-            G : array 
-                (node,node,time) array for the network
-        """
-        if len(self.network) > 0: 
-            idx = np.array(list(map(list, self.network.values)))
-            G = np.zeros([self.netshape[0], self.netshape[0], self.netshape[1]])
-            if idx.shape[1] == 3:
-                if self.nettype[-1] == 'u': 
-                    idx = np.vstack([idx,idx[:,[1,0,2]]])
-                idx = idx.astype(int)
-                G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
-            elif idx.shape[1] == 4:
-                if self.nettype[-1] == 'u': 
-                    idx = np.vstack([idx,idx[:,[1,0,2,3]]])
-                weights = idx[:,3]
-                idx = np.array(idx[:,:3], dtype=int)
-                G[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
-        else: 
-            G = np.zeros([self.netshape[0],self.netshape[0],self.netshape[1]])
-        return G
 
     def save_aspickle(self, fname):
         """
@@ -428,73 +440,12 @@ class TemporalNetwork:
         with open(fname, 'wb') as f:
             pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
 
-    def get_network_when(self, i=None, j=None, t=None, ij=None, logic='and', copy=False, asarray=False): 
-        """
-        Returns subset of dataframe that matches index
+    def hdf5_setup(self, hdf5path): 
+        hdf = pd.HDFStore(hdf5path)
+        hdf.put('network', self.network, format='table', data_columns=True)
+        hdf.close()
+        self.hdf5 = True
+        self.network = hdf5path
 
-        Parameters
-        ----------
-        i : list or int
-            get nodes in column i (source nodes in directed networks)
-        j : list or int 
-            get nodes in column j (target nodes in directed networks)
-        t : list or int 
-            get edges at this time-points. 
-        ij : list or int 
-            get nodes for column i or j (logic and can still persist for t). Cannot be specified along with i or j
-        logic : str
-            options: \'and\' or \'or\'. If \'and\', functions returns rows that corrspond that match all i,j,t arguments. If \'or\', only has to match one of them
-        copy : bool 
-            default False. If True, returns a copy of the dataframe. 
-        asarray : bool 
-            default False. If True, returns the list of edges as an array. 
-
-        Returns
-        -------
-        df : pandas dataframe
-            Unless asarray are set to true. 
-        """
-        if ij is not None and (i is not None or j is not None): 
-            raise ValueError('ij cannoed be specifed along with i or j')
-        # Make non list inputs a list
-        if i is not None and not isinstance(i, list): 
-            i = [i]
-        if j is not None and not isinstance(j, list): 
-            j = [j]
-        if t is not None and not isinstance(t, list): 
-            t = [t]
-        if ij is not None and not isinstance(ij, list): 
-            ij = [ij]
-        if i is not None and j is not None and t is not None and logic == 'and': 
-            df = self.network[(self.network['i'].isin(i)) & (self.network['j'].isin(j)) & (self.network['t'].isin(t))]
-        elif ij is not None and t is not None and logic == 'and': 
-            df = self.network[((self.network['i'].isin(ij)) | (self.network['j'].isin(ij))) & (self.network['t'].isin(t))]
-        elif ij is not None and t is not None and logic == 'or': 
-            df = self.network[((self.network['i'].isin(ij)) | (self.network['j'].isin(ij))) | (self.network['t'].isin(t))]
-        elif i is not None and j is not None and logic == 'and': 
-            df = self.network[(self.network['i'].isin(i)) & (self.network['j'].isin(j))]        
-        elif i is not None and t is not None and logic == 'and': 
-            df = self.network[(self.network['i'].isin(i)) & (self.network['t'].isin(t))]        
-        elif j is not None and t is not None and logic == 'and': 
-            df = self.network[(self.network['j'].isin(j)) & (self.network['t'].isin(t))]   
-        elif i is not None and j is not None and t is not None and logic == 'or': 
-            df = self.network[(self.network['i'].isin(i)) | (self.network['j'].isin(j)) | (self.network['t'].isin(t))]
-        elif i is not None and j is not None and logic == 'or': 
-            df = self.network[(self.network['i'].isin(i)) | (self.network['j'].isin(j))]        
-        elif i is not None and t is not None and logic == 'or': 
-            df = self.network[(self.network['i'].isin(i)) | (self.network['t'].isin(t))]        
-        elif j is not None and t is not None and logic == 'or': 
-            df = self.network[(self.network['j'].isin(j)) | (self.network['t'].isin(t))]        
-        elif i is not None:
-            df = self.network[self.network['i'].isin(i)]
-        elif j is not None:
-            df = self.network[self.network['j'].isin(j)]
-        elif t is not None:
-            df = self.network[self.network['t'].isin(t)]
-        elif ij is not None:
-            df = self.network[(self.network['i'].isin(ij)) | (self.network['j'].isin(ij))]
-        if copy: 
-            df = df.copy()
-        if asarray: 
-            df = df.values
-        return df
+    def get_network_when(self, **kwargs): 
+        return teneto.utils.get_network_when(self, **kwargs)

@@ -7,6 +7,7 @@ from ..trajectory import rdp
 from .. import __path__ as tenetopath
 from ..classes import TemporalNetwork
 import json
+import pandas as pd 
 
 """
 
@@ -707,6 +708,40 @@ def multiple_contacts_get_values(C):
     return C_out
 
 
+def df_to_array(df, netshape, nettype):
+    """
+    Returns a numpy array (snapshot representation) from thedataframe contact list
+
+    Parameters: 
+        df : pandas df 
+            pandas df with columns, i,j,t.
+        netshape : tuple 
+            network shape, format: (node, time)
+        nettype : str
+            'wu', 'wd', 'bu', 'bd'
+
+    Returns: 
+    --------
+        G : array 
+            (node,node,time) array for the network
+    """
+    if len(df) > 0: 
+        idx = np.array(list(map(list, df.values)))
+        G = np.zeros([netshape[0], netshape[0], netshape[1]])
+        if idx.shape[1] == 3:
+            if nettype[-1] == 'u': 
+                idx = np.vstack([idx,idx[:,[1,0,2]]])
+            idx = idx.astype(int)
+            G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
+        elif idx.shape[1] == 4:
+            if nettype[-1] == 'u': 
+                idx = np.vstack([idx,idx[:,[1,0,2,3]]])
+            weights = idx[:,3]
+            idx = np.array(idx[:,:3], dtype=int)
+            G[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
+    else: 
+        G = np.zeros([netshape[0],netshape[0],netshape[1]])
+    return G
 
 def check_distance_funciton_input(distance_func_name,netinfo):
     """
@@ -918,3 +953,109 @@ def get_dimord(measure,calc=None,community=None):
     else:
         print('WARNINGL: get_dimord() returned unknown dimension labels')
         return 'unknown'
+
+
+
+def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=False, asarray=False): 
+    """
+    Returns subset of dataframe that matches index
+
+    Parameters
+    ----------
+    tnet : TemporalNetwork
+        TemporalNetwork object
+    i : list or int
+        get nodes in column i (source nodes in directed networks)
+    j : list or int 
+        get nodes in column j (target nodes in directed networks)
+    t : list or int 
+        get edges at this time-points. 
+    ij : list or int 
+        get nodes for column i or j (logic and can still persist for t). Cannot be specified along with i or j
+    logic : str
+        options: \'and\' or \'or\'. If \'and\', functions returns rows that corrspond that match all i,j,t arguments. If \'or\', only has to match one of them
+    copy : bool 
+        default False. If True, returns a copy of the dataframe. Note relevant if hd5 data. 
+    asarray : bool 
+        default False. If True, returns the list of edges as an array. 
+
+    Returns
+    -------
+    df : pandas dataframe
+        Unless asarray are set to true. 
+    """
+    if ij is not None and (i is not None or j is not None): 
+        raise ValueError('ij cannoed be specifed along with i or j')
+    # Make non list inputs a list
+    if i is not None and not isinstance(i, list): 
+        i = [i]
+    if j is not None and not isinstance(j, list): 
+        j = [j]
+    if t is not None and not isinstance(t, list): 
+        t = [t]
+    if ij is not None and not isinstance(ij, list): 
+        ij = [ij]
+    if tnet.hdf5: 
+        if i is not None and j is not None and t is not None and logic == 'and': 
+            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + str(j) + ' & ' + 't in ' + str(t)     
+        elif ij is not None and t is not None and logic == 'and': 
+            isinstr = '(i in ' + str(ij) + ' | ' + 'j in ' + str(ij) + ') & ' + 't in ' + str(t)                     
+        elif ij is not None and t is not None and logic == 'or': 
+            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij) + ' | ' + 't in ' + str(t)                                     
+        elif i is not None and j is not None and logic == 'and': 
+            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + str(j)                                 
+        elif i is not None and t is not None and logic == 'and': 
+            isinstr = 'i in ' + str(i) + ' & ' + 't in ' + str(t)                                                 
+        elif j is not None and t is not None and logic == 'and': 
+            isinstr = 'j in ' + str(j) + ' & ' + 't in ' + str(t)                                                                 
+        elif i is not None and j is not None and t is not None and logic == 'or': 
+            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + str(j) + ' | ' + 't in ' + str(t)                                                                                 
+        elif i is not None and j is not None and logic == 'or': 
+            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + str(j)                                                 
+        elif i is not None and t is not None and logic == 'or': 
+            isinstr = 'i in ' + str(i) + ' | ' + 't in ' + str(t)                                                                 
+        elif j is not None and t is not None and logic == 'or': 
+            isinstr = 'j in ' + str(j) + ' | ' + 't in ' + str(t)                                                                                 
+        elif i is not None:
+            isinstr = 'i in ' + str(i)
+        elif j is not None:
+            isinstr = 'j in ' + str(j)
+        elif t is not None:
+            isinstr = 't in ' + str(t)
+        elif ij is not None:
+            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij)                                                                                 
+        df = pd.read_hdf(tnet.network, where=isinstr)
+    else: 
+        if i is not None and j is not None and t is not None and logic == 'and': 
+            df = tnet.network[(tnet.network['i'].isin(i)) & (tnet.network['j'].isin(j)) & (tnet.network['t'].isin(t))]
+        elif ij is not None and t is not None and logic == 'and': 
+            df = tnet.network[((tnet.network['i'].isin(ij)) | (tnet.network['j'].isin(ij))) & (tnet.network['t'].isin(t))]
+        elif ij is not None and t is not None and logic == 'or': 
+            df = tnet.network[((tnet.network['i'].isin(ij)) | (tnet.network['j'].isin(ij))) | (tnet.network['t'].isin(t))]
+        elif i is not None and j is not None and logic == 'and': 
+            df = tnet.network[(tnet.network['i'].isin(i)) & (tnet.network['j'].isin(j))]        
+        elif i is not None and t is not None and logic == 'and': 
+            df = tnet.network[(tnet.network['i'].isin(i)) & (tnet.network['t'].isin(t))]        
+        elif j is not None and t is not None and logic == 'and': 
+            df = tnet.network[(tnet.network['j'].isin(j)) & (tnet.network['t'].isin(t))]   
+        elif i is not None and j is not None and t is not None and logic == 'or': 
+            df = tnet.network[(tnet.network['i'].isin(i)) | (tnet.network['j'].isin(j)) | (tnet.network['t'].isin(t))]
+        elif i is not None and j is not None and logic == 'or': 
+            df = tnet.network[(tnet.network['i'].isin(i)) | (tnet.network['j'].isin(j))]        
+        elif i is not None and t is not None and logic == 'or': 
+            df = tnet.network[(tnet.network['i'].isin(i)) | (tnet.network['t'].isin(t))]        
+        elif j is not None and t is not None and logic == 'or': 
+            df = tnet.network[(tnet.network['j'].isin(j)) | (tnet.network['t'].isin(t))]        
+        elif i is not None:
+            df = tnet.network[tnet.network['i'].isin(i)]
+        elif j is not None:
+            df = tnet.network[tnet.network['j'].isin(j)]
+        elif t is not None:
+            df = tnet.network[tnet.network['t'].isin(t)]
+        elif ij is not None:
+            df = tnet.network[(tnet.network['i'].isin(ij)) | (tnet.network['j'].isin(ij))]
+        if copy: 
+            df = df.copy()
+    if asarray: 
+        df = df.values
+    return df
