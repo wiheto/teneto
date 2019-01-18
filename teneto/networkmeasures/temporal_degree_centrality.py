@@ -97,7 +97,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
             else:
                 C = communities
             for c in np.unique(C):
-                k_i = np.sum(tnet.to_array()[:, C == c, t][C == c], axis=axis)
+                k_i = np.sum(tnet.df_to_array()[:, C == c, t][C == c], axis=axis)
                 tdeg[C == c, t] = (k_i - np.mean(k_i)) / np.std(k_i)
         tdeg[np.isnan(tdeg) == 1] = 0
     elif calc == 'time' and communities is not None:
@@ -110,10 +110,10 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
                 for s1 in unique_communities:
                     for s2 in unique_communities:
                         tdeg_communities[s1, s2, t] = np.sum(
-                            np.sum(tnet.to_array()[C == s1, :, t][:, C == s2], axis=1), axis=0)
+                            np.sum(tnet.df_to_array()[C == s1, :, t][:, C == s2], axis=1), axis=0)
         else:
             unique_communities = np.unique(communities)
-            tdeg_communities = [np.sum(np.sum(tnet.to_array()[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
+            tdeg_communities = [np.sum(np.sum(tnet.df_to_array()[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
                                 for s1 in unique_communities for s2 in unique_communities]
 
         tdeg = np.array(tdeg_communities)
