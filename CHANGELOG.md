@@ -6,6 +6,11 @@
 - Contributers page added in docs
 - temporal_part_coef renamed to temporal_participation_coeff
 - added: generatenetwork.rand_poisson
+- small fixes to tenetoBIDS
+- matplotlib kwargs added to slice_plot scatter and line parts 
+- added h5 
+
+Known issues: temporal_degree_centrality, volatility, fluctuability, sid, topological overlap not compatible with h5 at the moemnt
 
 ## V0.4.0 
 

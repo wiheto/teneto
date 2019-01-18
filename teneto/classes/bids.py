@@ -792,7 +792,7 @@ class TenetoBIDS:
                 make_directories(spath)
                 sname = spath + sname
             if 'desc' in sname and desc: 
-                desctag = get_bids_tags(sname.split('/')[-1], 'desc')
+                desctag = get_bids_tag(sname.split('/')[-1], 'desc')
                 sname = ''.join(sname.split('desc-' + desctag['desc']))
                 sname + '_desc-' + desc
             if os.path.exists(sname + self.bids_suffix + '.tsv') and overwrite==False: 
@@ -1107,7 +1107,7 @@ class TenetoBIDS:
             make_directories(spath)
             sname = spath + sname
         if 'desc' in sname and tag: 
-            desctag = get_bids_tags(sname.split('/')[-1], 'desc')
+            desctag = get_bids_tag(sname.split('/')[-1], 'desc')
             sname = ''.join(sname.split('desc-' + desctag['desc']))
             sname + '_desc-' + tag
         if os.path.exists(sname + self.bids_suffix + '.tsv') and overwrite==False: 
@@ -1155,7 +1155,6 @@ class TenetoBIDS:
         These options must be precalculated. If template, Teneto tries to load default for parcellation. If static, loads static communities 
         in BIDS_dir/teneto_<version>/sub-.../func/communities/..._communitytype-static....npy. If temporal, loads static communities 
         in BIDS_dir/teneto_<version>/sub-.../func/communities/..._communitytype-temporal....npy 
- 
         Returns
         -------
 
@@ -1202,16 +1201,18 @@ class TenetoBIDS:
                     if measure_params[i]['communities'] == 'template':
                         measure_params[i]['communities'] = np.array(self.network_communities_['network_id'].values)
                     elif measure_params[i]['communities'] == 'static':
-                        self.load_community_data('static',tag=file_name.split('tvc')[0].split('_'))
+                        self.load_community_data('static',tag=save_name.split('tvc')[0].split('_'))
                         measure_params[i]['communities'] = np.squeeze(self.community_data_) 
                     elif measure_params[i]['communities'] == 'temporal':  
-                        self.load_community_data('temporal',tag=file_name)
+                        self.load_community_data('temporal',tag=save_name)
                         measure_params[i]['communities'] = np.squeeze(self.community_data_)
                     else: 
                         raise ValueError('Unknown community string')
 
             netmeasure = tvc.calc_networkmeasure(m,**measure_params[i])
-            netmeasure = pd.DataFrame(netmeasure)
+            if isinstance(netmeasure, float): 
+                netmeasure = [netmeasure]
+            netmeasure = pd.DataFrame(data = {m: netmeasure},)
             netmeasure.to_csv(save_dir + save_name + '.tsv', sep='\t')
             sidecar = get_sidecar(f) 
             # need to remove measure_params[i]['communities'] when saving
