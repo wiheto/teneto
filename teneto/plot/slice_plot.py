@@ -4,7 +4,7 @@ import numpy as np
 from ..utils import *
 
 
-def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='k-', cmap=None, nodesize=100):
+def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='k-', cmap=None, nodesize=100, nodekwargs=None, edgekwargs=None):
     r'''
 
     Fuction draws "slice graph" and exports axis handles
@@ -26,6 +26,10 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
         line style of Bezier curves.
     nodesize : int
         size of nodes
+    nodekwargs : dict 
+        any additional kwargs for matplotlib.plt.scatter for the nodes
+    edgekwargs : dict 
+        any additional kwargs for matplotlib.plt.plots for the edges
 
 
     Returns
@@ -131,17 +135,19 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
     posy = np.tile(list(range(0, nodeNum)), timeNum)
     posx = np.repeat(list(range(0, timeNum)), nodeNum)
 
-    node_plot_attr = {}
-    if cmap:
-        node_plot_attr['cmap'] = cmap
-
+    if nodekwargs is None:
+        nodekwargs = {} 
+    if edgekwargs is None:
+        edgekwargs = {}  
+    if cmap: 
+        nodekwargs['cmap'] = cmap 
 
     # plt.plot(points)
     # Draw Bezier vectors around egde positions
     for edge in edgeList:
         bvx, bvy = bezier_points(
             (posx[edge[0]], posy[edge[0]]), (posx[edge[1]], posy[edge[1]]), nodeNum, 20)
-        ax.plot(bvx, bvy, linestyle)
+        ax.plot(bvx, bvy, linestyle, **edgekwargs)
     ax.set_yticks(range(0, len(nodelabels)))
     ax.set_xticks(range(0, len(timelabels)))
     ax.set_yticklabels(nodelabels)
@@ -154,7 +160,7 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
     ax.get_yaxis().tick_left()
     ax.set_xlim([min(posx) - 1, max(posx) + 1])
     ax.set_ylim([min(posy) - 1, max(posy) + 1])
-    ax.scatter(posx, posy, s=nodesize, c=posy, zorder=10, **node_plot_attr)
+    ax.scatter(posx, posy, s=nodesize, c=posy, zorder=10, **nodekwargs)
     if timeunit != '':
         timeunit = ' (' + timeunit + ')'
     ax.set_xlabel('Time' + timeunit)
