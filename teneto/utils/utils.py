@@ -962,8 +962,8 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
 
     Parameters
     ----------
-    tnet : TemporalNetwork
-        TemporalNetwork object
+    tnet : df or TemporalNetwork
+        TemporalNetwork object or pandas dataframe edgelist
     i : list or int
         get nodes in column i (source nodes in directed networks)
     j : list or int 
@@ -984,6 +984,13 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     df : pandas dataframe
         Unless asarray are set to true. 
     """
+    if isinstance(tnet, pd.DataFrame):
+        network = tnet
+        hdf5 = False  
+    # Can add hdfstore 
+    elif isinstance(tnet,object): 
+        network = tnet.network
+        hdf5 = tnet.hdf5
     if ij is not None and (i is not None or j is not None): 
         raise ValueError('ij cannoed be specifed along with i or j')
     # Make non list inputs a list
@@ -995,7 +1002,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         t = [t]
     if ij is not None and not isinstance(ij, list): 
         ij = [ij]
-    if tnet.hdf5: 
+    if hdf5: 
         if i is not None and j is not None and t is not None and logic == 'and': 
             isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + str(j) + ' & ' + 't in ' + str(t)     
         elif ij is not None and t is not None and logic == 'and': 
@@ -1024,36 +1031,36 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
             isinstr = 't in ' + str(t)
         elif ij is not None:
             isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij)                                                                                 
-        df = pd.read_hdf(tnet.network, where=isinstr)
+        df = pd.read_hdf(network, where=isinstr)
     else: 
         if i is not None and j is not None and t is not None and logic == 'and': 
-            df = tnet.network[(tnet.network['i'].isin(i)) & (tnet.network['j'].isin(j)) & (tnet.network['t'].isin(t))]
+            df = network[(network['i'].isin(i)) & (network['j'].isin(j)) & (network['t'].isin(t))]
         elif ij is not None and t is not None and logic == 'and': 
-            df = tnet.network[((tnet.network['i'].isin(ij)) | (tnet.network['j'].isin(ij))) & (tnet.network['t'].isin(t))]
+            df = network[((network['i'].isin(ij)) | (network['j'].isin(ij))) & (network['t'].isin(t))]
         elif ij is not None and t is not None and logic == 'or': 
-            df = tnet.network[((tnet.network['i'].isin(ij)) | (tnet.network['j'].isin(ij))) | (tnet.network['t'].isin(t))]
+            df = network[((network['i'].isin(ij)) | (network['j'].isin(ij))) | (network['t'].isin(t))]
         elif i is not None and j is not None and logic == 'and': 
-            df = tnet.network[(tnet.network['i'].isin(i)) & (tnet.network['j'].isin(j))]        
+            df = network[(network['i'].isin(i)) & (network['j'].isin(j))]        
         elif i is not None and t is not None and logic == 'and': 
-            df = tnet.network[(tnet.network['i'].isin(i)) & (tnet.network['t'].isin(t))]        
+            df = network[(network['i'].isin(i)) & (network['t'].isin(t))]        
         elif j is not None and t is not None and logic == 'and': 
-            df = tnet.network[(tnet.network['j'].isin(j)) & (tnet.network['t'].isin(t))]   
+            df = network[(network['j'].isin(j)) & (network['t'].isin(t))]   
         elif i is not None and j is not None and t is not None and logic == 'or': 
-            df = tnet.network[(tnet.network['i'].isin(i)) | (tnet.network['j'].isin(j)) | (tnet.network['t'].isin(t))]
+            df = network[(network['i'].isin(i)) | (network['j'].isin(j)) | (network['t'].isin(t))]
         elif i is not None and j is not None and logic == 'or': 
-            df = tnet.network[(tnet.network['i'].isin(i)) | (tnet.network['j'].isin(j))]        
+            df = network[(network['i'].isin(i)) | (network['j'].isin(j))]        
         elif i is not None and t is not None and logic == 'or': 
-            df = tnet.network[(tnet.network['i'].isin(i)) | (tnet.network['t'].isin(t))]        
+            df = network[(network['i'].isin(i)) | (network['t'].isin(t))]        
         elif j is not None and t is not None and logic == 'or': 
-            df = tnet.network[(tnet.network['j'].isin(j)) | (tnet.network['t'].isin(t))]        
+            df = network[(network['j'].isin(j)) | (network['t'].isin(t))]        
         elif i is not None:
-            df = tnet.network[tnet.network['i'].isin(i)]
+            df = network[network['i'].isin(i)]
         elif j is not None:
-            df = tnet.network[tnet.network['j'].isin(j)]
+            df = network[network['j'].isin(j)]
         elif t is not None:
-            df = tnet.network[tnet.network['t'].isin(t)]
+            df = network[network['t'].isin(t)]
         elif ij is not None:
-            df = tnet.network[(tnet.network['i'].isin(ij)) | (tnet.network['j'].isin(ij))]
+            df = network[(network['i'].isin(ij)) | (network['j'].isin(ij))]
         if copy: 
             df = df.copy()
     if asarray: 
