@@ -62,7 +62,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
             if sum(tnet.network['weight']<0) > 0 and not removeneg:
                 print('TENETO WARNING: negative edges exist when calculating participation coefficient.')
             else:
-                tnet['weight'][tnet['weight']<0] = 0
+                tnet.network['weight'][tnet.network['weight']<0] = 0
 
 
     part = np.zeros([tnet.netshape[0],tnet.netshape[1]])
