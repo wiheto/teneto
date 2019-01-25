@@ -56,11 +56,13 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
     tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
 
 
-    if tnet.nettype[0] == 'w': 
-        if sum(tnet['weight'] <0) > 0 and not removeneg:
-            print('TENETO WARNING: negative edges exist when calculating participation coefficient.')
-        else:
-            tnet['weight'][tnet['weight']<0] = 0
+    if tnet.nettype[0] == 'w':
+        # TODO add contingency when hdf5 data has negative edges
+        if tnet.hdf5 == False:  
+            if sum(tnet.network['weight']<0) > 0 and not removeneg:
+                print('TENETO WARNING: negative edges exist when calculating participation coefficient.')
+            else:
+                tnet['weight'][tnet['weight']<0] = 0
 
 
     part = np.zeros([tnet.netshape[0],tnet.netshape[1]])
