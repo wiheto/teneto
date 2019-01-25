@@ -69,6 +69,11 @@ class TemporalNetwork:
             if not isinstance(T, int):
                 raise ValueError('Number of time-points must be an interger')
 
+        if self.N is None: 
+            self.N = 0 
+        if self.T is None: 
+            self.T = 0 
+            
         if timetype: 
             if timetype not in ['discrete', 'continuous']:  
                 raise ValueError('timetype must be \'discrete\' or \'continuous\'')
@@ -264,6 +269,7 @@ class TemporalNetwork:
         else: 
             N = self.network[['i','j']].max(axis=1).max()+1
             T = self.network['t'].max()+1
+
             if self.N > N: 
                 N = self.N 
             else: 
@@ -274,10 +280,6 @@ class TemporalNetwork:
                 self.T = T 
             
             self.netshape = (int(N),int(T))
-            if self.N is None: 
-                self.N = N
-            if self.T is None: 
-                self.T = T
 
     def _check_input(self, datain, datatype):
         if datatype == 'edgelist': 
