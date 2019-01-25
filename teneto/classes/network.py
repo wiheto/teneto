@@ -274,6 +274,10 @@ class TemporalNetwork:
                 self.T = T 
             
             self.netshape = (int(N),int(T))
+            if self.N is None: 
+                self.N = N
+            if self.T is None: 
+                self.T = T
 
     def _check_input(self, datain, datatype):
         if datatype == 'edgelist': 
