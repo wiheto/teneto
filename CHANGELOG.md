@@ -10,6 +10,9 @@
 - matplotlib kwargs added to slice_plot scatter and line parts 
 - added hdf5 possibility to TemporalNetwork (Not yet compatible with: participation coeff, temporal_degree_centrality, volatility, fluctuability, sid, topological overlap)
 - Added utils.io for networkx export of a snapshot. 
+- Renamed teneto.derive package to teneto.timeseries 
+- Renamed teneto.derive.derive to teneto.timeseries.derive_temporalnetwork 
+- Renamed teneto.TenetoBIDS.derive to teneto.TenetoBIDS.derive_temporalnetwork
 
 ## V0.4.0 
 
