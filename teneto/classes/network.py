@@ -69,10 +69,14 @@ class TemporalNetwork:
             if not isinstance(T, int):
                 raise ValueError('Number of time-points must be an interger')
 
-        if self.N is None: 
+        if N is None: 
             self.N = 0 
-        if self.T is None: 
+        else: 
+            self.N = N
+        if T is None: 
             self.T = 0 
+        else: 
+            self.T = T 
             
         if timetype: 
             if timetype not in ['discrete', 'continuous']:  
