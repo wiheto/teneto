@@ -8,13 +8,12 @@
 - added: generatenetwork.rand_poisson
 - small fixes to tenetoBIDS
 - matplotlib kwargs added to slice_plot scatter and line parts 
-- added hdf5 possibility to TemporalNetwork 
-
-Known issues: participation coeffiicnet, temporal_degree_centrality, volatility, fluctuability, sid, topological overlap not compatible with h5 at the moemnt
+- added hdf5 possibility to TemporalNetwork (Not yet compatible with: participation coeff, temporal_degree_centrality, volatility, fluctuability, sid, topological overlap)
+- Added utils.io for networkx export of a snapshot. 
 
 ## V0.4.0 
 
-- Rewritten tenetobids to make more compatible with BIDS derivatives RC1 (note completley compatible yet).
+- Rewritten tenetobids to make more compatible with BIDS derivatives RC1 (note completely compatible yet).
 - Fixed relative import paths
 - Subnet argument for certain functions have been removed.
 - Changing default value of decay argument (temporal_degree_centrality, sid) to 0 instead of None
@@ -33,7 +32,7 @@ Known issues: participation coeffiicnet, temporal_degree_centrality, volatility,
 - unit argument changed to timeunit
 - added cmap to circle_plot
 - rewritten shortest temporal paths. Now outputs pandas dataframe.
-- temporal_betweenness_centrality aded. 
+- temporal_betweenness_centrality added. 
 
 ## V0.3.5
 

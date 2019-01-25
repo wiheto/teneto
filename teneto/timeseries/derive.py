@@ -13,7 +13,7 @@ from ..utils import set_diagonal, getDistanceFunction
 from .postprocess import postpro_pipeline
 from .report import gen_report
 
-def derive(data, params):
+def derive_temporalnetwork(data, params):
     """
     Derives connectivity from the data. A lot of data is inherently built with edges
      (e.g. communication between two individuals).
@@ -27,7 +27,7 @@ def derive(data, params):
      for each time point.
 
     Paramters
-    --------
+    ----------
 
     data : array 
         Time series data to perform connectivity derivation on. (Default dimensions are: (time as rows, nodes as columns). Change params{'dimord'} if you want it the other way (see below).

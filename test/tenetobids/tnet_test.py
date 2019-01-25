@@ -13,7 +13,7 @@ def test_tnet_derive():
     tnet.load_data('parcellation')
     tnet.set_confound_pipeline('fmriprep')
     # Turn the confound_corr_report to True once matplotlib works withconcurrent
-    tnet.derive({'method': 'jackknife', 'dimord': 'node,time'}, update_pipeline=True, confound_corr_report=False)
+    tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time'}, update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     parcdata = tnet.parcellation_data_[0]
     parcdata.drop('0', axis=1, inplace=True)
@@ -32,28 +32,28 @@ def test_make_fc_and_tvc():
     assert '_conn.tsv' in fc_files[0]
     assert len(fc_files) == 1
     R = tnet.parcellation_data_[0].transpose().corr().values[0, 1]
-    tnet.derive({'method': 'jackknife', 'dimord': 'node,time',
+    tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time',
                  'postpro': 'standardize'}, update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     JC = tnet.tvc_data_[0].iloc[0].values[-1]
     # Load parc data, make FC JC method with FC dual weighting
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
-    tnet.derive({'method': 'jackknife', 'dimord': 'node,time', 'weight-mean': 'from-subject-fc',
+    tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time', 'weight-mean': 'from-subject-fc',
                  'weight-var': 'from-subject-fc'}, update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     JCw = tnet.tvc_data_[0].iloc[0].values[-1]
     # Load parc data, make FC JC method with FC mean weighting
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
-    tnet.derive({'method': 'jackknife', 'dimord': 'node,time',
+    tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time',
                  'weight-mean': 'from-subject-fc'}, update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     JCm = tnet.tvc_data_[0].iloc[0].values[-1]
     # Load parc data, make FC JC method with FC variance weighting
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
-    tnet.derive({'method': 'jackknife', 'dimord': 'node,time',
+    tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time',
                  'weight-var': 'from-subject-fc'}, update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     JCv = tnet.tvc_data_[0].iloc[0].values[-1]
@@ -126,7 +126,7 @@ def test_tnet_derive_with_removeconfounds():
         sidecar = json.load(fs)
     assert 'confoundremoval' in sidecar
     # Removing below tests due to errors caused by concurrent images.
-    #tnet.derive({'method': 'jackknife'})
+    #tnet.derive_temporalnetwork({'method': 'jackknife'})
     # Make sure report directory exists
     #assert os.path.exists(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/tvc/report')
 

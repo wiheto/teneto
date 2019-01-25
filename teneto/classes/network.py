@@ -183,7 +183,8 @@ class TemporalNetwork:
             i,j,t = np.where(array != 0)
             w = array[array!=0]
             self.network = pd.DataFrame(data={'i': i, 'j': j, 't': t, 'weight': w}) 
-        self.netshape = array.shape
+        self.N = array.shape[0]
+        self.T = array.shape[-1]
         self._update_network()
     
     def _update_network(self):
@@ -263,6 +264,15 @@ class TemporalNetwork:
         else: 
             N = self.network[['i','j']].max(axis=1).max()+1
             T = self.network['t'].max()+1
+            if self.N > N: 
+                N = self.N 
+            else: 
+                self.N = N 
+            if self.T > T: 
+                T = self.T 
+            else: 
+                self.T = T 
+            
             self.netshape = (int(N),int(T))
 
     def _check_input(self, datain, datatype):

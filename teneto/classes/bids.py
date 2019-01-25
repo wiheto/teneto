@@ -127,7 +127,7 @@ class TenetoBIDS:
             self.history = []
         self.history.append([fname,fargs])
 
-    def derive(self, params, update_pipeline=True, tag=None, njobs=1, confound_corr_report=True):
+    def derive_temporalnetwork(self, params, update_pipeline=True, tag=None, njobs=1, confound_corr_report=True):
 
         """
         Derive time-varying connectivity on the selected files.
@@ -135,7 +135,7 @@ class TenetoBIDS:
         Parameters
         ----------
         params : dict.
-            See teneto.derive.derive for the structure of the param dictionary.
+            See teneto.timeseries.derive_temporalnetwork for the structure of the param dictionary.
 
         update_pipeline : bool
             If true, the object updates the selected files with those derived here.
@@ -173,7 +173,7 @@ class TenetoBIDS:
             tag = 'desc-' + tag
 
         with ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_derive,f,i,tag,params,confounds_exist,confound_files) for i,f in enumerate(files) if f}
+            job = {executor.submit(self._derive_temporalnetwork,f,i,tag,params,confounds_exist,confound_files) for i,f in enumerate(files) if f}
             for j in as_completed(job):
                 j.result()
 
@@ -184,9 +184,9 @@ class TenetoBIDS:
             self.set_pipeline_subdir('tvc')
             self.set_bids_suffix('tvcconn')
 
-    def _run_derive(self,f,i,tag,params,confounds_exist,confound_files):
+    def _derive_temporalnetwork(self,f,i,tag,params,confounds_exist,confound_files):
         """
-        Funciton called by TenetoBIDS.derive for parallel processing.
+        Funciton called by TenetoBIDS.derive_temporalnetwork for concurrent processing.
         """
         data = load_tabular_file(f, index_col=True, header=True)
 
@@ -217,7 +217,7 @@ class TenetoBIDS:
         if not os.path.exists(params['report_path']):
             os.makedirs(params['report_path'])
 
-        dfc = teneto.derive.derive(data.values, params)
+        dfc = teneto.timeseries.derive_temporalnetwork(data.values, params)
         dfc_net = TemporalNetwork(from_array=dfc, nettype='wu')
         dfc_net.network.to_csv(save_dir + save_name + '.tsv', sep='\t')
 
