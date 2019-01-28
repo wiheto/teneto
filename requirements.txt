@@ -12,3 +12,4 @@ statsmodels>=0.8.0
 m2r>=0.2.1
 sphinx-automodapi>=0.9
 networkx>=2.0
+python-louvain>=0.13

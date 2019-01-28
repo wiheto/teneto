@@ -1066,3 +1066,33 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     if asarray: 
         df = df.values
     return df
+
+
+def create_supraadjacency_matrix(tnet, intersliceweight=1):
+    """
+    Returns a supraadjacency matrix from a temporal network structure 
+
+    Parameters
+    --------
+    tnet : TemporalNetwork 
+        Temporal network (any network type)
+    intersliceweight : int
+        Weight that links the same node from adjacent time-points
+
+    Returns
+    --------
+    supranet : dataframe
+        Supraadjacency matrix 
+    """
+    newnetwork = tnet.network.copy()
+    newnetwork['i'] = (tnet.network['i']) + ((tnet.netshape[0]) * (tnet.network['t']))
+    newnetwork['j'] = (tnet.network['j']) + ((tnet.netshape[0]) * (tnet.network['t'])) 
+    if 'weight' not in newnetwork.columns: 
+        newnetwork['weight'] = 1
+    newnetwork.drop('t',axis=1,inplace=True)
+    timepointconns = pd.DataFrame()
+    timepointconns['i'] = np.arange(0,(tnet.N*tnet.T)-tnet.N)
+    timepointconns['j'] = np.arange(tnet.N,(tnet.N*tnet.T))
+    timepointconns['weight'] = intersliceweight
+    supranet = pd.concat([newnetwork,timepointconns]).reset_index(drop=True)
+    return supranet

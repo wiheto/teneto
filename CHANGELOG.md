@@ -14,6 +14,8 @@
 - Renamed teneto.derive.derive to teneto.timeseries.derive_temporalnetwork 
 - Renamed teneto.TenetoBIDS.derive to teneto.TenetoBIDS.derive_temporalnetwork
 - Rewritten participation coefficient. Fixed potential bug.
+- Added python-louvain dependency 
+- Added temporal network louvain clustering 
 
 Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility, fluctuability, sid, topological overlap, and participation coefficient with negative edges)
 

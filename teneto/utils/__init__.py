@@ -1,5 +1,5 @@
 """
-Import utility funcitons
+Many helper functions for Teneto
 """
 
 from .bidsutils import * 
