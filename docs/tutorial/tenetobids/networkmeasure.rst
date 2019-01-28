@@ -72,7 +72,7 @@ The green time series switchest which sin curve it follows. This illustrate some
 
 We can calculate the TVC data from this
 
-    >>> tnet.derive({'method': 'jackknife', 'postpro': 'standardize'})
+    >>> tnet.derive_temporalnetwork({'method': 'jackknife', 'postpro': 'standardize'})
 
 We can see the jackknife estimates for the relationship between the Green and Orange time series above. 
 

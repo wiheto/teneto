@@ -66,7 +66,7 @@ Whenever data is manipulated, it gets copied to a new derivatives directory call
 
     >>> bids_tags = {'sub': '001', 'task': 'a', 'run': 'alpha'}
     >>> tnet = teneto.TenetoBIDS(dataset_path, pipeline='fmriprep',  bids_tags=bids_tags, raw_data_exists=False)
-    >>> tnet.derive({'method': 'jackknife'})
+    >>> tnet.derive_temporalnetwork({'method': 'jackknife'})
     >>> tnet.pipeline
     teneto...
 

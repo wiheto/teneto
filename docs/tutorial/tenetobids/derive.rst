@@ -72,11 +72,11 @@ This contains 2 time-series which are 20 timepoints long. To see what we are wor
     plt.tight_layout()
     fig.show() 
 
-Let us say we want to apply the jackknife correlation method to this. To do this we just need to specify a dictionary of parameters which goes into teneto.derive.derive.
+Let us say we want to apply the jackknife correlation method to this. To do this we just need to specify a dictionary of parameters which goes into teneto.timeseries.derive_temporalnetwork.
 In the example below, we simply are saying we would to use the jackknife method and afterwards these estimates should be standerdized. 
 
     >>> derive_params = {'method': 'jackknife', 'postpro': 'standardize'}
-    >>> tnet.derive(derive_params, confound_corr_report=False)
+    >>> tnet.derive_temporalnetwork(derive_params, confound_corr_report=False)
     ...
 
 Setting *confound_corr_report* to true places a HTML showing histograms of each time-series each of the confounds so you can see how much the TVC is effected by them.

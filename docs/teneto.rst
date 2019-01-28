@@ -7,10 +7,9 @@ Documentation
     teneto.classes
     teneto.communitydetection
     teneto.derive
-    teneto.generatenetwork
-    teneto.misc
     teneto.networkmeasures
     teneto.plot
+    teneto.timeseries
     teneto.trajectory
     teneto.utils
 
