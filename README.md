@@ -10,7 +10,9 @@
 
 ## What is the package
 
-Package includes various tools for analyzing temporal network data. Temporal network measures, temporal network generation, derivation of time-varying/dynamic connectivity, plotting functions. Some extra focus is placed on neuroimaging data (e.g. compatible with BIDS - _NB: currently not compliant with latest release candidate of BIDS Derivatives_).
+Package includes various tools for analyzing temporal network data. Temporal network measures, temporal network generation, derivation of time-varying/dynamic connectivities, plotting functions. 
+
+Some extra focus is placed on neuroimaging data (e.g. compatible with BIDS - _NB: currently not compliant with latest release candidate of BIDS Derivatives_).
 
 ## Installation
 
@@ -25,10 +27,6 @@ to upgrade teneto:
 Requires: Python 3.5 or python 3.6. 
 
 Installing teneto via pip installs all python package requirements as well. 
-
-## Installation notes
-
-Version 0.3.5+: community detection has been temporarily removed until a better solution than using iGraph is found. iGraph has lead to multiple problems on non-linux systems. Community detection can still be imported (import teneto.communitydeteciton) but it has been removed from TenetoBIDS. If required in TenetoBIDS the code still exists but is commented uncomment ./teneto/classes/bids.py line 1060-1132 to get working again.  
 
 ## Documentation
 
