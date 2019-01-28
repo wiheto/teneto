@@ -34,5 +34,7 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1):
     supranet = create_supraadjacency_matrix(tnet, intersliceweight=intersliceweight)
     nxsupra = tnet_to_nx(supranet)
     com = community.best_partition(nxsupra, resolution=resolution)
-    communities = np.reshape(list(com.values()),[tnet.N,tnet.T])
+    communities = np.zeros(tnet.N*tnet.T)*-1
+    communities[np.array(list(com.keys()), dtype=int)] = list(com.values()) 
+    communities = np.reshape(communities,[tnet.N,tnet.T], order='F')
     return communities
