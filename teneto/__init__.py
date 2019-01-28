@@ -13,7 +13,7 @@ from . import generatenetwork
 from . import timeseries
 from . import misc
 from . import trajectory
-#from . import communitydetection
+from . import communitydetection
 from .classes import TenetoBIDS, TemporalNetwork
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering

@@ -8,7 +8,7 @@ from ..utils import create_supraadjacency_matrix
 
 
 def temporal_louvain(tnet, resolution=1, intersliceweight=1):
-    """
+    r"""
     Louvain clustering for a temporal network
 
     Parameters 

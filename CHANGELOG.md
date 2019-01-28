@@ -16,6 +16,7 @@
 - Rewritten participation coefficient. Fixed potential bug.
 - Added python-louvain dependency 
 - Added temporal network louvain clustering 
+- teneto.communitydetection imported when importing teneto
 
 Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility, fluctuability, sid, topological overlap, and participation coefficient with negative edges)
 
