@@ -1,7 +1,7 @@
-teneto.derive
+teneto.timeseries
 ==============================
 
-.. automodapi:: teneto.derive
+.. automodapi:: teneto.timeseries
     :functions-only:
     :undoc-members:
     :members:
