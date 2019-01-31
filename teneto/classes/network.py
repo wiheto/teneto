@@ -183,6 +183,8 @@ class TemporalNetwork:
         array : array 
             3D numpy array. 
         """
+        if len(array.shape) == 2:
+            array = np.array(array, ndmin=3).transpose([1,2,0])
         self._check_input(array, 'array')
         uvals = np.unique(array)
         if len(uvals) == 2 and 1 in uvals and 0 in uvals: 

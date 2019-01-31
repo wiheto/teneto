@@ -679,6 +679,7 @@ class TenetoBIDS:
         bad_files = []
         bs = 0
         foundconfound = []
+        foundreason = []
         for s, cfile in enumerate(confound_files):
             df = load_tabular_file(cfile)
             found_bad_subject = False
@@ -694,6 +695,7 @@ class TenetoBIDS:
                         found_bad_subject = True
                 if found_bad_subject: 
                     foundconfound.append(confound[i])
+                    foundreason.append(exclusion_criteria[i])
             if found_bad_subject:
                 bad_files.append(files[s])
                 bs += 1
@@ -701,9 +703,8 @@ class TenetoBIDS:
         for i, f in enumerate(bad_files): 
             sidecar = get_sidecar(f)
             sidecar['file_exclusion'] = {}
-            sidecar['exclusion_reason'] = confound[i]
-            sidecar['confound'] = confound
-            sidecar['threshold'] = exclusion_criteria
+            sidecar['confound'] = foundconfound[i]
+            sidecar['threshold'] = foundreason[i]
             for af in ['.tsv','.nii.gz']: 
                 f = f.split(af)[0] 
             f += '.json'
@@ -761,7 +762,7 @@ class TenetoBIDS:
                         ind = np.delete(ind,np.where(ind==0))
                     if df.index.max(): 
                         ind = np.delete(ind,np.where(ind==df.index.max()))             
-                data[:,ind] = np.nan
+                data[:,ind.astype(int)] = np.nan
             nanind = np.where(np.isnan(data[0,:]))[0]
             badpoints_n = len(nanind)
             # Bad file if the number of ratio bad points are greater than the tolerance. 
@@ -915,7 +916,7 @@ class TenetoBIDS:
                 self.set_bids_tags({'desc': tag.split('-')[1]})
             self.set_bids_suffix('roi')
             if removeconfounds: 
-                self.removeconfounds(clean_params=clean_params,transpose=True,njobs=njobs)
+                self.removeconfounds(clean_params=clean_params,transpose=None,njobs=njobs)
             
     def _run_make_parcellation(self,f,i,tag,parcellation,parc_name,parc_type,parc_params):
         fsave, _ = drop_bids_suffix(f)
@@ -1009,7 +1010,7 @@ class TenetoBIDS:
     #     np.save(save_dir + save_name,C)
 
 
-    def removeconfounds(self,confounds=None,clean_params=None,transpose=False,njobs=None,update_pipeline=True, overwrite=True, tag=None): 
+    def removeconfounds(self,confounds=None,clean_params=None,transpose=None,njobs=None,update_pipeline=True, overwrite=True, tag=None): 
         """ 
         Removes specified confounds using nilearn.signal.clean 
 
@@ -1052,12 +1053,7 @@ class TenetoBIDS:
             self.set_confounds(confounds)
         files = sorted(self.get_selected_files(quiet=1))
         confound_files = sorted(self.get_selected_files(quiet=1, pipeline='confound'))
-        if len(files) != len(confound_files):
-            print('WARNING: number of confound files does not equal number of selected files')
-        for n in range(len(files)):
-            if confound_files[n].split('_confounds')[0].split('func')[1] not in files[n]:
-                raise ValueError('Confound matching with data did not work.')
-
+        files, confound_files = confound_matching(files, confound_files)
         if not clean_params:
             clean_params = {}
 
@@ -1079,7 +1075,7 @@ class TenetoBIDS:
             roi = roi.transpose()
         elif len(df) == roi.shape[1] and len(df) != roi.shape[0]: 
             print('Input data appears to be node,time. Transposing.')
-            transpose = True 
+            roi = roi.transpose()
         warningtxt = ''
         if df.isnull().any().any():
             # Not sure what is the best way to deal with this.

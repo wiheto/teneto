@@ -17,6 +17,9 @@
 - Added python-louvain dependency 
 - Added temporal network louvain clustering 
 - teneto.communitydetection imported when importing teneto
+- allow 2d arrays to be imported into temporalnetwork object
+- fixed transpose bug in TenetoBIDS makeparcellation when removeconfounds=True
+- mintor general improvements to TenetoBIDS.removeconfounds
 
 Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility, fluctuability, sid, topological overlap, and participation coefficient with negative edges)
 
