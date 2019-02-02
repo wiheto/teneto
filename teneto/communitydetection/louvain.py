@@ -122,10 +122,11 @@ def make_temporal_consensus(com_membership):
 
     """
 
-    # So the question is whether this is applied perslice or not. 
     com_membership = np.array(com_membership)
     D = []
-    # loop over all timepoints 
+    # make first indicies be between 0 and 1. 
+    com_membership[:,0] = teneto.utils.clean_community_indexes(com_membership[:,0])
+    # loop over all timepoints, get jacccard distance in greedy manner for largest community to time period before
     for t in range(1, com_membership.shape[1]):
         ct, counts_t = np.unique(com_membership[:,t], return_counts=True)
         ct = ct[np.argsort(counts_t)[::-1]]
@@ -133,14 +134,14 @@ def make_temporal_consensus(com_membership):
         new_index = np.zeros(com_membership.shape[0])
         bestcom = []
         for n in ct:
-            d = []
             if len(c1back) > 0:
+                d = np.ones(int(c1back.max())+1)
                 for m in c1back: 
                     v1 = np.zeros(com_membership.shape[0])
                     v2 = np.zeros(com_membership.shape[0])
                     v1[com_membership[:,t] == n]  = 1                
                     v2[com_membership[:,t-1] == m] = 1
-                    d.append(jaccard(v1, v2))
+                    d[int(m)] = jaccard(v1, v2)
                 bestval = np.argmin(d)
             else: 
                 bestval = new_index.max() + 1
