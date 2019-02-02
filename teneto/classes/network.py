@@ -155,8 +155,6 @@ class TemporalNetwork:
             
     def _set_nettype(self):
         # Only run if not manually set and network values exist
-        print(len(self.network))
-        print(hasattr(self,'nettype'))
         if not hasattr(self,'nettype') and len(self.network) > 0:
             # Predefine
             nettype = 'xx'
