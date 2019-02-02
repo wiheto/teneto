@@ -1,7 +1,7 @@
 import community
 import pandas as pd
 import numpy as np
-
+import networkx as nx
 from ..utils import process_input
 from ..utils import tnet_to_nx
 from ..utils import create_supraadjacency_matrix
