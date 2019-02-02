@@ -3,9 +3,7 @@ import pandas as pd
 import numpy as np
 from scipy.spatial.distance import  jaccard
 import networkx as nx
-from ..utils import process_input
-from ..utils import tnet_to_nx
-from ..utils import create_supraadjacency_matrix
+from ..utils import process_input, create_supraadjacency_matrix, tnet_to_nx, clean_community_indexes
 from ..classes import TemporalNetwork
 
 def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativeedge='ignore', randomseed=None, consensus_threshold=0.75, temporal_concsensus=True):
@@ -125,7 +123,7 @@ def make_temporal_consensus(com_membership):
     com_membership = np.array(com_membership)
     D = []
     # make first indicies be between 0 and 1. 
-    com_membership[:,0] = teneto.utils.clean_community_indexes(com_membership[:,0])
+    com_membership[:,0] = clean_community_indexes(com_membership[:,0])
     # loop over all timepoints, get jacccard distance in greedy manner for largest community to time period before
     for t in range(1, com_membership.shape[1]):
         ct, counts_t = np.unique(com_membership[:,t], return_counts=True)
