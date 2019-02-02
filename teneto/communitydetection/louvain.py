@@ -1,13 +1,14 @@
 import community
 import pandas as pd
 import numpy as np
+from scipy.spatial.distance import  jaccard
 import networkx as nx
 from ..utils import process_input
 from ..utils import tnet_to_nx
 from ..utils import create_supraadjacency_matrix
 from ..classes import TemporalNetwork
 
-def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativeedge='ignore', randomseed=None, consensus_threshold=0.75):
+def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativeedge='ignore', randomseed=None, consensus_threshold=0.75, temporal_concsensus=True):
     r"""
     Louvain clustering for a temporal network
 
@@ -60,6 +61,8 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
             break
     # TODO Add temporal consensus (greedy jaccard)
     communities = comtmp[:, :, 0]
+    if temporal_concsensus == True: 
+        communities = make_temporal_consensus(communities)
     return communities
 
 
@@ -71,7 +74,7 @@ def make_consensus_matrix(com_membership,th=0.5):
     ----------
 
     com_membership : array
-        Shape should be node, iteration.
+        Shape should be node, time, iteration.
 
     th : float
         threshold to cancel noisey edges
@@ -97,3 +100,51 @@ def make_consensus_matrix(com_membership,th=0.5):
     D = create_supraadjacency_matrix(D, intersliceweight=0)
     Dnx = tnet_to_nx(D)
     return Dnx
+
+
+def make_temporal_consensus(com_membership):
+    r"""
+    Matches community labels accross time-points
+
+    Jaccard matching is in a greedy fashiong. Matching the largest community at t with the community at t-1.
+
+    Parameters
+    ----------
+
+    com_membership : array
+        Shape should be node, time.
+
+    Returns
+    -------
+
+    D : array
+        temporal consensus matrix using Jaccard distance
+
+    """
+
+    # So the question is whether this is applied perslice or not. 
+    com_membership = np.array(com_membership)
+    D = []
+    # loop over all timepoints 
+    for t in range(1, com_membership.shape[1]):
+        ct, counts_t = np.unique(com_membership[:,t], return_counts=True)
+        ct = ct[np.argsort(counts_t)[::-1]]
+        c1back = np.unique(com_membership[:,t-1])
+        new_index = np.zeros(com_membership.shape[0])
+        bestcom = []
+        for n in ct:
+            d = []
+            if len(c1back) > 0:
+                for m in c1back: 
+                    v1 = np.zeros(com_membership.shape[0])
+                    v2 = np.zeros(com_membership.shape[0])
+                    v1[com_membership[:,t] == n]  = 1                
+                    v2[com_membership[:,t-1] == m] = 1
+                    d.append(jaccard(v1, v2))
+                bestval = np.argmin(d)
+            else: 
+                bestval = new_index.max() + 1
+            new_index[com_membership[:,t] == n] = bestval
+            c1back = np.array(np.delete(c1back, np.where(c1back==bestval)))
+        com_membership[:,t] = new_index
+    return com_membership
