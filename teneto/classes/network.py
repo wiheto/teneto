@@ -15,7 +15,7 @@ class TemporalNetwork:
         T : int 
             number of time-points in network 
         nettype : str
-            description of network. Can be: bu, bd, wu, wd where the letters stand for binary, weighted, undirected and directed
+            description of network. Can be: bu, bd, wu, wd where the letters stand for binary, weighted, undirected and directed. Default is weighted undirected
         from_df : pandas df 
             input data frame with i,j,t,[weight] columns
         from_array : array 
@@ -155,6 +155,8 @@ class TemporalNetwork:
             
     def _set_nettype(self):
         # Only run if not manually set and network values exist
+        print(len(self.network))
+        print(hasattr(self,'nettype'))
         if not hasattr(self,'nettype') and len(self.network) > 0:
             # Predefine
             nettype = 'xx'
@@ -204,6 +206,8 @@ class TemporalNetwork:
         if self.nettype:
             if self.nettype[1] == 'u':
                 self._drop_duplicate_ij()
+        self.network['i'] = self.network['i'].astype(int)
+        self.network['j'] = self.network['j'].astype(int)
 
             
     def network_from_df(self, df):
