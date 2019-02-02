@@ -4,7 +4,7 @@ import numpy as np
 from ..utils import process_input
 from ..utils import tnet_to_nx
 from ..utils import create_supraadjacency_matrix
-
+from .. import TemporalNetwork
 
 def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativeedge='ignore', randomseed=None, consensus_threshold=0.75):
     r"""
@@ -92,7 +92,7 @@ def make_consensus_matrix(com_membership,th=0.5):
             D += list(zip(*[np.repeat(i,len(twhere)).tolist(),np.repeat(j,len(twhere)).tolist(),twhere.tolist(), con[twhere].tolist()]))
 
     D = pd.DataFrame(D, columns=['i', 'j', 't', 'weight'])
-    D = teneto.TemporalNetwork(from_df=D)
+    D = TemporalNetwork(from_df=D)
     D = create_supraadjacency_matrix(D, intersliceweight=0)
     Dnx = tnet_to_nx(D)
     return Dnx
