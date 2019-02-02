@@ -1,10 +1,11 @@
 import community
 import pandas as pd
 import numpy as np
+
 from ..utils import process_input
 from ..utils import tnet_to_nx
 from ..utils import create_supraadjacency_matrix
-from teneto import TemporalNetwork
+from ..classes import TemporalNetwork
 
 def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativeedge='ignore', randomseed=None, consensus_threshold=0.75):
     r"""
