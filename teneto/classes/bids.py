@@ -2,7 +2,7 @@ import itertools
 import teneto
 import os
 import re
-from bids.grabbids import BIDSLayout
+from bids import BIDSLayout
 import numpy as np
 import inspect
 import pandas as pd
