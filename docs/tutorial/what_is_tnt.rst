@@ -26,7 +26,7 @@ Thus, A is a NxN matrix.
 Different network types
 -----------------------
 
-THere are a few different versions of networks. Two key properties distinctions are:
+There are a few different versions of networks. Two key properties distinctions are:
 
 1. Are the connections *binary* or *weighted*. 
 2. Are the connections *undirected* or *directed*. 

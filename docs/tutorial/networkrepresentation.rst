@@ -106,7 +106,7 @@ Self edges get deleted unless the argument *diagonal=True* is passed. Above we c
 Exporting to a numpy array
 =========================
 
-You can export the network to a numpy array from the pandas datafram by calling to array:   
+You can export the network to a numpy array from the pandas dataframe by calling to array:   
 
   >>> np.random.seed(2019) # For reproduceability
   >>> G = np.random.beta(1, 1, [5,5,3]) # Creates 5 nodes and 3 time-points
@@ -128,7 +128,7 @@ Within the object there are multiple bits of information about the network. We, 
   'bu'
 
 There are 4 different nettypes: bu, wu, wd and bd where b is for binary, w is for weighted, u means undirected and d means directed. 
-Teneto tries to estimate the nettype, but specfing it is good practice (otherwise it can accidently get assumed as undirected). 
+Teneto tries to estimate the nettype, but specifying it is good practice (otherwise it can accidentally get assumed as undirected). 
 
 You can also get the size of the network by using: 
 
@@ -137,7 +137,7 @@ You can also get the size of the network by using:
 
 Which means there are 3 nodes and 5 time-points. 
 
-Certain metainformatoin is automatically used in the plotting tools. For example, you can add some meta information 
+Certain metainformation is automatically used in the plotting tools. For example, you can add some meta information 
 using the *nodelabels* (give names to the nodes), *timelabels* (give names to the time points), and *timeunit* arguments. 
 
   >>> import matplotlib.pyplot as plt
@@ -211,7 +211,7 @@ Or alternatively:
 Pandas dataframe
 -----------------
 
-Using a pandas dataframe the data can also be imported. Here the required columns are: i, j and t (the first two are nodes, the latter is timeindex). The column weight is also needed for weighted networks. 
+Using a pandas dataframe the data can also be imported. Here the required columns are: i, j and t (the first two are nodes, the latter is time index). The column weight is also needed for weighted networks. 
 
   >>> import pandas as pd 
   >>> df = pd.DataFrame(data={'i': [0,0,1,1], 'j': [1,2,2,2], 't': [0,0,0,1], 'weight': [0.5,0.75,0.25,1]})
@@ -228,7 +228,7 @@ Like with the other methods, the function *network_from_df* can also be called f
 List of edges
 -------------
 
-Alternativelt a list of lists can be given to *TemporalNetwork*, in such cases each sublist should follow the order [i,j,t,[weight]]. For example 
+Alternatively a list of lists can be given to *TemporalNetwork*, in such cases each sublist should follow the order [i,j,t,[weight]]. For example 
 
   >>> edgelist = [[0,1,0,0.5], [0,1,1,0.75]] 
   >>> tnet = TemporalNetwork(from_edgelist=edgelist)
@@ -293,4 +293,3 @@ To convert the opposite direction, type teneto.utils.contact2graphlet and check 
 
   G2 = teneto.utils.contact2graphlet(C)
   G==G2
-

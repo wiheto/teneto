@@ -12,12 +12,11 @@ Found a bug or want to add a feature? Feel free to contribute! Open up an issue 
 
 Suggestions of things that need to be added:
 
-- Community detection (redo without igraph).
 - Control theory.
 - Weighted shortest paths.
-- Matplotlib kwags in plot arguments. 
 - More network measures. 
-- More derive alternative.
+- More derive_temporalnetwork alternatives.
 - Null models.
 - Better documentation/tutorials
+- More plot alternatives 
 
