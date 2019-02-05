@@ -420,7 +420,8 @@ class TenetoBIDS:
             self.get_pipeline_alternatives(quiet)
         else:
             if tag == 'sub': 
-                tag_alternatives = [f.split('sub-')[1] for f in os.listdir(self.BIDS_dir + '/derivatives/' + self.pipeline)]
+                datapath = self.BIDS_dir + '/derivatives/' + self.pipeline + '/'
+                tag_alternatives = [f.split('sub-')[1] for f in os.listdir(datapath) if os.path.isdir(datapath + f)]
             elif tag == 'ses': 
                 tag_alternatives = []
                 for sub in self.bids_tags['sub']: 
@@ -1595,9 +1596,6 @@ class TenetoBIDS:
         tag : str or list
             any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids). 
 
-        timelocked : bool 
-            Load timelocked data if true.
-
         measure : str 
             retquired when datatype is temporalnetwork. A networkmeasure that should be loaded. 
 
@@ -1633,16 +1631,16 @@ class TenetoBIDS:
                             trialinfo_list.append(pd.DataFrame(filetags,index=[0]))
                     except pd.errors.EmptyDataError:
                         pass
-                # If group data and length of output is one, don't make it a list
-                if datatype == 'group' and len(data_list) == 1: 
-                    data_list = data_list[0]
-                if measure: 
-                    data_list = {measure: data_list}
-                setattr(self,datatype + '_data_', data_list)
-                if trialinfo_list:
-                    out_trialinfo = pd.concat(trialinfo_list)
-                    out_trialinfo.reset_index(inplace=True, drop=True)
-                    setattr(self,datatype + '_trialinfo_', out_trialinfo)
+        # If group data and length of output is one, don't make it a list
+        if datatype == 'group' and len(data_list) == 1: 
+            data_list = data_list[0]
+        if measure: 
+            data_list = {measure: data_list}
+        setattr(self,datatype + '_data_', data_list)
+        if trialinfo_list:
+            out_trialinfo = pd.concat(trialinfo_list)
+            out_trialinfo.reset_index(inplace=True, drop=True)
+            setattr(self,datatype + '_trialinfo_', out_trialinfo)
 
 
     # REMAKE BELOW BASED ON THE _events from BIDS 

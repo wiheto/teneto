@@ -1,5 +1,10 @@
 # Changelog
 
+## V0.4.2 
+
+- Fixed a bug in load data of TenetoBIDS when loading networkmeasures from multiple subjects (error was thrown).
+- 
+
 ## V0.4.1
 
 - More documentation 
