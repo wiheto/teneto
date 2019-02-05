@@ -101,23 +101,29 @@ def postpro_standardize(data, report=None):
 def postpro_pipeline(data, pipeline, report=None):
     """
 
-    :PARAMETERS:
+    PARAMETERS
+    -----------
 
-    :data: pearson correlation values in temporal matrix form (node,node,time)
-    :pipeline: list or string (if string, each steps seperated by + sign).
+    data : array 
+        pearson correlation values in temporal matrix form (node,node,time)
+    pipeline : list or str 
+        (if string, each steps seperated by + sign).
 
-        :options: 'fisher','boxcox','standardize'
+            :options: 'fisher','boxcox','standardize'
 
         Each of the above 3 can be specified. If fisher is used, it must be before boxcox.
         If standardize is used it must be after boxcox and fisher.
 
-    :report: default is empty. If non-empty, appended to report.
+    report : bool 
+        If true, appended to report.
 
-    :OUTPUT:
+    OUTPUT
+    -------
 
-    :prepro_data: postprocessed data
-    :postprocessing_info: dictionary of information about postprocessing
-     (e.g lambda parameters for boxcox)
+    postpro_data : array 
+        postprocessed data
+    postprocessing_info : dict 
+        Information about postprocessing
 
     """
 
@@ -136,5 +142,5 @@ def postpro_pipeline(data, pipeline, report=None):
     report['postprocess'] = []
     for postpro_step in pipeline:
         report['postprocess'].append(postpro_step)
-        prepro_data, report = postpro_functions[postpro_step](data, report)
-    return prepro_data, report
+        postpro_data, report = postpro_functions[postpro_step](data, report)
+    return postpro_data, report
