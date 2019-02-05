@@ -135,7 +135,7 @@ class TenetoBIDS:
         Parameters
         ----------
         params : dict.
-            See teneto.timeseries.derive_temporalnetwork for the structure of the param dictionary.
+            See teneto.timeseries.derive_temporalnetwork for the structure of the param dictionary. Assumes dimord is time,node (output of other TenetoBIDS funcitons)
 
         update_pipeline : bool
             If true, the object updates the selected files with those derived here.
@@ -216,6 +216,9 @@ class TenetoBIDS:
 
         if not os.path.exists(params['report_path']):
             os.makedirs(params['report_path'])
+
+        if 'dimord' not in params: 
+            params['dimord'] = 'time,node'
 
         dfc = teneto.timeseries.derive_temporalnetwork(data.values, params)
         dfc_net = TemporalNetwork(from_array=dfc, nettype='wu')
@@ -1000,6 +1003,7 @@ class TenetoBIDS:
                 time.sleep(2)
         data = load_tabular_file(f) 
         # Change this to other algorithms possible in future 
+        data = TemporalNetwork(from_df=data)
         C = teneto.communitydetection.temporal_louvain(data, **params)
         df = pd.DataFrame(C)
         df.to_csv(save_dir + save_name + '.tsv', sep='\t')
@@ -1215,7 +1219,7 @@ class TenetoBIDS:
             netmeasure = tvc.calc_networkmeasure(m,**measure_params[i])
             if isinstance(netmeasure, float): 
                 netmeasure = [netmeasure]
-            netmeasure = pd.DataFrame(data = {m: netmeasure},)
+            netmeasure = pd.DataFrame(data = netmeasure)
             netmeasure.to_csv(save_dir + save_name + '.tsv', sep='\t')
             sidecar = get_sidecar(f) 
             # need to remove measure_params[i]['communities'] when saving

@@ -72,11 +72,11 @@ class TemporalNetwork:
         if N is None: 
             self.N = 0 
         else: 
-            self.N = N
+            self.N = int(N)
         if T is None: 
             self.T = 0 
         else: 
-            self.T = T 
+            self.T = int(T) 
             
         if timetype: 
             if timetype not in ['discrete', 'continuous']:  
@@ -194,8 +194,8 @@ class TemporalNetwork:
             i,j,t = np.where(array != 0)
             w = array[array!=0]
             self.network = pd.DataFrame(data={'i': i, 'j': j, 't': t, 'weight': w}) 
-        self.N = array.shape[0]
-        self.T = array.shape[-1]
+        self.N = int(array.shape[0])
+        self.T = int(array.shape[-1])
         self._update_network()
     
     def _update_network(self):
@@ -281,11 +281,11 @@ class TemporalNetwork:
             if self.N > N: 
                 N = self.N 
             else: 
-                self.N = N 
+                self.N = int(N) 
             if self.T > T: 
                 T = self.T 
             else: 
-                self.T = T 
+                self.T = int(T) 
             
             self.netshape = (int(N),int(T))
 

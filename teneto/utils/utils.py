@@ -573,12 +573,13 @@ def process_input(netIn, allowedformats, outputformat='G'):
     Parameters
     ----------
 
-    netIn : array, dict, or class
+    netIn : array, dict, or TemporalNetwork
         Network (graphlet, contact or object)
     allowedformats : str
         Which format of network objects that are allowed. Options: 'C', 'TN', 'G'.
     outputformat: str, default=G
         Target output format. Options: 'C' or 'G'.
+
 
     Returns
     -------
@@ -624,6 +625,10 @@ def process_input(netIn, allowedformats, outputformat='G'):
         pass
     else:
         raise ValueError('Input invalid.')
+    if outputformat == 'TN' and not isinstance(TN.network, str): 
+        TN.network['i'] = TN.network['i'].astype(int)
+        TN.network['j'] = TN.network['j'].astype(int)
+        TN.network['t'] = TN.network['t'].astype(int)
     if outputformat == 'C' or outputformat == 'G': 
         netInfo['inputtype'] = inputtype
     if inputtype != 'C' and outputformat == 'C':

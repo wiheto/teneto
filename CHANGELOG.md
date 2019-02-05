@@ -4,6 +4,11 @@
 
 - Fixed a bug in load data of TenetoBIDS when loading networkmeasures from multiple subjects (error was thrown).
 - Document updates in teneto.timeseries
+- Fixed a bug in TenetoBIDS confound loading where index_col was first confound. 
+- Making dimord consistency throughout TenetoBIDS (time,node) -> this may change. 
+- Make ijt to be int in process_input from TemporalNetwork (assumes all timestamps are discrete and these are accounted for with metadata (sampling rate and timestart))
+- Fixed bug in TenetoBIDS's temporal community detection where dataframe was passed instead of TemporalNetwork
+- TemporalNetwork.N and TemporalNetwork.T forced to be integers. 
 
 ## V0.4.1
 
