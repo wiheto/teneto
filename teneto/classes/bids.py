@@ -682,7 +682,7 @@ class TenetoBIDS:
         foundconfound = []
         foundreason = []
         for s, cfile in enumerate(confound_files):
-            df = load_tabular_file(cfile)
+            df = load_tabular_file(cfile, index_col=None)
             found_bad_subject = False
             for i in range(len(confound)):
                 if confound_stat[i] == 'median':
@@ -751,7 +751,7 @@ class TenetoBIDS:
         bad_files = []
         for i, cfile in enumerate(confound_files):
             data = load_tabular_file(files[i]).values
-            df = load_tabular_file(cfile)
+            df = load_tabular_file(cfile, index_col=None)
             ind = []
             # Is set to 1 if subject should be saved ("goodsubject")
             gs=1
@@ -999,8 +999,6 @@ class TenetoBIDS:
                 #Wait 2 seconds so that the error does not try and save something in the directory before it is created
                 time.sleep(2)
         data = load_tabular_file(f) 
-        # Only put positive edges into clustering (more advanced methods can be added here later )
-        data[data<0] = 0
         # Change this to other algorithms possible in future 
         C = teneto.communitydetection.temporal_louvain(data, **params)
         df = pd.DataFrame(C)
@@ -1077,7 +1075,7 @@ class TenetoBIDS:
             self.set_bids_tags({'desc': tag.split('-')[1]})
 
     def _run_removeconfounds(self,file_path,confound_path,clean_params,transpose, overwrite, tag): 
-        df = load_tabular_file(confound_path)
+        df = load_tabular_file(confound_path, index_col=None)
         df = df[self.confounds]
         roi = load_tabular_file(file_path).values
         if transpose: 
@@ -1193,7 +1191,6 @@ class TenetoBIDS:
 
     def _run_networkmeasures(self,f,tag,measure,measure_params):
         # Load file
-        print(f)
         tvc = load_tabular_file(f)
         # Make a tenetoobject
         tvc = teneto.TemporalNetwork(from_df=tvc)

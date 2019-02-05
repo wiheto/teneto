@@ -3,7 +3,7 @@
 ## V0.4.2 
 
 - Fixed a bug in load data of TenetoBIDS when loading networkmeasures from multiple subjects (error was thrown).
-- 
+- Document updates in teneto.timeseries
 
 ## V0.4.1
 
