@@ -12,12 +12,14 @@ def test_tnet_derive():
     tnet.load_data('parcellation')
     tnet.set_confound_pipeline('fmriprep')
     # Turn the confound_corr_report to True once matplotlib works withconcurrent
-    tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time'}, update_pipeline=True, confound_corr_report=False)
+    tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time'},
+                                update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     parcdata = tnet.parcellation_data_[0]
     parcdata.drop('0', axis=1, inplace=True)
-    R_jc = parcdata.transpose().corr().values[0,1] * -1
-    jc = float(tnet.tvc_data_[0][(tnet.tvc_data_[0]['i'] == 0) & (tnet.tvc_data_[0]['j'] == 1) & (tnet.tvc_data_[0]['t'] == 0)]['weight'])
+    R_jc = parcdata.transpose().corr().values[0, 1] * -1
+    jc = float(tnet.tvc_data_[0][(tnet.tvc_data_[0]['i'] == 0) & (
+        tnet.tvc_data_[0]['j'] == 1) & (tnet.tvc_data_[0]['t'] == 0)]['weight'])
     assert np.round(R_jc, 12) == np.round(jc, 12)
 
 
@@ -32,28 +34,28 @@ def test_make_fc_and_tvc():
     assert len(fc_files) == 1
     R = tnet.parcellation_data_[0].transpose().corr().values[0, 1]
     tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time',
-                 'postpro': 'standardize'}, update_pipeline=True, confound_corr_report=False)
+                                 'postpro': 'standardize'}, update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     JC = tnet.tvc_data_[0].iloc[0].values[-1]
     # Load parc data, make FC JC method with FC dual weighting
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
     tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time', 'weight-mean': 'from-subject-fc',
-                 'weight-var': 'from-subject-fc'}, update_pipeline=True, confound_corr_report=False)
+                                 'weight-var': 'from-subject-fc'}, update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     JCw = tnet.tvc_data_[0].iloc[0].values[-1]
     # Load parc data, make FC JC method with FC mean weighting
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
     tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time',
-                 'weight-mean': 'from-subject-fc'}, update_pipeline=True, confound_corr_report=False)
+                                 'weight-mean': 'from-subject-fc'}, update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     JCm = tnet.tvc_data_[0].iloc[0].values[-1]
     # Load parc data, make FC JC method with FC variance weighting
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
     tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time',
-                 'weight-var': 'from-subject-fc'}, update_pipeline=True, confound_corr_report=False)
+                                 'weight-var': 'from-subject-fc'}, update_pipeline=True, confound_corr_report=False)
     tnet.load_data('tvc')
     JCv = tnet.tvc_data_[0].iloc[0].values[-1]
     assert np.round(JCw, 15) == np.round((JC*r)+R, 15)
@@ -84,9 +86,9 @@ def test_networkmeasure():
     bids_path = teneto.__path__[0] + '/data/testdata/dummybids/'
     pipeline = 'teneto_' + teneto.__version__
     tags = {'sub': '001', 'task': 'a', 'run': 'alpha'}
-    tnet = teneto.TenetoBIDS(bids_path, pipeline=pipeline, pipeline_subdir='tvc', 
-                            bids_suffix='tvcconn', bids_tags=tags, 
-                            raw_data_exists=False)
+    tnet = teneto.TenetoBIDS(bids_path, pipeline=pipeline, pipeline_subdir='tvc',
+                             bids_suffix='tvcconn', bids_tags=tags,
+                             raw_data_exists=False)
     tnet.networkmeasures('volatility', {'calc': 'time'}, tag='time')
     tnet.load_data('temporalnetwork', measure='volatility', tag='time')
     assert tnet.temporalnetwork_data_['volatility'][0].shape == (19, 1)
@@ -120,8 +122,8 @@ def test_tnet_derive_with_removeconfounds():
     # Remove confounds
     tnet.removeconfounds(transpose=True)
     f = tnet.get_selected_files()[0]
-    f = f.replace('.tsv','.json')
-    with open(f) as fs:  
+    f = f.replace('.tsv', '.json')
+    with open(f) as fs:
         sidecar = json.load(fs)
     assert 'confoundremoval' in sidecar
     # Removing below tests due to errors caused by concurrent images.
@@ -135,7 +137,6 @@ def test_tnet_scrubbing():
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
     # Set the confound pipeline in fmriprep
     tnet.set_confound_pipeline('fmriprep')
-    alt = tnet.get_confound_alternatives()
     tnet.set_exclusion_timepoint('confound1', '>1', replace_with='nan')
     tnet.load_data('parcellation')
     dat = np.where(np.isnan(np.squeeze(tnet.parcellation_data_[0].values)))
@@ -150,11 +151,9 @@ def test_tnet_scrubbing_and_spline():
     tnet.load_data('parcellation')
     dat_orig = np.squeeze(tnet.parcellation_data_[0].values)
     tnet.set_confound_pipeline('fmriprep')
-    alt = tnet.get_confound_alternatives()
     tnet.set_exclusion_timepoint('confound1', '>1', replace_with='cubicspline')
     tnet.load_data('parcellation')
-    dat_scrub = tnet.parcellation_data_[0].values 
-    targ = np.array([[0, 0, 1, 1], [4, 5, 4, 5]])
+    dat_scrub = tnet.parcellation_data_[0].values
     # Make sure there is a difference
     assert np.sum(dat_scrub != dat_orig)
     # Show that the difference between the original data at scrubbed time point is larger in data_orig
@@ -163,13 +162,11 @@ def test_tnet_scrubbing_and_spline():
     # Future tests: test that the cubic spline is correct
 
 
-
 def test_tnet_set_bad_files():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
     # Set the confound pipeline in fmriprep
     tnet.load_data('parcellation')
-    dat_orig = tnet.parcellation_data_[0].values
     tnet.set_confound_pipeline('fmriprep')
     tnet.set_exclusion_file('confound2', '>0.5')
     assert len(tnet.bad_files) == 1
@@ -177,41 +174,46 @@ def test_tnet_set_bad_files():
         '/sub-001/func/' + tnet.pipeline_subdir + \
         '/sub-001_task-a_run-alpha_roi.tsv'
 
+
 def test_tnet_make_parcellation():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                            bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
+                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
     # Set the confound pipeline in fmriprep
     tnet.make_parcellation('gordon2014_333+sub-maxprob-thr25-1mm')
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                            bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
+                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
     tnet.make_parcellation('gordon2014_333')
     tnet.load_data('parcellation')
     # Hard coded facts about dummy data
-    assert tnet.parcellation_data_[0].shape == (2,333)
+    assert tnet.parcellation_data_[0].shape == (2, 333)
+
 
 def test_tnet_checksidecar():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                            bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
+                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
     tnet.make_parcellation('gordon2014_333')
     tnet.load_data('parcellation')
     tnet.set_confound_pipeline('fmriprep')
     tnet.set_exclusion_timepoint('confound1', '<=0', replace_with='nan')
-    with open(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/parcellation/sub-001_task-a_run-alpha_roi.json') as fs:  
+    with open(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/parcellation/sub-001_task-a_run-alpha_roi.json') as fs:
         sidecar = json.load(fs)
     # Check both steps are in sidecar
     assert 'parcellation' in sidecar.keys()
     assert 'scrubbed_timepoints' in sidecar.keys()
 
+
 def test_tnet_io():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                            bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
-    tnet.save_aspickle(teneto.__path__[0] + '/data/testdata/dummybids/teneosave.pkl')
-    tnet2 = teneto.TenetoBIDS.load_frompickle(teneto.__path__[0] + '/data/testdata/dummybids/teneosave.pkl')
-    assert tnet2.get_selected_files()==tnet.get_selected_files()
+                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
+    tnet.save_aspickle(teneto.__path__[0] +
+                       '/data/testdata/dummybids/teneosave.pkl')
+    tnet2 = teneto.TenetoBIDS.load_frompickle(
+        teneto.__path__[0] + '/data/testdata/dummybids/teneosave.pkl')
+    assert tnet2.get_selected_files() == tnet.get_selected_files()
 
-    
+
 def test_tnet_scrubbing_and_exclusion_options():
-    # <= 
+    # <=
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
     tnet.set_confound_pipeline('fmriprep')
@@ -238,4 +240,3 @@ def test_tnet_scrubbing_and_exclusion_options():
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': 'alpha'}, raw_data_exists=False)
     tnet.set_confound_pipeline('fmriprep')
     tnet.set_exclusion_file('confound2', '>=1')
-

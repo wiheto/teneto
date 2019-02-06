@@ -26,6 +26,6 @@ def test_gen_randbinomial():
     assert G[:, :, -1].max() == 0
     G = teneto.generatenetwork.rand_binomial([3, 1], [1], initialize=3)
     assert G[:, :, 0].max() == 1
-    G = teneto.generatenetwork.rand_binomial([3, 1], (1,1), initialize=0.6666, randomseed=1)
+    G = teneto.generatenetwork.rand_binomial(
+        [3, 1], (1, 1), initialize=0.6666, randomseed=1)
     assert G[:, :, 0].sum() == 4
-

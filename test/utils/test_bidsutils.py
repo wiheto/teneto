@@ -1,6 +1,7 @@
 import teneto
 import matplotlib.pyplot as plt
 
+
 def test_suffixstripping():
     fname = 'sub-01_run-02_preproc_mean.npy.gz'
     fname_base, file_format = teneto.utils.drop_bids_suffix(fname)
