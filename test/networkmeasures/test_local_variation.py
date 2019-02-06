@@ -19,5 +19,5 @@ def test_bursty():
     assert B1[1, 2] == B2[1, 2]
     assert B1[0, 1] == 0
     assert np.isnan(B1[2, 1]) == 1
-    # Just known 
+    # Just known
     assert B1[1, 2] == 1.2874874780866514

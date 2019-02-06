@@ -19,4 +19,6 @@ Suggestions of things that need to be added:
 - Null models.
 - Better documentation/tutorials
 - More plot alternatives 
-
+- Complete HDF5 compatibility 
+- Freesurfer output in TenetoBIDS
+- Implement continous time possible all networkmeasures (where possible)
