@@ -2,7 +2,6 @@
 
 import teneto.utils as utils
 import numpy as np
-import warnings
 from .temporal_degree_centrality import temporal_degree_centrality
 
 

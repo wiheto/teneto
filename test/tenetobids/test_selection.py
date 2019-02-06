@@ -1,5 +1,4 @@
 import teneto
-import pytest
 
 def test_define():
     dataset_path = teneto.__path__[0] + '/data/testdata/dummybids/'

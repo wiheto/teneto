@@ -1,6 +1,5 @@
 import teneto
 import numpy as np
-import os
 from PyQt5 import QtCore
 import json
 QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_X11InitThreads, True)
@@ -172,7 +171,6 @@ def test_tnet_set_bad_files():
     tnet.load_data('parcellation')
     dat_orig = tnet.parcellation_data_[0].values
     tnet.set_confound_pipeline('fmriprep')
-    alt = tnet.get_confound_alternatives()
     tnet.set_exclusion_file('confound2', '>0.5')
     assert len(tnet.bad_files) == 1
     assert tnet.bad_files[0] == tnet.BIDS_dir + 'derivatives/' + tnet.pipeline + \

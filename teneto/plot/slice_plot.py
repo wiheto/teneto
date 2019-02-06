@@ -1,5 +1,4 @@
 # Main function to draw a slice_graph
-import matplotlib.pyplot as plt
 import numpy as np
 from ..utils import *
 
@@ -97,7 +96,6 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
     '''
     # Get input type (C or G)
     inputType = checkInput(netin)
-    nettype = 'xx'
     # Convert C representation to G
 
     if inputType == 'G':
@@ -131,7 +129,6 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
 
     timeNum = len(timelabels)
     nodeNum = len(nodelabels)
-    pos = []
     posy = np.tile(list(range(0, nodeNum)), timeNum)
     posx = np.repeat(list(range(0, timeNum)), nodeNum)
 

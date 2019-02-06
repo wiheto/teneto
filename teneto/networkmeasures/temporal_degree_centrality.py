@@ -4,7 +4,7 @@ Network mesures: temporal degree centrality
 
 import numpy as np
 import warnings
-from ..utils import process_input, set_diagonal
+from ..utils import process_input
 
 
 def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay=0, ignorediagonal=True):

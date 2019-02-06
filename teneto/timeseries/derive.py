@@ -7,8 +7,6 @@ derive: different methods to derive dynamic functional connectivity
 
 import numpy as np
 from statsmodels.stats.weightstats import DescrStatsW
-import teneto
-import scipy.stats as sps
 from ..utils import set_diagonal, getDistanceFunction
 from .postprocess import postpro_pipeline
 from .report import gen_report

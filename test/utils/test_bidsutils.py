@@ -1,8 +1,5 @@
 import teneto
-import numpy as np
 import matplotlib.pyplot as plt
-import pytest
-
 
 def test_suffixstripping():
     fname = 'sub-01_run-02_preproc_mean.npy.gz'

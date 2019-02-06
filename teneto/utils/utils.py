@@ -401,8 +401,8 @@ def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
 
-    axis : str 
-        Threshold over specfied axis. Valid for percent and rdp. Can be time or graphlet. 
+    axis : str
+        Threshold over specfied axis. Valid for percent and rdp. Can be time or graphlet.
 
     Returns
     -------
@@ -461,7 +461,7 @@ def gen_nettype(G, printWarning=0):
     Returns
     -------
     nettype : str
-        \'wu\', \'bu\', \'wd\', or \'bd\' 
+        \'wu\', \'bu\', \'wd\', or \'bd\'
     """
 
     if set(np.unique(G)) == set([0, 1]):
@@ -601,7 +601,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
 
     OR
 
-    tnet : object 
+    tnet : object
         object of TemporalNetwork class
 
     """
@@ -723,17 +723,17 @@ def df_to_array(df, netshape, nettype):
     """
     Returns a numpy array (snapshot representation) from thedataframe contact list
 
-    Parameters: 
-        df : pandas df 
+    Parameters:
+        df : pandas df
             pandas df with columns, i,j,t.
-        netshape : tuple 
+        netshape : tuple
             network shape, format: (node, time)
         nettype : str
             'wu', 'wd', 'bu', 'bd'
 
-    Returns: 
+    Returns:
     --------
-        G : array 
+        G : array
             (node,node,time) array for the network
     """
     if len(df) > 0:
@@ -970,23 +970,23 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         TemporalNetwork object or pandas dataframe edgelist
     i : list or int
         get nodes in column i (source nodes in directed networks)
-    j : list or int 
+    j : list or int
         get nodes in column j (target nodes in directed networks)
-    t : list or int 
-        get edges at this time-points. 
-    ij : list or int 
+    t : list or int
+        get edges at this time-points.
+    ij : list or int
         get nodes for column i or j (logic and can still persist for t). Cannot be specified along with i or j
     logic : str
         options: \'and\' or \'or\'. If \'and\', functions returns rows that corrspond that match all i,j,t arguments. If \'or\', only has to match one of them
-    copy : bool 
-        default False. If True, returns a copy of the dataframe. Note relevant if hd5 data. 
-    asarray : bool 
-        default False. If True, returns the list of edges as an array. 
+    copy : bool
+        default False. If True, returns a copy of the dataframe. Note relevant if hd5 data.
+    asarray : bool
+        default False. If True, returns the list of edges as an array.
 
     Returns
     -------
     df : pandas dataframe
-        Unless asarray are set to true. 
+        Unless asarray are set to true.
     """
     if isinstance(tnet, pd.DataFrame):
         network = tnet
@@ -1082,11 +1082,11 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
 
 def create_supraadjacency_matrix(tnet, intersliceweight=1):
     """
-    Returns a supraadjacency matrix from a temporal network structure 
+    Returns a supraadjacency matrix from a temporal network structure
 
     Parameters
     --------
-    tnet : TemporalNetwork 
+    tnet : TemporalNetwork
         Temporal network (any network type)
     intersliceweight : int
         Weight that links the same node from adjacent time-points
@@ -1094,7 +1094,7 @@ def create_supraadjacency_matrix(tnet, intersliceweight=1):
     Returns
     --------
     supranet : dataframe
-        Supraadjacency matrix 
+        Supraadjacency matrix
     """
     newnetwork = tnet.network.copy()
     newnetwork['i'] = (tnet.network['i']) + \
