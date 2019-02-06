@@ -14,20 +14,30 @@ def test_bursty():
     ict = teneto.networkmeasures.intercontacttimes(G)
     G += G.transpose([1, 0, 2])
     ict2 = teneto.networkmeasures.intercontacttimes(G)
-    assert all(np.diff(t1) == ict['intercontacttimes'][0, 1])
-    assert all(np.diff(t1) == ict2['intercontacttimes'][0, 1])
-    assert all(np.diff(t2) == ict['intercontacttimes'][1, 2])
-    assert all(np.diff(t2) == ict2['intercontacttimes'][1, 2])
+    if not all(np.diff(t1) == ict['intercontacttimes'][0, 1]):
+        raise AssertionError()
+    if not all(np.diff(t1) == ict2['intercontacttimes'][0, 1]):
+        raise AssertionError()
+    if not all(np.diff(t2) == ict['intercontacttimes'][1, 2]):
+        raise AssertionError()
+    if not all(np.diff(t2) == ict2['intercontacttimes'][1, 2]):
+        raise AssertionError()
     B1 = teneto.networkmeasures.bursty_coeff(ict)
     B2 = teneto.networkmeasures.bursty_coeff(G)
     B3 = teneto.networkmeasures.bursty_coeff(ict, nodes=[0, 1])
-    assert B1[0, 1] == B2[0, 1]
-    assert B1[1, 2] == B2[1, 2]
-    assert B1[0, 1] == -1
-    assert B1[0, 1] == B3[0, 1]
-    assert np.isnan(B3[1, 2]) == 1
-    assert B1[1, 2] == (np.std(np.diff(t2))-np.mean(np.diff(t2))) / \
-        (np.mean(np.diff(t2))+np.std(np.diff(t2)))
+    if not B1[0, 1] == B2[0, 1]:
+        raise AssertionError()
+    if not B1[1, 2] == B2[1, 2]:
+        raise AssertionError()
+    if not B1[0, 1] == -1:
+        raise AssertionError()
+    if not B1[0, 1] == B3[0, 1]:
+        raise AssertionError()
+    if not np.isnan(B3[1, 2]) == 1:
+        raise AssertionError()
+    if not B1[1, 2] == (np.std(np.diff(t2))-np.mean(np.diff(t2))) / \
+        (np.mean(np.diff(t2))+np.std(np.diff(t2))):
+        raise AssertionError()
 
     with pytest.raises(ValueError):
         teneto.networkmeasures.bursty_coeff(G, calc='communities')

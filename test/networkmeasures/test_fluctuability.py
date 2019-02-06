@@ -12,4 +12,5 @@ def test_fluct():
     G = G + G.transpose([1, 0, 2])
     fluct = teneto.networkmeasures.fluctuability(G)
     # Hardcorde answer
-    assert fluct == 3/5
+    if not fluct == 3/5:
+        raise AssertionError()

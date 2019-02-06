@@ -1,7 +1,6 @@
 
 import teneto
 import numpy as np
-import pytest
 
 
 def test_bursty():
@@ -15,9 +14,14 @@ def test_bursty():
     B1 = teneto.networkmeasures.local_variation(ict)
     B2 = teneto.networkmeasures.local_variation(G)
 
-    assert B1[0, 1] == B2[0, 1]
-    assert B1[1, 2] == B2[1, 2]
-    assert B1[0, 1] == 0
-    assert np.isnan(B1[2, 1]) == 1
+    if not B1[0, 1] == B2[0, 1]:
+        raise AssertionError()
+    if not B1[1, 2] == B2[1, 2]:
+        raise AssertionError()
+    if not B1[0, 1] == 0:
+        raise AssertionError()
+    if not np.isnan(B1[2, 1]) == 1:
+        raise AssertionError()
     # Just known
-    assert B1[1, 2] == 1.2874874780866514
+    if not B1[1, 2] == 1.2874874780866514:
+        raise AssertionError()

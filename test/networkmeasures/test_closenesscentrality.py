@@ -17,9 +17,11 @@ def test_closecoef():
     )+1, sp[['from', 'to']].max().max()+1, sp[['t_start']].max().max()+1]) * np.nan
     pathmat[sp['from'].values, sp['to'].values,
             sp['t_start'].values] = sp['temporal-distance']
-    assert np.all(close1 == close2)
-    assert np.all(np.nansum(1/np.nanmean(pathmat, axis=2), axis=1)
-                  * (1/(3-1)) == close1)
+    if not np.all(close1 == close2):
+        raise AssertionError()
+    if not np.all(np.nansum(1/np.nanmean(pathmat, axis=2), axis=1)
+                  * (1/(3-1)) == close1):
+        raise AssertionError()
     with pytest.raises(ValueError):
         teneto.networkmeasures.temporal_closeness_centrality(G, paths=sp)
     with pytest.raises(ValueError):
