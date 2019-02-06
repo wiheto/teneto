@@ -5,6 +5,7 @@ import numpy as np
 import warnings
 from .temporal_degree_centrality import temporal_degree_centrality
 
+
 def sid(tnet, communities, axis=0, calc='global', decay=0):
     r"""
 
@@ -26,10 +27,10 @@ def sid(tnet, communities, axis=0, calc='global', decay=0):
         and if 1, node j has Aijt summed over i and t.
 
     calc : str
-        'global' returns temporal degree centrality (a 1xnode vector) (default); 
-        
-        'community_pairs' returns a community x community x time matrix, which is the SID for each community pairing; 
-        
+        'global' returns temporal degree centrality (a 1xnode vector) (default);
+
+        'community_pairs' returns a community x community x time matrix, which is the SID for each community pairing;
+
         'community_avg' (returns a community x time matrix). Which is the normalized average of each community to all other communities.
 
     decay: int
@@ -45,29 +46,29 @@ def sid(tnet, communities, axis=0, calc='global', decay=0):
 
     Notes
     ------
-    SID tries to quantify if there is more segergation or intgration compared to other time-points. 
-    If SID > 0, then there is more segregation than usual. If SID < 0, then there is more integration than usual. 
+    SID tries to quantify if there is more segergation or intgration compared to other time-points.
+    If SID > 0, then there is more segregation than usual. If SID < 0, then there is more integration than usual.
 
-    There are three different variants of SID, one is a global measure (calc='global'), the second is a value per community (calc='community_avg'), 
-    the third is a value for each community-community pairing (calc='community_pairs'). 
+    There are three different variants of SID, one is a global measure (calc='global'), the second is a value per community (calc='community_avg'),
+    the third is a value for each community-community pairing (calc='community_pairs').
 
-    First we calculate the temporal strength for each edge. This is calculate by 
+    First we calculate the temporal strength for each edge. This is calculate by
 
     .. math:: S_{i,t} = \sum_j G_{i,j,t}
 
-    The pairwise SID, when the network is undirected, is calculated by 
+    The pairwise SID, when the network is undirected, is calculated by
 
-    .. math:: SID_{A,B,t} = ({2 \over {N_A (N_A - 1)}}) S_{A,t} - ({{1} \over {N_A * N_B}}) S_{A,B,t}) 
+    .. math:: SID_{A,B,t} = ({2 \over {N_A (N_A - 1)}}) S_{A,t} - ({{1} \over {N_A * N_B}}) S_{A,B,t})
 
-    Where :math:`S_{A,t}` is the average temporal strength at time-point t for community A. :math:`N_A` is the number of nodes in community A. 
+    Where :math:`S_{A,t}` is the average temporal strength at time-point t for community A. :math:`N_A` is the number of nodes in community A.
 
-    When calculating the SID for a community, it is calculated byL 
+    When calculating the SID for a community, it is calculated byL
 
     .. math:: SID_{A,t} = \sum_b^C({2 \over {N_A (N_A - 1)}}) S_{A,t} - ({{1} \over {N_A * N_b}}) S_{A,b,t})
 
-    Where C is the number of communities. 
+    Where C is the number of communities.
 
-    When calculating the SID globally, it is calculated byL 
+    When calculating the SID globally, it is calculated byL
 
     .. math:: SID_{t} = \sum_a^C\sum_b^C({2 \over {N_a (N_a - 1)}}) S_{A,t} - ({{1} \over {N_a * N_b}}) S_{a,b,t})
 
@@ -79,29 +80,33 @@ def sid(tnet, communities, axis=0, calc='global', decay=0):
     """
 
     tnet, netinfo = utils.process_input(tnet, ['C', 'G', 'TN'])
-    D = temporal_degree_centrality(tnet, calc='time', communities=communities, decay=decay)
+    D = temporal_degree_centrality(
+        tnet, calc='time', communities=communities, decay=decay)
 
     # Check network output (order of communitiesworks)
     network_ids = np.unique(communities)
-    communities_size = np.array([sum(communities==n) for n in network_ids])
+    communities_size = np.array([sum(communities == n) for n in network_ids])
 
-    sid = np.zeros([network_ids.max()+1,network_ids.max()+1,tnet.shape[-1]])
+    sid = np.zeros([network_ids.max()+1, network_ids.max()+1, tnet.shape[-1]])
     for n in network_ids:
         for m in network_ids:
             betweenmodulescaling = 1/(communities_size[n]*communities_size[m])
             if netinfo['nettype'][1] == 'd':
-                withinmodulescaling = 1/(communities_size[n]*communities_size[n])
+                withinmodulescaling = 1 / \
+                    (communities_size[n]*communities_size[n])
             elif netinfo['nettype'][1] == 'u':
-                withinmodulescaling = 2/(communities_size[n]*(communities_size[n]-1))
+                withinmodulescaling = 2 / \
+                    (communities_size[n]*(communities_size[n]-1))
                 if n == m:
                     betweenmodulescaling = withinmodulescaling
-            sid[n,m,:] = withinmodulescaling * D[n,n,:] - betweenmodulescaling * D[n,m,:]
-    # If nans emerge than there is no connection between networks at time point, so make these 0. 
+            sid[n, m, :] = withinmodulescaling * \
+                D[n, n, :] - betweenmodulescaling * D[n, m, :]
+    # If nans emerge than there is no connection between networks at time point, so make these 0.
     sid[np.isnan(sid)] = 0
 
     if calc == 'global':
-        return np.sum(np.sum(sid,axis=1),axis=0)
+        return np.sum(np.sum(sid, axis=1), axis=0)
     elif calc == 'communities_avg':
-        return np.sum(sid,axis=axis)
+        return np.sum(sid, axis=axis)
     else:
         return sid

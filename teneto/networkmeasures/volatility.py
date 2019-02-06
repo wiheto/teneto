@@ -1,10 +1,11 @@
 import numpy as np
 from ..utils import process_input, check_distance_funciton_input, getDistanceFunction
 
+
 def volatility(tnet, distance_func_name='default', calc='global', communities=None, event_displacement=None):
     r"""
-    Volatility of temporal networks. 
-    
+    Volatility of temporal networks.
+
     Volatility is the average distance between consecutive time points of graphlets (difference is caclualted either globally or per edge).
 
     Parameters
@@ -23,42 +24,42 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
         'node' - (i.e. returns the average per node output when calculating volatility per 'edge').
         'time' - returns volatility per time point
         'communities' - returns volatility per communitieswork id (see communities). Also is returned per time-point and this may be changed in the future (with additional options)
-        'event_displacement' - calculates the volatility from a specified point. Returns time-series.  
+        'event_displacement' - calculates the volatility from a specified point. Returns time-series.
 
     communities : array
         Array of indicies for community (eiter (node) or (node,time) dimensions).
 
-    event_displacement : int 
-        if calc = event_displacement specify the temporal index where all other time-points are calculated in relation too. 
+    event_displacement : int
+        if calc = event_displacement specify the temporal index where all other time-points are calculated in relation too.
 
     Notes
     -----
-    
-    Volatility calculates the difference between network snapshots. 
+
+    Volatility calculates the difference between network snapshots.
 
     .. math:: V_t = D(G_t,G_{t+1})
 
-    Where D is some distance function (e.g. Hamming distance for binary matrices). 
+    Where D is some distance function (e.g. Hamming distance for binary matrices).
 
-    V can be calculated for the entire network (global), but can also be calculated for individual edges, nodes or given a community vector. 
-    
+    V can be calculated for the entire network (global), but can also be calculated for individual edges, nodes or given a community vector.
+
     Index of communities are returned "as is" with a shape of [max(communities)+1,max(communities)+1]. So if the indexes used are [1,2,3,5], V.shape==(6,6). The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns). If this behaviour is unwanted, call clean_communitiesdexes first. This will probably change.
 
     Examples
     --------
 
-    Import everything needed. 
+    Import everything needed.
 
-    >>> import teneto 
-    >>> import numpy 
+    >>> import teneto
+    >>> import numpy
     >>> np.random.seed(1)
-    >>> tnet = teneto.TemporalNetwork(nettype='bu') 
-    
+    >>> tnet = teneto.TemporalNetwork(nettype='bu')
+
     Here we generate a binary network where edges have a 0.5 change of going "on", and once on a 0.2 change to go "off"
 
     >>> tnet.generatenetwork('rand_binomial', size=(3,10), prob=(0.5,0.2))
 
-    Calculate the volatility 
+    Calculate the volatility
 
     >>> tnet.calc_networkmeasure('volatility', distance_func_name='hamming')
     0.5555555555555556
@@ -67,7 +68,7 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
 
     >>> tnet.generatenetwork('rand_binomial', size=(3,10), prob=(0.5,1))
 
-    This will make a more volatile network 
+    This will make a more volatile network
 
     >>> tnet.calc_networkmeasure('volatility', distance_func_name='hamming')
     0.1111111111111111
@@ -80,25 +81,25 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
     >>> vol_time[0]
     0.3333333333333333
 
-    Or per node: 
+    Or per node:
 
     >>> vol_node = tnet.calc_networkmeasure('volatility', calc='node', distance_func_name='hamming')
     >>> vol_node
     array([0.07407407, 0.07407407, 0.07407407])
-    
-    Here we see the volatility for each node was the same. 
-    
-    It is also possible to pass a community vector and the function will return volatility both within and between each community. 
+
+    Here we see the volatility for each node was the same.
+
+    It is also possible to pass a community vector and the function will return volatility both within and between each community.
     So the following has two communities:
-    
+
     >>> vol_com = tnet.calc_networkmeasure('volatility', calc='communities', communities=[0,1,1], distance_func_name='hamming')
     >>> vol_com.shape
     (2, 2, 9)
     >>> vol_com[:,:,0]
     array([[nan, 0.5],
            [0.5, 0. ]])
-    
-    And we see that, at time-point 0, there is some volatility between community 0 and 1 but no volatility within community 1. The reason for nan appearing is due to there only being 1 node in community 0. 
+
+    And we see that, at time-point 0, there is some volatility between community 0 and 1 but no volatility within community 1. The reason for nan appearing is due to there only being 1 node in community 0.
 
 
     Output
@@ -138,13 +139,13 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
 
     if calc == 'global':
         vol = np.mean([distance_func(tnet[ind[0], ind[1], t], tnet[ind[0], ind[1], t + 1])
-            for t in range(0, tnet.shape[-1] - 1)])
+                       for t in range(0, tnet.shape[-1] - 1)])
     elif calc == 'time':
         vol = [distance_func(tnet[ind[0], ind[1], t], tnet[ind[0], ind[1], t + 1])
-            for t in range(0, tnet.shape[-1] - 1)]
+               for t in range(0, tnet.shape[-1] - 1)]
     elif calc == 'event_displacement':
         vol = [distance_func(tnet[ind[0], ind[1], event_displacement],
-            tnet[ind[0], ind[1], t]) for t in range(0, tnet.shape[-1])]
+                             tnet[ind[0], ind[1], t]) for t in range(0, tnet.shape[-1])]
     # This takes quite a bit of time to loop through. When calculating per edge/node.
     elif calc == 'edge' or calc == 'node':
         vol = np.zeros([tnet.shape[0], tnet.shape[1]])
@@ -159,14 +160,15 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
     elif calc == 'communities':
         net_id = set(communities)
         vol = np.zeros([max(net_id) + 1, max(net_id) +
-            1, netinfo['netshape'][-1] - 1])
+                        1, netinfo['netshape'][-1] - 1])
         for net1 in net_id:
             for net2 in net_id:
                 if net1 != net2:
                     vol[net1, net2, :] = [distance_func(tnet[communities == net1][:, communities == net2, t].flatten(),
-                        tnet[communities == net1][:, communities == net2, t + 1].flatten()) for t in range(0, tnet.shape[-1] - 1)]
+                                                        tnet[communities == net1][:, communities == net2, t + 1].flatten()) for t in range(0, tnet.shape[-1] - 1)]
                 else:
-                    nettmp = tnet[communities == net1][:, communities == net2, :]
+                    nettmp = tnet[communities ==
+                                  net1][:, communities == net2, :]
                     triu = np.triu_indices(nettmp.shape[0], k=1)
                     nettmp = nettmp[triu[0], triu[1], :]
                     vol[net1, net2, :] = [distance_func(nettmp[:, t].flatten(
@@ -176,11 +178,11 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
         withi = np.array([[ind[0][n], ind[1][n]] for n in range(
             0, len(ind[0])) if communities[ind[0][n]] == communities[ind[1][n]]])
         vol = [distance_func(tnet[withi[:, 0], withi[:, 1], t], tnet[withi[:, 0],
-            withi[:, 1], t + 1]) for t in range(0, tnet.shape[-1] - 1)]
+                                                                     withi[:, 1], t + 1]) for t in range(0, tnet.shape[-1] - 1)]
     elif calc == 'betweencommunities':
         beti = np.array([[ind[0][n], ind[1][n]] for n in range(
             0, len(ind[0])) if communities[ind[0][n]] != communities[ind[1][n]]])
         vol = [distance_func(tnet[beti[:, 0], beti[:, 1], t], tnet[beti[:, 0],
-            beti[:, 1], t + 1]) for t in range(0, tnet.shape[-1] - 1)]
+                                                                   beti[:, 1], t + 1]) for t in range(0, tnet.shape[-1] - 1)]
 
     return vol
