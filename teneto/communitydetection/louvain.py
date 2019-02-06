@@ -128,7 +128,6 @@ def make_temporal_consensus(com_membership):
     """
 
     com_membership = np.array(com_membership)
-    D = []
     # make first indicies be between 0 and 1.
     com_membership[:, 0] = clean_community_indexes(com_membership[:, 0])
     # loop over all timepoints, get jacccard distance in greedy manner for largest community to time period before
@@ -137,7 +136,6 @@ def make_temporal_consensus(com_membership):
         ct = ct[np.argsort(counts_t)[::-1]]
         c1back = np.unique(com_membership[:, t-1])
         new_index = np.zeros(com_membership.shape[0])
-        bestcom = []
         for n in ct:
             if len(c1back) > 0:
                 d = np.ones(int(c1back.max())+1)
