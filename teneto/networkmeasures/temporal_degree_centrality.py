@@ -17,24 +17,24 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
 
     net : array, dict
         Temporal network input (graphlet or contact). Can have nettype: 'bu', 'bd', 'wu', 'wd'
-    axis : int 
+    axis : int
         Dimension that is returned 0 or 1 (default 0).
         Note, only relevant for directed networks.
         i.e. if 0, node i has Aijt summed over j and t.
         and if 1, node j has Aijt summed over i and t.
     calc : str
-        Can be following alternatives: 
+        Can be following alternatives:
 
         'avg' : (returns temporal degree centrality (a 1xnode vector))
 
         'time' : (returns a node x time matrix),
 
-        'module_degree_zscore' : returns the Z-scored within community degree centrality 
+        'module_degree_zscore' : returns the Z-scored within community degree centrality
         (communities argument required). This is done for each time-point
         i.e. 'time' returns static degree centrality per time-point.
 
     ignorediagonal: bool
-        if true, diagonal is made to 0. 
+        if true, diagonal is made to 0.
     communities : array (Nx1)
         Vector of community assignment.
         If this is given and calc='time', then the strength within and between each communities is returned (technically not degree centrality).

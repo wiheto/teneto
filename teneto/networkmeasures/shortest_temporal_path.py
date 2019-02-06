@@ -19,11 +19,11 @@ def seqpath_to_path(pairseq, source):
         # Get all remaining possible paths in sequence
         iterset = set(np.where((pairrows == pairrows[node, 0]) | (
             pairrows == pairrows[node, 1]))[0]) - set(range(node+1))
-        for next in iterset:
-            if source in pairrows[next]:
-                yield list(reversed(pairrows[path + [next]].tolist()))
+        for nextset in iterset:
+            if source in pairrows[nextset]:
+                yield list(reversed(pairrows[path + [nextset]].tolist()))
             else:
-                queue.append((next, path + [next]))
+                queue.append((nextset, path + [nextset]))
 
 
 def shortest_path_from_pairseq(pairseq, source):

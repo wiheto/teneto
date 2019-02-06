@@ -15,7 +15,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
     communities : array
         community vector. Either 1D (node) community index or 2D (node,time).
     removeneg : bool (default false)
-        If true, all values < 0 are made to be 0. 
+        If true, all values < 0 are made to be 0.
 
 
     Returns
@@ -29,7 +29,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
 
     Static participatoin coefficient is:
 
-    .. math:: P_i = 1 - \sum_s^{N_M}({{k_{is}}\over{k_i}})^2 
+    .. math:: P_i = 1 - \sum_s^{N_M}({{k_{is}}\over{k_i}})^2
 
     Where s is the index of each community (:math:`N_M`). :math:`k_i` is total degree of node. And :math:`k_{is}` is degree of connections within community.[part-1]_
 
