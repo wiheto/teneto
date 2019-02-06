@@ -11,25 +11,25 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
     r"""
     Louvain clustering for a temporal network
 
-    Parameters 
+    Parameters
     -----------
     tnet : array, dict, TemporalNetwork
         Input network
-    resolution : int 
+    resolution : int
         resolution of Louvain clustering ($\gamma$)
     interslice : int
-        interslice weight of multilayer clustering ($\omega$). Must be positive. 
+        interslice weight of multilayer clustering ($\omega$). Must be positive.
     n_iter : int
         Number of iterations to run louvain for
-    randomseed : int 
-        Set for reproduceability 
+    randomseed : int
+        Set for reproduceability
     negativeedge : str
-        If there are negative edges, what should be done with them. 
-        Options: 'ignore' (i.e. set to 0). More options to be added. 
-    consensus : float 
-        When creating consensus matrix to average over number of iterations, keep values when the consensus is this amount. 
+        If there are negative edges, what should be done with them.
+        Options: 'ignore' (i.e. set to 0). More options to be added.
+    consensus : float
+        When creating consensus matrix to average over number of iterations, keep values when the consensus is this amount.
 
-    Returns 
+    Returns
     -------
     communities : array (node,time)
         node,time array of community assignment

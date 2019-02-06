@@ -32,15 +32,15 @@ def drop_bids_suffix(fname):
     fname : str
         BIDS filename with suffice. Directories should not be included.
 
-    Returns 
+    Returns
     -------
     fname_head : str
-        BIDS filename with 
+        BIDS filename with
     fileformat : str
         The file format (text after suffix)
 
-    Note 
-    ------ 
+    Note
+    ------
     This assumes that there are no periods in the filename
     """
     if '/' in fname:
@@ -83,18 +83,18 @@ def load_tabular_file(fname, return_meta=False, header=True, index_col=True):
     ----------
     fname : str
         file name and path. Must be tsv.
-    return_meta : 
+    return_meta :
 
     header : bool (default True)
-        if there is a header in the tsv file, true will use first row in file. 
+        if there is a header in the tsv file, true will use first row in file.
     index_col : bool (default None)
-        if there is an index column in the csv or tsv file, true will use first row in file. 
+        if there is an index column in the csv or tsv file, true will use first row in file.
 
-    Returns 
+    Returns
     -------
-    df : pandas  
+    df : pandas
         The loaded file
-    info : pandas, if return_meta=True 
+    info : pandas, if return_meta=True
         Meta infomration in json file (if specified)
     """
     if index_col:
@@ -118,7 +118,7 @@ def load_tabular_file(fname, return_meta=False, header=True, index_col=True):
 
 def get_sidecar(fname, allowedfileformats=['.nii.gz', '.tsv']):
     """
-    Loads sidecar or creates one 
+    Loads sidecar or creates one
     """
     for f in allowedfileformats:
         fname = fname.split(f)[0]
@@ -173,8 +173,8 @@ def process_exclusion_criteria(exclusion_criteria):
 
     Returns
     -------
-        relfun : list 
-            list of numpy functions for the exclusion criteria 
+        relfun : list
+            list of numpy functions for the exclusion criteria
         threshold : list
             list of floats for threshold for each relfun
 
