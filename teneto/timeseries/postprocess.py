@@ -93,8 +93,8 @@ def postpro_standardize(data, report=None):
     report['standardize'] = {}
     report['standardize']['performed'] = 'yes'
     report['standardize']['method'] = 'Z-score'
-    # The above makes self connections to nan, set to 1. 
-    data = set_diagonal(data,1)
+    # The above makes self connections to nan, set to 1.
+    data = set_diagonal(data, 1)
     return standardized_data, report
 
 
@@ -104,9 +104,9 @@ def postpro_pipeline(data, pipeline, report=None):
     PARAMETERS
     -----------
 
-    data : array 
+    data : array
         pearson correlation values in temporal matrix form (node,node,time)
-    pipeline : list or str 
+    pipeline : list or str
         (if string, each steps seperated by + sign).
 
             :options: 'fisher','boxcox','standardize'
@@ -114,15 +114,15 @@ def postpro_pipeline(data, pipeline, report=None):
         Each of the above 3 can be specified. If fisher is used, it must be before boxcox.
         If standardize is used it must be after boxcox and fisher.
 
-    report : bool 
+    report : bool
         If true, appended to report.
 
     OUTPUT
     -------
 
-    postpro_data : array 
+    postpro_data : array
         postprocessed data
-    postprocessing_info : dict 
+    postprocessing_info : dict
         Information about postprocessing
 
     """

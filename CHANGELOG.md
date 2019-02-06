@@ -1,31 +1,32 @@
 # Changelog
 
-## V0.4.2 
+## V0.4.2
 
 - Fixed a bug in load data of TenetoBIDS when loading networkmeasures from multiple subjects (error was thrown).
 - Document updates in teneto.timeseries
-- Fixed a bug in TenetoBIDS confound loading where index_col was first confound. 
-- Making dimord consistency throughout TenetoBIDS (time,node) -> this may change. 
+- Fixed a bug in TenetoBIDS confound loading where index_col was first confound.
+- Making dimord consistency throughout TenetoBIDS (time,node) -> this may change.
 - Make ijt to be int in process_input from TemporalNetwork (assumes all timestamps are discrete and these are accounted for with metadata (sampling rate and timestart))
 - Fixed bug in TenetoBIDS's temporal community detection where dataframe was passed instead of TemporalNetwork
-- TemporalNetwork.N and TemporalNetwork.T forced to be integers. 
+- TemporalNetwork.N and TemporalNetwork.T forced to be integers.
+- Improved code quality.
 
 ## V0.4.1
 
-- More documentation 
+- More documentation
 - Contributers page added in docs
 - temporal_part_coef renamed to temporal_participation_coeff
 - added: generatenetwork.rand_poisson
 - small fixes to tenetoBIDS
-- matplotlib kwargs added to slice_plot scatter and line parts 
-- added hdf5 possibility to TemporalNetwork 
-- Added utils.io for networkx export of a snapshot. 
-- Renamed teneto.derive package to teneto.timeseries 
-- Renamed teneto.derive.derive to teneto.timeseries.derive_temporalnetwork 
+- matplotlib kwargs added to slice_plot scatter and line parts
+- added hdf5 possibility to TemporalNetwork
+- Added utils.io for networkx export of a snapshot.
+- Renamed teneto.derive package to teneto.timeseries
+- Renamed teneto.derive.derive to teneto.timeseries.derive_temporalnetwork
 - Renamed teneto.TenetoBIDS.derive to teneto.TenetoBIDS.derive_temporalnetwork
 - Rewritten participation coefficient. Fixed potential bug.
-- Added python-louvain dependency 
-- Added temporal network louvain clustering 
+- Added python-louvain dependency
+- Added temporal network louvain clustering
 - teneto.communitydetection imported when importing teneto
 - allow 2d arrays to be imported into temporalnetwork object
 - fixed transpose bug in TenetoBIDS makeparcellation when removeconfounds=True
@@ -33,7 +34,7 @@
 
 Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility, fluctuability, sid, topological overlap, and participation coefficient with negative edges)
 
-## V0.4.0 
+## V0.4.0
 
 - Rewritten tenetobids to make more compatible with BIDS derivatives RC1 (note completely compatible yet).
 - Fixed relative import paths
@@ -47,14 +48,14 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 - Added randomseed to binomial.
 - Fixed layering of edges in circleplot
 - Fixed error in intercontacttimes where preset network was node,time not node,node
-- Rewritten intercontacttimes to be calculated through TemporalNetwork class' df-list instead of array. 
+- Rewritten intercontacttimes to be calculated through TemporalNetwork class' df-list instead of array.
 - Rewritten (partially) temporal_degree_centrality to be calculated through TemporalNetwork class' df-list instead of array. (communities still use array)
 - nLabs arugment changed to nodelabels
 - tLabs argument changed to timelabels
 - unit argument changed to timeunit
 - added cmap to circle_plot
 - rewritten shortest temporal paths. Now outputs pandas dataframe.
-- temporal_betweenness_centrality added. 
+- temporal_betweenness_centrality added.
 
 ## V0.3.5
 

@@ -7,8 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def gen_report(report, sdir='./', report_name = 'report.html'):
-
+def gen_report(report, sdir='./', report_name='report.html'):
     """
     Generates report of derivation and postprocess steps in teneto.derive
     """
@@ -78,7 +77,8 @@ def gen_report(report, sdir='./', report_name = 'report.html'):
                     report_html += "<img src='./boxcox_lambda.png' width=500>" + "<p>"
                     report_html += "Data located in " + sdir + "boxcox_lambda.csv <p>"
 
-                    np.savetxt(sdir + "boxcox_lambda.csv", lambda_val, delimiter=",")
+                    np.savetxt(sdir + "boxcox_lambda.csv",
+                               lambda_val, delimiter=",")
 
                 else:
 

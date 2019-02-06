@@ -5,54 +5,55 @@ from ..utils import contact2graphlet, checkInput
 
 plt.rcParams['axes.facecolor'] = 'white'
 
+
 def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth=2, bordercolor=[0, 0, 0], Fs=1, timeunit='', t0=1, sharpen='yes', vminmax='minmax'):
     r'''
     Returns matplotlib axis handle for graphlet_stack_plot. This is a row of transformed connectivity matrices to look like a 3D stack.
 
-    Parameters 
+    Parameters
     ----------
 
-    netin : array, dict 
+    netin : array, dict
         network input (graphlet or contact)
     ax : matplotlib ax handles.
-    q : int 
+    q : int
         Quality. Increaseing this will lead to smoother axis but take up more memory.
-    cmap : str 
+    cmap : str
         Colormap (matplotlib) of graphlets
-    Fs : int 
+    Fs : int
         Sampling rate. Same as contact-representation (if netin is contact, and input is unset, contact dictionary is used)
-    timeunit : str 
+    timeunit : str
         Unit of time for xlabel. Same as contact-representation (if netin is contact, and input is unset, contact dictionary is used)
-    t0 : int 
+    t0 : int
         What should the first time point be called. Should be integer. Default 1.
-    gridcolor : str 
+    gridcolor : str
         The color of the grid section of the graphlets. Set to 'none' if not wanted.
     borderwidth : int
         Scales the size of border. (at the moment it cannot be set to 0.)
-    bordorcolor :  
+    bordorcolor :
         color of the border (at the moment it must be in RGB values between 0 and 1 -> this will be changed sometime in the future)
     vminmax : str
          'maxabs', 'minmax' (default), or list/array with length of 2. Specifies the min and max colormap value of graphlets. Maxabs entails [-max(abs(G)),max(abs(G))], minmax entails [min(G), max(G)].
-    
+
     Returns
-    -------- 
+    --------
     ax : matplotlib ax handle
-    
+
     Note
     ------
     This function can require a lot of RAM with larger networks.
-    
+
     Note
     ------
     At the momenet bordercolor cannot be set to zero. To remove border, set bordorwidth=1 and bordercolor=[1,1,1] for temporay workaround.
 
     Examples
     -------
-    
+
     Create a network with some metadata
 
-    >>> import numpy as np 
-    >>> import teneto 
+    >>> import numpy as np
+    >>> import teneto
     >>> import matplotlib.pyplot as plt
     >>> np.random.seed(2017) # For reproduceability
     >>> N = 5 # Number of nodes
@@ -72,12 +73,12 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
 
     >>> fig,ax = plt.subplots(figsize=(10,3))
     >>> ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap='Greys')
-    >>> fig.show() 
+    >>> fig.show()
 
     .. plot::
 
-        import numpy as np 
-        import teneto 
+        import numpy as np
+        import teneto
         import matplotlib.pyplot as plt
         np.random.seed(2017) # For reproduceability
         N = 5 # Number of nodes
@@ -95,7 +96,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         fig,ax = plt.subplots(figsize=(10,3))
         cmap = 'Greys'
         ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap=cmap)
-        fig.show() 
+        fig.show()
 
     '''
 
@@ -138,7 +139,8 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
                                                (80 * q) + (qb * 2)) - ((netin.shape[-1] - 1) * q * 80) / 2), 4])
     for n in range(0, netin.shape[-1]):
         # Create graphlet
-        figtmp, axtmp = plt.subplots(1, facecolor='white', figsize=(q, q), dpi=80)
+        figtmp, axtmp = plt.subplots(
+            1, facecolor='white', figsize=(q, q), dpi=80)
         axtmp.pcolormesh(v, vr, netin[:, :, n], cmap=cmap, edgecolor=gridcolor,
                          linewidth=q * 2, vmin=vminmax[0], vmax=vminmax[1])
         axtmp.set_xticklabels('')
