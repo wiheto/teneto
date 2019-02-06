@@ -99,7 +99,6 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
     # Convert C representation to G
 
     if inputType == 'G':
-        cfg = {}
         netin = graphlet2contact(netin)
         inputType = 'C'
     edgeList = [tuple(np.array(e[0:2]) + e[2] * netin['netshape'][0])

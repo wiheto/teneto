@@ -1,5 +1,4 @@
 # Main function to draw a slice_graph
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 from .slice_plot import make_bezier

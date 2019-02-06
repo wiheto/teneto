@@ -3,7 +3,6 @@ Network mesures: temporal degree centrality
 """
 
 import numpy as np
-import warnings
 from ..utils import process_input
 
 
