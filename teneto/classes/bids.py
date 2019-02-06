@@ -10,7 +10,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import json
 import pickle
-import traceback
 import nilearn
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from scipy.interpolate import interp1d
@@ -138,15 +137,15 @@ class TenetoBIDS:
         njobs : int
             How many parallel jobs to run
 
-        confound_corr_report : bool 
-            If true, histograms and summary statistics of TVC and confounds are plotted in a report directory. 
+        confound_corr_report : bool
+            If true, histograms and summary statistics of TVC and confounds are plotted in a report directory.
 
-        tag : str 
+        tag : str
             any additional tag that will be placed in the saved file name. Will be placed as 'desc-[tag]'
 
-        Returns 
-        ------- 
-        dfc : files 
+        Returns
+        -------
+        dfc : files
             saved in .../derivatives/teneto/sub-xxx/tvc/..._tvc.npy
         """
         if not njobs:
@@ -330,10 +329,10 @@ class TenetoBIDS:
             If true, returns the group average connectivity matrix.
         njobs : int
             How many parallel jobs to run
-        file_idx : bool 
-            Default False, true if to ignore index column in loaded file. 
-        file_hdr : bool 
-            Default False, true if to ignore header row in loaded file. 
+        file_idx : bool
+            Default False, true if to ignore index column in loaded file.
+        file_hdr : bool
+            Default False, true if to ignore header row in loaded file.
 
         Returns
         -------
@@ -373,8 +372,8 @@ class TenetoBIDS:
         """
         Creates output directory and output name
 
-        Paramters 
-        ---------   
+        Paramters
+        ---------
         f : str
             input files, includes the file bids_suffix
         tag : str
@@ -384,13 +383,13 @@ class TenetoBIDS:
         suffix : str
             add new suffix to data
 
-        Returns 
+        Returns
         -------
-        save_name : str 
-            previous filename with new tag 
+        save_name : str
+            previous filename with new tag
         save_dir : str
-            directory where it will be saved 
-        base_dir : str 
+            directory where it will be saved
+        base_dir : str
             subjective base directory (i.e. derivatives/teneto/func[/anythingelse/])
 
         """
@@ -423,7 +422,7 @@ class TenetoBIDS:
 
     def get_tags(self, tag, quiet=1):
         """
-        Returns which tag alternatives can be identified in the BIDS derivatives structure. 
+        Returns which tag alternatives can be identified in the BIDS derivatives structure.
         """
         if not self.pipeline:
             print('Please set pipeline first.')
@@ -497,14 +496,14 @@ class TenetoBIDS:
         """
         Load derived communities\
 
-        Parameters 
-        ---------- 
-        community_type: str 
-            Either static or temporal 
+        Parameters
+        ----------
+        community_type: str
+            Either static or temporal
         tag : str or list
-            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids). 
+            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids).
 
-        Returns 
+        Returns
         -------
         loads TenetoBIDS.community_data_ and TenetoBIDS.community_info_
         """
@@ -564,12 +563,12 @@ class TenetoBIDS:
         """
         Parameters
         ----------
-        pipeline : string 
-            can be \'pipeline\' (main analysis pipeline, self in tnet.set_pipeline) or \'confound\' (where confound files are, set in tnet.set_confonud_pipeline()), 
+        pipeline : string
+            can be \'pipeline\' (main analysis pipeline, self in tnet.set_pipeline) or \'confound\' (where confound files are, set in tnet.set_confonud_pipeline()),
             \'functionalconnectivity\'
         quiet: int
             If 1, prints results. If 0, no results printed.
-        forfile : str or dict 
+        forfile : str or dict
             A filename or dictionary of file tags. If this is set, only files that match that subject
 
         Returns
@@ -749,13 +748,13 @@ class TenetoBIDS:
                 for each confound, an exclusion_criteria should be expressed as a string. It starts with >,<,>= or <= then the numerical threshold. Ex. '>0.2' will entail every subject with the avg greater than 0.2 of confound will be rejected.
             replace_with : str
                 Can be 'nan' (bad values become nans) or 'cubicspline' (bad values are interpolated). If bad value occurs at 0 or -1 index, then these values are kept and no interpolation occurs.
-            tol : float 
-                Tolerance of exlcuded time-points allowed before becoming a bad subject. 
+            tol : float
+                Tolerance of exlcuded time-points allowed before becoming a bad subject.
             overwrite : bool (default=True)
                 If true, if their are files in the teneto derivatives directory with the same name, these will be overwritten with this step.
-                The json sidecar is updated with the new information about the file. 
+                The json sidecar is updated with the new information about the file.
             desc : str
-                String to add desc tag to filenames if overwrite is set to true. 
+                String to add desc tag to filenames if overwrite is set to true.
 
         Returns
         ------
@@ -888,10 +887,10 @@ class TenetoBIDS:
         update_pipeline : bool
             TenetoBIDS gets updated with the parcellated files being selected.
         tag : str or list
-            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids). 
+            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids).
         clean_params : dict
             **kwargs for nilearn function nilearn.signal.clean
-        njobs : n 
+        njobs : n
             number of processes to run. Overrides TenetoBIDS.njobs
 
         Returns
@@ -976,24 +975,24 @@ class TenetoBIDS:
         Parameters
         ----------
 
-        community_detection_params : dict 
+        community_detection_params : dict
             kwargs for detection. See teneto.communitydetection.louvain.temporal_louvain_with_consensus
         community_type : str
-            Either 'temporal' or 'static'. If temporal, community is made per time-point for each timepoint.         
-        file_idx : bool (default false) 
-            if true, index column present in data and this will be ignored 
-        file_hdr : bool (default false) 
-            if true, header row present in data and this will be ignored 
-        njobs : int 
+            Either 'temporal' or 'static'. If temporal, community is made per time-point for each timepoint.
+        file_idx : bool (default false)
+            if true, index column present in data and this will be ignored
+        file_hdr : bool (default false)
+            if true, header row present in data and this will be ignored
+        njobs : int
             number of processes to run. Overrides TenetoBIDS.njobs
 
-        Note 
+        Note
         ----
-        All non-positive edges are made to zero. 
+        All non-positive edges are made to zero.
 
 
-        Returns 
-        ------- 
+        Returns
+        -------
         List of communities for each subject. Saved in BIDS_dir/derivatives/teneto/communitydetection/
         """
         if not njobs:
@@ -1056,31 +1055,31 @@ class TenetoBIDS:
             json.dump(sidecar, fs)
 
     def removeconfounds(self, confounds=None, clean_params=None, transpose=None, njobs=None, update_pipeline=True, overwrite=True, tag=None):
-        """ 
-        Removes specified confounds using nilearn.signal.clean 
+        """
+        Removes specified confounds using nilearn.signal.clean
 
         Parameters
         ----------
-        confounds : list 
-            List of confounds. Can be prespecified in set_confounds 
-        clean_params : dict 
-            Dictionary of kawgs to pass to nilearn.signal.clean 
-        transpose : bool (default False) 
-            Default removeconfounds works on time,node dimensions. Pass transpose=True to transpose pre and post confound removal. 
-        njobs : int 
-            Number of jobs. Otherwise tenetoBIDS.njobs is run. 
-        update_pipeline : bool 
-            update pipeline with '_clean' tag for new files created 
-        overwrite : bool 
+        confounds : list
+            List of confounds. Can be prespecified in set_confounds
+        clean_params : dict
+            Dictionary of kawgs to pass to nilearn.signal.clean
+        transpose : bool (default False)
+            Default removeconfounds works on time,node dimensions. Pass transpose=True to transpose pre and post confound removal.
+        njobs : int
+            Number of jobs. Otherwise tenetoBIDS.njobs is run.
+        update_pipeline : bool
+            update pipeline with '_clean' tag for new files created
+        overwrite : bool
         tag : str
 
         Returns
         -------
         Says all TenetBIDS.get_selected_files with confounds removed with _rmconfounds at the end.
 
-        Note 
+        Note
         ----
-        There may be some issues regarding loading non-cleaned data through the TenetoBIDS functions instead of the cleaned data. This depeneds on when you clean the data. 
+        There may be some issues regarding loading non-cleaned data through the TenetoBIDS functions instead of the cleaned data. This depeneds on when you clean the data.
         """
         if not njobs:
             njobs = self.njobs
@@ -1186,17 +1185,17 @@ class TenetoBIDS:
 
         measure_params : dict or list of dctionaries)
             Containing kwargs for the argument in measure.
-            See note regarding Communities key. 
+            See note regarding Communities key.
 
         tag : str
             Add additional tag to saved filenames.
 
         Note
         ----
-        In measure_params, if communities can equal 'template', 'static', or 'temporal'. 
-        These options must be precalculated. If template, Teneto tries to load default for parcellation. If static, loads static communities 
-        in BIDS_dir/teneto_<version>/sub-.../func/communities/..._communitytype-static....npy. If temporal, loads static communities 
-        in BIDS_dir/teneto_<version>/sub-.../func/communities/..._communitytype-temporal....npy 
+        In measure_params, if communities can equal 'template', 'static', or 'temporal'.
+        These options must be precalculated. If template, Teneto tries to load default for parcellation. If static, loads static communities
+        in BIDS_dir/teneto_<version>/sub-.../func/communities/..._communitytype-static....npy. If temporal, loads static communities
+        in BIDS_dir/teneto_<version>/sub-.../func/communities/..._communitytype-temporal....npy
         Returns
         -------
 
@@ -1542,17 +1541,17 @@ class TenetoBIDS:
     @classmethod
     def load_frompickle(cls, fname, reload_object=False):
         """
-        Loaded saved instance of 
+        Loaded saved instance of
 
         fname : str
-            path to pickle object (output of TenetoBIDS.save_aspickle) 
+            path to pickle object (output of TenetoBIDS.save_aspickle)
         reload_object : bool (default False)
             reloads object by calling teneto.TenetoBIDS (some information lost, for development)
 
-        Returns 
-        ------- 
-            self : 
-                TenetoBIDS instance 
+        Returns
+        -------
+            self :
+                TenetoBIDS instance
         """
         if fname[-4:] != '.pkl':
             fname += '.pkl'
@@ -1644,16 +1643,16 @@ class TenetoBIDS:
         Parameters
         ----------
 
-        datatype : str 
+        datatype : str
             \'tvc\', \'parcellation\', \'participant\', \'temporalnetwork\'
 
         tag : str or list
-            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids). 
+            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids).
 
-        measure : str 
-            retquired when datatype is temporalnetwork. A networkmeasure that should be loaded. 
+        measure : str
+            retquired when datatype is temporalnetwork. A networkmeasure that should be loaded.
 
-        Returns 
+        Returns
         -------
 
         tvc_data_ : numpy array
