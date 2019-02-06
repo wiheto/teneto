@@ -10,6 +10,7 @@ from statsmodels.stats.weightstats import DescrStatsW
 from ..utils import set_diagonal, getDistanceFunction
 from .postprocess import postpro_pipeline
 from .report import gen_report
+import scipy.stats as sps
 
 
 def derive_temporalnetwork(data, params):
