@@ -7,7 +7,7 @@ from ..trajectory import rdp
 from .. import __path__ as tenetopath
 from ..classes import TemporalNetwork
 import json
-import pandas as pd 
+import pandas as pd
 
 """
 
@@ -211,7 +211,6 @@ def contact2graphlet(C):
     return G
 
 
-
 def binarize_percent(netin, level, sign='pos', axis='time'):
     """
     Binarizes a network proprtionally. When axis='time' (only one available at the moment) then the top values for each edge time series are considered.
@@ -237,40 +236,42 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
     """
     netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
     # Set diagonal to 0
-    netin = set_diagonal(netin,0)
-    if axis == 'graphlet' and netinfo['nettype'][-1] == 'u': 
-        triu = np.triu_indices(netinfo['netshape'][0],k=1)
-        netin = netin[triu[0],triu[1],:]
-        netin = netin.transpose() 
+    netin = set_diagonal(netin, 0)
+    if axis == 'graphlet' and netinfo['nettype'][-1] == 'u':
+        triu = np.triu_indices(netinfo['netshape'][0], k=1)
+        netin = netin[triu[0], triu[1], :]
+        netin = netin.transpose()
     if sign == 'both':
-        net_sorted = np.argsort(np.abs(netin),axis=-1)
+        net_sorted = np.argsort(np.abs(netin), axis=-1)
     elif sign == 'pos':
-        net_sorted = np.argsort(netin,axis=-1)
+        net_sorted = np.argsort(netin, axis=-1)
     elif sign == 'neg':
-        net_sorted = np.argsort(-1*netin,axis=-1)
+        net_sorted = np.argsort(-1*netin, axis=-1)
     else:
         raise ValueError('Unknown value for parameter: sign')
     # Predefine
     netout = np.zeros(netinfo['netshape'])
-    if axis == 'time':  
+    if axis == 'time':
         # These for loops can probabaly be removed for speed
         for i in range(netinfo['netshape'][0]):
             for j in range(netinfo['netshape'][1]):
-                netout[i,j,net_sorted[i,j,-int(round(net_sorted.shape[-1])*level):]] = 1
+                netout[i, j, net_sorted[i, j, -
+                                        int(round(net_sorted.shape[-1])*level):]] = 1
     elif axis == 'graphlet':
         netout_tmp = np.zeros(netin.shape)
         for i in range(netout_tmp.shape[0]):
-            netout_tmp[i,net_sorted[i,-int(round(net_sorted.shape[-1])*level):]] = 1
+            netout_tmp[i, net_sorted[i, -
+                                     int(round(net_sorted.shape[-1])*level):]] = 1
         netout_tmp = netout_tmp.transpose()
-        netout[triu[0],triu[1],:] = netout_tmp
-        netout[triu[1],triu[0],:] = netout_tmp
+        netout[triu[0], triu[1], :] = netout_tmp
+        netout[triu[1], triu[0], :] = netout_tmp
 
-    netout = set_diagonal(netout,0)
-    
+    netout = set_diagonal(netout, 0)
+
     # If input is contact, output contact
     if netinfo['inputtype'] == 'C':
         netinfo['nettype'] = 'b' + netinfo['nettype'][1]
-        netout = graphlet2contact(netout,netinfo)
+        netout = graphlet2contact(netout, netinfo)
         netout.pop('inputtype')
         netout.pop('values')
         netout['diagonal'] = 0
@@ -300,20 +301,22 @@ def binarize_rdp(netin, level, sign='pos', axis='time'):
         Binarized network
     """
     netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
-    trajectory = rdp(netin,level)
+    trajectory = rdp(netin, level)
 
     contacts = []
     # Use the trajectory points as threshold
     for n in range(trajectory['index'].shape[0]):
         if sign == 'pos':
-            sel = trajectory['trajectory_points'][n][trajectory['trajectory'][n][trajectory['trajectory_points'][n]]>0]
+            sel = trajectory['trajectory_points'][n][trajectory['trajectory']
+                                                     [n][trajectory['trajectory_points'][n]] > 0]
         elif sign == 'neg':
-            sel = trajectory['trajectory_points'][n][trajectory['trajectory'][n][trajectory['trajectory_points'][n]]<0]
+            sel = trajectory['trajectory_points'][n][trajectory['trajectory']
+                                                     [n][trajectory['trajectory_points'][n]] < 0]
         else:
             sel = trajectory['trajectory_points']
-        i_ind = np.repeat(trajectory['index'][n,0],len(sel))
-        j_ind = np.repeat(trajectory['index'][n,1],len(sel))
-        contacts.append(np.array([i_ind,j_ind,sel]).transpose())
+        i_ind = np.repeat(trajectory['index'][n, 0], len(sel))
+        j_ind = np.repeat(trajectory['index'][n, 1], len(sel))
+        contacts.append(np.array([i_ind, j_ind, sel]).transpose())
     contacts = np.concatenate(contacts)
 
     # Create output dictionary
@@ -330,6 +333,7 @@ def binarize_rdp(netin, level, sign='pos', axis='time'):
         netout.pop('inputtype')
 
     return netout
+
 
 def binarize_magnitude(netin, level, sign='pos'):
     """
@@ -357,22 +361,23 @@ def binarize_magnitude(netin, level, sign='pos'):
     netout = np.zeros(netinfo['netshape'])
 
     if sign == 'pos' or sign == 'both':
-        netout[netin>level] = 1
+        netout[netin > level] = 1
     if sign == 'neg' or sign == 'both':
-        netout[netin<level] = 1
+        netout[netin < level] = 1
 
     # Set diagonal to 0
-    netout = set_diagonal(netout,0)
+    netout = set_diagonal(netout, 0)
 
     # If input is contact, output contact
     if netinfo['inputtype'] == 'C':
         netinfo['nettype'] = 'b' + netinfo['nettype'][1]
-        netout = graphlet2contact(netout,netinfo)
+        netout = graphlet2contact(netout, netinfo)
         netout.pop('inputtype')
         netout.pop('values')
         netout['diagonal'] = 0
 
     return netout
+
 
 def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
     """
@@ -407,14 +412,15 @@ def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
 
     """
     if threshold_type == 'percent':
-        netout = binarize_percent(netin,threshold_level,sign,axis)
+        netout = binarize_percent(netin, threshold_level, sign, axis)
     elif threshold_type == 'magnitude':
-        netout = binarize_magnitude(netin,threshold_level,sign)
+        netout = binarize_magnitude(netin, threshold_level, sign)
     elif threshold_type == 'rdp':
-        netout = binarize_rdp(netin,threshold_level,sign,axis)
+        netout = binarize_rdp(netin, threshold_level, sign, axis)
     else:
         raise ValueError('Unknown value to parameter: threshold_type.')
     return netout
+
 
 def set_diagonal(G, val=0):
     """
@@ -604,7 +610,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
     if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
         G = netIn.df_to_array()
         netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
-    elif  inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
+    elif inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
         TN = netIn
     elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'G':
         G = contact2graphlet(netIn)
@@ -625,11 +631,11 @@ def process_input(netIn, allowedformats, outputformat='G'):
         pass
     else:
         raise ValueError('Input invalid.')
-    if outputformat == 'TN' and not isinstance(TN.network, str): 
+    if outputformat == 'TN' and not isinstance(TN.network, str):
         TN.network['i'] = TN.network['i'].astype(int)
         TN.network['j'] = TN.network['j'].astype(int)
         TN.network['t'] = TN.network['t'].astype(int)
-    if outputformat == 'C' or outputformat == 'G': 
+    if outputformat == 'C' or outputformat == 'G':
         netInfo['inputtype'] = inputtype
     if inputtype != 'C' and outputformat == 'C':
         C = graphlet2contact(G, netInfo)
@@ -637,7 +643,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
         return G, netInfo
     elif outputformat == 'C':
         return C
-    elif outputformat == 'TN': 
+    elif outputformat == 'TN':
         return TN
 
 
@@ -665,13 +671,13 @@ def clean_community_indexes(communityID):
     """
     communityID = np.array(communityID)
     cid_shape = communityID.shape
-    if len(cid_shape) > 1: 
-        communityID = communityID.flatten()  
+    if len(cid_shape) > 1:
+        communityID = communityID.flatten()
     new_communityID = np.zeros(len(communityID))
     for i, n in enumerate(np.unique(communityID)):
         new_communityID[communityID == n] = i
-    if len(cid_shape) > 1: 
-        new_communityID = new_communityID.reshape(cid_shape)  
+    if len(cid_shape) > 1:
+        new_communityID = new_communityID.reshape(cid_shape)
     return new_communityID
 
 
@@ -730,25 +736,26 @@ def df_to_array(df, netshape, nettype):
         G : array 
             (node,node,time) array for the network
     """
-    if len(df) > 0: 
+    if len(df) > 0:
         idx = np.array(list(map(list, df.values)))
         G = np.zeros([netshape[0], netshape[0], netshape[1]])
         if idx.shape[1] == 3:
-            if nettype[-1] == 'u': 
-                idx = np.vstack([idx,idx[:,[1,0,2]]])
+            if nettype[-1] == 'u':
+                idx = np.vstack([idx, idx[:, [1, 0, 2]]])
             idx = idx.astype(int)
             G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
         elif idx.shape[1] == 4:
-            if nettype[-1] == 'u': 
-                idx = np.vstack([idx,idx[:,[1,0,2,3]]])
-            weights = idx[:,3]
-            idx = np.array(idx[:,:3], dtype=int)
+            if nettype[-1] == 'u':
+                idx = np.vstack([idx, idx[:, [1, 0, 2, 3]]])
+            weights = idx[:, 3]
+            idx = np.array(idx[:, :3], dtype=int)
             G[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
-    else: 
-        G = np.zeros([netshape[0],netshape[0],netshape[1]])
+    else:
+        G = np.zeros([netshape[0], netshape[0], netshape[1]])
     return G
 
-def check_distance_funciton_input(distance_func_name,netinfo):
+
+def check_distance_funciton_input(distance_func_name, netinfo):
     """
     Funciton checks distance_func_name, if it is specified as 'default'. Then given the type of the network selects a default distance function.
 
@@ -780,8 +787,6 @@ def check_distance_funciton_input(distance_func_name,netinfo):
     return distance_func_name
 
 
-
-
 def load_parcellation_coords(parcellation_name):
     """
     Loads coordinates of included parcellations.
@@ -800,13 +805,12 @@ def load_parcellation_coords(parcellation_name):
     """
 
     path = tenetopath[0] + '/data/parcellation/' + parcellation_name + '.csv'
-    parc = np.loadtxt(path,skiprows=1,delimiter=',',usecols=[1,2,3])
+    parc = np.loadtxt(path, skiprows=1, delimiter=',', usecols=[1, 2, 3])
 
     return parc
 
 
 def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None):
-
     """
     Performs a parcellation which reduces voxel space to regions of interest (brain data).
 
@@ -837,7 +841,7 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
     These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
     """
 
-    if isinstance(parcellation,str):
+    if isinstance(parcellation, str):
 
         if '+' in parcellation:
             parcin = parcellation.split('+')
@@ -859,27 +863,25 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
 
     if parc_type == 'sphere':
         parcellation = load_parcellation_coords(parcellation)
-        seed = NiftiSpheresMasker(np.array(parcellation),**parc_params)
+        seed = NiftiSpheresMasker(np.array(parcellation), **parc_params)
         data = seed.fit_transform(data_path)
     elif parc_type == 'region':
-        path = tenetopath[0] + '/data/parcellation/' + parcellation + '.nii'
-        region = NiftiLabelsMasker(path,**parc_params)
+        path = tenetopath[0] + '/data/parcellation/' + parcellation + '.nii.gz'
+        region = NiftiLabelsMasker(path, **parc_params)
         data = region.fit_transform(data_path)
     else:
         raise ValueError('Unknown parc_type specified')
 
     if subcortical:
         subatlas = fetch_atlas_harvard_oxford('sub-maxprob-thr0-2mm')['maps']
-        region = NiftiLabelsMasker(subatlas,**parc_params)
+        region = NiftiLabelsMasker(subatlas, **parc_params)
         data_sub = region.fit_transform(data_path)
         data = np.hstack([data, data_sub])
 
     return data
 
 
-
 def create_traj_ranges(start, stop, N):
-
     """
     Fills in the trajectory range.
 
@@ -889,12 +891,10 @@ def create_traj_ranges(start, stop, N):
     if np.isscalar(steps):
         return steps*np.arange(N) + start
     else:
-        return steps[:,None]*np.arange(N) + start[:,None]
+        return steps[:, None]*np.arange(N) + start[:, None]
 
 
-
-def get_dimord(measure,calc=None,community=None):
-
+def get_dimord(measure, calc=None, community=None):
     """
     Get the dimension order of a network measure.
 
@@ -960,8 +960,7 @@ def get_dimord(measure,calc=None,community=None):
         return 'unknown'
 
 
-
-def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=False, asarray=False): 
+def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=False, asarray=False):
     """
     Returns subset of dataframe that matches index
 
@@ -991,43 +990,47 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     """
     if isinstance(tnet, pd.DataFrame):
         network = tnet
-        hdf5 = False  
-    # Can add hdfstore 
-    elif isinstance(tnet,object): 
+        hdf5 = False
+    # Can add hdfstore
+    elif isinstance(tnet, object):
         network = tnet.network
         hdf5 = tnet.hdf5
-    if ij is not None and (i is not None or j is not None): 
+    if ij is not None and (i is not None or j is not None):
         raise ValueError('ij cannoed be specifed along with i or j')
     # Make non list inputs a list
-    if i is not None and not isinstance(i, list): 
+    if i is not None and not isinstance(i, list):
         i = [i]
-    if j is not None and not isinstance(j, list): 
+    if j is not None and not isinstance(j, list):
         j = [j]
-    if t is not None and not isinstance(t, list): 
+    if t is not None and not isinstance(t, list):
         t = [t]
-    if ij is not None and not isinstance(ij, list): 
+    if ij is not None and not isinstance(ij, list):
         ij = [ij]
-    if hdf5: 
-        if i is not None and j is not None and t is not None and logic == 'and': 
-            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + str(j) + ' & ' + 't in ' + str(t)     
-        elif ij is not None and t is not None and logic == 'and': 
-            isinstr = '(i in ' + str(ij) + ' | ' + 'j in ' + str(ij) + ') & ' + 't in ' + str(t)                     
-        elif ij is not None and t is not None and logic == 'or': 
-            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij) + ' | ' + 't in ' + str(t)                                     
-        elif i is not None and j is not None and logic == 'and': 
-            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + str(j)                                 
-        elif i is not None and t is not None and logic == 'and': 
-            isinstr = 'i in ' + str(i) + ' & ' + 't in ' + str(t)                                                 
-        elif j is not None and t is not None and logic == 'and': 
-            isinstr = 'j in ' + str(j) + ' & ' + 't in ' + str(t)                                                                 
-        elif i is not None and j is not None and t is not None and logic == 'or': 
-            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + str(j) + ' | ' + 't in ' + str(t)                                                                                 
-        elif i is not None and j is not None and logic == 'or': 
-            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + str(j)                                                 
-        elif i is not None and t is not None and logic == 'or': 
-            isinstr = 'i in ' + str(i) + ' | ' + 't in ' + str(t)                                                                 
-        elif j is not None and t is not None and logic == 'or': 
-            isinstr = 'j in ' + str(j) + ' | ' + 't in ' + str(t)                                                                                 
+    if hdf5:
+        if i is not None and j is not None and t is not None and logic == 'and':
+            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + \
+                str(j) + ' & ' + 't in ' + str(t)
+        elif ij is not None and t is not None and logic == 'and':
+            isinstr = '(i in ' + str(ij) + ' | ' + 'j in ' + \
+                str(ij) + ') & ' + 't in ' + str(t)
+        elif ij is not None and t is not None and logic == 'or':
+            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + \
+                str(ij) + ' | ' + 't in ' + str(t)
+        elif i is not None and j is not None and logic == 'and':
+            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + str(j)
+        elif i is not None and t is not None and logic == 'and':
+            isinstr = 'i in ' + str(i) + ' & ' + 't in ' + str(t)
+        elif j is not None and t is not None and logic == 'and':
+            isinstr = 'j in ' + str(j) + ' & ' + 't in ' + str(t)
+        elif i is not None and j is not None and t is not None and logic == 'or':
+            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + \
+                str(j) + ' | ' + 't in ' + str(t)
+        elif i is not None and j is not None and logic == 'or':
+            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + str(j)
+        elif i is not None and t is not None and logic == 'or':
+            isinstr = 'i in ' + str(i) + ' | ' + 't in ' + str(t)
+        elif j is not None and t is not None and logic == 'or':
+            isinstr = 'j in ' + str(j) + ' | ' + 't in ' + str(t)
         elif i is not None:
             isinstr = 'i in ' + str(i)
         elif j is not None:
@@ -1035,29 +1038,33 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         elif t is not None:
             isinstr = 't in ' + str(t)
         elif ij is not None:
-            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij)                                                                                 
+            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij)
         df = pd.read_hdf(network, where=isinstr)
-    else: 
-        if i is not None and j is not None and t is not None and logic == 'and': 
-            df = network[(network['i'].isin(i)) & (network['j'].isin(j)) & (network['t'].isin(t))]
-        elif ij is not None and t is not None and logic == 'and': 
-            df = network[((network['i'].isin(ij)) | (network['j'].isin(ij))) & (network['t'].isin(t))]
-        elif ij is not None and t is not None and logic == 'or': 
-            df = network[((network['i'].isin(ij)) | (network['j'].isin(ij))) | (network['t'].isin(t))]
-        elif i is not None and j is not None and logic == 'and': 
-            df = network[(network['i'].isin(i)) & (network['j'].isin(j))]        
-        elif i is not None and t is not None and logic == 'and': 
-            df = network[(network['i'].isin(i)) & (network['t'].isin(t))]        
-        elif j is not None and t is not None and logic == 'and': 
-            df = network[(network['j'].isin(j)) & (network['t'].isin(t))]   
-        elif i is not None and j is not None and t is not None and logic == 'or': 
-            df = network[(network['i'].isin(i)) | (network['j'].isin(j)) | (network['t'].isin(t))]
-        elif i is not None and j is not None and logic == 'or': 
-            df = network[(network['i'].isin(i)) | (network['j'].isin(j))]        
-        elif i is not None and t is not None and logic == 'or': 
-            df = network[(network['i'].isin(i)) | (network['t'].isin(t))]        
-        elif j is not None and t is not None and logic == 'or': 
-            df = network[(network['j'].isin(j)) | (network['t'].isin(t))]        
+    else:
+        if i is not None and j is not None and t is not None and logic == 'and':
+            df = network[(network['i'].isin(i)) & (
+                network['j'].isin(j)) & (network['t'].isin(t))]
+        elif ij is not None and t is not None and logic == 'and':
+            df = network[((network['i'].isin(ij)) | (
+                network['j'].isin(ij))) & (network['t'].isin(t))]
+        elif ij is not None and t is not None and logic == 'or':
+            df = network[((network['i'].isin(ij)) | (
+                network['j'].isin(ij))) | (network['t'].isin(t))]
+        elif i is not None and j is not None and logic == 'and':
+            df = network[(network['i'].isin(i)) & (network['j'].isin(j))]
+        elif i is not None and t is not None and logic == 'and':
+            df = network[(network['i'].isin(i)) & (network['t'].isin(t))]
+        elif j is not None and t is not None and logic == 'and':
+            df = network[(network['j'].isin(j)) & (network['t'].isin(t))]
+        elif i is not None and j is not None and t is not None and logic == 'or':
+            df = network[(network['i'].isin(i)) | (
+                network['j'].isin(j)) | (network['t'].isin(t))]
+        elif i is not None and j is not None and logic == 'or':
+            df = network[(network['i'].isin(i)) | (network['j'].isin(j))]
+        elif i is not None and t is not None and logic == 'or':
+            df = network[(network['i'].isin(i)) | (network['t'].isin(t))]
+        elif j is not None and t is not None and logic == 'or':
+            df = network[(network['j'].isin(j)) | (network['t'].isin(t))]
         elif i is not None:
             df = network[network['i'].isin(i)]
         elif j is not None:
@@ -1066,9 +1073,9 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
             df = network[network['t'].isin(t)]
         elif ij is not None:
             df = network[(network['i'].isin(ij)) | (network['j'].isin(ij))]
-        if copy: 
+        if copy:
             df = df.copy()
-    if asarray: 
+    if asarray:
         df = df.values
     return df
 
@@ -1090,14 +1097,16 @@ def create_supraadjacency_matrix(tnet, intersliceweight=1):
         Supraadjacency matrix 
     """
     newnetwork = tnet.network.copy()
-    newnetwork['i'] = (tnet.network['i']) + ((tnet.netshape[0]) * (tnet.network['t']))
-    newnetwork['j'] = (tnet.network['j']) + ((tnet.netshape[0]) * (tnet.network['t'])) 
-    if 'weight' not in newnetwork.columns: 
+    newnetwork['i'] = (tnet.network['i']) + \
+        ((tnet.netshape[0]) * (tnet.network['t']))
+    newnetwork['j'] = (tnet.network['j']) + \
+        ((tnet.netshape[0]) * (tnet.network['t']))
+    if 'weight' not in newnetwork.columns:
         newnetwork['weight'] = 1
-    newnetwork.drop('t',axis=1,inplace=True)
+    newnetwork.drop('t', axis=1, inplace=True)
     timepointconns = pd.DataFrame()
-    timepointconns['i'] = np.arange(0,(tnet.N*tnet.T)-tnet.N)
-    timepointconns['j'] = np.arange(tnet.N,(tnet.N*tnet.T))
+    timepointconns['i'] = np.arange(0, (tnet.N*tnet.T)-tnet.N)
+    timepointconns['j'] = np.arange(tnet.N, (tnet.N*tnet.T))
     timepointconns['weight'] = intersliceweight
-    supranet = pd.concat([newnetwork,timepointconns]).reset_index(drop=True)
+    supranet = pd.concat([newnetwork, timepointconns]).reset_index(drop=True)
     return supranet
