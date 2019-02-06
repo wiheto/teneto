@@ -20,12 +20,15 @@ def test_graphletconversion():
     G = teneto.utils.set_diagonal(G, 1)
     C = teneto.utils.graphlet2contact(G)
     G2 = teneto.utils.contact2graphlet(C)
-    assert G.all() == G2.all()
+    if not G.all() == G2.all():
+        raise AssertionError()
+
 
 
 def test_createtraj():
     traj = teneto.utils.create_traj_ranges(0, 12, 4)
-    assert (traj == np.array([0, 4, 8, 12], dtype=float)).all()
+    if not (traj == np.array([0, 4, 8, 12], dtype=float)).all():
+        raise AssertionError()
 
 
 def test_binarize():
@@ -50,16 +53,25 @@ def test_binarize():
     G = teneto.utils.set_diagonal(G, 0)
     Gt = np.zeros(G.shape)
     Gt[G > 0.45] = 1
-    assert np.all(Gt == Gbin_mag)
-    assert Gbin_perc[0, 1, 1] == Gbin_perc[1, 2, 1] == Gbin_perc[0, 2, 0] == 1
-    assert Gbin_perc[0, 1, 0] == Gbin_perc[1, 2, 0] == Gbin_perc[0, 2, 1] == 0
-    assert Gbin_perc2[0, 1, 0] == Gbin_perc2[1, 2, 1] == 1
-    assert Gbin_perc2[0, 1, 1] == Gbin_perc2[1, 2,
-                                             0] == Gbin_perc2[0, 2, 1] == Gbin_perc2[0, 1, 1] == 0
-    assert isinstance(Gbin_mag_c, dict)
-    assert isinstance(Gbin_perc_c, dict)
-    assert np.all(teneto.utils.contact2graphlet(Gbin_perc_c) == Gbin_perc)
-    assert np.all(teneto.utils.contact2graphlet(Gbin_mag_c) == Gbin_mag)
+    if not np.all(Gt == Gbin_mag):
+        raise AssertionError()
+    if not Gbin_perc[0, 1, 1] == Gbin_perc[1, 2, 1] == Gbin_perc[0, 2, 0] == 1:
+        raise AssertionError()
+    if not Gbin_perc[0, 1, 0] == Gbin_perc[1, 2, 0] == Gbin_perc[0, 2, 1] == 0:
+        raise AssertionError()
+    if not Gbin_perc2[0, 1, 0] == Gbin_perc2[1, 2, 1] == 1:
+        raise AssertionError()
+    if not Gbin_perc2[0, 1, 1] == Gbin_perc2[1, 2,
+                                             0] == Gbin_perc2[0, 2, 1] == Gbin_perc2[0, 1, 1] == 0:
+        raise AssertionError()
+    if not isinstance(Gbin_mag_c, dict):
+        raise AssertionError()
+    if not isinstance(Gbin_perc_c, dict):
+        raise AssertionError()
+    if not np.all(teneto.utils.contact2graphlet(Gbin_perc_c) == Gbin_perc):
+        raise AssertionError()
+    if not np.all(teneto.utils.contact2graphlet(Gbin_mag_c) == Gbin_mag):
+        raise AssertionError()
 
 
 def test_binarize_rdp():
@@ -71,8 +83,10 @@ def test_binarize_rdp():
     G[0, 1, 4] = 1
     Gbin1 = teneto.utils.binarize(G, 'rdp', 0.49)
     Gbin2 = teneto.utils.binarize(G, 'rdp', 0.51)
-    assert (np.all(Gbin1[0, 1, :] == [1, 0, 1, 0, 1]))
-    assert (np.all(Gbin2[0, 1, :] == [1, 0, 0, 0, 1]))
+    if not (np.all(Gbin1[0, 1, :] == [1, 0, 1, 0, 1])):
+        raise AssertionError()
+    if not (np.all(Gbin2[0, 1, :] == [1, 0, 0, 0, 1])):
+        raise AssertionError()
 
 
 def test_contactmultiplevalues():
@@ -81,13 +95,16 @@ def test_contactmultiplevalues():
     c = teneto.utils.graphlet2contact(g)
     c['contacts'] = np.vstack([c['contacts'], c['contacts']])
     cnew = teneto.utils.multiple_contacts_get_values(c)
-    assert cnew['values'] == [2]
-    assert len(cnew['contacts']) == 1
+    if not cnew['values'] == [2]:
+        raise AssertionError()
+    if not len(cnew['contacts']) == 1:
+        raise AssertionError()
 
 
 def test_getdimord():
     dimord = teneto.utils.get_dimord('volatility', 'global')
-    assert dimord == 'time'
+    if not dimord == 'time':
+        raise AssertionError()
     # Need to impove a lot of the dimord settings!!
 
 
@@ -95,12 +112,14 @@ def test_cleancommunityindicies():
     c = [5, 3, 4, 5, 5, 5, 3, 3, 3, 4, 4]
     c_expected = [2, 0, 1, 2, 2, 2, 0, 0, 0, 1, 1]
     c_cleaned = teneto.utils.clean_community_indexes(c)
-    assert np.all(c_cleaned == c_expected)
+    if not np.all(c_cleaned == c_expected):
+        raise AssertionError()
 
 
 def test_load_parc_cords():
     parc = teneto.utils.load_parcellation_coords('power2012_264')
-    assert parc.shape == (264, 3)
+    if not parc.shape == (264, 3):
+        raise AssertionError()
 
 
 def test_contact2graphletfail():
@@ -182,11 +201,15 @@ def test_process_input():
     tnet.generatenetwork('rand_binomial', prob=[0.5, 0.2], size=[5, 12])
     G = tnet.df_to_array()
     tnet2 = teneto.utils.process_input(G, 'G', 'TN')
-    assert all(tnet2.network == tnet.network)
+    if not all(tnet2.network == tnet.network):
+        raise AssertionError()
     C = teneto.utils.process_input(G, 'G', 'C')
     tnet3 = teneto.utils.process_input(C, 'C', 'TN')
-    assert all(tnet2.network == tnet3.network)
+    if not all(tnet2.network == tnet3.network):
+        raise AssertionError()
     C2 = teneto.utils.process_input(tnet, 'TN', 'C')
     G2, _ = teneto.utils.process_input(tnet, 'TN', 'G')
-    assert (C['contacts'] == C2['contacts']).all()
-    assert (G == G2).all()
+    if not (C['contacts'] == C2['contacts']).all():
+        raise AssertionError()
+    if not (G == G2).all():
+        raise AssertionError()
