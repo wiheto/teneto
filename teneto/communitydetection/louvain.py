@@ -54,8 +54,8 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
         for n in range(n_iter):
             com = community.best_partition(
                 nxsupra, resolution=resolution, random_state=None)
-            comtmp[np.array(list(com.keys()), dtype=int),
-                   n] = list(com.values())
+            comtmp[np.array(list(com.keys()), dtype=int), n] = list(com.values())
+        print(comtmp.shape)
         comtmp = np.reshape(comtmp, [tnet.N, tnet.T, n_iter], order='F')
         nxsupra_old = nxsupra
         print('Doing CM')
@@ -102,11 +102,10 @@ def make_consensus_matrix(com_membership, th=0.5):
                          == 0, axis=-1) / com_membership.shape[-1]
             twhere = np.where(con > th)[0]
             D += list(zip(*[np.repeat(i, len(twhere)).tolist(), np.repeat(j,
-                                                                          len(twhere)).tolist(), twhere.tolist(), con[twhere].tolist()]))
+                        len(twhere)).tolist(), twhere.tolist(), con[twhere].tolist()]))
     if len(D) > 0:
         D = pd.DataFrame(D, columns=['i', 'j', 't', 'weight'])
-        D = TemporalNetwork(
-            from_df=D, N=com_membership.shape[0], T=com_membership.shape[0])
+        D = TemporalNetwork(from_df=D)
         D = create_supraadjacency_matrix(D, intersliceweight=0)
         Dnx = tnet_to_nx(D)
     else:
