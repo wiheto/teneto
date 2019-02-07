@@ -52,50 +52,68 @@ def test_errors():
 
 def test_define_tnet_unweighted():
     tnet = teneto.TemporalNetwork(nettype='wu', timetype='discrete')
-    assert tnet.network.shape[1] == 4
+    if not tnet.network.shape[1] == 4:
+        raise AssertionError()
     tnet = teneto.TemporalNetwork(nettype='bu')
-    assert tnet.network.shape[1] == 3
+    if not tnet.network.shape[1] == 3:
+        raise AssertionError()
     edgelist = [[0, 1, 2], [0, 2, 1]]
     tnet_edgelist = teneto.TemporalNetwork(from_edgelist=edgelist)
-    assert tnet_edgelist.network.shape == (2, 3)
+    if not tnet_edgelist.network.shape == (2, 3):
+        raise AssertionError()
     G = np.zeros([3, 3, 3])
     G[[0, 0], [1, 2], [2, 1]] = 1
     tnet_array = teneto.TemporalNetwork(from_array=G)
-    assert all(tnet_array.network == tnet_edgelist.network)
+    if not all(tnet_array.network == tnet_edgelist.network):
+        raise AssertionError()
     tnet_df = teneto.TemporalNetwork(from_df=tnet_array.network)
-    assert all(tnet_array.network == tnet_df.network)
+    if not all(tnet_array.network == tnet_df.network):
+        raise AssertionError()
     C = teneto.utils.graphlet2contact(G)
     tnet_dict = teneto.TemporalNetwork(from_dict=C)
-    assert all(tnet_dict.network == tnet_edgelist.network)
+    if not all(tnet_dict.network == tnet_edgelist.network):
+        raise AssertionError()
     tnet_edgelist.add_edge([[0, 3, 1]])
-    assert all(tnet_edgelist.network.iloc[-1].values == [0, 3, 1])
-    assert tnet_edgelist.network.shape == (3, 3)
+    if not all(tnet_edgelist.network.iloc[-1].values == [0, 3, 1]):
+        raise AssertionError()
+    if not tnet_edgelist.network.shape == (3, 3):
+        raise AssertionError()
     tnet_edgelist.add_edge([0, 3, 1])
-    assert all(tnet_edgelist.network.iloc[-1].values == [0, 3, 1])
+    if not all(tnet_edgelist.network.iloc[-1].values == [0, 3, 1]):
+        raise AssertionError()
     tnet_edgelist.drop_edge([0, 3, 1])
-    assert tnet_edgelist.network.shape == (2, 3)
+    if not tnet_edgelist.network.shape == (2, 3):
+        raise AssertionError()
 
 
 def test_define_tnet_weighted():
     tnet = teneto.TemporalNetwork(nettype='wu', timetype='discrete')
-    assert tnet.network.shape[1] == 4
+    if not tnet.network.shape[1] == 4:
+        raise AssertionError()
     tnet = teneto.TemporalNetwork(nettype='bu')
-    assert tnet.network.shape[1] == 3
+    if not tnet.network.shape[1] == 3:
+        raise AssertionError()
     edgelist = [[0, 1, 2, 0.5], [0, 2, 1, 0.5]]
     tnet_edgelist = teneto.TemporalNetwork(from_edgelist=edgelist)
-    assert tnet_edgelist.network.shape == (2, 4)
+    if not tnet_edgelist.network.shape == (2, 4):
+        raise AssertionError()
     G = np.zeros([3, 3, 3])
     G[[0, 0], [1, 2], [2, 1]] = 0.5
     tnet_array = teneto.TemporalNetwork(from_array=G)
-    assert all(tnet_array.network == tnet_edgelist.network)
+    if not all(tnet_array.network == tnet_edgelist.network):
+        raise AssertionError()
     C = teneto.utils.graphlet2contact(G)
     tnet_dict = teneto.TemporalNetwork(from_dict=C)
-    assert all(tnet_dict.network == tnet_edgelist.network)
+    if not all(tnet_dict.network == tnet_edgelist.network):
+        raise AssertionError()
     tnet_edgelist.add_edge([[0, 3, 1, 0.8]])
-    assert all(tnet_edgelist.network.iloc[-1].values == [0, 3, 1, 0.8])
-    assert tnet_edgelist.network.shape == (3, 4)
+    if not all(tnet_edgelist.network.iloc[-1].values == [0, 3, 1, 0.8]):
+        raise AssertionError()
+    if not tnet_edgelist.network.shape == (3, 4):
+        raise AssertionError()
     tnet_edgelist.drop_edge([[0, 3, 1]])
-    assert tnet_edgelist.network.shape == (2, 4)
+    if not tnet_edgelist.network.shape == (2, 4):
+        raise AssertionError()
 
 
 def test_tnet_functions():
@@ -105,20 +123,23 @@ def test_tnet_functions():
     tnet = teneto.TemporalNetwork(from_array=G)
     G = teneto.utils.set_diagonal(G, 0)
     D = tnet.calc_networkmeasure('temporal_degree_centrality')
-    assert all(G.sum(axis=-1).sum(axis=-1) == D)
+    if not all(G.sum(axis=-1).sum(axis=-1) == D):
+        raise AssertionError()
     G = np.zeros([3, 3, 3])
     G[[0, 0], [1, 2], [2, 1]] = 0.5
     G = G + G.transpose([1, 0, 2])
     G = teneto.utils.set_diagonal(G, 0)
     tnet = teneto.TemporalNetwork(from_array=G)
     D = tnet.calc_networkmeasure('temporal_degree_centrality')
-    assert all(G.sum(axis=-1).sum(axis=-1) == D)
+    if not all(G.sum(axis=-1).sum(axis=-1) == D):
+        raise AssertionError()
 
 
 def test_generatenetwork():
     tnet = teneto.TemporalNetwork()
     tnet.generatenetwork('rand_binomial', size=(5, 10), prob=1)
-    assert tnet.netshape == (5, 10)
+    if not tnet.netshape == (5, 10):
+        raise AssertionError()
 
 
 def test_plot():

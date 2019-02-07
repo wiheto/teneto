@@ -151,7 +151,7 @@ def test_tnet_derive_with_removeconfounds():
     #tnet.derive_temporalnetwork({'method': 'jackknife'})
     # Make sure report directory exists
     #if not os.path.exists(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/tvc/report'):
-    raise AssertionError()
+    #raise AssertionError()
 
 def test_tnet_scrubbing():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
