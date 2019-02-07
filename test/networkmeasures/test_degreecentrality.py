@@ -26,13 +26,20 @@ def test_networkmeasures_tdc():
     tC4 = np.array(C3)
     for n in range(1, tC4.shape[-1]):
         tC4[:, n] = tC4[:, n] + tC4[:, n-1] * np.exp(-0.5)
-    assert (C1 == G.sum(axis=2).sum(axis=1)).all()
-    assert (C2 == G.sum(axis=2).sum(axis=0)).all()
-    assert C3.shape == (3, 4)
-    assert (C3 == G.sum(axis=1)).all()
-    assert (C3 == G.sum(axis=1)).all()
-    assert (C4 == tC4).all()
-    assert (C2 == C5).all()
+    if not (C1 == G.sum(axis=2).sum(axis=1)).all():
+        raise AssertionError()
+    if not (C2 == G.sum(axis=2).sum(axis=0)).all():
+        raise AssertionError()
+    if not C3.shape == (3, 4):
+        raise AssertionError()
+    if not (C3 == G.sum(axis=1)).all():
+        raise AssertionError()
+    if not (C3 == G.sum(axis=1)).all():
+        raise AssertionError()
+    if not (C4 == tC4).all():
+        raise AssertionError()
+    if not (C2 == C5).all():
+        raise AssertionError()
 
 
 def test_sid():
@@ -51,8 +58,10 @@ def test_sid():
     # Should be half sid_g since network is only calculated once
     sid_c_true = [1, 1, -0.5, 0.5]
     # Since only 2 networks this should be the same.
-    assert np.all(sid_c[0, 1, :] == sid_c_true)
-    assert np.all(sid_g == sid_g_true)
+    if not np.all(sid_c[0, 1, :] == sid_c_true):
+        raise AssertionError()
+    if not np.all(sid_g == sid_g_true):
+        raise AssertionError()
 
 
 def test_tdeg_with_communities():
@@ -69,11 +78,15 @@ def test_tdeg_with_communities():
     C1 = teneto.networkmeasures.temporal_degree_centrality(
         G, calc='time', communities=C)
     # SHape should be communities,communities,time
-    assert (len(np.unique(C)), len(np.unique(C)), G.shape[-1]) == C1.shape
+    if not (len(np.unique(C)), len(np.unique(C)), G.shape[-1]) == C1.shape:
+        raise AssertionError()
     # Hardcode the answer which should be [[3,0],[0,3]] at t=0 and [[6,1],[1,6]] at t=2 and [[3,3],[3,1]] at t=3
-    assert np.all(C1[:, :, 0] == np.array([[3, 0], [0, 3]]))
-    assert np.all(C1[:, :, 2] == np.array([[6, 0], [0, 1]]))
-    assert np.all(C1[:, :, 3] == np.array([[3, 3], [3, 1]]))
+    if not np.all(C1[:, :, 0] == np.array([[3, 0], [0, 3]])):
+        raise AssertionError()
+    if not np.all(C1[:, :, 2] == np.array([[6, 0], [0, 1]])):
+        raise AssertionError()
+    if not np.all(C1[:, :, 3] == np.array([[3, 3], [3, 1]])):
+        raise AssertionError()
 
 
 def test_tdeg_with_moduledegreezscore():
@@ -87,12 +100,17 @@ def test_tdeg_with_moduledegreezscore():
     C2 = teneto.networkmeasures.temporal_degree_centrality(
         G, calc='module_degree_zscore', communities=C)
     # Shape should be node x time
-    assert C2.shape == (G.shape[0], G.shape[-1])
+    if not C2.shape == (G.shape[0], G.shape[-1]):
+        raise AssertionError()
     # Hode code correct asnwer for nodes.
-    assert C2[3, 1] == (0-np.mean([1, 1, 0]))/np.std([1, 1, 0])
-    assert C2[0, 0] == (1-np.mean([1, 2, 1]))/np.std([1, 2, 1])
-    assert C2[1, 0] == (2-np.mean([1, 2, 1]))/np.std([1, 2, 1])
-    assert C2[4, 1] == (1-np.mean([1, 1, 0]))/np.std([1, 1, 0])
+    if not C2[3, 1] == (0-np.mean([1, 1, 0]))/np.std([1, 1, 0]):
+        raise AssertionError()
+    if not C2[0, 0] == (1-np.mean([1, 2, 1]))/np.std([1, 2, 1]):
+        raise AssertionError()
+    if not C2[1, 0] == (2-np.mean([1, 2, 1]))/np.std([1, 2, 1]):
+        raise AssertionError()
+    if not C2[4, 1] == (1-np.mean([1, 1, 0]))/np.std([1, 1, 0]):
+        raise AssertionError()
 
 
 def test_degreefail():

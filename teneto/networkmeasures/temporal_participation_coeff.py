@@ -3,6 +3,7 @@ import numpy as np
 from teneto.utils import process_input
 import pandas as pd
 
+
 def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=False):
     r'''
     Temporal participation coefficient is a measure of diversity of connections across communities for individual nodes.
@@ -14,7 +15,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
     communities : array
         community vector. Either 1D (node) community index or 2D (node,time).
     removeneg : bool (default false)
-        If true, all values < 0 are made to be 0. 
+        If true, all values < 0 are made to be 0.
 
 
     Returns
@@ -28,7 +29,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
 
     Static participatoin coefficient is:
 
-    .. math:: P_i = 1 - \sum_s^{N_M}({{k_{is}}\over{k_i}})^2 
+    .. math:: P_i = 1 - \sum_s^{N_M}({{k_{is}}\over{k_i}})^2
 
     Where s is the index of each community (:math:`N_M`). :math:`k_i` is total degree of node. And :math:`k_{is}` is degree of connections within community.[part-1]_
 
@@ -44,7 +45,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
     '''
 
     if communities is None:
-        if isinstance(tnet,dict):
+        if isinstance(tnet, dict):
             if 'communities' in tnet.keys():
                 communities = tnet['communities']
             else:
@@ -55,29 +56,29 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
     # Get input in right format
     tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
 
-
     if tnet.nettype[0] == 'w':
         # TODO add contingency when hdf5 data has negative edges
-        if tnet.hdf5 == False:  
-            if sum(tnet.network['weight']<0) > 0 and not removeneg:
-                print('TENETO WARNING: negative edges exist when calculating participation coefficient.')
+        if tnet.hdf5 == False:
+            if sum(tnet.network['weight'] < 0) > 0 and not removeneg:
+                print(
+                    'TENETO WARNING: negative edges exist when calculating participation coefficient.')
             else:
-                tnet.network['weight'][tnet.network['weight']<0] = 0
+                tnet.network['weight'][tnet.network['weight'] < 0] = 0
 
-
-    part = np.zeros([tnet.netshape[0],tnet.netshape[1]])
+    part = np.zeros([tnet.netshape[0], tnet.netshape[1]])
 
     if len(communities.shape) == 1:
-        for t in np.arange(0,tnet.netshape[1]):
+        for t in np.arange(0, tnet.netshape[1]):
             C = communities
             snapshot = tnet.get_network_when(t=t)
-            if tnet.nettype[1] == 'd': 
+            if tnet.nettype[1] == 'd':
                 i_at_t = snapshot['i'].values
-            else: 
-                i_at_t = np.concatenate([snapshot['i'].values, snapshot['j'].values])
+            else:
+                i_at_t = np.concatenate(
+                    [snapshot['i'].values, snapshot['j'].values])
             i_at_t = np.unique(i_at_t).tolist()
-            i_at_t = list(map(int,i_at_t))
-            for i in i_at_t: 
+            i_at_t = list(map(int, i_at_t))
+            for i in i_at_t:
                 # Calculate degree of node
                 if tnet.nettype[1] == 'd':
                     df = tnet.get_network_when(i=i, t=t)
@@ -93,34 +94,35 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
                         k_i = df['weight'].sum()
                     elif tnet.nettype == 'bu':
                         k_i = len(df)
-                j_at_t = list(map(int,j_at_t))
-                for c in np.unique(C[j_at_t]):  
-                    ci = np.where(C==c)[0].tolist()
+                j_at_t = list(map(int, j_at_t))
+                for c in np.unique(C[j_at_t]):
+                    ci = np.where(C == c)[0].tolist()
                     k_is = tnet.get_network_when(i=i, j=ci, t=t)
                     if tnet.nettype[1] == 'u':
                         k_is2 = tnet.get_network_when(j=i, i=ci, t=t)
                         k_is = pd.concat([k_is, k_is2])
-                    if len(k_is) > 0: 
-                        if tnet.nettype[0] == 'b': 
+                    if len(k_is) > 0:
+                        if tnet.nettype[0] == 'b':
                             k_is = len(k_is)
-                        else: 
+                        else:
                             k_is = k_is['weight'].sum()
-                        part[i,t] += np.square(k_is/k_i)
-            part[i_at_t,t] = 1 - part[i_at_t,t]    
-            if decay is not None and t > 0: 
-                part[i_at_t,t] += decay*part[i_at_t,t-1]
-    else: 
-        for t in np.arange(0,tnet.netshape[1]):
+                        part[i, t] += np.square(k_is/k_i)
+            part[i_at_t, t] = 1 - part[i_at_t, t]
+            if decay is not None and t > 0:
+                part[i_at_t, t] += decay*part[i_at_t, t-1]
+    else:
+        for t in np.arange(0, tnet.netshape[1]):
             snapshot = tnet.get_network_when(t=t)
-            if tnet.nettype[1] == 'd': 
+            if tnet.nettype[1] == 'd':
                 i_at_t = snapshot['i'].values
-            else: 
-                i_at_t = np.concatenate([snapshot['i'].values, snapshot['j'].values])
+            else:
+                i_at_t = np.concatenate(
+                    [snapshot['i'].values, snapshot['j'].values])
             i_at_t = np.unique(i_at_t).tolist()
-            i_at_t = list(map(int,i_at_t))
-            for i in i_at_t: 
-                for tc in np.arange(0,tnet.netshape[1]):
-                    C = communities[:,tc]
+            i_at_t = list(map(int, i_at_t))
+            for i in i_at_t:
+                for tc in np.arange(0, tnet.netshape[1]):
+                    C = communities[:, tc]
                     # Calculate degree of node
                     if tnet.nettype[1] == 'd':
                         df = tnet.get_network_when(i=i, t=t)
@@ -131,29 +133,30 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
                             k_i = len(df)
                     elif tnet.nettype[1] == 'u':
                         df = tnet.get_network_when(ij=i, t=t)
-                        j_at_t = np.concatenate([df['i'].values, df['j'].values])
+                        j_at_t = np.concatenate(
+                            [df['i'].values, df['j'].values])
                         if tnet.nettype == 'wu':
                             k_i = df['weight'].sum()
                         elif tnet.nettype == 'bu':
                             k_i = len(df)
-                    j_at_t = list(map(int,j_at_t))
-                    for c in np.unique(C[j_at_t]):   
-                        ci = np.where(C==c)[0].tolist()
+                    j_at_t = list(map(int, j_at_t))
+                    for c in np.unique(C[j_at_t]):
+                        ci = np.where(C == c)[0].tolist()
                         k_is = tnet.get_network_when(i=i, j=ci, t=t)
                         if tnet.nettype[1] == 'u':
                             k_is2 = tnet.get_network_when(j=i, i=ci, t=t)
                             k_is = pd.concat([k_is, k_is2])
-                        if tnet.nettype[0] == 'b': 
+                        if tnet.nettype[0] == 'b':
                             k_is = len(k_is)
-                        else: 
+                        else:
                             k_is = k_is['weight'].sum()
-                        part[i,t] += np.square(k_is/k_i)
-                part[i,t] = part[i,t] / tnet.netshape[1]
-            part[i_at_t,t] = 1 - part[i_at_t,t]    
-            if decay is not None and t > 0: 
-                part[i_at_t,t] += decay*part[i_at_t,t-1]
+                        part[i, t] += np.square(k_is/k_i)
+                part[i, t] = part[i, t] / tnet.netshape[1]
+            part[i_at_t, t] = 1 - part[i_at_t, t]
+            if decay is not None and t > 0:
+                part[i_at_t, t] += decay*part[i_at_t, t-1]
 
     # Set any division by 0 to 0
-    part[np.isnan(part)==1] = 0
+    part[np.isnan(part) == 1] = 0
 
     return part

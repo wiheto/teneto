@@ -8,16 +8,16 @@ from .shortest_temporal_path import shortest_temporal_path
 
 def reachability_latency(tnet=None, paths=None, rratio=1, calc='global'):
     """
-    Reachability latency. This is the r-th longest temporal path. 
+    Reachability latency. This is the r-th longest temporal path.
 
     Parameters
     ---------
 
-    data : array or dict 
+    data : array or dict
 
         Can either be a network (graphlet or contact), binary unidrected only. Alternative can be a paths dictionary (output of teneto.networkmeasure.shortest_temporal_path)
 
-    rratio: float (default: 1) 
+    rratio: float (default: 1)
         reachability ratio that the latency is calculated in relation to.
         Value must be over 0 and up to 1.
         1 (default) - all nodes must be reached.
@@ -25,33 +25,35 @@ def reachability_latency(tnet=None, paths=None, rratio=1, calc='global'):
         This is rounded to the nearest node inter.
         E.g. if there are 6 nodes [1,2,3,4,5,6], it will be node 4 (due to round upwards)
 
-    calc : str 
+    calc : str
         what to calculate. Alternatives: 'global' entire network; 'nodes': for each node.
 
 
-    Returns 
+    Returns
     --------
-    reach_lat : array 
+    reach_lat : array
         Reachability latency
 
     Notes
     ------
-    Reachability latency calculates the time it takes for the paths. 
+    Reachability latency calculates the time it takes for the paths.
 
-    
+
 
     """
 
-    if tnet is not None and paths is not None: 
+    if tnet is not None and paths is not None:
         raise ValueError('Only network or path input allowed.')
-    if tnet is None and paths is None: 
+    if tnet is None and paths is None:
         raise ValueError('No input.')
     # if shortest paths are not calculated, calculate them
     if tnet is not None:
         paths = shortest_temporal_path(tnet)
 
-    pathmat = np.zeros([paths[['from','to']].max().max()+1, paths[['from','to']].max().max()+1, paths[['t_start']].max().max()+1]) * np.nan     
-    pathmat[paths['from'].values,paths['to'].values,paths['t_start'].values] = paths['temporal-distance']
+    pathmat = np.zeros([paths[['from', 'to']].max().max(
+    )+1, paths[['from', 'to']].max().max()+1, paths[['t_start']].max().max()+1]) * np.nan
+    pathmat[paths['from'].values, paths['to'].values,
+            paths['t_start'].values] = paths['temporal-distance']
 
     netshape = pathmat.shape
 
@@ -69,5 +71,6 @@ def reachability_latency(tnet=None, paths=None, rratio=1, calc='global'):
         reach_lat = reach_lat / (netshape[2])
     return reach_lat
 
-def reachability_ratio(paths): 
+
+def reachability_ratio(paths):
     return len(paths['temporal-distance'].dropna())/len(paths)

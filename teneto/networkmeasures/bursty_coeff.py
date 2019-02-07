@@ -5,6 +5,7 @@ networkmeasures.bursty_coeff
 import numpy as np
 from .intercontacttimes import intercontacttimes
 
+
 def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     r"""
     Calculates the bursty coefficient.[1][2]
@@ -30,13 +31,13 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     Returns
     -------
     B : array
-        Bursty coefficienct per (edge or node measure). 
+        Bursty coefficienct per (edge or node measure).
 
 
-    Notes 
-    ------ 
+    Notes
+    ------
 
-    The burstiness coefficent, B, is defined in refs [1,2] as:  
+    The burstiness coefficent, B, is defined in refs [1,2] as:
 
     .. math:: B = {{\sigma_{ICT} - \mu_{ICT}} \over {\sigma_{ICT} + \mu_{ICT}}}
 
@@ -48,10 +49,10 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     Examples
     ---------
 
-    First import all necessary packages 
+    First import all necessary packages
 
-    >>> import teneto  
-    >>> import numpy as np 
+    >>> import teneto
+    >>> import numpy as np
 
     Now create 2 temporal network of 2 nodes and 60 time points. The first has periodict edges, repeating every other time-point:
 
@@ -59,18 +60,18 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     >>> ts_periodic = np.arange(0, 60, 2)
     >>> G_periodic[:,:,ts_periodic] = 1
 
-    The second has a more bursty pattern of edges: 
+    The second has a more bursty pattern of edges:
 
     >>> ts_bursty = [1, 8, 9, 32, 33, 34, 39, 40, 50, 51, 52, 55]
     >>> G_bursty = np.zeros([2, 2, 60])
     >>> G_bursty[:,:,ts_bursty] = 1
 
-    The two networks look like this: 
+    The two networks look like this:
 
     .. plot::
 
-        import numpy as np 
-        import teneto 
+        import numpy as np
+        import teneto
         import matplotlib.pyplot as plt
         ts_bursty = [1, 8, 9, 32, 33, 34, 39, 40, 50, 51, 52, 55]
         G_bursty = np.zeros([2, 2, 60])
@@ -84,13 +85,13 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
         ax[0].set_title('G_bursty')
         ax[1].set_title('G_periodic')
         ax[0].set_ylim([-0.25,1.25])
-        ax[1].set_ylim([-0.25,1.25])        
+        ax[1].set_ylim([-0.25,1.25])
         ax[0].set_xticklabels([])
         ax[1].set_xticklabels([])
         plt.tight_layout()
-        fig.show() 
+        fig.show()
 
-    Now we call bursty_coeff. 
+    Now we call bursty_coeff.
 
     >>> B_periodic = teneto.networkmeasures.bursty_coeff(G_periodic)
     >>> B_periodic
@@ -98,8 +99,8 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
            [-1., nan]])
 
 
-    Above we can see that between node 0 and 1, B=-1 (the diagonal is nan). 
-    Doing the same for the second example: 
+    Above we can see that between node 0 and 1, B=-1 (the diagonal is nan).
+    Doing the same for the second example:
 
     >>> B_bursty = teneto.networkmeasures.bursty_coeff(G_bursty)
     >>> B_bursty
@@ -108,16 +109,17 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
 
     gives a positive value, indicating the inter-contact times between node 0 and 1 is bursty.
 
-    References 
+    References
     ----------
 
     .. [1] Goh, KI & Barabasi, AL (2008) Burstiness and Memory in Complex Systems. EPL (Europhysics Letters), 81: 4 [`Link <https://arxiv.org/pdf/physics/0610233.pdf>`_]
-    .. [2] Holme, P & Saramäki J (2012) Temporal networks. Physics Reports. 519: 3. [`Link <https://arxiv.org/pdf/1108.1780.pdf>`_] (Discrete formulation used here) 
+    .. [2] Holme, P & Saramäki J (2012) Temporal networks. Physics Reports. 519: 3. [`Link <https://arxiv.org/pdf/1108.1780.pdf>`_] (Discrete formulation used here)
 
     """
 
     if calc == 'communities' and not communities:
-        raise ValueError("Specified calc='communities' but no communities argument provided (list of clusters/modules)")
+        raise ValueError(
+            "Specified calc='communities' but no communities argument provided (list of clusters/modules)")
 
     ict = 0  # are ict present
     if isinstance(data, dict):
@@ -140,27 +142,31 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     if isinstance(nodes, list) and len(ict_shape) > 1:
         node_combinations = [[list(set(nodes))[t], list(set(nodes))[tt]] for t in range(
             0, len(nodes)) for tt in range(0, len(nodes)) if t != tt]
-        do_nodes = [np.ravel_multi_index(n, ict_shape) for n in node_combinations]
+        do_nodes = [np.ravel_multi_index(n, ict_shape)
+                    for n in node_combinations]
     else:
         do_nodes = np.arange(0, node_len)
 
     # Reshae ICTs
     if calc == 'node':
-        ict = np.concatenate(data['intercontacttimes'][do_nodes, do_nodes], axis=1)
+        ict = np.concatenate(data['intercontacttimes']
+                             [do_nodes, do_nodes], axis=1)
     elif calc == 'communities':
         unique_communities = np.unique(communities)
-        ict_shape = (len(unique_communities),len(unique_communities))
+        ict_shape = (len(unique_communities), len(unique_communities))
         ict = np.array([[None] * ict_shape[0]] * ict_shape[1])
         for i, s1 in enumerate(unique_communities):
             for j, s2 in enumerate(unique_communities):
                 if s1 == s2:
-                    ind = np.triu_indices(sum(communities==s1),k=1)
-                    ict[i,j] = np.concatenate(data['intercontacttimes'][ind[0],ind[1]])
+                    ind = np.triu_indices(sum(communities == s1), k=1)
+                    ict[i, j] = np.concatenate(
+                        data['intercontacttimes'][ind[0], ind[1]])
                 else:
-                    ict[i,j] = np.concatenate(np.concatenate(data['intercontacttimes'][communities==s1,:][:,communities==s2]))
+                    ict[i, j] = np.concatenate(np.concatenate(
+                        data['intercontacttimes'][communities == s1, :][:, communities == s2]))
         # Quick fix, but could be better
         data['intercontacttimes'] = ict
-        do_nodes = np.arange(0,ict_shape[0]*ict_shape[1])
+        do_nodes = np.arange(0, ict_shape[0]*ict_shape[1])
 
     if len(ict_shape) > 1:
         ict = data['intercontacttimes'].reshape(ict_shape[0] * ict_shape[1])
@@ -170,7 +176,7 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
         ict = [data['intercontacttimes']]
 
     for i in do_nodes:
-        if isinstance(ict[i],np.ndarray):
+        if isinstance(ict[i], np.ndarray):
             mu_ict = np.mean(ict[i])
             sigma_ict = np.std(ict[i])
             b_coeff[i] = (sigma_ict - mu_ict) / (sigma_ict + mu_ict)

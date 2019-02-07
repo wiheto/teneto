@@ -5,13 +5,13 @@ General setup for module
 from setuptools import setup, find_packages
 
 setup(name='teneto',
-      version='0.4.1',
+      version='0.4.2',
       python_requires='>3.5',
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],
       install_requires=[
 		'nilearn>=0.4.0',
-		'pybids>=0.4.2',
+		'pybids>=0.7.1',
         'statsmodels>=0.8.0',
         'networkx>=2.0',
         'python-louvain>=0.13',

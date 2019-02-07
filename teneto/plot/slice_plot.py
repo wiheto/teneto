@@ -1,5 +1,4 @@
 # Main function to draw a slice_graph
-import matplotlib.pyplot as plt
 import numpy as np
 from ..utils import *
 
@@ -20,15 +19,15 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
         nodes labels. List of strings.
     timelabels : list
         labels of dimension Graph is expressed across. List of strings.
-    timeunit : string 
+    timeunit : string
         unit time axis is in.
     linestyle : string
         line style of Bezier curves.
     nodesize : int
         size of nodes
-    nodekwargs : dict 
+    nodekwargs : dict
         any additional kwargs for matplotlib.plt.scatter for the nodes
-    edgekwargs : dict 
+    edgekwargs : dict
         any additional kwargs for matplotlib.plt.plots for the edges
 
 
@@ -40,11 +39,11 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
     Examples
     ---------
 
-    
+
     Create a network with some metadata
 
-    >>> import numpy as np 
-    >>> import teneto 
+    >>> import numpy as np
+    >>> import teneto
     >>> import matplotlib.pyplot as plt
     >>> np.random.seed(2017) # For reproduceability
     >>> N = 5 # Number of nodes
@@ -66,12 +65,12 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
     >>> fig,ax = plt.subplots(figsize=(10,3))
     >>> ax = teneto.plot.slice_plot(C, ax, cmap='Pastel2')
     >>> plt.tight_layout()
-    >>> fig.show() 
+    >>> fig.show()
 
     .. plot::
 
-        import numpy as np 
-        import teneto 
+        import numpy as np
+        import teneto
         import matplotlib.pyplot as plt
         np.random.seed(2017) # For reproduceability
         N = 5 # Number of nodes
@@ -91,17 +90,15 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
         cmap = 'Pastel2'
         ax = teneto.plot.slice_plot(C,ax,cmap=cmap)
         plt.tight_layout()
-        fig.show() 
+        fig.show()
 
 
     '''
     # Get input type (C or G)
     inputType = checkInput(netin)
-    nettype = 'xx'
     # Convert C representation to G
 
     if inputType == 'G':
-        cfg = {}
         netin = graphlet2contact(netin)
         inputType = 'C'
     edgeList = [tuple(np.array(e[0:2]) + e[2] * netin['netshape'][0])
@@ -124,23 +121,22 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
         timelabels = np.arange(1, netin['netshape'][-1] + 1)
     else:
         timelabels = np.arange(netin['t0'], netin['Fs'] *
-                          netin['netshape'][-1] + netin['t0'], netin['Fs'])
+                               netin['netshape'][-1] + netin['t0'], netin['Fs'])
 
     if timeunit == '':
         timeunit = netin['timeunit']
 
     timeNum = len(timelabels)
     nodeNum = len(nodelabels)
-    pos = []
     posy = np.tile(list(range(0, nodeNum)), timeNum)
     posx = np.repeat(list(range(0, timeNum)), nodeNum)
 
     if nodekwargs is None:
-        nodekwargs = {} 
+        nodekwargs = {}
     if edgekwargs is None:
-        edgekwargs = {}  
-    if cmap: 
-        nodekwargs['cmap'] = cmap 
+        edgekwargs = {}
+    if cmap:
+        nodekwargs['cmap'] = cmap
 
     # plt.plot(points)
     # Draw Bezier vectors around egde positions

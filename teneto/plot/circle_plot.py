@@ -1,21 +1,21 @@
 # Main function to draw a slice_graph
-import matplotlib.pyplot as plt
 import numpy as np
 import math
-from .slice_plot import make_bezier, pascal_row
+from .slice_plot import make_bezier
 from ..utils import checkInput, graphlet2contact
 import matplotlib.cm as cm
 
-def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000, cmap='Set2'):
+
+def circle_plot(netIn, ax, nodelabels=None, linestyle='k-', nodesize=1000, cmap='Set2'):
     r'''
 
     Function draws "circle plot" and exports axis handles
 
-    Parameters 
+    Parameters
     -------------
     netIn : temporal network input (graphlet or contact)
     ax : matplotlib ax handles.
-    nodelabels : list 
+    nodelabels : list
         nodes labels. List of strings
     linestyle : str
         line style
@@ -31,8 +31,8 @@ def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000, cmap='S
 
     Example
     -------
-    >>> import teneto 
-    >>> import numpy 
+    >>> import teneto
+    >>> import numpy
     >>> import matplotlib.pyplot as plt
     >>> G = np.zeros([6, 6])
     >>> i = [0, 0, 0, 1, 2, 3, 4]
@@ -44,8 +44,8 @@ def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000, cmap='S
 
     .. plot::
 
-        import teneto 
-        import numpy 
+        import teneto
+        import numpy
         import matplotlib.pyplot as plt
         G = np.zeros([6, 6])
         i = [0, 0, 0, 1, 2, 3, 4]
@@ -58,6 +58,8 @@ def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000, cmap='S
     '''
     # Get input type (C or G)
     inputType = checkInput(netIn, conMat=1)
+    if nodelabels is None:
+        nodelabels = []
     # Convert C representation to G
     if inputType == 'M':
         shape = np.shape(netIn)
@@ -82,9 +84,10 @@ def circle_plot(netIn, ax, nodelabels=[], linestyle='k-', nodesize=1000, cmap='S
     posx = [math.cos((2 * math.pi * i) / n) for i in range(0, n)]
     posy = [math.sin((2 * math.pi * i) / n) for i in range(0, n)]
     # Get Bezier lines in a circle
-    cmap = cm.get_cmap(cmap)(np.linspace(0,1,n))
-    for edge in edgeList :
-        bvx, bvy  =  bezier_circle((posx [edge[0]], posy[edge[0]]), (posx[edge[1]], posy[edge[1]]), 20)
+    cmap = cm.get_cmap(cmap)(np.linspace(0, 1, n))
+    for edge in edgeList:
+        bvx, bvy = bezier_circle(
+            (posx[edge[0]], posy[edge[0]]), (posx[edge[1]], posy[edge[1]]), 20)
         ax.plot(bvx, bvy, linestyle, zorder=0)
     for i in range(n):
         ax.scatter(posx[i], posy[i], s=nodesize, c=cmap[i], zorder=1)

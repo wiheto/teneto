@@ -1,9 +1,8 @@
 import teneto
 import numpy as np
-import pytest
 
 
-def test_topooverlap(): 
+def test_topooverlap():
     # Define test data
     G = np.array(
         [[[0., 0., 0., 0.],
@@ -18,13 +17,18 @@ def test_topooverlap():
     topoover = teneto.networkmeasures.topological_overlap(G)
     # Given the above, the following should be true
     # All edges persit
-    assert topoover[0,0] == 1
+    if not topoover[0, 0] == 1:
+        raise AssertionError()
     # No edges persis
-    assert topoover[1,0] == 0
+    if not topoover[1, 0] == 0:
+        raise AssertionError()
     # When one of two edges persists
-    assert topoover[0,1] == 1 / np.sqrt(2)
+    if not topoover[0, 1] == 1 / np.sqrt(2):
+        raise AssertionError()
     # check size
-    assert topoover.shape[0] == G.shape[0] and topoover.shape[1] == G.shape[-1]
-    topoover_global = teneto.networkmeasures.topological_overlap(G,'global')
+    if not topoover.shape[0] == G.shape[0] and topoover.shape[1] == G.shape[-1]:
+        raise AssertionError()
+    topoover_global = teneto.networkmeasures.topological_overlap(G, 'global')
     # Global = average of topoover default
-    assert np.nanmean(topoover) == topoover_global
+    if not np.nanmean(topoover) == topoover_global:
+        raise AssertionError()

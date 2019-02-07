@@ -1,7 +1,7 @@
 
 import teneto
 import numpy as np
-import pytest 
+import pytest
 
 # def test_sp_error():
 #     G = np.zeros([3, 3, 4])
@@ -51,7 +51,8 @@ import pytest
 #     paths_true[2, 0, 3] = 1
 #     assert (sp['paths'] == paths_true).all()
 
-def test_sp_new(): 
+
+def test_sp_new():
     G = np.zeros([5, 5, 10])
     G[0, 1, [0, 2, 3, 8]] = 1
     G[0, 2, [7, 9]] = 1
@@ -60,34 +61,53 @@ def test_sp_new():
     G[2, 4, [2, 4, 9]] = 1
     G[2, 3, [1, 3, 4, 7]] = 1
     # CHeck output is correct length
-    paths_1step = teneto.networkmeasures.shortest_temporal_path(G,1)
-    paths_all = teneto.networkmeasures.shortest_temporal_path(G,'all')
+    paths_1step = teneto.networkmeasures.shortest_temporal_path(G, 1)
+    paths_all = teneto.networkmeasures.shortest_temporal_path(G, 'all')
     dflen = np.prod(G.shape)-(G.shape[0]*G.shape[2])
-    assert len(paths_all) == dflen == len(paths_1step)
+    if not len(paths_all) == dflen == len(paths_1step):
+        raise AssertionError()
     # Make sure these two are different
-    assert (paths_1step==paths_all).all()['temporal-distance'] == False
+    if not (paths_1step == paths_all).all()['temporal-distance'] == False:
+        raise AssertionError()
     # Check first edge and make sure all works
-    paths_1step = teneto.networkmeasures.shortest_temporal_path(G,1,i=0,j=3,it=0)
-    paths_all = teneto.networkmeasures.shortest_temporal_path(G,'all',i=0,j=3,it=0)
-    paths_2step = teneto.networkmeasures.shortest_temporal_path(G, 2,i=0,j=3,it=0)
+    paths_1step = teneto.networkmeasures.shortest_temporal_path(
+        G, 1, i=0, j=3, it=0)
+    paths_all = teneto.networkmeasures.shortest_temporal_path(
+        G, 'all', i=0, j=3, it=0)
+    paths_2step = teneto.networkmeasures.shortest_temporal_path(
+        G, 2, i=0, j=3, it=0)
     # Currently broken
     # Appears something is going wrong with the 2nd step (I think) - wrong path include
     # But also the temporal-distance measure is broken as it returns the max.
-    paths_1step_topo = teneto.networkmeasures.shortest_temporal_path(G, 2,i=0,j=3,it=0,minimise='topology')
-    assert (paths_all == paths_2step).all().all()
-    assert paths_all['topological-distance'].values == 3
-    assert paths_all['temporal-distance'].values == 2
-    assert paths_1step['topological-distance'].values == 3
-    assert paths_1step['temporal-distance'].values == 4
+    paths_1step_topo = teneto.networkmeasures.shortest_temporal_path(
+        G, 2, i=0, j=3, it=0, minimise='topology')
+    if not (paths_all == paths_2step).all().all():
+        raise AssertionError()
+    if not paths_all['topological-distance'].values == 3:
+        raise AssertionError()
+    if not paths_all['temporal-distance'].values == 2:
+        raise AssertionError()
+    if not paths_1step['topological-distance'].values == 3:
+        raise AssertionError()
+    if not paths_1step['temporal-distance'].values == 4:
+        raise AssertionError()
     # Check a second edge
-    paths_all = teneto.networkmeasures.shortest_temporal_path(G,'all',i=0,j=3,it=3)
-    paths_1step = teneto.networkmeasures.shortest_temporal_path(G,'all',i=0,j=3,it=3)
-    assert paths_all['topological-distance'].values == 2
-    assert paths_all['temporal-distance'].values == 3
-    assert paths_1step['topological-distance'].values == 2
-    assert paths_1step['temporal-distance'].values == 3
+    paths_all = teneto.networkmeasures.shortest_temporal_path(
+        G, 'all', i=0, j=3, it=3)
+    paths_1step = teneto.networkmeasures.shortest_temporal_path(
+        G, 'all', i=0, j=3, it=3)
+    if not paths_all['topological-distance'].values == 2:
+        raise AssertionError()
+    if not paths_all['temporal-distance'].values == 3:
+        raise AssertionError()
+    if not paths_1step['topological-distance'].values == 2:
+        raise AssertionError()
+    if not paths_1step['temporal-distance'].values == 3:
+        raise AssertionError()
     # Check path is correct
-    assert paths_all['path includes'].values[0] == [[0, 1], [1, 3]]
+    if not paths_all['path includes'].values[0] == [[0, 1], [1, 3]]:
+        raise AssertionError()
+
 
 def test_networkmeasures_teff():
     # Test temporal efficiency
@@ -100,11 +120,14 @@ def test_networkmeasures_teff():
     E = teneto.networkmeasures.temporal_efficiency(G)
     sp = teneto.networkmeasures.shortest_temporal_path(G)
     E2 = teneto.networkmeasures.temporal_efficiency(paths=sp)
-    assert E == E2
+    if not E == E2:
+        raise AssertionError()
     # Matrix symmetric so nodal measure is same regardless of how you calculate paths
     EN1 = teneto.networkmeasures.temporal_efficiency(paths=sp, calc='node_to')
-    EN2 = teneto.networkmeasures.temporal_efficiency(paths=sp, calc='node_from')
-    assert all(EN1 == EN2)
+    EN2 = teneto.networkmeasures.temporal_efficiency(
+        paths=sp, calc='node_from')
+    if not all(EN1 == EN2):
+        raise AssertionError()
     # Change G so matrix is directed now index 0 should be less efficient in "from" (this feature isn't implemented in teneto yet)
     #G[0,2,1] = 0
     #EN1 = teneto.networkmeasures.temporal_efficiency(G,calc='node_to')
@@ -114,6 +137,7 @@ def test_networkmeasures_teff():
         teneto.networkmeasures.temporal_efficiency(G, paths=sp)
     with pytest.raises(ValueError):
         teneto.networkmeasures.temporal_efficiency()
+
 
 def test_reachrat():
     # Test temporal efficiency
@@ -126,33 +150,39 @@ def test_reachrat():
     R = teneto.networkmeasures.reachability_latency(G)
     sp = teneto.networkmeasures.shortest_temporal_path(G)
     R2 = teneto.networkmeasures.reachability_latency(paths=sp)
-    assert R == R2
+    if not R == R2:
+        raise AssertionError()
     # Matrix symmetric so nodal measure is same regardless of how you calculate paths
     RN1 = teneto.networkmeasures.reachability_latency(G, calc='nodes')
     RN2 = teneto.networkmeasures.reachability_latency(paths=sp, calc='nodes')
-    assert np.all(RN1 == RN2)
+    if not np.all(RN1 == RN2):
+        raise AssertionError()
     # bad inputs that will raise errors
     with pytest.raises(ValueError):
         teneto.networkmeasures.reachability_latency(G, paths=sp)
     with pytest.raises(ValueError):
         teneto.networkmeasures.reachability_latency()
-        
 
-def test_bet(): 
+
+def test_bet():
     G = np.zeros([5, 5, 3])
-    G[0, 1, [0, 2,]] = 1
+    G[0, 1, [0, 2, ]] = 1
     G[1, 2, [1]] = 1
     G[2, 4, [2]] = 1
     G[2, 3, [1]] = 1
     # CHeck output is correct length
     bet_time = teneto.networkmeasures.temporal_betweenness_centrality(G)
-    bet_global = teneto.networkmeasures.temporal_betweenness_centrality(G,calc='global')
-    assert (np.mean(bet_time,axis=1) == bet_global).all()
+    bet_global = teneto.networkmeasures.temporal_betweenness_centrality(
+        G, calc='global')
+    if not (np.mean(bet_time, axis=1) == bet_global).all():
+        raise AssertionError()
     sp = teneto.networkmeasures.shortest_temporal_path(G)
     with pytest.raises(ValueError):
         teneto.networkmeasures.reachability_latency(G, paths=sp)
     with pytest.raises(ValueError):
         teneto.networkmeasures.reachability_latency()
-    #calculated by looking at G
-    assert bet_global[1] == (3*1/((G.shape[0]-1)*(G.shape[0]-2)))/G.shape[-1]
-    assert bet_global[2] == (6*1/((G.shape[0]-1)*(G.shape[0]-2)))/G.shape[-1]
+    # calculated by looking at G
+    if not bet_global[1] == (3*1/((G.shape[0]-1)*(G.shape[0]-2)))/G.shape[-1]:
+        raise AssertionError()
+    if not bet_global[2] == (6*1/((G.shape[0]-1)*(G.shape[0]-2)))/G.shape[-1]:
+        raise AssertionError()

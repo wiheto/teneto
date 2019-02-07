@@ -7,11 +7,11 @@ derive: different methods to derive dynamic functional connectivity
 
 import numpy as np
 from statsmodels.stats.weightstats import DescrStatsW
-import teneto
-import scipy.stats as sps
 from ..utils import set_diagonal, getDistanceFunction
 from .postprocess import postpro_pipeline
 from .report import gen_report
+import scipy.stats as sps
+
 
 def derive_temporalnetwork(data, params):
     """
@@ -29,10 +29,10 @@ def derive_temporalnetwork(data, params):
     Paramters
     ----------
 
-    data : array 
+    data : array
         Time series data to perform connectivity derivation on. (Default dimensions are: (time as rows, nodes as columns). Change params{'dimord'} if you want it the other way (see below).
-    
-    params : dict 
+
+    params : dict
         Parameters for each method (see below).
 
     Necessary paramters
@@ -52,15 +52,15 @@ def derive_temporalnetwork(data, params):
       See postpro_pipeline for more information.
     dimord : str
         Dimension order: 'node,time' (default) or 'time,node'. People like to represent their data differently and this is an easy way to be sure that you are inputing the data in the correct way.
-    analysis_id : str or int 
+    analysis_id : str or int
         add to identify specfic analysis. Generated report will be placed in './report/' + analysis_id + '/derivation_report.html
-    report : bool 
+    report : bool
         False by default. If true, A report is saved in ./report/[analysis_id]/derivation_report.html if "yes"
-    report_path : str 
-        String where the report is saved. Default is ./report/[analysis_id]/derivation_report.html 
+    report_path : str
+        String where the report is saved. Default is ./report/[analysis_id]/derivation_report.html
 
-    Methods specific parameters 
-    =========================== 
+    Methods specific parameters
+    ===========================
 
     method == "distance"
     ~~~~~~~~~~~~~~~~~~~
@@ -68,23 +68,23 @@ def derive_temporalnetwork(data, params):
     Distance metric calculates 1/Distance metric weights, and scales between 0 and 1.
     W[t,t] is excluded from the scaling and then set to 1.
 
-    params['distance']: str 
+    params['distance']: str
         Distance metric (e.g. 'euclidean'). See teneto.utils.getDistanceFunction for more info
 
     When method == "slidingwindow"
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    params['windowsize'] : int 
+    params['windowsize'] : int
         Size of window.
 
     When method == "taperedslidingwindow"
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    params['windowsize'] : int 
+    params['windowsize'] : int
         Size of window.
-    params['distribution'] : str 
+    params['distribution'] : str
         Scipy distribution (e.g. 'norm','expon'). Any distribution here: https://docs.scipy.org/doc/scipy/reference/stats.html
-    params['distribution_params'] : list 
+    params['distribution_params'] : list
         Each parameter, excluding the data "x" (in their scipy function order) to generate pdf.
 
         NOTE
@@ -110,27 +110,27 @@ def derive_temporalnetwork(data, params):
     When method == "jackknife"
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    No parameters are necessary. 
-    
-    Optional parameters: 
-    
-    params['weight-var'] : array, (optional) 
+    No parameters are necessary.
+
+    Optional parameters:
+
+    params['weight-var'] : array, (optional)
         NxN array to weight the JC estimates (standerdized-JC*W). If weightby is selected, do not standerdize in postpro.
-    params['weight-mean'] : array, (optional) 
+    params['weight-mean'] : array, (optional)
         NxN array to weight the JC estimates (standerdized-JC+W). If weightby is selected, do not standerdize in postpro.
 
 
     Returns
-    -------    
+    -------
 
-    G : array 
+    G : array
         Connectivity estimates (nodes x nodes x time)
 
 
     READ MORE
     ---------
-    About the general weighted pearson approach used for most methods, see: 
-    Thompson & Fransson (2019) A common framework for the problem of deriving estimates of dynamic functional brain connectivity. 
+    About the general weighted pearson approach used for most methods, see:
+    Thompson & Fransson (2019) A common framework for the problem of deriving estimates of dynamic functional brain connectivity.
     Neuroimage. (https://doi.org/10.1016/j.neuroimage.2017.12.057)
 
     SEE ALSO
@@ -153,7 +153,7 @@ def derive_temporalnetwork(data, params):
     if 'postpro' not in params.keys():
         params['postpro'] = 'no'
 
-    if params['report'] == 'yes' or  params['report'] == True:
+    if params['report'] == 'yes' or params['report'] == True:
 
         if 'analysis_id' not in params.keys():
             params['analysis_id'] = ''
@@ -210,7 +210,7 @@ def derive_temporalnetwork(data, params):
 
     # Correct jackknife direction
     if params['method'] == 'jackknife':
-        # Correct inversion 
+        # Correct inversion
         R = R * -1
         jc_z = 0
         if 'weight-var' in params.keys():
@@ -218,21 +218,19 @@ def derive_temporalnetwork(data, params):
             R = (R - R.mean(axis=0)) / R.std(axis=0)
             jc_z = 1
             R = R * params['weight-var']
-            R = R.transpose([1,2,0])
+            R = R.transpose([1, 2, 0])
         if 'weight-mean' in params.keys():
             R = np.transpose(R, [2, 0, 1])
             if jc_z == 0:
                 R = (R - R.mean(axis=0)) / R.std(axis=0)
             R = R + params['weight-mean']
             R = np.transpose(R, [1, 2, 0])
-        R = set_diagonal(R,1)
-
-
+        R = set_diagonal(R, 1)
 
     if params['postpro'] != 'no':
         R, report = postpro_pipeline(
             R, params['postpro'], report)
-        R = set_diagonal(R,1)
+        R = set_diagonal(R, 1)
 
     if params['report'] == 'yes' or params['report'] == True:
         gen_report(report, params['report_path'], params['report_filename'])
@@ -240,8 +238,8 @@ def derive_temporalnetwork(data, params):
 
 
 def _weightfun_jackknife(T, report):
-    """ 
-    Creates the weights for the jackknife method. See func: teneto.derive.derive. 
+    """
+    Creates the weights for the jackknife method. See func: teneto.derive.derive.
     """
 
     weights = np.ones([T, T])
@@ -252,8 +250,8 @@ def _weightfun_jackknife(T, report):
 
 
 def _weightfun_sliding_window(T, params, report):
-    """ 
-    Creates the weights for the sliding window method. See func: teneto.derive.derive. 
+    """
+    Creates the weights for the sliding window method. See func: teneto.derive.derive.
     """
     weightat0 = np.zeros(T)
     weightat0[0:params['windowsize']] = np.ones(params['windowsize'])
@@ -266,8 +264,8 @@ def _weightfun_sliding_window(T, params, report):
 
 
 def _weightfun_tapered_sliding_window(T, params, report):
-    """ 
-    Creates the weights for the tapered method. See func: teneto.derive.derive. 
+    """
+    Creates the weights for the tapered method. See func: teneto.derive.derive.
     """
     x = np.arange(-(params['windowsize'] - 1) / 2, (params['windowsize']) / 2)
     distribution_parameters = ','.join(map(str, params['distribution_params']))
@@ -286,8 +284,8 @@ def _weightfun_tapered_sliding_window(T, params, report):
 
 
 def _weightfun_spatial_distance(data, params, report):
-    """ 
-    Creates the weights for the spatial distance method. See func: teneto.derive.derive. 
+    """
+    Creates the weights for the spatial distance method. See func: teneto.derive.derive.
     """
     distance = getDistanceFunction(params['distance'])
     weights = np.array([distance(data[n, :], data[t, :]) for n in np.arange(
@@ -302,8 +300,8 @@ def _weightfun_spatial_distance(data, params, report):
 
 
 def _temporal_derivative(data, params, report):
-    """ 
-    Performs mtd method. See func: teneto.derive.derive. 
+    """
+    Performs mtd method. See func: teneto.derive.derive.
     """
     # Data should be timexnode
     report = {}

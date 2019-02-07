@@ -3,8 +3,7 @@ Network mesures: temporal degree centrality
 """
 
 import numpy as np
-import warnings
-from ..utils import process_input, set_diagonal
+from ..utils import process_input
 
 
 def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay=0, ignorediagonal=True):
@@ -17,24 +16,24 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
 
     net : array, dict
         Temporal network input (graphlet or contact). Can have nettype: 'bu', 'bd', 'wu', 'wd'
-    axis : int 
+    axis : int
         Dimension that is returned 0 or 1 (default 0).
         Note, only relevant for directed networks.
         i.e. if 0, node i has Aijt summed over j and t.
         and if 1, node j has Aijt summed over i and t.
     calc : str
-        Can be following alternatives: 
+        Can be following alternatives:
 
         'avg' : (returns temporal degree centrality (a 1xnode vector))
-        
+
         'time' : (returns a node x time matrix),
-        
-        'module_degree_zscore' : returns the Z-scored within community degree centrality 
+
+        'module_degree_zscore' : returns the Z-scored within community degree centrality
         (communities argument required). This is done for each time-point
         i.e. 'time' returns static degree centrality per time-point.
-    
+
     ignorediagonal: bool
-        if true, diagonal is made to 0. 
+        if true, diagonal is made to 0.
     communities : array (Nx1)
         Vector of community assignment.
         If this is given and calc='time', then the strength within and between each communities is returned (technically not degree centrality).
@@ -55,24 +54,24 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
 
     # Get input in right format
     tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
-    if axis == 1: 
+    if axis == 1:
         fromax = 'j'
         toax = 'i'
-    else: 
+    else:
         fromax = 'i'
         toax = 'j'
     if tnet.nettype[0] == 'b':
         tnet.network['weight'] = 1
-    # Diagonal is currently deleted. 
+    # Diagonal is currently deleted.
     # if ignorediagonal:
     #     tnet = set_diagonal(tnet, 0)
     # sum sum tnet
     if calc == 'time' and communities is None:
-        # Return node,time 
+        # Return node,time
         tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
         df = tnet.network.groupby([fromax, 't']).sum().reset_index()
         tdeg[df[fromax], df['t']] = df['weight']
-        # If undirected, do reverse 
+        # If undirected, do reverse
         if tnet.nettype[1] == 'u':
             df = tnet.network.groupby([toax, 't']).sum().reset_index()
             tdeg[df[toax], df['t']] += df['weight']
@@ -80,15 +79,15 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
         raise ValueError(
             'Communities must be specified when calculating module degree z-score.')
     elif calc != 'time' and communities is None:
-        # Return node 
+        # Return node
         tdeg = np.zeros([tnet.netshape[0]])
         # Strength if weighted
         df = tnet.network.groupby([fromax])['weight'].sum().reset_index()
-        tdeg[df[fromax]] += df['weight']        
-        # If undirected, do reverse 
+        tdeg[df[fromax]] += df['weight']
+        # If undirected, do reverse
         if tnet.nettype[1] == 'u':
             df = tnet.network.groupby([toax])['weight'].sum().reset_index()
-            tdeg[df[toax]] += df['weight']   
+            tdeg[df[toax]] += df['weight']
     elif calc == 'module_degree_zscore' and communities is not None:
         tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
         for t in range(tnet.netshape[1]):
@@ -97,7 +96,8 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
             else:
                 C = communities
             for c in np.unique(C):
-                k_i = np.sum(tnet.df_to_array()[:, C == c, t][C == c], axis=axis)
+                k_i = np.sum(tnet.df_to_array()[
+                             :, C == c, t][C == c], axis=axis)
                 tdeg[C == c, t] = (k_i - np.mean(k_i)) / np.std(k_i)
         tdeg[np.isnan(tdeg) == 1] = 0
     elif calc == 'time' and communities is not None:
