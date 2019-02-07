@@ -2,7 +2,7 @@
 FROM continuumio/anaconda3
 
 # Dockerfile author / maintainer
-MAINTAINER William H Thompson <hedley@startmail.com>
+LABEL author='William H Thompson <hedley@startmail.com>'
 
 # Update
 RUN apt-get update && apt-get install -y \
@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
   libfontconfig1 \
   libxrender1 \ 
   python-matplotlib \
-  python-qt4
+  python-qt4 
+  
 
 ENV DISPLAY :0
 RUN pip install pip==19.0.1 
