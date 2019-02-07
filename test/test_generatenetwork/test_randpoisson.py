@@ -18,10 +18,13 @@ def test_make_randpoisson():
     np.random.seed(2019)
     tnet = teneto.generatenetwork.rand_poisson(3, 5, 5)
     # Check there are three nodes.
-    assert tnet.shape[0] == 3
+    if not tnet.shape[0] == 3:
+        raise AssertionError()
     # Make sure the degree centrality is 5
     ind = np.triu_indices(3, k=1)
-    assert (tnet.sum(axis=-1)[ind[0], ind[1]] == [5, 5, 5]).all()
+    if not (tnet.sum(axis=-1)[ind[0], ind[1]] == [5, 5, 5]).all():
+        raise AssertionError()
     C = teneto.generatenetwork.rand_poisson(
         3, 5, 5, nettype='bd', netrep='contact')
-    assert C['nettype'] == 'bd'
+    if not C['nettype'] == 'bd':
+        raise AssertionError()
