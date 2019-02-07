@@ -1,5 +1,4 @@
 import teneto
-import matplotlib.pyplot as plt
 
 
 def test_suffixstripping():
