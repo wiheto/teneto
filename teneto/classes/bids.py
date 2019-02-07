@@ -791,7 +791,6 @@ class TenetoBIDS:
             # Bad file if the number of ratio bad points are greater than the tolerance.
             if badpoints_n / np.array(len(df)) > tol:
                 bad_files.append(files[i])
-                gs = 0
             nonnanind = np.where(np.isnan(data[0, :]) == 0)[0]
             nanind = nanind[nanind > nonnanind.min()]
             nanind = nanind[nanind < nonnanind.max()]
