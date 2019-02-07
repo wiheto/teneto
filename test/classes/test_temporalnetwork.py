@@ -44,10 +44,6 @@ def test_errors():
         tnet.calc_networkmeasure('skmdla')
     with pytest.raises(ValueError):
         tnet.generatenetwork('skmdla')
-    with pytest.raises(ValueError):
-        tnet.plot('skmdla')
-    with pytest.raises(ValueError):
-        tnet._check_input(datain=edgelist, datatype='skmdla')
 
 
 def test_define_tnet_unweighted():
