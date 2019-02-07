@@ -123,7 +123,7 @@ def test_networkmeasure():
 #     tnet.load_timelocked_data('volatility')
 #     if not np.all(np.squeeze(tnet.timelocked_data_) == np.squeeze(tnet.networkmeasure_[0, 0:3]))
 #:
-# raise AssertionError()                  
+# raise AssertionError()
 
 
 def test_tnet_derive_with_removeconfounds():

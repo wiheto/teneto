@@ -281,7 +281,7 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 
 -   Added Gordon2014_333 parcellation
 
--   Renamed parcellations to [firstauthor][publicationyear]\_[numberofrois]
+-   Renamed parcellations to \[firstauthor\]\[publicationyear\]\_\[numberofrois\]
 
 -   Added more documentation to functions
 
@@ -335,8 +335,7 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 
 -   Added `utils.load_parcellation`
 
--   Folder ./data is also included with teneto, at the moment shen2013_tal parcellation is included there. (This is currently under development). And may change name to specify that this has to 
-    do with brain research.
+-   Folder ./data is also included with teneto, at the moment shen2013_tal parcellation is included there. (This is currently under development). And may change name to specify that this has to do with brain research.
 -   Added decay parameter to degree_centrality
 
 -   Added additional names to 'multiple temporal derivative' method
@@ -484,5 +483,4 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 -   Measures, misc, plot, utils folders added.
 
 -   All measures outlined in From static to temporal network theory paper are added.  (temporal efficiency, closeness centrality, bursty coefficient, reachability latency, intercontactitmes, shortest temporal path, fluctuability, volatility)
-
 -   Circle_plot and slice_graph added.

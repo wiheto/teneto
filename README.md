@@ -42,6 +42,6 @@ For a list of contributers to teneto, see:  [teneto.readthedocs.io](https://tene
 
 ## Cite
 
-If using this, please cite us. At present we do not have a dedicated article about teneto, but you can cite the software using the Zenendo DOI [https://doi.org/10.5281/zenodo.2535993] and/or the article where teneto is introduced, along with a considerable discussion about many of the measures in teneto:
+If using this, please cite us. At present we do not have a dedicated article about teneto, but you can cite the software using the Zenendo DOI [https://doi.org/10.5281/zenodo.2535993][] and/or the article where teneto is introduced, along with a considerable discussion about many of the measures in teneto:
 
 Thompson et al (2017) "From static to temporal network theory applications to functional brain connectivity." _Network Neuroscience_, 2: 1. p.69-99  [Link](https://www.mitpressjournals.org/doi/abs/10.1162/NETN_a_00011)

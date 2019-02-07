@@ -55,13 +55,13 @@ class TemporalNetwork:
             raise ValueError('Cannot import from two sources at once.')
 
         if from_array is not None:
-            self._check_input(from_array, 'array')
+            self.check_TemporalNetwork_input(from_array, 'array')
 
         if from_dict is not None:
-            self._check_input(from_dict, 'dict')
+            self.check_TemporalNetwork_input(from_dict, 'dict')
 
         if from_edgelist is not None:
-            self._check_input(from_edgelist, 'edgelist')
+            self.check_TemporalNetwork_input(from_edgelist, 'edgelist')
 
         if N:
             if not isinstance(N, int):
@@ -187,7 +187,7 @@ class TemporalNetwork:
         """
         if len(array.shape) == 2:
             array = np.array(array, ndmin=3).transpose([1, 2, 0])
-        self._check_input(array, 'array')
+        self.check_TemporalNetwork_input(array, 'array')
         uvals = np.unique(array)
         if len(uvals) == 2 and 1 in uvals and 0 in uvals:
             i, j, t = np.where(array == 1)
@@ -220,7 +220,7 @@ class TemporalNetwork:
             Pandas dataframe. Should have columns: \'i\', \'j\', \'t\' where i and j are node indicies and t is the temporal index.
             If weighted, should also include \'weight\'. Each row is an edge.
         """
-        self._check_input(df, 'df')
+        self.check_TemporalNetwork_input(df, 'df')
         self.network = df
         self._update_network()
 
@@ -234,7 +234,7 @@ class TemporalNetwork:
             A list of lists which are 3 or 4 in length. For binary networks each sublist should be [i, j ,t] where i and j are node indicies and t is the temporal index.
             For weighted networks each sublist should be [i, j, t, weight].
         """
-        self._check_input(edgelist, 'edgelist')
+        self.check_TemporalNetwork_input(edgelist, 'edgelist')
         if len(edgelist[0]) == 4:
             colnames = ['i', 'j', 't', 'weight']
         elif len(edgelist[0]) == 3:
@@ -244,7 +244,7 @@ class TemporalNetwork:
 
     def network_from_dict(self, contact):
 
-        self._check_input(contact, 'dict')
+        self.check_TemporalNetwork_input(contact, 'dict')
         self.network = pd.DataFrame(
             contact['contacts'], columns=['i', 'j', 't'])
         if 'values' in contact:
@@ -293,34 +293,6 @@ class TemporalNetwork:
 
             self.netshape = (int(N), int(T))
 
-    def _check_input(self, datain, datatype):
-        if datatype == 'edgelist':
-            if not isinstance(datain, list):
-                raise ValueError('edgelist should be list')
-            if all([len(e) == 3 for e in datain]) or all([len(e) == 4 for e in datain]):
-                pass
-            else:
-                raise ValueError(
-                    'Each member in edgelist should all be a list of length 3 (i,j,t) or 4 (i,j,t,w)')
-        elif datatype == 'array':
-            if not isinstance(datain, np.ndarray):
-                raise ValueError('Array should be numpy array')
-            if len(datain.shape) == 2 or len(datain.shape) == 3:
-                pass
-            else:
-                raise ValueError('Input array must be 2 or 3 dimensional')
-        elif datatype == 'dict':
-            if not isinstance(datain, dict):
-                raise ValueError('Contact should be dictionary')
-            if 'contacts' not in datain:
-                raise ValueError('Key \'contacts\' should be in dictionary')
-        elif datatype == 'df':
-            if not isinstance(datain, pd.DataFrame):
-                raise ValueError('Input should be Pandas Dataframe')
-            if ('i' and 'j' and 't') not in datain:
-                raise ValueError('Columns must be \'i\' \'j\' and \'t\'')
-        else:
-            raise ValueError('Unknown datatype')
 
     def add_edge(self, edgelist):
         """
@@ -338,7 +310,7 @@ class TemporalNetwork:
         """
         if not isinstance(edgelist[0], list):
             edgelist = [edgelist]
-        self._check_input(edgelist, 'edgelist')
+        self.check_TemporalNetwork_input(edgelist, 'edgelist')
         if len(edgelist[0]) == 4:
             colnames = ['i', 'j', 't', 'weight']
         elif len(edgelist[0]) == 3:
@@ -375,7 +347,7 @@ class TemporalNetwork:
         """
         if not isinstance(edgelist[0], list):
             edgelist = [edgelist]
-        self._check_input(edgelist, 'edgelist')
+        self.check_TemporalNetwork_input(edgelist, 'edgelist')
         if self.hdf5:
             with pd.HDFStore(self.network) as hdf:
                 for e in edgelist:
