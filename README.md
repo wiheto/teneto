@@ -1,7 +1,7 @@
 # Teneto
 
 [![Documentation Status](https://readthedocs.org/projects/teneto/badge/?version=latest)](http://teneto.readthedocs.io/en/latest/?badge=latest)
-[![PyPI version](https://badge.fury.io/py/Teneto.svg)](https://badge.fury.io/py/Teneto)
+[![PyPI version](https://badge.fury.io/py/teneto.svg)](https://badge.fury.io/py/teneto)
 [![Build Status](https://travis-ci.org/wiheto/teneto.svg?branch=master)](https://travis-ci.org/wiheto/teneto)
 [![Coverage Status](https://coveralls.io/repos/github/wiheto/teneto/badge.svg?branch=master)](https://coveralls.io/github/wiheto/teneto?branch=master)
 [![DOI](https://zenodo.org/badge/61498436.svg)](https://zenodo.org/badge/latestdoi/61498436)
