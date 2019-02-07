@@ -17,8 +17,8 @@ RUN apt-get update && apt-get install -y \
   python-qt4
 
 ENV DISPLAY :0
-RUN pip install --upgrade pip
-RUN pip install git+https://github.com/wiheto/teneto.git
+RUN pip install pip==19.0.1 
+RUN pip install git+https://github.com/wiheto/teneto.git@0.4.0
 RUN mkdir -p /root/.config/matplotlib
 RUN echo "backend : Agg" > /root/.config/matplotlib/matplotlibrc
 ENTRYPOINT /bin/sh
