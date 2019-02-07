@@ -60,9 +60,12 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
         nxsupra_old = nxsupra
         print('Doing CM')
         nxsupra = make_consensus_matrix(comtmp, consensus_threshold)
-        if (nx.to_numpy_array(nxsupra) == nx.to_numpy_array(nxsupra_old)).all():
+        # If there was no consensus, there are no communities possible, return
+        if nxsupra is None:
             break
-    # TODO Add temporal consensus (greedy jaccard)
+        print(nx.to_numpy_array(nxsupra).shape)
+        if (nx.to_numpy_array(nxsupra, nodelist=np.arange(tnet.N*tnet.T)) == nx.to_numpy_array(nxsupra_old, nodelist=np.arange(tnet.N*tnet.T))).all():
+            break
     communities = comtmp[:, :, 0]
     print('Doing CTM')
     if temporal_concsensus == True:
@@ -91,6 +94,7 @@ def make_consensus_matrix(com_membership, th=0.5):
     """
 
     com_membership = np.array(com_membership)
+    print(com_membership.shape)
     D = []
     for i in range(com_membership.shape[0]):
         for j in range(i+1, com_membership.shape[0]):
@@ -99,11 +103,14 @@ def make_consensus_matrix(com_membership, th=0.5):
             twhere = np.where(con > th)[0]
             D += list(zip(*[np.repeat(i, len(twhere)).tolist(), np.repeat(j,
                                                                           len(twhere)).tolist(), twhere.tolist(), con[twhere].tolist()]))
-
-    D = pd.DataFrame(D, columns=['i', 'j', 't', 'weight'])
-    D = TemporalNetwork(from_df=D)
-    D = create_supraadjacency_matrix(D, intersliceweight=0)
-    Dnx = tnet_to_nx(D)
+    if len(D) > 0:
+        D = pd.DataFrame(D, columns=['i', 'j', 't', 'weight'])
+        D = TemporalNetwork(
+            from_df=D, N=com_membership.shape[0], T=com_membership.shape[0])
+        D = create_supraadjacency_matrix(D, intersliceweight=0)
+        Dnx = tnet_to_nx(D)
+    else:
+        Dnx = None
     return Dnx
 
 

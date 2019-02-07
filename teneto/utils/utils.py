@@ -1107,7 +1107,11 @@ def create_supraadjacency_matrix(tnet, intersliceweight=1):
     timepointconns['i'] = np.arange(0, (tnet.N*tnet.T)-tnet.N)
     timepointconns['j'] = np.arange(tnet.N, (tnet.N*tnet.T))
     timepointconns['weight'] = intersliceweight
-    supranet = pd.concat([newnetwork, timepointconns]).reset_index(drop=True)
+    selfcons = pd.DataFrame()
+    selfcons['i'] = np.arange(0, (tnet.N*tnet.T))
+    selfcons['j'] = np.arange(0, (tnet.N*tnet.T))
+    selfcons['weight'] = intersliceweight
+    supranet = pd.concat([newnetwork, timepointconns, selfcons]).reset_index(drop=True)
     return supranet
 
 
