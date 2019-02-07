@@ -179,4 +179,4 @@ todo_include_todos = True
 
 numpydoc_show_class_members = False 
 # MOCK MODULESS
-#autodoc_mock_imports = ['numpy', 'scipy', 'bids', 'igraph', 'louvain', 'python-igraph','seaborn', 'matplotlib.pyplot', 'pandas','scipy','nilearn']
+autodoc_mock_imports = ['numpy', 'scipy', 'bids']
