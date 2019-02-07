@@ -18,6 +18,8 @@
 
 -   Improved code quality.
 
+-   Codacy checks added.
+
 ## V0.4.1
 
 -   More documentation
@@ -481,6 +483,5 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 ## v0.1 - Released Dec 23 2016
 
 -   Measures, misc, plot, utils folders added.
-
 -   All measures outlined in From static to temporal network theory paper are added.  (temporal efficiency, closeness centrality, bursty coefficient, reachability latency, intercontactitmes, shortest temporal path, fluctuability, volatility)
 -   Circle_plot and slice_graph added.
