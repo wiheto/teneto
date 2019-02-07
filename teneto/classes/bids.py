@@ -5,7 +5,6 @@ import re
 from bids import BIDSLayout
 import numpy as np
 import inspect
-import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import json
@@ -778,8 +777,6 @@ class TenetoBIDS:
             data = load_tabular_file(files[i]).values
             df = load_tabular_file(cfile, index_col=None)
             ind = []
-            # Is set to 1 if subject should be saved ("goodsubject")
-            gs = 1
             # Can't interpolate values if nanind is at the beginning or end. So keep these as their original values.
             for ci, c in enumerate(confound):
                 ind = df[rel[ci](df[c], crit[ci])].index
@@ -822,7 +819,7 @@ class TenetoBIDS:
             if 'desc' in sname and desc:
                 desctag = get_bids_tag(sname.split('/')[-1], 'desc')
                 sname = ''.join(sname.split('desc-' + desctag['desc']))
-                sname + '_desc-' + desc
+                sname += '_desc-' + desc
             if os.path.exists(sname + self.bids_suffix + '.tsv') and overwrite == False:
                 raise ValueError(
                     'overwrite is set to False, but non-unique filename. Set unique desc tag')
@@ -1152,7 +1149,7 @@ class TenetoBIDS:
         if 'desc' in sname and tag:
             desctag = get_bids_tag(sname.split('/')[-1], 'desc')
             sname = ''.join(sname.split('desc-' + desctag['desc']))
-            sname + '_desc-' + tag
+            sname += '_desc-' + tag
         if os.path.exists(sname + self.bids_suffix + '.tsv') and overwrite == False:
             raise ValueError(
                 'overwrite is set to False, but non-unique filename. Set unique desc tag')

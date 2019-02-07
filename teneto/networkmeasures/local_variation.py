@@ -4,7 +4,6 @@ networkmeasures.local_variation
 
 import numpy as np
 from .intercontacttimes import intercontacttimes
-from ..utils import set_diagonal
 
 
 def local_variation(data):

@@ -1,3 +1,9 @@
+"""
+
+Utiltity functions
+
+"""
+
 import numpy as np
 import collections
 import scipy.spatial.distance as distance
@@ -8,12 +14,6 @@ from .. import __path__ as tenetopath
 from ..classes import TemporalNetwork
 import json
 import pandas as pd
-
-"""
-
-Couple of utiltity functions for teneto for converting between graphlet and contact sequence representations
-
-"""
 
 
 def graphlet2contact(G, params=None):
@@ -616,7 +616,6 @@ def process_input(netIn, allowedformats, outputformat='G'):
         G = contact2graphlet(netIn)
         netInfo = dict(netIn)
         netInfo.pop('contacts')
-        nettype = netIn['nettype']
     elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'TN':
         TN = TemporalNetwork(from_dict=netIn)
     elif inputtype == 'G' and 'G' in allowedformats and outputformat == 'TN':

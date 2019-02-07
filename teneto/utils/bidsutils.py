@@ -3,7 +3,6 @@ import time
 import pandas as pd
 import os
 import json
-import time
 
 
 def make_new_description_string():
