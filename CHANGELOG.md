@@ -4,6 +4,8 @@
 
 -   Added Schaefer atlas
 
+-   Fixed error in temporal_louvain/consensus matrix where labels were getting incorrectly sorted.
+
 ## V0.4.2
 
 -   Fixed a bug in load data of TenetoBIDS when loading networkmeasures from multiple subjects (error was thrown).
