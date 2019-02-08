@@ -94,7 +94,6 @@ def make_consensus_matrix(com_membership, th=0.5):
     """
 
     com_membership = np.array(com_membership)
-    print(com_membership.shape)
     D = []
     for i in range(com_membership.shape[0]):
         for j in range(i+1, com_membership.shape[0]):
@@ -103,6 +102,7 @@ def make_consensus_matrix(com_membership, th=0.5):
             twhere = np.where(con > th)[0]
             D += list(zip(*[np.repeat(i, len(twhere)).tolist(), np.repeat(j,
                         len(twhere)).tolist(), twhere.tolist(), con[twhere].tolist()]))
+    del com_membership
     if len(D) > 0:
         D = pd.DataFrame(D, columns=['i', 'j', 't', 'weight'])
         D = TemporalNetwork(from_df=D)

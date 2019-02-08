@@ -4,6 +4,8 @@
 
 -   Added Schaefer atlas
 
+-   Added SUIT atlas
+
 -   Fixed error in temporal_louvain/consensus matrix where labels were getting incorrectly sorted.
 
 ## V0.4.2
