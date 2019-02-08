@@ -14,7 +14,6 @@
 #
 import os
 import sys
-from unittest.mock import MagicMock
 
 # -- Project information -----------------------------------------------------
 
@@ -183,10 +182,3 @@ numpydoc_show_class_members = False
 #autodoc_mock_imports = ['numpy', 'scipy', 'bids']
 
 
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-            return MagicMock()
-
-MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse', 'numpy', 'pandas']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
