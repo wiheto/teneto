@@ -13,6 +13,7 @@ install:
   - pip install pytest-cov
   - pip install pyqt5
   - pip install coala
+  - pip install coala-bears
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
