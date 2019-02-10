@@ -1,5 +1,5 @@
 import networkx as nx
-from .utils import get_network_when  
+from .utils import get_network_when
 
 
 def tnet_to_nx(df, t=None):
@@ -14,4 +14,3 @@ def tnet_to_nx(df, t=None):
     else:
         nxobj = nx.from_pandas_edgelist(df, source='i', target='j')
     return nxobj
-  
