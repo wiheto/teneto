@@ -1,0 +1,5 @@
+[all.python]
+bears = PyLintBear
+files = **.py
+[all.travis]
+bears = TravisLintBear
