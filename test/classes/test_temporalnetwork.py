@@ -142,3 +142,16 @@ def test_plot():
     tnet = teneto.TemporalNetwork()
     tnet.generatenetwork('rand_binomial', size=(5, 10), prob=1)
     tnet.plot('graphlet_stack_plot')
+
+def test_metadata():
+    tnet = teneto.TemporalNetwork(nodelabels=['A','B','C'], timelabels=[0,1,2], desc='test meta data', starttime=0, timeunit='au')
+    if not tnet.nodelabels == ['A','B','C']: 
+        raise AssertionError()
+    if not tnet.timelabels == [0,1,2]: 
+        raise AssertionError()
+    if not tnet.starttime == 0: 
+        raise AssertionError()
+    if not tnet.desc == 'test meta data': 
+        raise AssertionError()
+    if not tnet.timeunit == 'au': 
+        raise AssertionError()
