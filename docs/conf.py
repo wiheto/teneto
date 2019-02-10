@@ -22,9 +22,9 @@ copyright = '2018, William Hedley Thompson'
 author = 'William Hedley Thompson'
 
 # The short X.Y version
-version = '0.4.2'
+version = '0.4.3'
 # The full version, including alpha/beta/rc tags
-release = '0.4.2'
+release = '0.4.3'
 
 
 # -- General configuration ---------------------------------------------------
