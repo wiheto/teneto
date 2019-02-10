@@ -26,3 +26,8 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Sphinx documentation
+docs/_build/
+
+
