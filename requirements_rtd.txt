@@ -10,3 +10,4 @@ sphinx-automodapi>=0.9
 networkx>=2.0
 python-louvain>=0.13
 matplotlib==2.2.0
+sklearn>=0.19.1

@@ -179,6 +179,6 @@ todo_include_todos = True
 
 numpydoc_show_class_members = False 
 # MOCK MODULESS
-autodoc_mock_imports = ['sklearn']
+#autodoc_mock_imports = ['numpy', 'scipy', 'bids']
 
 
