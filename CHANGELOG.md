@@ -8,6 +8,10 @@
 
 -   Fixed error in temporal_louvain/consensus matrix where labels were getting incorrectly sorted.
 
+-   Adding temporalcommunity module. 
+
+-   Adding flexibility to temporalcommunity
+
 ## V0.4.2
 
 -   Fixed a bug in load data of TenetoBIDS when loading networkmeasures from multiple subjects (error was thrown).
