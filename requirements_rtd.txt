@@ -11,3 +11,4 @@ networkx>=2.0
 python-louvain>=0.13
 matplotlib==2.2.0
 scikit-learn>=0.19.1
+blosc>=1.7.0
