@@ -2,4 +2,4 @@
 omit = 
 	*__init__*
 	*site-packages/*
-	tests/*
+	test/*
