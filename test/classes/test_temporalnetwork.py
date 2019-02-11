@@ -167,4 +167,12 @@ def test_hdf5():
     df2 = pd.read_hdf('./teneto_temporalnetwork.h5')
     if not (df==df2).all().all(): 
         raise AssertionError()
-        
+    tnet.add_edge([0,2,2])
+    df3 = pd.read_hdf('./teneto_temporalnetwork.h5')
+    if not (df3.iloc[2].values==[0,2,2]).all(): 
+        raise AssertionError()
+    tnet.drop_edge([0,2,2])
+    df4 = pd.read_hdf('./teneto_temporalnetwork.h5')
+    if not (df==df4).all().all(): 
+        raise AssertionError()
+    
