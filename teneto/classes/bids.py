@@ -481,9 +481,9 @@ class TenetoBIDS:
             pipeline_subdir_alternatives = []
             for s in self.bids_tags['sub']:
                 derdir_files = os.listdir(
-                    self.BIDS_dir + '/derivatives/' + self.pipeline + '/' + s + '/')
+                    self.BIDS_dir + '/derivatives/' + self.pipeline + '/sub-' + s + '/func/')
                 pipeline_subdir_alternatives += [
-                    f for f in derdir_files if os.path.isdir(f)]
+                    f for f in derdir_files if os.path.isdir(self.BIDS_dir + '/derivatives/' + self.pipeline + '/sub-' + s + '/func/' + f)]
             pipeline_subdir_alternatives = set(pipeline_subdir_alternatives)
             if quiet == 0:
                 print('Pipeline_subdir alternatives: ' +

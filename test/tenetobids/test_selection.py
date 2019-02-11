@@ -55,6 +55,18 @@ def test_get_pipeline_alternatives():
     if not 'teneto-tests' in pipeline:
         raise AssertionError()
 
+def test_get_pipeline_subdir_alternatives():
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',
+                             pipeline='teneto-tests', bids_tags={'task': 'a'}, raw_data_exists=False)
+    subdir = tnet.get_pipeline_subdir_alternatives()
+    if not 'parcellation' in subdir:
+        raise AssertionError()
+    if not 'tvc' in subdir:
+        raise AssertionError()
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', bids_tags={'task': 'a'}, raw_data_exists=False)
+    subdir = tnet.get_pipeline_subdir_alternatives()
+    if not subdir is None:
+        raise AssertionError()
 
 def test_set_bad_subjects():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',

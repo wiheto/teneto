@@ -16,6 +16,8 @@
 
 -   Adding communities option to load_data.
 
+-   Fix to TenetoBIDS.get_pipeline_subdir_alternatives
+
 ## V0.4.2
 
 -   Fixed a bug in load data of TenetoBIDS when loading networkmeasures from multiple subjects (error was thrown).
