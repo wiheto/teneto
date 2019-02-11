@@ -175,3 +175,57 @@ def test_hdf5():
     df4 = pd.read_hdf('./teneto_temporalnetwork.h5')
     if not (df == df4).all().all():
         raise AssertionError()
+
+
+def test_hdf5_getnetwokwhen():
+    df = pd.DataFrame({'i': [0, 1], 'j': [1, 2], 't': [0, 1]})
+    tnet = teneto.TemporalNetwork(from_df=df, hdf5=True)
+    dfcheck = tnet.get_network_when(i=0) 	
+    if not (dfcheck.values == [0,1,0]).all():
+        raise AssertionError()
+    dfcheck = tnet.get_network_when(i=0,j=1,t=0,logic='and') 	
+    if not (dfcheck.values == [0,1,0]).all():
+        raise AssertionError()
+    dfcheck = tnet.get_network_when(i=0,j=1,t=1,logic='or') 	
+    if not (dfcheck.values == [[0, 1, 0],[1, 2, 1]]).all():
+        raise AssertionError()
+    dfcheck = tnet.get_network_when(t=0) 	
+    if not (dfcheck.values == [0,1,0]).all():
+        raise AssertionError()
+    dfcheck = tnet.get_network_when(ij=1) 	
+    if not (dfcheck.values == [[0, 1, 0],[1, 2, 1]]).all():
+        raise AssertionError()
+
+
+
+
+        elif ij is not None and t is not None and logic == 'and':
+            isinstr = '(i in ' + str(ij) + ' | ' + 'j in ' + \
+                str(ij) + ') & ' + 't in ' + str(t)
+        elif ij is not None and t is not None and logic == 'or':
+            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + \
+                str(ij) + ' | ' + 't in ' + str(t)
+        elif i is not None and j is not None and logic == 'and':
+            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + str(j)
+        elif i is not None and t is not None and logic == 'and':
+            isinstr = 'i in ' + str(i) + ' & ' + 't in ' + str(t)
+        elif j is not None and t is not None and logic == 'and':
+            isinstr = 'j in ' + str(j) + ' & ' + 't in ' + str(t)
+        elif i is not None and j is not None and t is not None and logic == 'or':
+            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + \
+                str(j) + ' | ' + 't in ' + str(t)
+        elif i is not None and j is not None and logic == 'or':
+            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + str(j)
+        elif i is not None and t is not None and logic == 'or':
+            isinstr = 'i in ' + str(i) + ' | ' + 't in ' + str(t)
+        elif j is not None and t is not None and logic == 'or':
+            isinstr = 'j in ' + str(j) + ' | ' + 't in ' + str(t)
+        elif i is not None:
+            isinstr = 'i in ' + str(i)
+        elif j is not None:
+            isinstr = 'j in ' + str(j)
+        elif t is not None:
+            isinstr = 't in ' + str(t)
+        elif ij is not None:
+            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij)
+        df = pd.read_hdf(network, where=isinstr)
