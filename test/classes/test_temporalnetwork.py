@@ -159,20 +159,19 @@ def test_metadata():
         raise AssertionError()
 
 
-def test_hdf5(): 
-    df = pd.DataFrame({'i': [0,0], 'j': [1,2], 't': [0,1]})
+def test_hdf5():
+    df = pd.DataFrame({'i': [0, 0], 'j': [1, 2], 't': [0, 1]})
     tnet = teneto.TemporalNetwork(from_df=df, hdf5=True)
-    if not tnet.network == './teneto_temporalnetwork.h5': 
+    if not tnet.network == './teneto_temporalnetwork.h5':
         raise AssertionError()
     df2 = pd.read_hdf('./teneto_temporalnetwork.h5')
-    if not (df==df2).all().all(): 
+    if not (df == df2).all().all():
         raise AssertionError()
-    tnet.add_edge([0,2,2])
+    tnet.add_edge([0, 2, 2])
     df3 = pd.read_hdf('./teneto_temporalnetwork.h5')
-    if not (df3.iloc[2].values==[0,2,2]).all(): 
+    if not (df3.iloc[2].values == [0, 2, 2]).all():
         raise AssertionError()
-    tnet.drop_edge([0,2,2])
+    tnet.drop_edge([0, 2, 2])
     df4 = pd.read_hdf('./teneto_temporalnetwork.h5')
-    if not (df==df4).all().all(): 
+    if not (df == df4).all().all():
         raise AssertionError()
-    
