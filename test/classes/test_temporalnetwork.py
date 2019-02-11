@@ -195,37 +195,3 @@ def test_hdf5_getnetwokwhen():
     dfcheck = tnet.get_network_when(ij=1) 	
     if not (dfcheck.values == [[0, 1, 0],[1, 2, 1]]).all():
         raise AssertionError()
-
-
-
-
-        elif ij is not None and t is not None and logic == 'and':
-            isinstr = '(i in ' + str(ij) + ' | ' + 'j in ' + \
-                str(ij) + ') & ' + 't in ' + str(t)
-        elif ij is not None and t is not None and logic == 'or':
-            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + \
-                str(ij) + ' | ' + 't in ' + str(t)
-        elif i is not None and j is not None and logic == 'and':
-            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + str(j)
-        elif i is not None and t is not None and logic == 'and':
-            isinstr = 'i in ' + str(i) + ' & ' + 't in ' + str(t)
-        elif j is not None and t is not None and logic == 'and':
-            isinstr = 'j in ' + str(j) + ' & ' + 't in ' + str(t)
-        elif i is not None and j is not None and t is not None and logic == 'or':
-            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + \
-                str(j) + ' | ' + 't in ' + str(t)
-        elif i is not None and j is not None and logic == 'or':
-            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + str(j)
-        elif i is not None and t is not None and logic == 'or':
-            isinstr = 'i in ' + str(i) + ' | ' + 't in ' + str(t)
-        elif j is not None and t is not None and logic == 'or':
-            isinstr = 'j in ' + str(j) + ' | ' + 't in ' + str(t)
-        elif i is not None:
-            isinstr = 'i in ' + str(i)
-        elif j is not None:
-            isinstr = 'j in ' + str(j)
-        elif t is not None:
-            isinstr = 't in ' + str(t)
-        elif ij is not None:
-            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij)
-        df = pd.read_hdf(network, where=isinstr)
