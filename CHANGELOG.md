@@ -12,6 +12,10 @@
 
 -   Adding flexibility to temporalcommunity
 
+-   Removing tenetoBIDS.load_community_data()
+
+-   Adding communities option to load_data.
+
 ## V0.4.2
 
 -   Fixed a bug in load data of TenetoBIDS when loading networkmeasures from multiple subjects (error was thrown).

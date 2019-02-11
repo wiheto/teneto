@@ -244,8 +244,7 @@ class TenetoBIDS:
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2))
-                                 :int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2))                             :int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
@@ -490,73 +489,6 @@ class TenetoBIDS:
                 print('Pipeline_subdir alternatives: ' +
                       ', '.join(pipeline_subdir_alternatives))
             return list(pipeline_subdir_alternatives)
-
-    def load_community_data(self, community_type, tag=None):
-        """
-        Load derived communities\
-
-        Parameters
-        ----------
-        community_type: str
-            Either static or temporal
-        tag : str or list
-            any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids).
-
-        Returns
-        -------
-        loads TenetoBIDS.community_data_ and TenetoBIDS.community_info_
-        """
-        self.add_history(inspect.stack()[0][3], locals(), 1)
-
-        data_list = []
-        info_list = []
-
-        community_type = 'communitytype-' + community_type
-
-        if not tag:
-            tag = ['']
-        elif isinstance(tag, str):
-            tag = [tag]
-
-        for s in self.bids_tags['sub']:
-            # Define base folder
-            base_path = self.BIDS_dir + '/derivatives/' + self.pipeline
-            base_path += '/sub-' + s + '/func/communities/'
-            if os.path.exists(base_path):
-                file_list = os.listdir(base_path)
-                for f in file_list:
-                    # Include only if all analysis step tags are present
-                    if community_type in f and all([t + '_' in f or t + '.' in f for t in tag]):
-                        # Get all BIDS tags. i.e. in 'sub-AAA', get 'sub' as key and 'AAA' as item.
-                        bid_tags = re.findall('[a-zA-Z]*-', f)
-                        bids_tag_dict = {}
-                        for t in bid_tags:
-                            key = t[:-1]
-                            bids_tag_dict[key] = re.findall(
-                                t+'[A-Za-z0-9.,*+]*', f)[0].split('-')[-1]
-                        if f.split('.')[-1] == 'npy':
-                            data = np.load(base_path+f)
-                            data_list.append(data)
-                            info = pd.DataFrame(bids_tag_dict, index=[0])
-                            info_list.append(info)
-                        else:
-                            print('Warning: Could not find data for a subject')
-
-        # Get time-shape of data loaded
-        if community_type == 'communitytype-' + 'temporal':
-            shape = np.array([n.shape[-1] for n in data_list])
-            if len(np.unique(shape)) != 1:
-                print(
-                    "Warning: Unequal time dimension. Returning networkcommunity_data_ as list.")
-                self.community_data_ = data_list
-            else:
-                self.community_data_ = np.array(data_list)
-        else:
-            self.community_data_ = np.array(data_list)
-        if info_list:
-            out_info = pd.concat(info_list)
-            out_info.reset_index(inplace=True, drop=True)
-            self.community_info_ = out_info
 
     def get_selected_files(self, pipeline='pipeline', forfile=None, quiet=0, accepted_fileformats=['.tsv', '.nii.gz']):
         """
@@ -1242,12 +1174,12 @@ class TenetoBIDS:
                         measure_params[i]['communities'] = np.array(
                             self.network_communities_['network_id'].values)
                     elif measure_params[i]['communities'] == 'static':
-                        self.load_community_data(
-                            'static', tag=save_name.split('tvc')[0].split('_'))
+                        self.load_data(
+                            'communities_fc', tag=save_name.split('tvc')[0].split('_'))
                         measure_params[i]['communities'] = np.squeeze(
                             self.community_data_)
                     elif measure_params[i]['communities'] == 'temporal':
-                        self.load_community_data('temporal', tag=save_name)
+                        self.load_data('communities', tag=save_name)
                         measure_params[i]['communities'] = np.squeeze(
                             self.community_data_)
                     else:
@@ -1815,6 +1747,18 @@ class TenetoBIDS:
                 'pipeline_subdir': 'fc',
                 'base': 'pipeline',
                 'bids_suffix': 'conn',
+                'datatype': 'trlinfo'
+            },
+            'communities': {
+                'pipeline_subdir': 'communities',
+                'base': 'pipeline',
+                'bids_suffix': 'community',
+                'datatype': 'trlinfo'
+            },
+            'communities_fc': {
+                'pipeline_subdir': 'fc/communities',
+                'base': 'pipeline',
+                'bids_suffix': 'community',
                 'datatype': 'trlinfo'
             },
             'temporalnetwork': {
