@@ -18,6 +18,10 @@
 
 -   Fix to TenetoBIDS.get_pipeline_subdir_alternatives
 
+-   Removing 'csv' loading from TenetoBIDS (should be tsv)
+
+-   Fix for nodekwargs{'c'} specification in graphlet stack plot. (Fixes #18)
+
 ## V0.4.2
 
 -   Fixed a bug in load data of TenetoBIDS when loading networkmeasures from multiple subjects (error was thrown).

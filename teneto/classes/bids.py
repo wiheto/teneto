@@ -786,8 +786,6 @@ class TenetoBIDS:
             file_format = f.split('.')[-1]
             if file_format == 'tsv':
                 confounds += list(pd.read_csv(f, delimiter='\t').keys())
-            elif file_format == 'csv':
-                confounds += list(pd.read_csv(f, delimiter=',').keys())
 
         confounds = sorted(list(set(confounds)))
 
@@ -1301,8 +1299,6 @@ class TenetoBIDS:
             file_format = f.split('.')[-1]
             if file_format == 'tsv':
                 sub_confounds = list(pd.read_csv(f, delimiter='\t').keys())
-            elif file_format == 'csv':
-                sub_confounds = list(pd.read_csv(f, delimiter=',').keys())
             for c in confounds:
                 if c not in sub_confounds:
                     print('Warning: the confound (' +

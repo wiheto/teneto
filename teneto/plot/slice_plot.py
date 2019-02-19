@@ -137,6 +137,8 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
         edgekwargs = {}
     if cmap:
         nodekwargs['cmap'] = cmap
+    if 'c' not in nodekwargs: 
+        nodekwargs['c'] = posy
 
     # plt.plot(points)
     # Draw Bezier vectors around egde positions
@@ -156,7 +158,7 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
     ax.get_yaxis().tick_left()
     ax.set_xlim([min(posx) - 1, max(posx) + 1])
     ax.set_ylim([min(posy) - 1, max(posy) + 1])
-    ax.scatter(posx, posy, s=nodesize, c=posy, zorder=10, **nodekwargs)
+    ax.scatter(posx, posy, s=nodesize, zorder=10, **nodekwargs)
     if timeunit != '':
         timeunit = ' (' + timeunit + ')'
     ax.set_xlabel('Time' + timeunit)
