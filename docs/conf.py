@@ -22,9 +22,9 @@ copyright = '2018, William Hedley Thompson'
 author = 'William Hedley Thompson'
 
 # The short X.Y version
-version = '0.4.2'
+version = '0.4.3'
 # The full version, including alpha/beta/rc tags
-release = '0.4.2'
+release = '0.4.3'
 
 
 # -- General configuration ---------------------------------------------------
@@ -179,4 +179,6 @@ todo_include_todos = True
 
 numpydoc_show_class_members = False 
 # MOCK MODULESS
-#autodoc_mock_imports = ['numpy', 'scipy', 'bids', 'igraph', 'louvain', 'python-igraph','seaborn', 'matplotlib.pyplot', 'pandas','scipy','nilearn']
+autodoc_mock_imports = ['tables']
+
+

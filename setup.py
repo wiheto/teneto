@@ -5,7 +5,7 @@ General setup for module
 from setuptools import setup, find_packages
 
 setup(name='teneto',
-      version='0.4.2',
+      version='0.4.3',
       python_requires='>3.5',
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],
@@ -17,7 +17,7 @@ setup(name='teneto',
         'python-louvain>=0.13',
         'pandas>=0.21',
         'scipy>=1.0.0',
-        'numpy>=1.14.1'],
+        'numpy>=1.15.1'],
       description='Temporal network tools',
       packages=find_packages(),
       author='William Hedley Thompson',

@@ -1,5 +1,27 @@
 # Changelog
 
+## V0.4.3
+
+-   Added Schaefer atlas
+
+-   Added SUIT atlas
+
+-   Fixed error in temporal_louvain/consensus matrix where labels were getting incorrectly sorted.
+
+-   Adding temporalcommunity module. 
+
+-   Adding flexibility to temporalcommunity
+
+-   Removing tenetoBIDS.load_community_data()
+
+-   Adding communities option to load_data.
+
+-   Fix to TenetoBIDS.get_pipeline_subdir_alternatives
+
+-   Removing 'csv' loading from TenetoBIDS (should be tsv)
+
+-   Fix for nodekwargs{'c'} specification in graphlet stack plot. (Fixes #18)
+
 ## V0.4.2
 
 -   Fixed a bug in load data of TenetoBIDS when loading networkmeasures from multiple subjects (error was thrown).

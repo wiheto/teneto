@@ -76,11 +76,6 @@ def test_sp_new():
         G, 'all', i=0, j=3, it=0)
     paths_2step = teneto.networkmeasures.shortest_temporal_path(
         G, 2, i=0, j=3, it=0)
-    # Currently broken
-    # Appears something is going wrong with the 2nd step (I think) - wrong path include
-    # But also the temporal-distance measure is broken as it returns the max.
-    paths_1step_topo = teneto.networkmeasures.shortest_temporal_path(
-        G, 2, i=0, j=3, it=0, minimise='topology')
     if not (paths_all == paths_2step).all().all():
         raise AssertionError()
     if not paths_all['topological-distance'].values == 3:

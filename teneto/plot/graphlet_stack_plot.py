@@ -6,7 +6,7 @@ from ..utils import contact2graphlet, checkInput
 plt.rcParams['axes.facecolor'] = 'white'
 
 
-def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth=2, bordercolor=[0, 0, 0], Fs=1, timeunit='', t0=1, sharpen='yes', vminmax='minmax'):
+def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth=2, bordercolor=None, Fs=1, timeunit='', t0=1, sharpen='yes', vminmax='minmax'):
     r'''
     Returns matplotlib axis handle for graphlet_stack_plot. This is a row of transformed connectivity matrices to look like a 3D stack.
 
@@ -31,7 +31,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     borderwidth : int
         Scales the size of border. (at the moment it cannot be set to 0.)
     bordorcolor :
-        color of the border (at the moment it must be in RGB values between 0 and 1 -> this will be changed sometime in the future)
+        color of the border (at the moment it must be in RGB values between 0 and 1 -> this will be changed sometime in the future). Default: black.
     vminmax : str
          'maxabs', 'minmax' (default), or list/array with length of 2. Specifies the min and max colormap value of graphlets. Maxabs entails [-max(abs(G)),max(abs(G))], minmax entails [min(G), max(G)].
 
@@ -119,6 +119,9 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
 
     if timeunit != '':
         timeunit = ' (' + timeunit + ')'
+
+    if bordercolor == None:
+        bordercolor = [0, 0, 0]
 
     if not isinstance(borderwidth, int):
         borderwidth = int(borderwidth)
@@ -251,14 +254,14 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
 
     L = int((((netin.shape[-1] - 3) + 1) * (80 * q) +
              (qb * 2)) - ((netin.shape[-1] - 3) * q * 80) / 2 - q)
-    [ax.plot(range(topfig[i], xt), np.zeros(len(range(topfig[i], xt))) + yright,
-             color='k', linestyle=':', zorder=2) for i, xt in enumerate(xtickloc[1:])]
+    _ = [ax.plot(range(topfig[i], xt), np.zeros(len(range(topfig[i], xt))) + yright,
+                 color='k', linestyle=':', zorder=2) for i, xt in enumerate(xtickloc[1:])]
     ax.plot(range(0, L), np.zeros(L) + ymax,
             color='k', linestyle=':', zorder=2)
-    [ax.plot(np.zeros(q * 10) + xt, np.arange(ymax, ymax + q * 10),
-             color='k', linestyle=':', zorder=2) for xt in xtickloc]
-    [ax.text(xt, ymax + q * 20, str(round((i + t0) * Fs, 5)),
-             horizontalalignment='center',) for i, xt in enumerate(xtickloc)]
+    _ = [ax.plot(np.zeros(q * 10) + xt, np.arange(ymax, ymax + q * 10),
+                 color='k', linestyle=':', zorder=2) for xt in xtickloc]
+    _ = [ax.text(xt, ymax + q * 20, str(round((i + t0) * Fs, 5)),
+                 horizontalalignment='center',) for i, xt in enumerate(xtickloc)]
 
     ylim = ax.axes.get_ylim()
     xlim = ax.axes.get_xlim()

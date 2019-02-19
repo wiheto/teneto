@@ -142,3 +142,56 @@ def test_plot():
     tnet = teneto.TemporalNetwork()
     tnet.generatenetwork('rand_binomial', size=(5, 10), prob=1)
     tnet.plot('graphlet_stack_plot')
+
+
+def test_metadata():
+    tnet = teneto.TemporalNetwork(nodelabels=['A', 'B', 'C'], timelabels=[
+                                  0, 1, 2], desc='test meta data', starttime=0, timeunit='au')
+    if not tnet.nodelabels == ['A', 'B', 'C']:
+        raise AssertionError()
+    if not tnet.timelabels == [0, 1, 2]:
+        raise AssertionError()
+    if not tnet.starttime == 0:
+        raise AssertionError()
+    if not tnet.desc == 'test meta data':
+        raise AssertionError()
+    if not tnet.timeunit == 'au':
+        raise AssertionError()
+
+
+def test_hdf5():
+    df = pd.DataFrame({'i': [0, 0], 'j': [1, 2], 't': [0, 1]})
+    tnet = teneto.TemporalNetwork(from_df=df, hdf5=True)
+    if not tnet.network == './teneto_temporalnetwork.h5':
+        raise AssertionError()
+    df2 = pd.read_hdf('./teneto_temporalnetwork.h5')
+    if not (df == df2).all().all():
+        raise AssertionError()
+    tnet.add_edge([0, 2, 2])
+    df3 = pd.read_hdf('./teneto_temporalnetwork.h5')
+    if not (df3.iloc[2].values == [0, 2, 2]).all():
+        raise AssertionError()
+    tnet.drop_edge([0, 2, 2])
+    df4 = pd.read_hdf('./teneto_temporalnetwork.h5')
+    if not (df == df4).all().all():
+        raise AssertionError()
+
+
+def test_hdf5_getnetwokwhen():
+    df = pd.DataFrame({'i': [0, 1], 'j': [1, 2], 't': [0, 1]})
+    tnet = teneto.TemporalNetwork(from_df=df, hdf5=True)
+    dfcheck = tnet.get_network_when(i=0)
+    if not (dfcheck.values == [0,1,0]).all():
+        raise AssertionError()
+    dfcheck = tnet.get_network_when(i=0,j=1,t=0,logic='and')
+    if not (dfcheck.values == [0,1,0]).all():
+        raise AssertionError()
+    dfcheck = tnet.get_network_when(i=0,j=1,t=1,logic='or')
+    if not (dfcheck.values == [[0, 1, 0],[1, 2, 1]]).all():
+        raise AssertionError()
+    dfcheck = tnet.get_network_when(t=0)
+    if not (dfcheck.values == [0,1,0]).all():
+        raise AssertionError()
+    dfcheck = tnet.get_network_when(ij=1)
+    if not (dfcheck.values == [[0, 1, 0],[1, 2, 1]]).all():
+        raise AssertionError()

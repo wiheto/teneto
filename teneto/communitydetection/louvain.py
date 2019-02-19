@@ -54,15 +54,18 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
         for n in range(n_iter):
             com = community.best_partition(
                 nxsupra, resolution=resolution, random_state=None)
-            comtmp[np.array(list(com.keys()), dtype=int),
-                   n] = list(com.values())
+            comtmp[np.array(list(com.keys()), dtype=int), n] = list(com.values())
+        print(comtmp.shape)
         comtmp = np.reshape(comtmp, [tnet.N, tnet.T, n_iter], order='F')
         nxsupra_old = nxsupra
         print('Doing CM')
         nxsupra = make_consensus_matrix(comtmp, consensus_threshold)
-        if (nx.to_numpy_array(nxsupra) == nx.to_numpy_array(nxsupra_old)).all():
+        # If there was no consensus, there are no communities possible, return
+        if nxsupra is None:
             break
-    # TODO Add temporal consensus (greedy jaccard)
+        print(nx.to_numpy_array(nxsupra).shape)
+        if (nx.to_numpy_array(nxsupra, nodelist=np.arange(tnet.N*tnet.T)) == nx.to_numpy_array(nxsupra_old, nodelist=np.arange(tnet.N*tnet.T))).all():
+            break
     communities = comtmp[:, :, 0]
     print('Doing CTM')
     if temporal_concsensus == True:
@@ -98,12 +101,15 @@ def make_consensus_matrix(com_membership, th=0.5):
                          == 0, axis=-1) / com_membership.shape[-1]
             twhere = np.where(con > th)[0]
             D += list(zip(*[np.repeat(i, len(twhere)).tolist(), np.repeat(j,
-                                                                          len(twhere)).tolist(), twhere.tolist(), con[twhere].tolist()]))
-
-    D = pd.DataFrame(D, columns=['i', 'j', 't', 'weight'])
-    D = TemporalNetwork(from_df=D)
-    D = create_supraadjacency_matrix(D, intersliceweight=0)
-    Dnx = tnet_to_nx(D)
+                        len(twhere)).tolist(), twhere.tolist(), con[twhere].tolist()]))
+    del com_membership
+    if len(D) > 0:
+        D = pd.DataFrame(D, columns=['i', 'j', 't', 'weight'])
+        D = TemporalNetwork(from_df=D)
+        D = create_supraadjacency_matrix(D, intersliceweight=0)
+        Dnx = tnet_to_nx(D)
+    else:
+        Dnx = None
     return Dnx
 
 

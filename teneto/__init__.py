@@ -4,7 +4,7 @@
 """Teneto is a module with tools for analyzing network patterns in time."""
 #
 __author__ = "William Hedley Thompson (wiheto)"
-__version__ = "0.4.2"
+__version__ = "0.4.3"
 #
 from . import networkmeasures
 from . import utils
@@ -13,6 +13,7 @@ from . import generatenetwork
 from . import timeseries
 from . import misc
 from . import trajectory
+from . import temporalcommunity
 from . import communitydetection
 from .classes import TenetoBIDS, TemporalNetwork
 #del misc.teneto

@@ -1,13 +1,13 @@
 # Teneto
 
 [![Documentation Status](https://readthedocs.org/projects/teneto/badge/?version=latest)](http://teneto.readthedocs.io/en/latest/?badge=latest)
-[![PyPI version](https://badge.fury.io/py/Teneto.svg)](https://badge.fury.io/py/Teneto)
+[![PyPI version](https://badge.fury.io/py/teneto.svg)](https://badge.fury.io/py/teneto)
 [![Build Status](https://travis-ci.org/wiheto/teneto.svg?branch=master)](https://travis-ci.org/wiheto/teneto)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5e492e68a0c841b6a7118b91f0ad2716)](https://www.codacy.com/app/wiheto/teneto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wiheto/teneto&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/github/wiheto/teneto/badge.svg?branch=master)](https://coveralls.io/github/wiheto/teneto?branch=master)
 [![DOI](https://zenodo.org/badge/61498436.svg)](https://zenodo.org/badge/latestdoi/61498436)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5e492e68a0c841b6a7118b91f0ad2716)](https://www.codacy.com/app/wiheto/teneto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wiheto/teneto&amp;utm_campaign=Badge_Grade)
 
-**Te**mporal **ne**twork **to**ols. Version 0.4.2
+**Te**mporal **ne**twork **to**ols. Version 0.4.3
 
 ## What is the package
 

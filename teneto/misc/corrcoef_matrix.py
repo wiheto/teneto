@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.stats import pearsonr
 from scipy.special import betainc
 
 
