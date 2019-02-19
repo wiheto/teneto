@@ -3,7 +3,7 @@ import numpy as np
 from ..utils import *
 
 
-def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='k-', cmap=None, nodesize=100, nodekwargs=None, edgekwargs=None):
+def slice_plot(netin, ax, nodelabels='', timelabels='', communities=None, timeunit='', linestyle='k-', cmap=None, nodesize=100, nodekwargs=None, edgekwargs=None):
     r'''
 
     Fuction draws "slice graph" and exports axis handles
@@ -19,6 +19,8 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
         nodes labels. List of strings.
     timelabels : list
         labels of dimension Graph is expressed across. List of strings.
+    communities : array 
+        array of size: (time) or (node,time). Nodes will be coloured accordingly. 
     timeunit : string
         unit time axis is in.
     linestyle : string
@@ -137,8 +139,14 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', timeunit='', linestyle='
         edgekwargs = {}
     if cmap:
         nodekwargs['cmap'] = cmap
-    if 'c' not in nodekwargs: 
+    if 'c' not in nodekwargs:
         nodekwargs['c'] = posy
+    if communities is not None:
+        #check if temporal or static
+        if len(communities.shape) == 1: 
+            nodekwargs['c'] = np.tile(communities, timeNum) 
+        else:
+            nodekwargs['c'] = communtiies.flatten(order='F')    
 
     # plt.plot(points)
     # Draw Bezier vectors around egde positions
