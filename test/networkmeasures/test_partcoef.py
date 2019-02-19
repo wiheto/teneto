@@ -23,9 +23,6 @@ def test_partcoef():
         raise AssertionError()
     with pytest.raises(ValueError):
         teneto.networkmeasures.temporal_participation_coeff(G)
-    tnet = teneto.TemporalNetwork(from_array=G)
-    with pytest.raises(ValueError):
-        teneto.networkmeasures.temporal_participation_coeff(G)
 
 
 def test_partcoef_decay():

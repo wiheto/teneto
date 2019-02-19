@@ -180,18 +180,18 @@ def test_hdf5():
 def test_hdf5_getnetwokwhen():
     df = pd.DataFrame({'i': [0, 1], 'j': [1, 2], 't': [0, 1]})
     tnet = teneto.TemporalNetwork(from_df=df, hdf5=True)
-    dfcheck = tnet.get_network_when(i=0) 	
+    dfcheck = tnet.get_network_when(i=0)
     if not (dfcheck.values == [0,1,0]).all():
         raise AssertionError()
-    dfcheck = tnet.get_network_when(i=0,j=1,t=0,logic='and') 	
+    dfcheck = tnet.get_network_when(i=0,j=1,t=0,logic='and')
     if not (dfcheck.values == [0,1,0]).all():
         raise AssertionError()
-    dfcheck = tnet.get_network_when(i=0,j=1,t=1,logic='or') 	
+    dfcheck = tnet.get_network_when(i=0,j=1,t=1,logic='or')
     if not (dfcheck.values == [[0, 1, 0],[1, 2, 1]]).all():
         raise AssertionError()
-    dfcheck = tnet.get_network_when(t=0) 	
+    dfcheck = tnet.get_network_when(t=0)
     if not (dfcheck.values == [0,1,0]).all():
         raise AssertionError()
-    dfcheck = tnet.get_network_when(ij=1) 	
+    dfcheck = tnet.get_network_when(ij=1)
     if not (dfcheck.values == [[0, 1, 0],[1, 2, 1]]).all():
         raise AssertionError()
