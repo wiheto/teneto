@@ -28,11 +28,11 @@ def recruitment(community,system):
 
     MA = module_allegience_matrix(N,C,community)
 
-    R = np.zeros(len(system_assign))
+    R = np.zeros(len(system))
 
-    for i in range(len(system_assign)):
-      system_j = system_assign[i]
-      R[i] = np.mean(MA[i, system_assign == system_j]) # nanmean(MA(i,strcmp(systemByNode,thisSystem)));
+    for i in range(len(system)):
+      system_i = system[i]
+      R[i] = np.mean(MA[i, system == system_i]) # nanmean(MA(i,strcmp(systemByNode,thisSystem)));
 
     return R
 	
