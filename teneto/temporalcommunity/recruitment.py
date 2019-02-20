@@ -1,38 +1,44 @@
-def recruitment(community,system):
+import numpy as np
+from .allegiance import allegiance
+
+
+def recruitment(temporalcommunities, staticcommunities):
     """
     Calculates recruitment coefficient for each node. Recruitment coefficient is the average probability of nodes from the
-      same community being in the same communities at other time-points or during different tasks. 
-      
+      same communities being in the same communities at other time-points or during different tasks.
+
     Parameters:
     ------------
-    community :  	time,node community vector 
-    system : array containing the system assignment for each node
-              eg. nodes from the Power parcellation assigned to brain networks
+    temporalcommunities :  array
+        temporal communities vector (node,time)
+    staticcommunities : array
+        Static communities vector for each node
 
-    returns:
+    Returns:
     -------
-      R : recruitment coefficient for each node
+    Rcoeff : array
+        recruitment coefficient for each node
 
-    References: 
-    ----------- 
+    References:
+    -----------
 
-    Danielle S. Bassett, Muzhi Yang, Nicholas F. Wymbs, Scott T. Grafton. 
+    Danielle S. Bassett, Muzhi Yang, Nicholas F. Wymbs, Scott T. Grafton.
     Learning-Induced Autonomy of Sensorimotor Systems. Nat Neurosci. 2015 May;18(5):744-51.
 
     Marcelo Mattar, Michael W. Cole, Sharon Thompson-Schill, Danielle S. Bassett. A Functional
-    Cartography of Cognitive Systems. PLoS Comput Biol. 2015 Dec 2;11(12):e1004533. 
+    Cartography of Cognitive Systems. PLoS Comput Biol. 2015 Dec 2;11(12):e1004533.
     """
 
-    N = len(community)
-    C = np.unique(community)
+    # make sure the static and temporal communities have the same number of nodes
+    if np.shape[0] != temporalcommunities.shape[0]:
+        raise ValueError(
+            'Temporal and static communities have different dimensions')
 
-    MA = module_allegience_matrix(N,C,community)
+    alleg = allegiance(temporalcommunities)
 
-    R = np.zeros(len(system))
+    Rcoeff = np.zeros(len(staticcommunities))
 
-    for i in range(len(system)):
-      system_i = system[i]
-      R[i] = np.mean(MA[i, system == system_i]) # nanmean(MA(i,strcmp(systemByNode,thisSystem)));
+    for i, statcom in enumerate(staticcommunities):
+        Rcoeff[i] = np.mean(alleg[i, staticcommunities == statcom])
 
-    return R
-	
+    return Rcoeff
