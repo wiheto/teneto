@@ -1,4 +1,5 @@
 import numpy as np
+import teneto
 from teneto.temporalcommunity import allegiance
 
 def test_allegiance():
