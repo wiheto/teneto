@@ -3,7 +3,7 @@ import numpy as np
 def module_allegience_matrix(community):
     """
     Computes the module allegiance matrix with values representing the probability that
-    nodes i and j were assigned to the same community by time-varying clustering methods. 
+    nodes i and j were assigned to the same community by time-varying clustering methods.
 
     parameters
     ----------
@@ -16,9 +16,9 @@ def module_allegience_matrix(community):
         module allegiance matrix, with P_ij probability that area i and j are in the same community
 
     Reference:
-    ---------- 
-    Bassett, et al. (2013) “Robust detection of dynamic community structure in networks”, Chaos, 23, 1 
-    
+    ----------
+    Bassett, et al. (2013) “Robust detection of dynamic community structure in networks”, Chaos, 23, 1
+
     """
     N = len(community)
     C = np.unique(community)
