@@ -17,10 +17,7 @@ def test_allegiance():
     community = teneto.communitydetection.temporal_louvain(
         G, intersliceweight=0.1, n_iter=1)
 
-    N = len(community)
-    C = len(community[0])
-
-    P = allegiance(N,C,community)
+    P = allegiance(community)
     # Answers are handcoded based on analytic truth
     if not P[0,1] == P[0,2] == P[1,0] == P[1,2] == P[2,0] == P[2,1] == P[4,5] == P[5,4] == 1.0:
         raise AssertionError()
