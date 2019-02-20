@@ -21,10 +21,10 @@ def slice_plot(netin, ax, nodelabels=None, timelabels=None, communities=None, pl
         labels of dimension Graph is expressed across. List of strings.
     communities : array
         array of size: (time) or (node,time). Nodes will be coloured accordingly.
-    plotedgeweights : bool 
+    plotedgeweights : bool
         if True, edges will vary in size (default False)
     edgeweightscalar : int
-        scalar to multiply all edges if tweaking is needed. 
+        scalar to multiply all edges if tweaking is needed.
     timeunit : string
         unit time axis is in.
     linestyle : string
