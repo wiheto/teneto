@@ -3,7 +3,7 @@ import numpy as np
 from ..utils import *
 
 
-def slice_plot(netin, ax, nodelabels='', timelabels='', communities=None, timeunit='', linestyle='k-', cmap=None, nodesize=100, nodekwargs=None, edgekwargs=None):
+def slice_plot(netin, ax, nodelabels=None, timelabels=None, communities=None, plotedgeweights=False, edgeweightscalar=1, timeunit='', linestyle='k-', cmap=None, nodesize=100, nodekwargs=None, edgekwargs=None):
     r'''
 
     Fuction draws "slice graph" and exports axis handles
@@ -21,6 +21,10 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', communities=None, timeun
         labels of dimension Graph is expressed across. List of strings.
     communities : array
         array of size: (time) or (node,time). Nodes will be coloured accordingly.
+    plotedgeweights : bool
+        if True, edges will vary in size (default False)
+    edgeweightscalar : int
+        scalar to multiply all edges if tweaking is needed.
     timeunit : string
         unit time axis is in.
     linestyle : string
@@ -103,29 +107,29 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', communities=None, timeun
     if inputType == 'G':
         netin = graphlet2contact(netin)
         inputType = 'C'
-    edgeList = [tuple(np.array(e[0:2]) + e[2] * netin['netshape'][0])
+    edgelist = [tuple(np.array(e[0:2]) + e[2] * netin['netshape'][0])
                 for e in netin['contacts']]
 
-    if nodelabels != '' and len(nodelabels) == netin['netshape'][0]:
+    if nodelabels is not None and len(nodelabels) == netin['netshape'][0]:
         pass
-    elif nodelabels != '' and len(nodelabels) != netin['netshape'][0]:
+    elif nodelabels is not None and len(nodelabels) != netin['netshape'][0]:
         raise ValueError('specified node label length does not match netshape')
-    elif nodelabels == '' and netin['nodelabels'] == '':
+    elif nodelabels is None and netin['nodelabels'] == '':
         nodelabels = np.arange(1, netin['netshape'][0] + 1)
     else:
         nodelabels = netin['nodelabels']
 
-    if timelabels != '' and len(timelabels) == netin['netshape'][-1]:
+    if timelabels is not None and len(timelabels) == netin['netshape'][-1]:
         pass
-    elif timelabels != '' and len(timelabels) != netin['netshape'][-1]:
+    elif timelabels is not None and len(timelabels) != netin['netshape'][-1]:
         raise ValueError('specified time label length does not match netshape')
-    elif timelabels == '' and str(netin['t0']) == '':
+    elif timelabels is None and str(netin['t0']) == '':
         timelabels = np.arange(1, netin['netshape'][-1] + 1)
     else:
         timelabels = np.arange(netin['t0'], netin['Fs'] *
                                netin['netshape'][-1] + netin['t0'], netin['Fs'])
 
-    if timeunit == '':
+    if timeunit is None:
         timeunit = netin['timeunit']
 
     timeNum = len(timelabels)
@@ -146,11 +150,14 @@ def slice_plot(netin, ax, nodelabels='', timelabels='', communities=None, timeun
         if len(communities.shape) == 1:
             nodekwargs['c'] = np.tile(communities, timeNum)
         else:
-            nodekwargs['c'] = communtiies.flatten(order='F')
+            nodekwargs['c'] = communities.flatten(order='F')
+
 
     # plt.plot(points)
     # Draw Bezier vectors around egde positions
-    for edge in edgeList:
+    for ei, edge in enumerate(edgelist):
+        if plotedgeweights == True and netin['nettype'][0] == 'w':
+            edgekwargs['linewidth'] = netin['values'][ei] * edgeweightscalar
         bvx, bvy = bezier_points(
             (posx[edge[0]], posy[edge[0]]), (posx[edge[1]], posy[edge[1]]), nodeNum, 20)
         ax.plot(bvx, bvy, linestyle, **edgekwargs)

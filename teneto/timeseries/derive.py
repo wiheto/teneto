@@ -11,6 +11,7 @@ from ..utils import set_diagonal, getDistanceFunction
 from .postprocess import postpro_pipeline
 from .report import gen_report
 import scipy.stats as sps
+import ast
 
 
 def derive_temporalnetwork(data, params):
@@ -269,8 +270,8 @@ def _weightfun_tapered_sliding_window(T, params, report):
     """
     x = np.arange(-(params['windowsize'] - 1) / 2, (params['windowsize']) / 2)
     distribution_parameters = ','.join(map(str, params['distribution_params']))
-    taper = eval('sps.' + params['distribution'] +
-                 '.pdf(x,' + distribution_parameters + ')')
+    taper = ast.literal_eval('sps.' + params['distribution'] +
+                             '.pdf(x,' + distribution_parameters + ')')
 
     weightat0 = np.zeros(T)
     weightat0[0:params['windowsize']] = taper

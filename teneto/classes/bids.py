@@ -121,6 +121,31 @@ class TenetoBIDS:
             self.history = []
         self.history.append([fname, fargs])
 
+    def export_history(self, dirname): 
+        """
+        Exports TenetoBIDShistory.py and requirements.txt (modules currently imported) to dirname
+
+        Parameters
+        ---------
+        dirname : str 
+            directory to export entire TenetoBIDS history.
+  
+        """
+        mods = [(m.__name__, m.__version__) for m in sys.modules.values() if m if hasattr(m,'__version__')]
+        with open(dirname + '/requirements.txt', 'w') as f:
+            for m in mods: 
+                m = list(m)
+                if not isinstance(m[1], str): 
+                    m[1] = m[1].decode("utf-8")
+                f.writelines(m[0] + ' == ' + m[1] + '\n')
+        
+        with open(dirname + '/TenetoBIDShistory.py', 'w') as f:
+            f.writelines('import teneto\n')
+            for func, args in self.history:
+                f.writelines(func + '(**' + str(args) + ')' \n')
+
+        
+
     def derive_temporalnetwork(self, params, update_pipeline=True, tag=None, njobs=1, confound_corr_report=True):
         """
         Derive time-varying connectivity on the selected files.
@@ -244,7 +269,7 @@ class TenetoBIDS:
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2))                             :int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2)) : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
