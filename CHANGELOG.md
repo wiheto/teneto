@@ -4,6 +4,10 @@
 
 -   Added plotedgeweight option to sliceplot for varying edge size.
 
+-   Minor fixed to TenetoBIDS, teneto.timeseries and teneto.communitydetection 
+
+-   Adding export_history to TenetoBIDS. 
+
 ## V0.4.3
 
 -   Added Schaefer atlas
