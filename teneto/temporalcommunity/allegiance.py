@@ -20,8 +20,8 @@ def allegiance(community):
     Bassett, et al. (2013) “Robust detection of dynamic community structure in networks”, Chaos, 23, 1
 
     """
-    N = len(community)
-    C = np.unique(community)
+    N = community.shape[0]
+    C = community.shape[1]
     T = P = np.zeros([N, N])
 
     for t in range(len(community[0, :])):
