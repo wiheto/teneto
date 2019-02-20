@@ -119,7 +119,7 @@ def get_sidecar(fname, allowedfileformats='default'):
     """
     Loads sidecar or creates one
     """
-    if allowedfileformats == 'default': 
+    if allowedfileformats == 'default':
         allowedfileformats = ['.tsv', '.nii.gz']
     for f in allowedfileformats:
         fname = fname.split(f)[0]

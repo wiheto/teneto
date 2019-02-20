@@ -121,30 +121,30 @@ class TenetoBIDS:
             self.history = []
         self.history.append([fname, fargs])
 
-    def export_history(self, dirname): 
+    def export_history(self, dirname):
         """
         Exports TenetoBIDShistory.py and requirements.txt (modules currently imported) to dirname
 
         Parameters
         ---------
-        dirname : str 
+        dirname : str
             directory to export entire TenetoBIDS history.
-  
+
         """
         mods = [(m.__name__, m.__version__) for m in sys.modules.values() if m if hasattr(m,'__version__')]
         with open(dirname + '/requirements.txt', 'w') as f:
-            for m in mods: 
+            for m in mods:
                 m = list(m)
-                if not isinstance(m[1], str): 
+                if not isinstance(m[1], str):
                     m[1] = m[1].decode("utf-8")
                 f.writelines(m[0] + ' == ' + m[1] + '\n')
-        
+
         with open(dirname + '/TenetoBIDShistory.py', 'w') as f:
             f.writelines('import teneto\n')
             for func, args in self.history:
                 f.writelines(func + '(**' + str(args) + ')\n')
 
-        
+
 
     def derive_temporalnetwork(self, params, update_pipeline=True, tag=None, njobs=1, confound_corr_report=True):
         """
@@ -536,7 +536,7 @@ class TenetoBIDS:
         """
         # This could be mnade better
         file_dict = dict(self.bids_tags)
-        if allowedfileformats == 'default': 
+        if allowedfileformats == 'default':
             allowedfileformats = ['.tsv', '.nii.gz']
         if forfile:
             if isinstance(forfile, str):
@@ -666,7 +666,7 @@ class TenetoBIDS:
         for s, cfile in enumerate(confound_files):
             df = load_tabular_file(cfile, index_col=None)
             found_bad_subject = False
-            for i in range(len(confound)):
+            for i, _ in enumerate(confound):
                 if confound_stat[i] == 'median':
                     if relex[i](df[confound[i]].median(), crit[i]):
                         found_bad_subject = True
