@@ -1,5 +1,9 @@
 # Changelog
 
+## V0.4.4 (pending)
+
+-   Added plotedgeweight option to sliceplot for varying edge size.
+
 ## V0.4.3
 
 -   Added Schaefer atlas
@@ -20,7 +24,7 @@
 
 -   Removing 'csv' loading from TenetoBIDS (should be tsv)
 
--   Fix for nodekwargs{'c'} specification in graphlet stack plot. (Fixes #18)
+-   Fix for nodekwargs{'c'} specification in graphlet slice plot. (Fixes #18)
 
 ## V0.4.2
 
