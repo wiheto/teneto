@@ -115,10 +115,12 @@ def load_tabular_file(fname, return_meta=False, header=True, index_col=True):
         return df
 
 
-def get_sidecar(fname, allowedfileformats=['.nii.gz', '.tsv']):
+def get_sidecar(fname, allowedfileformats='default'):
     """
     Loads sidecar or creates one
     """
+    if allowedfileformats == 'default': 
+        allowedfileformats = ['.tsv', '.nii.gz']
     for f in allowedfileformats:
         fname = fname.split(f)[0]
     fname += '.json'

@@ -142,7 +142,7 @@ class TenetoBIDS:
         with open(dirname + '/TenetoBIDShistory.py', 'w') as f:
             f.writelines('import teneto\n')
             for func, args in self.history:
-                f.writelines(func + '(**' + str(args) + ')' \n')
+                f.writelines(func + '(**' + str(args) + ')\n')
 
         
 
@@ -515,7 +515,7 @@ class TenetoBIDS:
                       ', '.join(pipeline_subdir_alternatives))
             return list(pipeline_subdir_alternatives)
 
-    def get_selected_files(self, pipeline='pipeline', forfile=None, quiet=0, accepted_fileformats=['.tsv', '.nii.gz']):
+    def get_selected_files(self, pipeline='pipeline', forfile=None, quiet=0, allowedfileformats='default'):
         """
         Parameters
         ----------
@@ -526,6 +526,8 @@ class TenetoBIDS:
             If 1, prints results. If 0, no results printed.
         forfile : str or dict
             A filename or dictionary of file tags. If this is set, only files that match that subject
+        accepted_fileformat : list
+            list of files formats that are acceptable. Default list is: ['.tsv', '.nii.gz']
 
         Returns
         -------
@@ -534,6 +536,8 @@ class TenetoBIDS:
         """
         # This could be mnade better
         file_dict = dict(self.bids_tags)
+        if allowedfileformats == 'default': 
+            allowedfileformats = ['.tsv', '.nii.gz']
         if forfile:
             if isinstance(forfile, str):
                 forfile = get_bids_tag(forfile, 'all')
@@ -580,12 +584,12 @@ class TenetoBIDS:
             if pipeline == 'pipeline':
                 wdir += '/' + self.pipeline_subdir + '/'
                 fileending = [self.bids_suffix +
-                              f for f in accepted_fileformats]
+                              f for f in allowedfileformats]
             elif pipeline == 'functionalconnectivity':
                 wdir += '/fc/'
-                fileending = ['conn' + f for f in accepted_fileformats]
+                fileending = ['conn' + f for f in allowedfileformats]
             elif pipeline == 'confound':
-                fileending = ['confounds' + f for f in accepted_fileformats]
+                fileending = ['confounds' + f for f in allowedfileformats]
 
             if os.path.exists(wdir):
                 # make filenames
@@ -650,7 +654,7 @@ class TenetoBIDS:
         if len(confound_stat) != len(confound):
             raise ValueError(
                 'Same number of confound names and confound stats must be given')
-        rel, crit = process_exclusion_criteria(exclusion_criteria)
+        relex, crit = process_exclusion_criteria(exclusion_criteria)
         files = sorted(self.get_selected_files(quiet=1))
         confound_files = sorted(
             self.get_selected_files(quiet=1, pipeline='confound'))
@@ -664,13 +668,13 @@ class TenetoBIDS:
             found_bad_subject = False
             for i in range(len(confound)):
                 if confound_stat[i] == 'median':
-                    if rel[i](df[confound[i]].median(), crit[i]):
+                    if relex[i](df[confound[i]].median(), crit[i]):
                         found_bad_subject = True
                 elif confound_stat[i] == 'mean':
-                    if rel[i](df[confound[i]].mean(), crit[i]):
+                    if relex[i](df[confound[i]].mean(), crit[i]):
                         found_bad_subject = True
                 elif confound_stat[i] == 'std':
-                    if rel(df[i][confound[i]].std(), crit[i]):
+                    if relex(df[i][confound[i]].std(), crit[i]):
                         found_bad_subject = True
                 if found_bad_subject:
                     foundconfound.append(confound[i])
@@ -724,7 +728,7 @@ class TenetoBIDS:
         if len(exclusion_criteria) != len(confound):
             raise ValueError(
                 'Same number of confound names and exclusion criteria must be given')
-        rel, crit = process_exclusion_criteria(exclusion_criteria)
+        relex, crit = process_exclusion_criteria(exclusion_criteria)
         files = sorted(self.get_selected_files(quiet=1))
         confound_files = sorted(
             self.get_selected_files(quiet=1, pipeline='confound'))
@@ -736,7 +740,7 @@ class TenetoBIDS:
             ind = []
             # Can't interpolate values if nanind is at the beginning or end. So keep these as their original values.
             for ci, c in enumerate(confound):
-                ind = df[rel[ci](df[c], crit[ci])].index
+                ind = df[relex[ci](df[c], crit[ci])].index
                 if replace_with == 'cubicspline':
                     if 0 in ind:
                         ind = np.delete(ind, np.where(ind == 0))
@@ -1122,7 +1126,7 @@ class TenetoBIDS:
         with open(sname + '_' + suffix + '.json', 'w') as fs:
             json.dump(sidecar, fs)
 
-    def networkmeasures(self, measure=None, measure_params={}, tag=None, njobs=None):
+    def networkmeasures(self, measure=None, measure_params=None, tag=None, njobs=None):
         """
         Calculates a network measure
 
