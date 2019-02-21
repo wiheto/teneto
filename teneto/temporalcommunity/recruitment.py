@@ -5,7 +5,7 @@ from .allegiance import allegiance
 def recruitment(temporalcommunities, staticcommunities):
     """
     Calculates recruitment coefficient for each node. Recruitment coefficient is the average probability of nodes from the
-      same communities being in the same communities at other time-points or during different tasks.
+      same static communities being in the same temporal communities at other time-points or during different tasks.
 
     Parameters:
     ------------
@@ -30,8 +30,8 @@ def recruitment(temporalcommunities, staticcommunities):
     """
 
     # make sure the static and temporal communities have the same number of nodes
-    if np.shape[0] != temporalcommunities.shape[0]:
-        raise ValueError(
+    if staticcommunities.shape[0] != temporalcommunities.shape[0]:
+        raise ValueError(   
             'Temporal and static communities have different dimensions')
 
     alleg = allegiance(temporalcommunities)
