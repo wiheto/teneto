@@ -1,5 +1,4 @@
 import numpy as np
-import random
 
 def sig_perm_test(net,community,T):
     """
@@ -50,7 +49,10 @@ def sig_perm_test(net,community,T):
 def modularity(net,community):
     """
     auxiliary function for 'sig_perm_test'.
-
+    
+    This definition says that Qmatrix(i,j) is the inner product of the ith row of net with the jth column of cl.
+    I translate this to:
+    
     """
     N = np.shape(net)[0] # number of nodes
 
@@ -60,14 +62,6 @@ def modularity(net,community):
 
     for i in range(C):
         cl[:, i] = community==cl_label[i]
-
-    """
-    Note:
-    In matlab, Qmatrix is computed as: cl'*net*cl;
-    This is what I gather:
-    This definition says that Qmatrix(i,j) is the inner product of the ith row of net with the jth column of cl.
-    I translate this to:
-    """
 
     tmp = np.zeros((N,C))
     Q = np.zeros((C,C))
@@ -82,4 +76,4 @@ def modularity(net,community):
         for j in range(C):
             Q[i,j] = np.dot(tmp[:,i],ct[j,:])
 
-    return Q 
+    return Q
