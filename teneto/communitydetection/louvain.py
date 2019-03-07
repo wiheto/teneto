@@ -50,20 +50,18 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
     np.random.seed(randomseed)
     while True:
         comtmp = np.zeros([tnet.N*tnet.T, n_iter]) - 1
-        print('Doing CD')
         for n in range(n_iter):
             com = community.best_partition(
                 nxsupra, resolution=resolution, random_state=None)
             comtmp[np.array(list(com.keys()), dtype=int), n] = list(com.values())
-        print(comtmp.shape)
         comtmp = np.reshape(comtmp, [tnet.N, tnet.T, n_iter], order='F')
         nxsupra_old = nxsupra
-        print('Doing CM')
         nxsupra = make_consensus_matrix(comtmp, consensus_threshold)
         # If there was no consensus, there are no communities possible, return
+        if n_iter == 1: 
+            break
         if nxsupra is None:
             break
-        print(nx.to_numpy_array(nxsupra).shape)
         if (nx.to_numpy_array(nxsupra, nodelist=np.arange(tnet.N*tnet.T)) == nx.to_numpy_array(nxsupra_old, nodelist=np.arange(tnet.N*tnet.T))).all():
             break
     communities = comtmp[:, :, 0]
