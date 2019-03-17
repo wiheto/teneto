@@ -42,6 +42,8 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
     """
 
     tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
+    # Divide resolution by the number of timepoints
+    resolution = resolution / tnet.T
     supranet = create_supraadjacency_matrix(
         tnet, intersliceweight=intersliceweight)
     if negativeedge == 'ignore':
@@ -55,17 +57,16 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
                 nxsupra, resolution=resolution, random_state=None)
             comtmp[np.array(list(com.keys()), dtype=int), n] = list(com.values())
         comtmp = np.reshape(comtmp, [tnet.N, tnet.T, n_iter], order='F')
+        if n_iter == 1: 
+            break        
         nxsupra_old = nxsupra
         nxsupra = make_consensus_matrix(comtmp, consensus_threshold)
         # If there was no consensus, there are no communities possible, return
-        if n_iter == 1: 
-            break
         if nxsupra is None:
             break
         if (nx.to_numpy_array(nxsupra, nodelist=np.arange(tnet.N*tnet.T)) == nx.to_numpy_array(nxsupra_old, nodelist=np.arange(tnet.N*tnet.T))).all():
             break
     communities = comtmp[:, :, 0]
-    print('Doing CTM')
     if temporal_consensus == True:
         communities = make_temporal_consensus(communities)
     return communities

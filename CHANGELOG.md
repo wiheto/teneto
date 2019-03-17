@@ -8,6 +8,8 @@
 
 -   Adding export_history to TenetoBIDS. 
 
+-   Divide reoslution of louvain by number of time-points (so gamma is relative to each snapshot)
+
 ## V0.4.3
 
 -   Added Schaefer atlas
