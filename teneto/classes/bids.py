@@ -16,6 +16,7 @@ import time
 from ..utils.bidsutils import load_tabular_file, get_bids_tag, get_sidecar, confound_matching, process_exclusion_criteria, drop_bids_suffix, make_directories
 import pandas as pd
 from .network import TemporalNetwork
+import sys
 
 # class NetworkMeasures:
 #    def __init__(self,**kwargs):
