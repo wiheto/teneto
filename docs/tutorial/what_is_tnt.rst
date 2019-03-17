@@ -9,24 +9,23 @@ Node and edges: the basics of a network
 A network is a representation. Usually it is a representation of some empirical phenomena but it can also be abstract (such as a simulation).
 The representation of a network contains nodes (sometimes called vertices) and edges (sometimes called links).
 
-Nodes and edges can represent a vast amount of different things in the world. For example, nodes can be friends, cities, or brain regions and their 
-representative edges could be trust relationships, train lines, and neuronal communication. 
+Nodes and edges can represent a vast amount of different things in the world. For example, nodes can be friends, cities, or brain regions and the edges between could could represent trust relationships, train lines, and neuronal communication. 
 
 The benefits of network representation is that similar analysis methods can be applied, regardless of what the underlying node or edge represents. 
-This means that network theory is a very inter-disciplinary subject (this however means sometimes things get multiple names). 
+This means that network theory is a very inter-disciplinary subject (this however means sometimes things get multiple names, e.g. nodes and vertices). 
 
-With a network, you can analyse for example, if there is any "hub" node. 
+With a network you can analyse for example, if there is any "hub" node. 
 In transportation networks, there are often hubs which connect many different areas where passengers often have to change at (e.g. airports like Frankfurt, Heathrow or Denver)
 In social networks you can quantify how many steps it is to another person in that network (see the famous 6 steps to Kevin Bacon)
 
-Mathematically, A network if often referenced as G or :math:`\mathcal(G)`. i and j reference nodes. A tuple (i,j) references an edge between nodes i j. G is often 
-expressed in the form of a connectivity matrix (or adjacency matrix) :math:`A_{ij} = 1` if a connection is present and :math:`A_{ij} = 0` if a connection is not present. The number of nodes if often referenced to as N. 
-Thus, A is a NxN matrix.  
+Mathematically, A network if often referenced as G or :math:`\mathcal(G)`; _i_ and _j_ are indicies of nodes; a tuple (i,j) reference an edge between nodes _i_ and _j_. G is often 
+expressed in the form of a connectivity matrix (or adjacency matrix) :math:`A_{ij} = 1` if a connection is present and :math:`A_{ij} = 0` if a connection is not present. The number of nodes if often referenced to as _N_. 
+Thus, _A_ is a _N_x_N_ matrix.  
 
 Different network types
 -----------------------
 
-There are a few different versions of networks. Two key properties distinctions are:
+There are a few different versions of networks. Two key distinctions are:
 
 1. Are the connections *binary* or *weighted*. 
 2. Are the connections *undirected* or *directed*. 
@@ -42,7 +41,7 @@ It is common notation for the source node (sending the information) to be writte
 Adding a time dimension
 -----------------------
 
-In the above formulation of networks, there :math:`A_{ij}` only has one edge. In a temporal network, a time-stampe is also applied for an edge. 
+In the above formulation of networks :math:`A_{ij}` only has one edge. In a temporal network, a time-stamp is also included in the edge's tuple. 
 Thus, binary edges are not expressed as 3-tuples (i,j,t) and weighted networks as 4 tuples (i,j,t,w). 
 Connectivity matrices are now three dimensional: :math:`A_{ijt} = 1` in binary and :math:`A_{ijt} = w` in weighted networks.
 The time indices are an ordered sequence. This can have a consequence about how what has happening in the network and reveal information about what is occurring in the network.
