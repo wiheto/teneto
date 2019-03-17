@@ -48,9 +48,8 @@ def sig_perm_test(net,community,T):
 
 def modularity(net,community):
     """
-    auxiliary function for 'sig_perm_test'.
-    
-    This definition says that Qmatrix(i,j) is the inner product of the ith row of net with the jth column of cl.   
+    auxiliary function for 'sig_perm_test'.    
+    This definition says that Qmatrix(i,j) is the inner product of the ith row of net with the jth column of cl.
     """
     N = np.shape(net)[0] # number of nodes
 
