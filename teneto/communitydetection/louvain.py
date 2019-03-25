@@ -5,6 +5,7 @@ from scipy.spatial.distance import jaccard
 import networkx as nx
 from ..utils import process_input, create_supraadjacency_matrix, tnet_to_nx, clean_community_indexes
 from ..classes import TemporalNetwork
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
 def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativeedge='ignore', randomseed=None, consensus_threshold=0.75, temporal_consensus=True):
@@ -51,11 +52,13 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
     nxsupra = tnet_to_nx(supranet)
     np.random.seed(randomseed)
     while True:
-        comtmp = np.zeros([tnet.N*tnet.T, n_iter]) - 1
-        for n in range(n_iter):
-            com = community.best_partition(
-                nxsupra, resolution=resolution, random_state=None)
-            comtmp[np.array(list(com.keys()), dtype=int), n] = list(com.values())
+        comtmp = []
+        with ProcessPoolExecutor(max_workers=njobs) as executor:
+            job = {executor.submit(_run_louvain, nxsupra, resolution) for n in range(n_iter)}
+            for j in as_completed(job):
+                comtmp.append(j.result())
+        comtmp = np.stack(comtmp)
+        comtmp = comtmp.transpose()
         comtmp = np.reshape(comtmp, [tnet.N, tnet.T, n_iter], order='F')
         if n_iter == 1: 
             break        
@@ -71,6 +74,11 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
         communities = make_temporal_consensus(communities)
     return communities
 
+
+def _run_louvain(nxsupra, resolution): 
+    com = community.best_partition(nxsupra, resolution=resolution, random_state=None)
+    com[np.array(list(com.keys()), dtype=int)] = list(com.values())
+    return com
 
 def make_consensus_matrix(com_membership, th=0.5):
     r"""
@@ -101,7 +109,6 @@ def make_consensus_matrix(com_membership, th=0.5):
             twhere = np.where(con > th)[0]
             D += list(zip(*[np.repeat(i, len(twhere)).tolist(), np.repeat(j,
                         len(twhere)).tolist(), twhere.tolist(), con[twhere].tolist()]))
-    del com_membership
     if len(D) > 0:
         D = pd.DataFrame(D, columns=['i', 'j', 't', 'weight'])
         D = TemporalNetwork(from_df=D)
