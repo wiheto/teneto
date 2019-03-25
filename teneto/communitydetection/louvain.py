@@ -8,7 +8,7 @@ from ..classes import TemporalNetwork
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
-def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativeedge='ignore', randomseed=None, consensus_threshold=0.75, temporal_consensus=True):
+def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativeedge='ignore', randomseed=None, consensus_threshold=0.5, temporal_consensus=True, njobs=1):
     r"""
     Louvain clustering for a temporal network
 
