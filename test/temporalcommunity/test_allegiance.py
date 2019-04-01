@@ -14,8 +14,7 @@ def test_allegiance():
     G = np.stack([a, a, b, b]).transpose([1, 2, 0])
 
     # returns node,time array of community assignments
-    community = teneto.communitydetection.temporal_louvain(
-        G, intersliceweight=0.1, n_iter=1)
+    community = teneto.communitydetection.temporal_louvain(G, intersliceweight=0.1, n_iter=1)
 
     P = allegiance(community)
     # Answers are handcoded based on analytic truth
