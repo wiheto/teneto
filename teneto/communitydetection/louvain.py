@@ -54,7 +54,7 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
     while True:
         comtmp = []
         with ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(_run_louvain, nxsupra, resolution) for n in range(n_iter)}
+            job = {executor.submit(_run_louvain, nxsupra, resolution, tnet.N, tnet.T) for n in range(n_iter)}
             for j in as_completed(job):
                 comtmp.append(j.result())
         comtmp = np.stack(comtmp)
@@ -75,10 +75,11 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
     return communities
 
 
-def _run_louvain(nxsupra, resolution): 
+def _run_louvain(nxsupra, resolution, N, T): 
+    comtmp = np.zeros([N*T])
     com = community.best_partition(nxsupra, resolution=resolution, random_state=None)
-    com[np.array(list(com.keys()), dtype=int)] = list(com.values())
-    return com
+    comtmp[np.array(list(com.keys()), dtype=int)] = list(com.values())
+    return comtmp
 
 def make_consensus_matrix(com_membership, th=0.5):
     r"""
