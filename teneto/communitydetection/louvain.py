@@ -10,7 +10,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativeedge='ignore', randomseed=None, consensus_threshold=0.5, temporal_consensus=True, njobs=1):
     r"""
-    Louvain clustering for a temporal network
+    Louvain clustering for a temporal network.
 
     Parameters
     -----------
@@ -18,7 +18,7 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
         Input network
     resolution : int
         resolution of Louvain clustering ($\gamma$)
-    interslice : int
+    intersliceweight : int
         interslice weight of multilayer clustering ($\omega$). Must be positive.
     n_iter : int
         Number of iterations to run louvain for
@@ -27,7 +27,7 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
     negativeedge : str
         If there are negative edges, what should be done with them.
         Options: 'ignore' (i.e. set to 0). More options to be added.
-    consensus : float
+    consensus : float (0.5 default)
         When creating consensus matrix to average over number of iterations, keep values when the consensus is this amount.
 
     Returns

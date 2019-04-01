@@ -10,6 +10,8 @@
 
 -   Divide reoslution of louvain by number of time-points (so gamma is relative to each snapshot)
 
+-   Default of consensus matrix in community detection set to 0.5.
+
 ## V0.4.3
 
 -   Added Schaefer atlas
