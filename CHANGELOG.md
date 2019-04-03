@@ -12,6 +12,8 @@
 
 -   Default of consensus matrix in community detection set to 0.5.
 
+-   Changed make_parcellation to accept +OH (for subcortical) and +SUIT (for cerebellar)
+
 ## V0.4.3
 
 -   Added Schaefer atlas

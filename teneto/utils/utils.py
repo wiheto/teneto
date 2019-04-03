@@ -821,9 +821,8 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
     parcellation : str
         Specify which parcellation that you would like to use. For MNI: 'gordon2014_333', 'power2012_264', For TAL: 'shen2013_278'.
         It is possible to add the OH subcotical atlas on top of a cortical atlas (e.g. gordon) by adding:
-            '+sub-maxprob-thr0-1mm', '+sub-maxprob-thr0-2mm', 'sub-maxprob-thr25-1mm', 'sub-maxprob-thr25-2mm',
-            '+sub-maxprob-thr50-1mm', '+sub-maxprob-thr50-2mm'.
-            e.g.: gordon2014_333+submaxprob-thr0-2mm'
+            '+OH' (for oxford harvard subcortical atlas) and '+SUIT' for SUIT cerebellar atlas.
+            e.g.: gordon2014_333+OH+SUIT'
     parc_type : str
         Can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
     parc_params : dict
@@ -845,9 +844,14 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
         if '+' in parcellation:
             parcin = parcellation.split('+')
             parcellation = parcin[0]
-            subcortical = parcin[1]
+        if '+OH' in parcellation:
+            subcortical = True
         else:
             subcortical = None
+        if '+SUIT' in parcellation:
+            cerebellar = True
+        else:
+            cerebellar = None
 
         if not parc_type or not parc_params:
             path = tenetopath[0] + '/data/parcellation_defaults/defaults.json'
@@ -876,6 +880,12 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
         region = NiftiLabelsMasker(subatlas, **parc_params)
         data_sub = region.fit_transform(data_path)
         data = np.hstack([data, data_sub])
+
+    if cerebellar:
+        path = tenetopath[0] + '/data/parcellation/Cerebellum-SUIT_space-MNI152NLin2009cAsym.nii.gz'
+        region = NiftiLabelsMasker(path, **parc_params)
+        data_cerebellar = region.fit_transform(data_path)
+        data = np.hstack([data, data_cerebellar])
 
     return data
 
