@@ -1355,6 +1355,7 @@ class TenetoBIDS:
 
         net_path = teneto.__path__[
             0] + '/data/parcellation_defaults/' + parcellation + '_network.csv'
+        nn = 0
         if os.path.exists(parcellation):
             self.network_communities_ = pd.read_csv(parcellation, index_col=0)
             self.network_communities_info_ = self.network_communities_.drop_duplicates(
@@ -1368,15 +1369,17 @@ class TenetoBIDS:
             self.network_communities_info_[
                 'number_of_nodes'] = self.network_communities_.groupby('network_id').count()
         else:
+            nn = 1
             print('No (static) network community file found.')
 
-        if subcortical:
+        if subcortical and nn == 0:
             # Assuming only OH atlas exists for subcortical at the moment.
             node_num = 21
             sub = pd.DataFrame(data={'Community': ['Subcortical (OH)']*node_num, 'network_id': np.repeat(
                 self.network_communities_['network_id'].max()+1, node_num)})
             self.network_communities_ = self.network_communities_.append(sub)
             self.network_communities_.reset_index(drop=True, inplace=True)
+
 
     def set_bids_suffix(self, bids_suffix):
         """
