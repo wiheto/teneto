@@ -455,7 +455,7 @@ class TenetoBIDS:
             if tag == 'sub':
                 datapath = self.BIDS_dir + '/derivatives/' + self.pipeline + '/'
                 tag_alternatives = [
-                    f.split('sub-')[1] for f in os.listdir(datapath) if os.path.isdir(datapath + f)]
+                    f.split('sub-')[1] for f in os.listdir(datapath) if os.path.isdir(datapath + f) and 'sub-' in f]
             elif tag == 'ses':
                 tag_alternatives = []
                 for sub in self.bids_tags['sub']:

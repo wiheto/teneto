@@ -14,6 +14,8 @@
 
 -   Changed make_parcellation to accept +OH (for subcortical) and +SUIT (for cerebellar)
 
+-   Fixed error where tags are set and other folders exist in derivatives
+
 ## V0.4.3
 
 -   Added Schaefer atlas
