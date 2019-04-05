@@ -840,15 +840,15 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
     """
 
     if isinstance(parcellation, str):
-
+        parcin = ''
         if '+' in parcellation:
-            parcin = parcellation.split('+')
-            parcellation = parcin[0]
-        if '+OH' in parcellation:
+            parcin = parcellation
+            parcellation = parcellation.split('+')[0]
+        if '+OH' in parcin:
             subcortical = True
         else:
             subcortical = None
-        if '+SUIT' in parcellation:
+        if '+SUIT' in parcin:
             cerebellar = True
         else:
             cerebellar = None
@@ -876,6 +876,7 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
         raise ValueError('Unknown parc_type specified')
 
     if subcortical:
+        print('>>doing this<<')
         subatlas = fetch_atlas_harvard_oxford('sub-maxprob-thr0-2mm')['maps']
         region = NiftiLabelsMasker(subatlas, **parc_params)
         data_sub = region.fit_transform(data_path)

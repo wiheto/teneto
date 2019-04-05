@@ -132,7 +132,8 @@ class TenetoBIDS:
             directory to export entire TenetoBIDS history.
 
         """
-        mods = [(m.__name__, m.__version__) for m in sys.modules.values() if m if hasattr(m,'__version__')]
+        mods = [(m.__name__, m.__version__)
+                for m in sys.modules.values() if m if hasattr(m, '__version__')]
         with open(dirname + '/requirements.txt', 'w') as f:
             for m in mods:
                 m = list(m)
@@ -144,8 +145,6 @@ class TenetoBIDS:
             f.writelines('import teneto\n')
             for func, args in self.history:
                 f.writelines(func + '(**' + str(args) + ')\n')
-
-
 
     def derive_temporalnetwork(self, params, update_pipeline=True, tag=None, njobs=1, confound_corr_report=True):
         """
@@ -270,7 +269,7 @@ class TenetoBIDS:
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2)) : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2))                             : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
@@ -823,7 +822,7 @@ class TenetoBIDS:
             print('Confounds in confound files: \n - ' + '\n - '.join(confounds))
         return confounds
 
-    def make_parcellation(self, parcellation, parc_type=None, parc_params=None, network='defaults', update_pipeline=True, removeconfounds=False, tag=None, njobs=None, clean_params=None):
+    def make_parcellation(self, parcellation, parc_type=None, parc_params=None, network='defaults', update_pipeline=True, removeconfounds=False, tag=None, njobs=None, clean_params=None, yeonetworkn=None):
         """
         Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end.
 
@@ -846,6 +845,8 @@ class TenetoBIDS:
             any additional tag that must be in file name. After the tag there must either be a underscore or period (following bids).
         clean_params : dict
             **kwargs for nilearn function nilearn.signal.clean
+        yeonetworkn : int (7 or 17)
+            Only relevant for when parcellation is schaeffer2018. Use 7 or 17 template networks 
         njobs : n
             number of processes to run. Overrides TenetoBIDS.njobs
 
@@ -878,7 +879,7 @@ class TenetoBIDS:
         # A matching algorithem may be needed if cases arise where this isnt the case
         files = self.get_selected_files(quiet=1)
         # Load network communities, if possible.
-        self.set_network_communities(parcellation)
+        self.set_network_communities(parcellation, netn=yeonetworkn)
 
         if not tag:
             tag = ''
@@ -1336,50 +1337,67 @@ class TenetoBIDS:
 
         self.confounds = confounds
 
-    def set_network_communities(self, parcellation):
+    def set_network_communities(self, parcellation, netn=17):
         """
 
         parcellation : str
             path to csv or name of default parcellation.
-
+        netn : int
+            only when yeo atlas is used, specifies either 7 or 17.
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         # Sett if seperate subcortical atlas is specified
+        subcortical = ''
+        cerebellar = ''
         if '+' in parcellation:
             # Need to add subcortical info to network_communities and network_communities_info_
-            parcin = parcellation.split('+')
-            parcellation = parcin[0]
-            subcortical = parcin[1]
+            parcin = parcellation
+            parcellation = parcellation.split('+')[0]
+            if '+OH' in parcin: 
+                subcortical = 'OH'
+            if '+SUIT' in parcin: 
+                cerebellar = 'SUIT'
         else:
             subcortical = None
 
-        # TODO Change this path for multiple parcellations
-        net_path = teneto.__path__[
-            0] + '/data/parcellation_defaults/' + parcellation + '_network.csv'
+        if parcellation.split('_')[0] != 'schaefer2018':
+            net_path = teneto.__path__[
+                0] + '/data/parcellation/staticcommunities/' + parcellation + '_network.tsv'
+        else:
+            roin = parcellation.split('_')[1].split('Parcels')[0]
+            net_path = teneto.__path__[
+                0] + '/data/parcellation/staticcommunities/schaefer2018_yeo2011communityinfo_' + roin + 'networks-' + str(netn) + '.tsv'
         nn = 0
-        if os.path.exists(parcellation):
-            self.network_communities_ = pd.read_csv(parcellation, index_col=0)
-            self.network_communities_info_ = self.network_communities_.drop_duplicates(
+        if os.path.exists(net_path):
+            self.communitytemplate_ = pd.read_csv(net_path, index_col=0, sep='\t')
+            self.communitytemplate_info_ = self.communitytemplate_[['community', 'community_id']].drop_duplicates(
             ).sort_values('community_id').reset_index(drop=True)
-            self.network_communities_info_[
-                'number_of_nodes'] = self.network_communities_.groupby('community_id').count()
-        elif os.path.exists(net_path):
-            self.network_communities_ = pd.read_csv(net_path, index_col=0)
-            self.network_communities_info_ = self.network_communities_.drop_duplicates(
+            self.communitytemplate_info_[
+                'number_of_nodes'] = self.communitytemplate_.groupby('community_id').count()['community']
+        elif os.path.exists(parcellation):
+            self.communitytemplate_ = pd.read_csv(parcellation, index_col=0, sep='\t')
+            self.communitytemplate_info_ = self.communitytemplate_.drop_duplicates(
             ).sort_values('community_id').reset_index(drop=True)
-            self.network_communities_info_[
-                'number_of_nodes'] = self.network_communities_.groupby('community_id').count()
+            self.communitytemplate_info_[
+                'number_of_nodes'] = self.communitytemplate_.groupby('community_id').count()
         else:
             nn = 1
             print('No (static) network community file found.')
 
-        if subcortical and nn == 0:
+        if subcortical=='OH' and nn == 0:
             # Assuming only OH atlas exists for subcortical at the moment.
             node_num = 21
-            sub = pd.DataFrame(data={'Community': ['Subcortical (OH)']*node_num, 'community_id': np.repeat(
-                self.network_communities_['community_id'].max()+1, node_num)})
-            self.network_communities_ = self.network_communities_.append(sub)
-            self.network_communities_.reset_index(drop=True, inplace=True)
+            sub = pd.DataFrame(data={'community': ['Subcortical (OH)']*node_num, 'community_id': np.repeat(
+                self.communitytemplate_['community_id'].max()+1, node_num)})
+            self.communitytemplate_ = self.communitytemplate_.append(sub)
+            self.communitytemplate_.reset_index(drop=True, inplace=True)
+
+        if cerebellar=='SUIT' and nn == 0:
+            node_num = 34
+            sub = pd.DataFrame(data={'community': ['Cerebellar (SUIT)']*node_num, 'community_id': np.repeat(
+                self.communitytemplate_['community_id'].max()+1, node_num)})
+            self.communitytemplate_ = self.communitytemplate_.append(sub)
+            self.communitytemplate_.reset_index(drop=True, inplace=True)
 
 
     def set_bids_suffix(self, bids_suffix):

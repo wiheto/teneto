@@ -20,6 +20,16 @@
 
 -   Adding Scahefer atlas to data/parcellation_defaults/default.json
 
+-   Better loading of communities in TenetoBIDS
+
+-   Renmaed network_communities_ to communitytemplate_ 
+
+-   Fixed a bug where SUIT and OH were not loaded in make_parcellation
+
+-   Better communitytemplate_ tables loaded (OH and SUIT included)
+
+-   Can specify 7 or 17 communitytemplate size when using schaefer atlas
+
 ## V0.4.3
 
 -   Added Schaefer atlas
