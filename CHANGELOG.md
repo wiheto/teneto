@@ -4,9 +4,9 @@
 
 -   Added plotedgeweight option to sliceplot for varying edge size.
 
--   Minor fixed to TenetoBIDS, teneto.timeseries and teneto.communitydetection 
+-   Minor fixed to TenetoBIDS, teneto.timeseries and teneto.communitydetection
 
--   Adding export_history to TenetoBIDS. 
+-   Adding export_history to TenetoBIDS.
 
 -   Divide reoslution of louvain by number of time-points (so gamma is relative to each snapshot)
 
@@ -16,13 +16,13 @@
 
 -   Fixed error where tags are set and other folders exist in derivatives
 
--   Renaming Schaefer atlas files 
+-   Renaming Schaefer atlas files
 
 -   Adding Scahefer atlas to data/parcellation_defaults/default.json
 
 -   Better loading of communities in TenetoBIDS
 
--   Renmaed network_communities_ to communitytemplate_ 
+-   Renmaed network_communities_ to communitytemplate_
 
 -   Fixed a bug where SUIT and OH were not loaded in make_parcellation
 
@@ -38,7 +38,7 @@
 
 -   Fixed error in temporal_louvain/consensus matrix where labels were getting incorrectly sorted.
 
--   Adding temporalcommunity module. 
+-   Adding temporalcommunity module.
 
 -   Adding flexibility to temporalcommunity
 
@@ -156,7 +156,7 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 
 ## V0.3.5
 
--   Due to problems with installation of iGraph, temporarily removing communitydetection (commenting out code in TenetoBIDS, communitydetection module is not imported and tests commented.) This 
+-   Due to problems with installation of iGraph, temporarily removing communitydetection (commenting out code in TenetoBIDS, communitydetection module is not imported and tests commented.) This
     is until a more user friendly louvain detection is implemented (and is quick).
 
 ## V0.3.4
