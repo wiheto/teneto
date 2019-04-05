@@ -1,0 +1,36 @@
+1 Left_I_IV 1001
+2 Right_I_IV 1001
+3 Left_V 2002
+4 Right_V 2002
+5 Left_VI 2101
+6 Vermis_VI 2101
+7 Right_VI 2101
+8 Left_CrusI 2102
+9 Vermis_CrusI 2102
+10 Right_CrusI 2102
+11 Left_CrusII 2111
+12 Vermis_CrusII 2111
+13 Right_CrusII 2111
+14 Left_VIIb 2112
+15 Vermis_VIIb 2112
+16 Right_VIIb 2112
+17 Left_VIIIa 2201
+18 Vermis_VIIIa 2201
+19 Right_VIIIa 2201
+20 Left_VIIIb 2202
+21 Vermis_VIIIb 2202
+22 Right_VIIIb 2202
+23 Left_IX 2211
+24 Vermis_IX 2211
+25 Right_IX 2211
+26 Left_X 2212
+27 Vermis_X 2212
+28 Right_X 2212
+29 Left_Dentate 2301
+30 Right_Dentate 2301
+31 Left_Interposed 2302
+32 Right_Interposed 2302
+33 Left_Fastigial 2311
+34 Right_Fastigial 2311
+
+
