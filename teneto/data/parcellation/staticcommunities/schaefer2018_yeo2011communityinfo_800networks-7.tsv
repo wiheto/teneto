@@ -1,801 +1,801 @@
-	community	roi	community_id	commmunity_id
-1	Vis	1	1	0
-2	Vis	2	2	0
-3	Vis	3	3	0
-4	Vis	4	4	0
-5	Vis	5	5	0
-6	Vis	6	6	0
-7	Vis	7	7	0
-8	Vis	8	8	0
-9	Vis	9	9	0
-10	Vis	10	10	0
-11	Vis	11	11	0
-12	Vis	12	12	0
-13	Vis	13	13	0
-14	Vis	14	14	0
-15	Vis	15	15	0
-16	Vis	16	16	0
-17	Vis	17	17	0
-18	Vis	18	18	0
-19	Vis	19	19	0
-20	Vis	20	20	0
-21	Vis	21	21	0
-22	Vis	22	22	0
-23	Vis	23	23	0
-24	Vis	24	24	0
-25	Vis	25	25	0
-26	Vis	26	26	0
-27	Vis	27	27	0
-28	Vis	28	28	0
-29	Vis	29	29	0
-30	Vis	30	30	0
-31	Vis	31	31	0
-32	Vis	32	32	0
-33	Vis	33	33	0
-34	Vis	34	34	0
-35	Vis	35	35	0
-36	Vis	36	36	0
-37	Vis	37	37	0
-38	Vis	38	38	0
-39	Vis	39	39	0
-40	Vis	40	40	0
-41	Vis	41	41	0
-42	Vis	42	42	0
-43	Vis	43	43	0
-44	Vis	44	44	0
-45	Vis	45	45	0
-46	Vis	46	46	0
-47	Vis	47	47	0
-48	Vis	48	48	0
-49	Vis	49	49	0
-50	Vis	50	50	0
-51	Vis	51	51	0
-52	Vis	52	52	0
-53	Vis	53	53	0
-54	Vis	54	54	0
-55	Vis	55	55	0
-56	Vis	56	56	0
-57	Vis	57	57	0
-58	Vis	58	58	0
-59	Vis	59	59	0
-60	Vis	60	60	0
-61	Vis	61	61	0
-62	Vis	62	62	0
-63	Vis	63	63	0
-64	Vis	64	64	0
-65	Vis	65	65	0
-66	Vis	66	66	0
-67	Vis	67	67	0
-68	SomMot	1	1	1
-69	SomMot	2	2	1
-70	SomMot	3	3	1
-71	SomMot	4	4	1
-72	SomMot	5	5	1
-73	SomMot	6	6	1
-74	SomMot	7	7	1
-75	SomMot	8	8	1
-76	SomMot	9	9	1
-77	SomMot	10	10	1
-78	SomMot	11	11	1
-79	SomMot	12	12	1
-80	SomMot	13	13	1
-81	SomMot	14	14	1
-82	SomMot	15	15	1
-83	SomMot	16	16	1
-84	SomMot	17	17	1
-85	SomMot	18	18	1
-86	SomMot	19	19	1
-87	SomMot	20	20	1
-88	SomMot	21	21	1
-89	SomMot	22	22	1
-90	SomMot	23	23	1
-91	SomMot	24	24	1
-92	SomMot	25	25	1
-93	SomMot	26	26	1
-94	SomMot	27	27	1
-95	SomMot	28	28	1
-96	SomMot	29	29	1
-97	SomMot	30	30	1
-98	SomMot	31	31	1
-99	SomMot	32	32	1
-100	SomMot	33	33	1
-101	SomMot	34	34	1
-102	SomMot	35	35	1
-103	SomMot	36	36	1
-104	SomMot	37	37	1
-105	SomMot	38	38	1
-106	SomMot	39	39	1
-107	SomMot	40	40	1
-108	SomMot	41	41	1
-109	SomMot	42	42	1
-110	SomMot	43	43	1
-111	SomMot	44	44	1
-112	SomMot	45	45	1
-113	SomMot	46	46	1
-114	SomMot	47	47	1
-115	SomMot	48	48	1
-116	SomMot	49	49	1
-117	SomMot	50	50	1
-118	SomMot	51	51	1
-119	SomMot	52	52	1
-120	SomMot	53	53	1
-121	SomMot	54	54	1
-122	SomMot	55	55	1
-123	SomMot	56	56	1
-124	SomMot	57	57	1
-125	SomMot	58	58	1
-126	SomMot	59	59	1
-127	SomMot	60	60	1
-128	SomMot	61	61	1
-129	SomMot	62	62	1
-130	SomMot	63	63	1
-131	SomMot	64	64	1
-132	SomMot	65	65	1
-133	SomMot	66	66	1
-134	SomMot	67	67	1
-135	SomMot	68	68	1
-136	SomMot	69	69	1
-137	SomMot	70	70	1
-138	SomMot	71	71	1
-139	SomMot	72	72	1
-140	SomMot	73	73	1
-141	SomMot	74	74	1
-142	SomMot	75	75	1
-143	DorsAttn	Post_1	Post_1	2
-144	DorsAttn	Post_2	Post_2	2
-145	DorsAttn	Post_3	Post_3	2
-146	DorsAttn	Post_4	Post_4	2
-147	DorsAttn	Post_5	Post_5	2
-148	DorsAttn	Post_6	Post_6	2
-149	DorsAttn	Post_7	Post_7	2
-150	DorsAttn	Post_8	Post_8	2
-151	DorsAttn	Post_9	Post_9	2
-152	DorsAttn	Post_10	Post_10	2
-153	DorsAttn	Post_11	Post_11	2
-154	DorsAttn	Post_12	Post_12	2
-155	DorsAttn	Post_13	Post_13	2
-156	DorsAttn	Post_14	Post_14	2
-157	DorsAttn	Post_15	Post_15	2
-158	DorsAttn	Post_16	Post_16	2
-159	DorsAttn	Post_17	Post_17	2
-160	DorsAttn	Post_18	Post_18	2
-161	DorsAttn	Post_19	Post_19	2
-162	DorsAttn	Post_20	Post_20	2
-163	DorsAttn	Post_21	Post_21	2
-164	DorsAttn	Post_22	Post_22	2
-165	DorsAttn	Post_23	Post_23	2
-166	DorsAttn	Post_24	Post_24	2
-167	DorsAttn	Post_25	Post_25	2
-168	DorsAttn	Post_26	Post_26	2
-169	DorsAttn	Post_27	Post_27	2
-170	DorsAttn	Post_28	Post_28	2
-171	DorsAttn	Post_29	Post_29	2
-172	DorsAttn	Post_30	Post_30	2
-173	DorsAttn	Post_31	Post_31	2
-174	DorsAttn	Post_32	Post_32	2
-175	DorsAttn	Post_33	Post_33	2
-176	DorsAttn	Post_34	Post_34	2
-177	DorsAttn	Post_35	Post_35	2
-178	DorsAttn	Post_36	Post_36	2
-179	DorsAttn	Post_37	Post_37	2
-180	DorsAttn	Post_38	Post_38	2
-181	DorsAttn	FEF_1	FEF_1	2
-182	DorsAttn	FEF_2	FEF_2	2
-183	DorsAttn	FEF_3	FEF_3	2
-184	DorsAttn	FEF_4	FEF_4	2
-185	DorsAttn	FEF_5	FEF_5	2
-186	DorsAttn	FEF_6	FEF_6	2
-187	DorsAttn	FEF_7	FEF_7	2
-188	DorsAttn	PrCv_1	PrCv_1	2
-189	DorsAttn	PrCv_2	PrCv_2	2
-190	SalVentAttn	ParOper_1	ParOper_1	3
-191	SalVentAttn	ParOper_2	ParOper_2	3
-192	SalVentAttn	ParOper_3	ParOper_3	3
-193	SalVentAttn	ParOper_4	ParOper_4	3
-194	SalVentAttn	ParOper_5	ParOper_5	3
-195	SalVentAttn	ParOper_6	ParOper_6	3
-196	SalVentAttn	ParOper_7	ParOper_7	3
-197	SalVentAttn	ParOper_8	ParOper_8	3
-198	SalVentAttn	TempOcc_1	TempOcc_1	3
-199	SalVentAttn	FrOper_1	FrOper_1	3
-200	SalVentAttn	FrOper_2	FrOper_2	3
-201	SalVentAttn	FrOper_3	FrOper_3	3
-202	SalVentAttn	FrOper_4	FrOper_4	3
-203	SalVentAttn	FrOper_5	FrOper_5	3
-204	SalVentAttn	FrOper_6	FrOper_6	3
-205	SalVentAttn	FrOper_7	FrOper_7	3
-206	SalVentAttn	FrOper_8	FrOper_8	3
-207	SalVentAttn	FrOper_9	FrOper_9	3
-208	SalVentAttn	FrOper_10	FrOper_10	3
-209	SalVentAttn	FrOper_11	FrOper_11	3
-210	SalVentAttn	FrOper_12	FrOper_12	3
-211	SalVentAttn	PFCl_1	PFCl_1	3
-212	SalVentAttn	PFCl_2	PFCl_2	3
-213	SalVentAttn	Med_1	Med_1	3
-214	SalVentAttn	Med_2	Med_2	3
-215	SalVentAttn	Med_3	Med_3	3
-216	SalVentAttn	Med_4	Med_4	3
-217	SalVentAttn	Med_5	Med_5	3
-218	SalVentAttn	Med_6	Med_6	3
-219	SalVentAttn	Med_7	Med_7	3
-220	SalVentAttn	Med_8	Med_8	3
-221	SalVentAttn	Med_9	Med_9	3
-222	SalVentAttn	Med_10	Med_10	3
-223	SalVentAttn	Med_11	Med_11	3
-224	SalVentAttn	Med_12	Med_12	3
-225	SalVentAttn	Med_13	Med_13	3
-226	SalVentAttn	Med_14	Med_14	3
-227	SalVentAttn	Med_15	Med_15	3
-228	SalVentAttn	Med_16	Med_16	3
-229	SalVentAttn	Med_17	Med_17	3
-230	Limbic	OFC_1	OFC_1	4
-231	Limbic	OFC_2	OFC_2	4
-232	Limbic	OFC_3	OFC_3	4
-233	Limbic	OFC_4	OFC_4	4
-234	Limbic	OFC_5	OFC_5	4
-235	Limbic	OFC_6	OFC_6	4
-236	Limbic	OFC_7	OFC_7	4
-237	Limbic	OFC_8	OFC_8	4
-238	Limbic	OFC_9	OFC_9	4
-239	Limbic	OFC_10	OFC_10	4
-240	Limbic	OFC_11	OFC_11	4
-241	Limbic	OFC_12	OFC_12	4
-242	Limbic	TempPole_1	TempPole_1	4
-243	Limbic	TempPole_2	TempPole_2	4
-244	Limbic	TempPole_3	TempPole_3	4
-245	Limbic	TempPole_4	TempPole_4	4
-246	Limbic	TempPole_5	TempPole_5	4
-247	Limbic	TempPole_6	TempPole_6	4
-248	Limbic	TempPole_7	TempPole_7	4
-249	Limbic	TempPole_8	TempPole_8	4
-250	Limbic	TempPole_9	TempPole_9	4
-251	Limbic	TempPole_10	TempPole_10	4
-252	Limbic	TempPole_11	TempPole_11	4
-253	Limbic	TempPole_12	TempPole_12	4
-254	Limbic	TempPole_13	TempPole_13	4
-255	Limbic	TempPole_14	TempPole_14	4
-256	Limbic	TempPole_15	TempPole_15	4
-257	Limbic	TempPole_16	TempPole_16	4
-258	Limbic	TempPole_17	TempPole_17	4
-259	Cont	Par_1	Par_1	5
-260	Cont	Par_2	Par_2	5
-261	Cont	Par_3	Par_3	5
-262	Cont	Par_4	Par_4	5
-263	Cont	Par_5	Par_5	5
-264	Cont	Par_6	Par_6	5
-265	Cont	Par_7	Par_7	5
-266	Cont	Par_8	Par_8	5
-267	Cont	Par_9	Par_9	5
-268	Cont	Par_10	Par_10	5
-269	Cont	Par_11	Par_11	5
-270	Cont	Par_12	Par_12	5
-271	Cont	Temp_1	Temp_1	5
-272	Cont	Temp_2	Temp_2	5
-273	Cont	Temp_3	Temp_3	5
-274	Cont	PFCd_1	PFCd_1	5
-275	Cont	PFCd_2	PFCd_2	5
-276	Cont	PFCl_1	PFCl_1	5
-277	Cont	PFCl_2	PFCl_2	5
-278	Cont	PFCl_3	PFCl_3	5
-279	Cont	PFCl_4	PFCl_4	5
-280	Cont	PFCl_5	PFCl_5	5
-281	Cont	PFCl_6	PFCl_6	5
-282	Cont	PFCl_7	PFCl_7	5
-283	Cont	PFCl_8	PFCl_8	5
-284	Cont	PFCl_9	PFCl_9	5
-285	Cont	PFCl_10	PFCl_10	5
-286	Cont	PFCl_11	PFCl_11	5
-287	Cont	PFCl_12	PFCl_12	5
-288	Cont	PFCl_13	PFCl_13	5
-289	Cont	PFCl_14	PFCl_14	5
-290	Cont	PFCl_15	PFCl_15	5
-291	Cont	OFC_1	OFC_1	5
-292	Cont	PFCv_1	PFCv_1	5
-293	Cont	PFCv_2	PFCv_2	5
-294	Cont	pCun_1	pCun_1	5
-295	Cont	pCun_2	pCun_2	5
-296	Cont	pCun_3	pCun_3	5
-297	Cont	Cing_1	Cing_1	5
-298	Cont	Cing_2	Cing_2	5
-299	Cont	Cing_3	Cing_3	5
-300	Cont	Cing_4	Cing_4	5
-301	Cont	Cing_5	Cing_5	5
-302	Cont	PFCmp_1	PFCmp_1	5
-303	Cont	PFCmp_2	PFCmp_2	5
-304	Default	Temp_1	Temp_1	6
-305	Default	Temp_2	Temp_2	6
-306	Default	Temp_3	Temp_3	6
-307	Default	Temp_4	Temp_4	6
-308	Default	Temp_5	Temp_5	6
-309	Default	Temp_6	Temp_6	6
-310	Default	Temp_7	Temp_7	6
-311	Default	Temp_8	Temp_8	6
-312	Default	Temp_9	Temp_9	6
-313	Default	Temp_10	Temp_10	6
-314	Default	Temp_11	Temp_11	6
-315	Default	Temp_12	Temp_12	6
-316	Default	Temp_13	Temp_13	6
-317	Default	Temp_14	Temp_14	6
-318	Default	Temp_15	Temp_15	6
-319	Default	Temp_16	Temp_16	6
-320	Default	Temp_17	Temp_17	6
-321	Default	Temp_18	Temp_18	6
-322	Default	Temp_19	Temp_19	6
-323	Default	Temp_20	Temp_20	6
-324	Default	Temp_21	Temp_21	6
-325	Default	Temp_22	Temp_22	6
-326	Default	Temp_23	Temp_23	6
-327	Default	Temp_24	Temp_24	6
-328	Default	Temp_25	Temp_25	6
-329	Default	Temp_26	Temp_26	6
-330	Default	Temp_27	Temp_27	6
-331	Default	Temp_28	Temp_28	6
-332	Default	Temp_29	Temp_29	6
-333	Default	PFC_1	PFC_1	6
-334	Default	PFC_2	PFC_2	6
-335	Default	PFC_3	PFC_3	6
-336	Default	PFC_4	PFC_4	6
-337	Default	PFC_5	PFC_5	6
-338	Default	PFC_6	PFC_6	6
-339	Default	PFC_7	PFC_7	6
-340	Default	PFC_8	PFC_8	6
-341	Default	PFC_9	PFC_9	6
-342	Default	PFC_10	PFC_10	6
-343	Default	PFC_11	PFC_11	6
-344	Default	PFC_12	PFC_12	6
-345	Default	PFC_13	PFC_13	6
-346	Default	PFC_14	PFC_14	6
-347	Default	PFC_15	PFC_15	6
-348	Default	PFC_16	PFC_16	6
-349	Default	PFC_17	PFC_17	6
-350	Default	PFC_18	PFC_18	6
-351	Default	PFC_19	PFC_19	6
-352	Default	PFC_20	PFC_20	6
-353	Default	PFC_21	PFC_21	6
-354	Default	PFC_22	PFC_22	6
-355	Default	PFC_23	PFC_23	6
-356	Default	PFC_24	PFC_24	6
-357	Default	PFC_25	PFC_25	6
-358	Default	PFC_26	PFC_26	6
-359	Default	PFC_27	PFC_27	6
-360	Default	PFC_28	PFC_28	6
-361	Default	PFC_29	PFC_29	6
-362	Default	PFC_30	PFC_30	6
-363	Default	PFC_31	PFC_31	6
-364	Default	PFC_32	PFC_32	6
-365	Default	PFC_33	PFC_33	6
-366	Default	PFC_34	PFC_34	6
-367	Default	PFC_35	PFC_35	6
-368	Default	PFC_36	PFC_36	6
-369	Default	PFC_37	PFC_37	6
-370	Default	PFC_38	PFC_38	6
-371	Default	PFC_39	PFC_39	6
-372	Default	PFC_40	PFC_40	6
-373	Default	PCC_1	PCC_1	6
-374	Default	PCC_2	PCC_2	6
-375	Default	PCC_3	PCC_3	6
-376	Default	PCC_4	PCC_4	6
-377	Default	PCC_5	PCC_5	6
-378	Default	PCC_6	PCC_6	6
-379	Default	PCC_7	PCC_7	6
-380	Default	PCC_8	PCC_8	6
-381	Default	PCC_9	PCC_9	6
-382	Default	PCC_10	PCC_10	6
-383	Default	PCC_11	PCC_11	6
-384	Default	PCC_12	PCC_12	6
-385	Default	PCC_13	PCC_13	6
-386	Default	PCC_14	PCC_14	6
-387	Default	PCC_15	PCC_15	6
-388	Default	PCC_16	PCC_16	6
-389	Default	PCC_17	PCC_17	6
-390	Default	PCC_18	PCC_18	6
-391	Default	PCC_19	PCC_19	6
-392	Default	PCC_20	PCC_20	6
-393	Default	PCC_21	PCC_21	6
-394	Default	PCC_22	PCC_22	6
-395	Default	PCC_23	PCC_23	6
-396	Default	PCC_24	PCC_24	6
-397	Default	PCC_25	PCC_25	6
-398	Default	PCC_26	PCC_26	6
-399	Default	PCC_27	PCC_27	6
-400	Default	PHC_1	PHC_1	6
-401	Vis	1	1	0
-402	Vis	2	2	0
-403	Vis	3	3	0
-404	Vis	4	4	0
-405	Vis	5	5	0
-406	Vis	6	6	0
-407	Vis	7	7	0
-408	Vis	8	8	0
-409	Vis	9	9	0
-410	Vis	10	10	0
-411	Vis	11	11	0
-412	Vis	12	12	0
-413	Vis	13	13	0
-414	Vis	14	14	0
-415	Vis	15	15	0
-416	Vis	16	16	0
-417	Vis	17	17	0
-418	Vis	18	18	0
-419	Vis	19	19	0
-420	Vis	20	20	0
-421	Vis	21	21	0
-422	Vis	22	22	0
-423	Vis	23	23	0
-424	Vis	24	24	0
-425	Vis	25	25	0
-426	Vis	26	26	0
-427	Vis	27	27	0
-428	Vis	28	28	0
-429	Vis	29	29	0
-430	Vis	30	30	0
-431	Vis	31	31	0
-432	Vis	32	32	0
-433	Vis	33	33	0
-434	Vis	34	34	0
-435	Vis	35	35	0
-436	Vis	36	36	0
-437	Vis	37	37	0
-438	Vis	38	38	0
-439	Vis	39	39	0
-440	Vis	40	40	0
-441	Vis	41	41	0
-442	Vis	42	42	0
-443	Vis	43	43	0
-444	Vis	44	44	0
-445	Vis	45	45	0
-446	Vis	46	46	0
-447	Vis	47	47	0
-448	Vis	48	48	0
-449	Vis	49	49	0
-450	Vis	50	50	0
-451	Vis	51	51	0
-452	Vis	52	52	0
-453	Vis	53	53	0
-454	Vis	54	54	0
-455	Vis	55	55	0
-456	Vis	56	56	0
-457	Vis	57	57	0
-458	Vis	58	58	0
-459	Vis	59	59	0
-460	Vis	60	60	0
-461	Vis	61	61	0
-462	Vis	62	62	0
-463	Vis	63	63	0
-464	Vis	64	64	0
-465	Vis	65	65	0
-466	Vis	66	66	0
-467	Vis	67	67	0
-468	SomMot	1	1	1
-469	SomMot	2	2	1
-470	SomMot	3	3	1
-471	SomMot	4	4	1
-472	SomMot	5	5	1
-473	SomMot	6	6	1
-474	SomMot	7	7	1
-475	SomMot	8	8	1
-476	SomMot	9	9	1
-477	SomMot	10	10	1
-478	SomMot	11	11	1
-479	SomMot	12	12	1
-480	SomMot	13	13	1
-481	SomMot	14	14	1
-482	SomMot	15	15	1
-483	SomMot	16	16	1
-484	SomMot	17	17	1
-485	SomMot	18	18	1
-486	SomMot	19	19	1
-487	SomMot	20	20	1
-488	SomMot	21	21	1
-489	SomMot	22	22	1
-490	SomMot	23	23	1
-491	SomMot	24	24	1
-492	SomMot	25	25	1
-493	SomMot	26	26	1
-494	SomMot	27	27	1
-495	SomMot	28	28	1
-496	SomMot	29	29	1
-497	SomMot	30	30	1
-498	SomMot	31	31	1
-499	SomMot	32	32	1
-500	SomMot	33	33	1
-501	SomMot	34	34	1
-502	SomMot	35	35	1
-503	SomMot	36	36	1
-504	SomMot	37	37	1
-505	SomMot	38	38	1
-506	SomMot	39	39	1
-507	SomMot	40	40	1
-508	SomMot	41	41	1
-509	SomMot	42	42	1
-510	SomMot	43	43	1
-511	SomMot	44	44	1
-512	SomMot	45	45	1
-513	SomMot	46	46	1
-514	SomMot	47	47	1
-515	SomMot	48	48	1
-516	SomMot	49	49	1
-517	SomMot	50	50	1
-518	SomMot	51	51	1
-519	SomMot	52	52	1
-520	SomMot	53	53	1
-521	SomMot	54	54	1
-522	SomMot	55	55	1
-523	SomMot	56	56	1
-524	SomMot	57	57	1
-525	SomMot	58	58	1
-526	SomMot	59	59	1
-527	SomMot	60	60	1
-528	SomMot	61	61	1
-529	SomMot	62	62	1
-530	SomMot	63	63	1
-531	SomMot	64	64	1
-532	SomMot	65	65	1
-533	SomMot	66	66	1
-534	SomMot	67	67	1
-535	SomMot	68	68	1
-536	SomMot	69	69	1
-537	SomMot	70	70	1
-538	SomMot	71	71	1
-539	SomMot	72	72	1
-540	SomMot	73	73	1
-541	SomMot	74	74	1
-542	SomMot	75	75	1
-543	SomMot	76	76	1
-544	DorsAttn	Post_1	Post_1	2
-545	DorsAttn	Post_2	Post_2	2
-546	DorsAttn	Post_3	Post_3	2
-547	DorsAttn	Post_4	Post_4	2
-548	DorsAttn	Post_5	Post_5	2
-549	DorsAttn	Post_6	Post_6	2
-550	DorsAttn	Post_7	Post_7	2
-551	DorsAttn	Post_8	Post_8	2
-552	DorsAttn	Post_9	Post_9	2
-553	DorsAttn	Post_10	Post_10	2
-554	DorsAttn	Post_11	Post_11	2
-555	DorsAttn	Post_12	Post_12	2
-556	DorsAttn	Post_13	Post_13	2
-557	DorsAttn	Post_14	Post_14	2
-558	DorsAttn	Post_15	Post_15	2
-559	DorsAttn	Post_16	Post_16	2
-560	DorsAttn	Post_17	Post_17	2
-561	DorsAttn	Post_18	Post_18	2
-562	DorsAttn	Post_19	Post_19	2
-563	DorsAttn	Post_20	Post_20	2
-564	DorsAttn	Post_21	Post_21	2
-565	DorsAttn	Post_22	Post_22	2
-566	DorsAttn	Post_23	Post_23	2
-567	DorsAttn	Post_24	Post_24	2
-568	DorsAttn	Post_25	Post_25	2
-569	DorsAttn	Post_26	Post_26	2
-570	DorsAttn	Post_27	Post_27	2
-571	DorsAttn	Post_28	Post_28	2
-572	DorsAttn	Post_29	Post_29	2
-573	DorsAttn	Post_30	Post_30	2
-574	DorsAttn	Post_31	Post_31	2
-575	DorsAttn	Post_32	Post_32	2
-576	DorsAttn	Post_33	Post_33	2
-577	DorsAttn	Post_34	Post_34	2
-578	DorsAttn	Post_35	Post_35	2
-579	DorsAttn	Post_36	Post_36	2
-580	DorsAttn	Post_37	Post_37	2
-581	DorsAttn	Post_38	Post_38	2
-582	DorsAttn	Post_39	Post_39	2
-583	DorsAttn	Post_40	Post_40	2
-584	DorsAttn	Post_41	Post_41	2
-585	DorsAttn	Post_42	Post_42	2
-586	DorsAttn	FEF_1	FEF_1	2
-587	DorsAttn	FEF_2	FEF_2	2
-588	DorsAttn	FEF_3	FEF_3	2
-589	DorsAttn	FEF_4	FEF_4	2
-590	DorsAttn	FEF_5	FEF_5	2
-591	DorsAttn	FEF_6	FEF_6	2
-592	DorsAttn	PrCv_1	PrCv_1	2
-593	DorsAttn	PrCv_2	PrCv_2	2
-594	DorsAttn	PrCv_3	PrCv_3	2
-595	DorsAttn	PrCv_4	PrCv_4	2
-596	SalVentAttn	TempOccPar_1	TempOccPar_1	3
-597	SalVentAttn	TempOccPar_2	TempOccPar_2	3
-598	SalVentAttn	TempOccPar_3	TempOccPar_3	3
-599	SalVentAttn	TempOccPar_4	TempOccPar_4	3
-600	SalVentAttn	TempOccPar_5	TempOccPar_5	3
-601	SalVentAttn	TempOccPar_6	TempOccPar_6	3
-602	SalVentAttn	TempOccPar_7	TempOccPar_7	3
-603	SalVentAttn	TempOccPar_8	TempOccPar_8	3
-604	SalVentAttn	TempOccPar_9	TempOccPar_9	3
-605	SalVentAttn	TempOccPar_10	TempOccPar_10	3
-606	SalVentAttn	TempOccPar_11	TempOccPar_11	3
-607	SalVentAttn	TempOccPar_12	TempOccPar_12	3
-608	SalVentAttn	TempOccPar_13	TempOccPar_13	3
-609	SalVentAttn	PrC_1	PrC_1	3
-610	SalVentAttn	FrOper_1	FrOper_1	3
-611	SalVentAttn	FrOper_2	FrOper_2	3
-612	SalVentAttn	FrOper_3	FrOper_3	3
-613	SalVentAttn	FrOper_4	FrOper_4	3
-614	SalVentAttn	FrOper_5	FrOper_5	3
-615	SalVentAttn	FrOper_6	FrOper_6	3
-616	SalVentAttn	FrOper_7	FrOper_7	3
-617	SalVentAttn	FrOper_8	FrOper_8	3
-618	SalVentAttn	FrOper_9	FrOper_9	3
-619	SalVentAttn	FrOper_10	FrOper_10	3
-620	SalVentAttn	FrOper_11	FrOper_11	3
-621	SalVentAttn	FrOper_12	FrOper_12	3
-622	SalVentAttn	FrOper_13	FrOper_13	3
-623	SalVentAttn	FrOper_14	FrOper_14	3
-624	SalVentAttn	FrOper_15	FrOper_15	3
-625	SalVentAttn	PFCv_1	PFCv_1	3
-626	SalVentAttn	PFCl_1	PFCl_1	3
-627	SalVentAttn	Med_1	Med_1	3
-628	SalVentAttn	Med_2	Med_2	3
-629	SalVentAttn	Med_3	Med_3	3
-630	SalVentAttn	Med_4	Med_4	3
-631	SalVentAttn	Med_5	Med_5	3
-632	SalVentAttn	Med_6	Med_6	3
-633	SalVentAttn	Med_7	Med_7	3
-634	SalVentAttn	Med_8	Med_8	3
-635	SalVentAttn	Med_9	Med_9	3
-636	SalVentAttn	Med_10	Med_10	3
-637	SalVentAttn	Med_11	Med_11	3
-638	SalVentAttn	Med_12	Med_12	3
-639	SalVentAttn	Med_13	Med_13	3
-640	SalVentAttn	Med_14	Med_14	3
-641	SalVentAttn	Med_15	Med_15	3
-642	SalVentAttn	Med_16	Med_16	3
-643	Limbic	OFC_1	OFC_1	4
-644	Limbic	OFC_2	OFC_2	4
-645	Limbic	OFC_3	OFC_3	4
-646	Limbic	OFC_4	OFC_4	4
-647	Limbic	OFC_5	OFC_5	4
-648	Limbic	OFC_6	OFC_6	4
-649	Limbic	OFC_7	OFC_7	4
-650	Limbic	OFC_8	OFC_8	4
-651	Limbic	OFC_9	OFC_9	4
-652	Limbic	OFC_10	OFC_10	4
-653	Limbic	TempPole_1	TempPole_1	4
-654	Limbic	TempPole_2	TempPole_2	4
-655	Limbic	TempPole_3	TempPole_3	4
-656	Limbic	TempPole_4	TempPole_4	4
-657	Limbic	TempPole_5	TempPole_5	4
-658	Limbic	TempPole_6	TempPole_6	4
-659	Limbic	TempPole_7	TempPole_7	4
-660	Limbic	TempPole_8	TempPole_8	4
-661	Limbic	TempPole_9	TempPole_9	4
-662	Limbic	TempPole_10	TempPole_10	4
-663	Limbic	TempPole_11	TempPole_11	4
-664	Limbic	TempPole_12	TempPole_12	4
-665	Limbic	TempPole_13	TempPole_13	4
-666	Limbic	TempPole_14	TempPole_14	4
-667	Limbic	TempPole_15	TempPole_15	4
-668	Cont	Par_1	Par_1	5
-669	Cont	Par_2	Par_2	5
-670	Cont	Par_3	Par_3	5
-671	Cont	Par_4	Par_4	5
-672	Cont	Par_5	Par_5	5
-673	Cont	Par_6	Par_6	5
-674	Cont	Par_7	Par_7	5
-675	Cont	Par_8	Par_8	5
-676	Cont	Par_9	Par_9	5
-677	Cont	Par_10	Par_10	5
-678	Cont	Par_11	Par_11	5
-679	Cont	Temp_1	Temp_1	5
-680	Cont	Temp_2	Temp_2	5
-681	Cont	Temp_3	Temp_3	5
-682	Cont	PFCv_1	PFCv_1	5
-683	Cont	PFCv_2	PFCv_2	5
-684	Cont	PFCl_1	PFCl_1	5
-685	Cont	PFCl_2	PFCl_2	5
-686	Cont	PFCl_3	PFCl_3	5
-687	Cont	PFCl_4	PFCl_4	5
-688	Cont	PFCl_5	PFCl_5	5
-689	Cont	PFCl_6	PFCl_6	5
-690	Cont	PFCl_7	PFCl_7	5
-691	Cont	PFCl_8	PFCl_8	5
-692	Cont	PFCl_9	PFCl_9	5
-693	Cont	PFCl_10	PFCl_10	5
-694	Cont	PFCl_11	PFCl_11	5
-695	Cont	PFCl_12	PFCl_12	5
-696	Cont	PFCl_13	PFCl_13	5
-697	Cont	PFCl_14	PFCl_14	5
-698	Cont	PFCl_15	PFCl_15	5
-699	Cont	PFCl_16	PFCl_16	5
-700	Cont	PFCl_17	PFCl_17	5
-701	Cont	PFCl_18	PFCl_18	5
-702	Cont	PFCl_19	PFCl_19	5
-703	Cont	PFCl_20	PFCl_20	5
-704	Cont	PFCl_21	PFCl_21	5
-705	Cont	PFCl_22	PFCl_22	5
-706	Cont	PFCl_23	PFCl_23	5
-707	Cont	PFCl_24	PFCl_24	5
-708	Cont	PFCl_25	PFCl_25	5
-709	Cont	PFCl_26	PFCl_26	5
-710	Cont	PFCl_27	PFCl_27	5
-711	Cont	PFCl_28	PFCl_28	5
-712	Cont	PFCl_29	PFCl_29	5
-713	Cont	PFCl_30	PFCl_30	5
-714	Cont	PFCl_31	PFCl_31	5
-715	Cont	PFCl_32	PFCl_32	5
-716	Cont	pCun_1	pCun_1	5
-717	Cont	pCun_2	pCun_2	5
-718	Cont	pCun_3	pCun_3	5
-719	Cont	pCun_4	pCun_4	5
-720	Cont	pCun_5	pCun_5	5
-721	Cont	Cing_1	Cing_1	5
-722	Cont	Cing_2	Cing_2	5
-723	Cont	Cing_3	Cing_3	5
-724	Cont	PFCmp_1	PFCmp_1	5
-725	Cont	PFCmp_2	PFCmp_2	5
-726	Cont	PFCmp_3	PFCmp_3	5
-727	Default	Par_1	Par_1	6
-728	Default	Par_2	Par_2	6
-729	Default	Par_3	Par_3	6
-730	Default	Par_4	Par_4	6
-731	Default	Par_5	Par_5	6
-732	Default	Par_6	Par_6	6
-733	Default	Par_7	Par_7	6
-734	Default	Par_8	Par_8	6
-735	Default	Par_9	Par_9	6
-736	Default	Par_10	Par_10	6
-737	Default	Temp_1	Temp_1	6
-738	Default	Temp_2	Temp_2	6
-739	Default	Temp_3	Temp_3	6
-740	Default	Temp_4	Temp_4	6
-741	Default	Temp_5	Temp_5	6
-742	Default	Temp_6	Temp_6	6
-743	Default	Temp_7	Temp_7	6
-744	Default	Temp_8	Temp_8	6
-745	Default	Temp_9	Temp_9	6
-746	Default	Temp_10	Temp_10	6
-747	Default	Temp_11	Temp_11	6
-748	Default	Temp_12	Temp_12	6
-749	Default	Temp_13	Temp_13	6
-750	Default	PFCv_1	PFCv_1	6
-751	Default	PFCv_2	PFCv_2	6
-752	Default	PFCv_3	PFCv_3	6
-753	Default	PFCv_4	PFCv_4	6
-754	Default	PFCv_5	PFCv_5	6
-755	Default	PFCv_6	PFCv_6	6
-756	Default	PFCm_1	PFCm_1	6
-757	Default	PFCm_2	PFCm_2	6
-758	Default	PFCm_3	PFCm_3	6
-759	Default	PFCm_4	PFCm_4	6
-760	Default	PFCm_5	PFCm_5	6
-761	Default	PFCm_6	PFCm_6	6
-762	Default	PFCm_7	PFCm_7	6
-763	Default	PFCm_8	PFCm_8	6
-764	Default	PFCm_9	PFCm_9	6
-765	Default	PFCm_10	PFCm_10	6
-766	Default	PFCm_11	PFCm_11	6
-767	Default	PFCm_12	PFCm_12	6
-768	Default	PFCm_13	PFCm_13	6
-769	Default	PFCm_14	PFCm_14	6
-770	Default	PFCm_15	PFCm_15	6
-771	Default	PFCm_16	PFCm_16	6
-772	Default	PFCm_17	PFCm_17	6
-773	Default	PFCm_18	PFCm_18	6
-774	Default	PFCm_19	PFCm_19	6
-775	Default	PFCm_20	PFCm_20	6
-776	Default	PFCm_21	PFCm_21	6
-777	Default	PFCm_22	PFCm_22	6
-778	Default	PFCm_23	PFCm_23	6
-779	Default	PFCm_24	PFCm_24	6
-780	Default	PCC_1	PCC_1	6
-781	Default	PCC_2	PCC_2	6
-782	Default	PCC_3	PCC_3	6
-783	Default	PCC_4	PCC_4	6
-784	Default	PCC_5	PCC_5	6
-785	Default	PCC_6	PCC_6	6
-786	Default	PCC_7	PCC_7	6
-787	Default	PCC_8	PCC_8	6
-788	Default	PCC_9	PCC_9	6
-789	Default	PCC_10	PCC_10	6
-790	Default	PCC_11	PCC_11	6
-791	Default	PCC_12	PCC_12	6
-792	Default	PCC_13	PCC_13	6
-793	Default	PCC_14	PCC_14	6
-794	Default	PCC_15	PCC_15	6
-795	Default	PCC_16	PCC_16	6
-796	Default	PCC_17	PCC_17	6
-797	Default	PCC_18	PCC_18	6
-798	Default	PCC_19	PCC_19	6
-799	Default	PCC_20	PCC_20	6
-800	Cont	PCC_1	PCC_1	5
+	community	roi	commmunity_id
+1	Vis	1	0
+2	Vis	2	0
+3	Vis	3	0
+4	Vis	4	0
+5	Vis	5	0
+6	Vis	6	0
+7	Vis	7	0
+8	Vis	8	0
+9	Vis	9	0
+10	Vis	10	0
+11	Vis	11	0
+12	Vis	12	0
+13	Vis	13	0
+14	Vis	14	0
+15	Vis	15	0
+16	Vis	16	0
+17	Vis	17	0
+18	Vis	18	0
+19	Vis	19	0
+20	Vis	20	0
+21	Vis	21	0
+22	Vis	22	0
+23	Vis	23	0
+24	Vis	24	0
+25	Vis	25	0
+26	Vis	26	0
+27	Vis	27	0
+28	Vis	28	0
+29	Vis	29	0
+30	Vis	30	0
+31	Vis	31	0
+32	Vis	32	0
+33	Vis	33	0
+34	Vis	34	0
+35	Vis	35	0
+36	Vis	36	0
+37	Vis	37	0
+38	Vis	38	0
+39	Vis	39	0
+40	Vis	40	0
+41	Vis	41	0
+42	Vis	42	0
+43	Vis	43	0
+44	Vis	44	0
+45	Vis	45	0
+46	Vis	46	0
+47	Vis	47	0
+48	Vis	48	0
+49	Vis	49	0
+50	Vis	50	0
+51	Vis	51	0
+52	Vis	52	0
+53	Vis	53	0
+54	Vis	54	0
+55	Vis	55	0
+56	Vis	56	0
+57	Vis	57	0
+58	Vis	58	0
+59	Vis	59	0
+60	Vis	60	0
+61	Vis	61	0
+62	Vis	62	0
+63	Vis	63	0
+64	Vis	64	0
+65	Vis	65	0
+66	Vis	66	0
+67	Vis	67	0
+68	SomMot	1	1
+69	SomMot	2	1
+70	SomMot	3	1
+71	SomMot	4	1
+72	SomMot	5	1
+73	SomMot	6	1
+74	SomMot	7	1
+75	SomMot	8	1
+76	SomMot	9	1
+77	SomMot	10	1
+78	SomMot	11	1
+79	SomMot	12	1
+80	SomMot	13	1
+81	SomMot	14	1
+82	SomMot	15	1
+83	SomMot	16	1
+84	SomMot	17	1
+85	SomMot	18	1
+86	SomMot	19	1
+87	SomMot	20	1
+88	SomMot	21	1
+89	SomMot	22	1
+90	SomMot	23	1
+91	SomMot	24	1
+92	SomMot	25	1
+93	SomMot	26	1
+94	SomMot	27	1
+95	SomMot	28	1
+96	SomMot	29	1
+97	SomMot	30	1
+98	SomMot	31	1
+99	SomMot	32	1
+100	SomMot	33	1
+101	SomMot	34	1
+102	SomMot	35	1
+103	SomMot	36	1
+104	SomMot	37	1
+105	SomMot	38	1
+106	SomMot	39	1
+107	SomMot	40	1
+108	SomMot	41	1
+109	SomMot	42	1
+110	SomMot	43	1
+111	SomMot	44	1
+112	SomMot	45	1
+113	SomMot	46	1
+114	SomMot	47	1
+115	SomMot	48	1
+116	SomMot	49	1
+117	SomMot	50	1
+118	SomMot	51	1
+119	SomMot	52	1
+120	SomMot	53	1
+121	SomMot	54	1
+122	SomMot	55	1
+123	SomMot	56	1
+124	SomMot	57	1
+125	SomMot	58	1
+126	SomMot	59	1
+127	SomMot	60	1
+128	SomMot	61	1
+129	SomMot	62	1
+130	SomMot	63	1
+131	SomMot	64	1
+132	SomMot	65	1
+133	SomMot	66	1
+134	SomMot	67	1
+135	SomMot	68	1
+136	SomMot	69	1
+137	SomMot	70	1
+138	SomMot	71	1
+139	SomMot	72	1
+140	SomMot	73	1
+141	SomMot	74	1
+142	SomMot	75	1
+143	DorsAttn	Post_1	2
+144	DorsAttn	Post_2	2
+145	DorsAttn	Post_3	2
+146	DorsAttn	Post_4	2
+147	DorsAttn	Post_5	2
+148	DorsAttn	Post_6	2
+149	DorsAttn	Post_7	2
+150	DorsAttn	Post_8	2
+151	DorsAttn	Post_9	2
+152	DorsAttn	Post_10	2
+153	DorsAttn	Post_11	2
+154	DorsAttn	Post_12	2
+155	DorsAttn	Post_13	2
+156	DorsAttn	Post_14	2
+157	DorsAttn	Post_15	2
+158	DorsAttn	Post_16	2
+159	DorsAttn	Post_17	2
+160	DorsAttn	Post_18	2
+161	DorsAttn	Post_19	2
+162	DorsAttn	Post_20	2
+163	DorsAttn	Post_21	2
+164	DorsAttn	Post_22	2
+165	DorsAttn	Post_23	2
+166	DorsAttn	Post_24	2
+167	DorsAttn	Post_25	2
+168	DorsAttn	Post_26	2
+169	DorsAttn	Post_27	2
+170	DorsAttn	Post_28	2
+171	DorsAttn	Post_29	2
+172	DorsAttn	Post_30	2
+173	DorsAttn	Post_31	2
+174	DorsAttn	Post_32	2
+175	DorsAttn	Post_33	2
+176	DorsAttn	Post_34	2
+177	DorsAttn	Post_35	2
+178	DorsAttn	Post_36	2
+179	DorsAttn	Post_37	2
+180	DorsAttn	Post_38	2
+181	DorsAttn	FEF_1	2
+182	DorsAttn	FEF_2	2
+183	DorsAttn	FEF_3	2
+184	DorsAttn	FEF_4	2
+185	DorsAttn	FEF_5	2
+186	DorsAttn	FEF_6	2
+187	DorsAttn	FEF_7	2
+188	DorsAttn	PrCv_1	2
+189	DorsAttn	PrCv_2	2
+190	SalVentAttn	ParOper_1	3
+191	SalVentAttn	ParOper_2	3
+192	SalVentAttn	ParOper_3	3
+193	SalVentAttn	ParOper_4	3
+194	SalVentAttn	ParOper_5	3
+195	SalVentAttn	ParOper_6	3
+196	SalVentAttn	ParOper_7	3
+197	SalVentAttn	ParOper_8	3
+198	SalVentAttn	TempOcc_1	3
+199	SalVentAttn	FrOper_1	3
+200	SalVentAttn	FrOper_2	3
+201	SalVentAttn	FrOper_3	3
+202	SalVentAttn	FrOper_4	3
+203	SalVentAttn	FrOper_5	3
+204	SalVentAttn	FrOper_6	3
+205	SalVentAttn	FrOper_7	3
+206	SalVentAttn	FrOper_8	3
+207	SalVentAttn	FrOper_9	3
+208	SalVentAttn	FrOper_10	3
+209	SalVentAttn	FrOper_11	3
+210	SalVentAttn	FrOper_12	3
+211	SalVentAttn	PFCl_1	3
+212	SalVentAttn	PFCl_2	3
+213	SalVentAttn	Med_1	3
+214	SalVentAttn	Med_2	3
+215	SalVentAttn	Med_3	3
+216	SalVentAttn	Med_4	3
+217	SalVentAttn	Med_5	3
+218	SalVentAttn	Med_6	3
+219	SalVentAttn	Med_7	3
+220	SalVentAttn	Med_8	3
+221	SalVentAttn	Med_9	3
+222	SalVentAttn	Med_10	3
+223	SalVentAttn	Med_11	3
+224	SalVentAttn	Med_12	3
+225	SalVentAttn	Med_13	3
+226	SalVentAttn	Med_14	3
+227	SalVentAttn	Med_15	3
+228	SalVentAttn	Med_16	3
+229	SalVentAttn	Med_17	3
+230	Limbic	OFC_1	4
+231	Limbic	OFC_2	4
+232	Limbic	OFC_3	4
+233	Limbic	OFC_4	4
+234	Limbic	OFC_5	4
+235	Limbic	OFC_6	4
+236	Limbic	OFC_7	4
+237	Limbic	OFC_8	4
+238	Limbic	OFC_9	4
+239	Limbic	OFC_10	4
+240	Limbic	OFC_11	4
+241	Limbic	OFC_12	4
+242	Limbic	TempPole_1	4
+243	Limbic	TempPole_2	4
+244	Limbic	TempPole_3	4
+245	Limbic	TempPole_4	4
+246	Limbic	TempPole_5	4
+247	Limbic	TempPole_6	4
+248	Limbic	TempPole_7	4
+249	Limbic	TempPole_8	4
+250	Limbic	TempPole_9	4
+251	Limbic	TempPole_10	4
+252	Limbic	TempPole_11	4
+253	Limbic	TempPole_12	4
+254	Limbic	TempPole_13	4
+255	Limbic	TempPole_14	4
+256	Limbic	TempPole_15	4
+257	Limbic	TempPole_16	4
+258	Limbic	TempPole_17	4
+259	Cont	Par_1	5
+260	Cont	Par_2	5
+261	Cont	Par_3	5
+262	Cont	Par_4	5
+263	Cont	Par_5	5
+264	Cont	Par_6	5
+265	Cont	Par_7	5
+266	Cont	Par_8	5
+267	Cont	Par_9	5
+268	Cont	Par_10	5
+269	Cont	Par_11	5
+270	Cont	Par_12	5
+271	Cont	Temp_1	5
+272	Cont	Temp_2	5
+273	Cont	Temp_3	5
+274	Cont	PFCd_1	5
+275	Cont	PFCd_2	5
+276	Cont	PFCl_1	5
+277	Cont	PFCl_2	5
+278	Cont	PFCl_3	5
+279	Cont	PFCl_4	5
+280	Cont	PFCl_5	5
+281	Cont	PFCl_6	5
+282	Cont	PFCl_7	5
+283	Cont	PFCl_8	5
+284	Cont	PFCl_9	5
+285	Cont	PFCl_10	5
+286	Cont	PFCl_11	5
+287	Cont	PFCl_12	5
+288	Cont	PFCl_13	5
+289	Cont	PFCl_14	5
+290	Cont	PFCl_15	5
+291	Cont	OFC_1	5
+292	Cont	PFCv_1	5
+293	Cont	PFCv_2	5
+294	Cont	pCun_1	5
+295	Cont	pCun_2	5
+296	Cont	pCun_3	5
+297	Cont	Cing_1	5
+298	Cont	Cing_2	5
+299	Cont	Cing_3	5
+300	Cont	Cing_4	5
+301	Cont	Cing_5	5
+302	Cont	PFCmp_1	5
+303	Cont	PFCmp_2	5
+304	Default	Temp_1	6
+305	Default	Temp_2	6
+306	Default	Temp_3	6
+307	Default	Temp_4	6
+308	Default	Temp_5	6
+309	Default	Temp_6	6
+310	Default	Temp_7	6
+311	Default	Temp_8	6
+312	Default	Temp_9	6
+313	Default	Temp_10	6
+314	Default	Temp_11	6
+315	Default	Temp_12	6
+316	Default	Temp_13	6
+317	Default	Temp_14	6
+318	Default	Temp_15	6
+319	Default	Temp_16	6
+320	Default	Temp_17	6
+321	Default	Temp_18	6
+322	Default	Temp_19	6
+323	Default	Temp_20	6
+324	Default	Temp_21	6
+325	Default	Temp_22	6
+326	Default	Temp_23	6
+327	Default	Temp_24	6
+328	Default	Temp_25	6
+329	Default	Temp_26	6
+330	Default	Temp_27	6
+331	Default	Temp_28	6
+332	Default	Temp_29	6
+333	Default	PFC_1	6
+334	Default	PFC_2	6
+335	Default	PFC_3	6
+336	Default	PFC_4	6
+337	Default	PFC_5	6
+338	Default	PFC_6	6
+339	Default	PFC_7	6
+340	Default	PFC_8	6
+341	Default	PFC_9	6
+342	Default	PFC_10	6
+343	Default	PFC_11	6
+344	Default	PFC_12	6
+345	Default	PFC_13	6
+346	Default	PFC_14	6
+347	Default	PFC_15	6
+348	Default	PFC_16	6
+349	Default	PFC_17	6
+350	Default	PFC_18	6
+351	Default	PFC_19	6
+352	Default	PFC_20	6
+353	Default	PFC_21	6
+354	Default	PFC_22	6
+355	Default	PFC_23	6
+356	Default	PFC_24	6
+357	Default	PFC_25	6
+358	Default	PFC_26	6
+359	Default	PFC_27	6
+360	Default	PFC_28	6
+361	Default	PFC_29	6
+362	Default	PFC_30	6
+363	Default	PFC_31	6
+364	Default	PFC_32	6
+365	Default	PFC_33	6
+366	Default	PFC_34	6
+367	Default	PFC_35	6
+368	Default	PFC_36	6
+369	Default	PFC_37	6
+370	Default	PFC_38	6
+371	Default	PFC_39	6
+372	Default	PFC_40	6
+373	Default	PCC_1	6
+374	Default	PCC_2	6
+375	Default	PCC_3	6
+376	Default	PCC_4	6
+377	Default	PCC_5	6
+378	Default	PCC_6	6
+379	Default	PCC_7	6
+380	Default	PCC_8	6
+381	Default	PCC_9	6
+382	Default	PCC_10	6
+383	Default	PCC_11	6
+384	Default	PCC_12	6
+385	Default	PCC_13	6
+386	Default	PCC_14	6
+387	Default	PCC_15	6
+388	Default	PCC_16	6
+389	Default	PCC_17	6
+390	Default	PCC_18	6
+391	Default	PCC_19	6
+392	Default	PCC_20	6
+393	Default	PCC_21	6
+394	Default	PCC_22	6
+395	Default	PCC_23	6
+396	Default	PCC_24	6
+397	Default	PCC_25	6
+398	Default	PCC_26	6
+399	Default	PCC_27	6
+400	Default	PHC_1	6
+401	Vis	1	0
+402	Vis	2	0
+403	Vis	3	0
+404	Vis	4	0
+405	Vis	5	0
+406	Vis	6	0
+407	Vis	7	0
+408	Vis	8	0
+409	Vis	9	0
+410	Vis	10	0
+411	Vis	11	0
+412	Vis	12	0
+413	Vis	13	0
+414	Vis	14	0
+415	Vis	15	0
+416	Vis	16	0
+417	Vis	17	0
+418	Vis	18	0
+419	Vis	19	0
+420	Vis	20	0
+421	Vis	21	0
+422	Vis	22	0
+423	Vis	23	0
+424	Vis	24	0
+425	Vis	25	0
+426	Vis	26	0
+427	Vis	27	0
+428	Vis	28	0
+429	Vis	29	0
+430	Vis	30	0
+431	Vis	31	0
+432	Vis	32	0
+433	Vis	33	0
+434	Vis	34	0
+435	Vis	35	0
+436	Vis	36	0
+437	Vis	37	0
+438	Vis	38	0
+439	Vis	39	0
+440	Vis	40	0
+441	Vis	41	0
+442	Vis	42	0
+443	Vis	43	0
+444	Vis	44	0
+445	Vis	45	0
+446	Vis	46	0
+447	Vis	47	0
+448	Vis	48	0
+449	Vis	49	0
+450	Vis	50	0
+451	Vis	51	0
+452	Vis	52	0
+453	Vis	53	0
+454	Vis	54	0
+455	Vis	55	0
+456	Vis	56	0
+457	Vis	57	0
+458	Vis	58	0
+459	Vis	59	0
+460	Vis	60	0
+461	Vis	61	0
+462	Vis	62	0
+463	Vis	63	0
+464	Vis	64	0
+465	Vis	65	0
+466	Vis	66	0
+467	Vis	67	0
+468	SomMot	1	1
+469	SomMot	2	1
+470	SomMot	3	1
+471	SomMot	4	1
+472	SomMot	5	1
+473	SomMot	6	1
+474	SomMot	7	1
+475	SomMot	8	1
+476	SomMot	9	1
+477	SomMot	10	1
+478	SomMot	11	1
+479	SomMot	12	1
+480	SomMot	13	1
+481	SomMot	14	1
+482	SomMot	15	1
+483	SomMot	16	1
+484	SomMot	17	1
+485	SomMot	18	1
+486	SomMot	19	1
+487	SomMot	20	1
+488	SomMot	21	1
+489	SomMot	22	1
+490	SomMot	23	1
+491	SomMot	24	1
+492	SomMot	25	1
+493	SomMot	26	1
+494	SomMot	27	1
+495	SomMot	28	1
+496	SomMot	29	1
+497	SomMot	30	1
+498	SomMot	31	1
+499	SomMot	32	1
+500	SomMot	33	1
+501	SomMot	34	1
+502	SomMot	35	1
+503	SomMot	36	1
+504	SomMot	37	1
+505	SomMot	38	1
+506	SomMot	39	1
+507	SomMot	40	1
+508	SomMot	41	1
+509	SomMot	42	1
+510	SomMot	43	1
+511	SomMot	44	1
+512	SomMot	45	1
+513	SomMot	46	1
+514	SomMot	47	1
+515	SomMot	48	1
+516	SomMot	49	1
+517	SomMot	50	1
+518	SomMot	51	1
+519	SomMot	52	1
+520	SomMot	53	1
+521	SomMot	54	1
+522	SomMot	55	1
+523	SomMot	56	1
+524	SomMot	57	1
+525	SomMot	58	1
+526	SomMot	59	1
+527	SomMot	60	1
+528	SomMot	61	1
+529	SomMot	62	1
+530	SomMot	63	1
+531	SomMot	64	1
+532	SomMot	65	1
+533	SomMot	66	1
+534	SomMot	67	1
+535	SomMot	68	1
+536	SomMot	69	1
+537	SomMot	70	1
+538	SomMot	71	1
+539	SomMot	72	1
+540	SomMot	73	1
+541	SomMot	74	1
+542	SomMot	75	1
+543	SomMot	76	1
+544	DorsAttn	Post_1	2
+545	DorsAttn	Post_2	2
+546	DorsAttn	Post_3	2
+547	DorsAttn	Post_4	2
+548	DorsAttn	Post_5	2
+549	DorsAttn	Post_6	2
+550	DorsAttn	Post_7	2
+551	DorsAttn	Post_8	2
+552	DorsAttn	Post_9	2
+553	DorsAttn	Post_10	2
+554	DorsAttn	Post_11	2
+555	DorsAttn	Post_12	2
+556	DorsAttn	Post_13	2
+557	DorsAttn	Post_14	2
+558	DorsAttn	Post_15	2
+559	DorsAttn	Post_16	2
+560	DorsAttn	Post_17	2
+561	DorsAttn	Post_18	2
+562	DorsAttn	Post_19	2
+563	DorsAttn	Post_20	2
+564	DorsAttn	Post_21	2
+565	DorsAttn	Post_22	2
+566	DorsAttn	Post_23	2
+567	DorsAttn	Post_24	2
+568	DorsAttn	Post_25	2
+569	DorsAttn	Post_26	2
+570	DorsAttn	Post_27	2
+571	DorsAttn	Post_28	2
+572	DorsAttn	Post_29	2
+573	DorsAttn	Post_30	2
+574	DorsAttn	Post_31	2
+575	DorsAttn	Post_32	2
+576	DorsAttn	Post_33	2
+577	DorsAttn	Post_34	2
+578	DorsAttn	Post_35	2
+579	DorsAttn	Post_36	2
+580	DorsAttn	Post_37	2
+581	DorsAttn	Post_38	2
+582	DorsAttn	Post_39	2
+583	DorsAttn	Post_40	2
+584	DorsAttn	Post_41	2
+585	DorsAttn	Post_42	2
+586	DorsAttn	FEF_1	2
+587	DorsAttn	FEF_2	2
+588	DorsAttn	FEF_3	2
+589	DorsAttn	FEF_4	2
+590	DorsAttn	FEF_5	2
+591	DorsAttn	FEF_6	2
+592	DorsAttn	PrCv_1	2
+593	DorsAttn	PrCv_2	2
+594	DorsAttn	PrCv_3	2
+595	DorsAttn	PrCv_4	2
+596	SalVentAttn	TempOccPar_1	3
+597	SalVentAttn	TempOccPar_2	3
+598	SalVentAttn	TempOccPar_3	3
+599	SalVentAttn	TempOccPar_4	3
+600	SalVentAttn	TempOccPar_5	3
+601	SalVentAttn	TempOccPar_6	3
+602	SalVentAttn	TempOccPar_7	3
+603	SalVentAttn	TempOccPar_8	3
+604	SalVentAttn	TempOccPar_9	3
+605	SalVentAttn	TempOccPar_10	3
+606	SalVentAttn	TempOccPar_11	3
+607	SalVentAttn	TempOccPar_12	3
+608	SalVentAttn	TempOccPar_13	3
+609	SalVentAttn	PrC_1	3
+610	SalVentAttn	FrOper_1	3
+611	SalVentAttn	FrOper_2	3
+612	SalVentAttn	FrOper_3	3
+613	SalVentAttn	FrOper_4	3
+614	SalVentAttn	FrOper_5	3
+615	SalVentAttn	FrOper_6	3
+616	SalVentAttn	FrOper_7	3
+617	SalVentAttn	FrOper_8	3
+618	SalVentAttn	FrOper_9	3
+619	SalVentAttn	FrOper_10	3
+620	SalVentAttn	FrOper_11	3
+621	SalVentAttn	FrOper_12	3
+622	SalVentAttn	FrOper_13	3
+623	SalVentAttn	FrOper_14	3
+624	SalVentAttn	FrOper_15	3
+625	SalVentAttn	PFCv_1	3
+626	SalVentAttn	PFCl_1	3
+627	SalVentAttn	Med_1	3
+628	SalVentAttn	Med_2	3
+629	SalVentAttn	Med_3	3
+630	SalVentAttn	Med_4	3
+631	SalVentAttn	Med_5	3
+632	SalVentAttn	Med_6	3
+633	SalVentAttn	Med_7	3
+634	SalVentAttn	Med_8	3
+635	SalVentAttn	Med_9	3
+636	SalVentAttn	Med_10	3
+637	SalVentAttn	Med_11	3
+638	SalVentAttn	Med_12	3
+639	SalVentAttn	Med_13	3
+640	SalVentAttn	Med_14	3
+641	SalVentAttn	Med_15	3
+642	SalVentAttn	Med_16	3
+643	Limbic	OFC_1	4
+644	Limbic	OFC_2	4
+645	Limbic	OFC_3	4
+646	Limbic	OFC_4	4
+647	Limbic	OFC_5	4
+648	Limbic	OFC_6	4
+649	Limbic	OFC_7	4
+650	Limbic	OFC_8	4
+651	Limbic	OFC_9	4
+652	Limbic	OFC_10	4
+653	Limbic	TempPole_1	4
+654	Limbic	TempPole_2	4
+655	Limbic	TempPole_3	4
+656	Limbic	TempPole_4	4
+657	Limbic	TempPole_5	4
+658	Limbic	TempPole_6	4
+659	Limbic	TempPole_7	4
+660	Limbic	TempPole_8	4
+661	Limbic	TempPole_9	4
+662	Limbic	TempPole_10	4
+663	Limbic	TempPole_11	4
+664	Limbic	TempPole_12	4
+665	Limbic	TempPole_13	4
+666	Limbic	TempPole_14	4
+667	Limbic	TempPole_15	4
+668	Cont	Par_1	5
+669	Cont	Par_2	5
+670	Cont	Par_3	5
+671	Cont	Par_4	5
+672	Cont	Par_5	5
+673	Cont	Par_6	5
+674	Cont	Par_7	5
+675	Cont	Par_8	5
+676	Cont	Par_9	5
+677	Cont	Par_10	5
+678	Cont	Par_11	5
+679	Cont	Temp_1	5
+680	Cont	Temp_2	5
+681	Cont	Temp_3	5
+682	Cont	PFCv_1	5
+683	Cont	PFCv_2	5
+684	Cont	PFCl_1	5
+685	Cont	PFCl_2	5
+686	Cont	PFCl_3	5
+687	Cont	PFCl_4	5
+688	Cont	PFCl_5	5
+689	Cont	PFCl_6	5
+690	Cont	PFCl_7	5
+691	Cont	PFCl_8	5
+692	Cont	PFCl_9	5
+693	Cont	PFCl_10	5
+694	Cont	PFCl_11	5
+695	Cont	PFCl_12	5
+696	Cont	PFCl_13	5
+697	Cont	PFCl_14	5
+698	Cont	PFCl_15	5
+699	Cont	PFCl_16	5
+700	Cont	PFCl_17	5
+701	Cont	PFCl_18	5
+702	Cont	PFCl_19	5
+703	Cont	PFCl_20	5
+704	Cont	PFCl_21	5
+705	Cont	PFCl_22	5
+706	Cont	PFCl_23	5
+707	Cont	PFCl_24	5
+708	Cont	PFCl_25	5
+709	Cont	PFCl_26	5
+710	Cont	PFCl_27	5
+711	Cont	PFCl_28	5
+712	Cont	PFCl_29	5
+713	Cont	PFCl_30	5
+714	Cont	PFCl_31	5
+715	Cont	PFCl_32	5
+716	Cont	pCun_1	5
+717	Cont	pCun_2	5
+718	Cont	pCun_3	5
+719	Cont	pCun_4	5
+720	Cont	pCun_5	5
+721	Cont	Cing_1	5
+722	Cont	Cing_2	5
+723	Cont	Cing_3	5
+724	Cont	PFCmp_1	5
+725	Cont	PFCmp_2	5
+726	Cont	PFCmp_3	5
+727	Default	Par_1	6
+728	Default	Par_2	6
+729	Default	Par_3	6
+730	Default	Par_4	6
+731	Default	Par_5	6
+732	Default	Par_6	6
+733	Default	Par_7	6
+734	Default	Par_8	6
+735	Default	Par_9	6
+736	Default	Par_10	6
+737	Default	Temp_1	6
+738	Default	Temp_2	6
+739	Default	Temp_3	6
+740	Default	Temp_4	6
+741	Default	Temp_5	6
+742	Default	Temp_6	6
+743	Default	Temp_7	6
+744	Default	Temp_8	6
+745	Default	Temp_9	6
+746	Default	Temp_10	6
+747	Default	Temp_11	6
+748	Default	Temp_12	6
+749	Default	Temp_13	6
+750	Default	PFCv_1	6
+751	Default	PFCv_2	6
+752	Default	PFCv_3	6
+753	Default	PFCv_4	6
+754	Default	PFCv_5	6
+755	Default	PFCv_6	6
+756	Default	PFCm_1	6
+757	Default	PFCm_2	6
+758	Default	PFCm_3	6
+759	Default	PFCm_4	6
+760	Default	PFCm_5	6
+761	Default	PFCm_6	6
+762	Default	PFCm_7	6
+763	Default	PFCm_8	6
+764	Default	PFCm_9	6
+765	Default	PFCm_10	6
+766	Default	PFCm_11	6
+767	Default	PFCm_12	6
+768	Default	PFCm_13	6
+769	Default	PFCm_14	6
+770	Default	PFCm_15	6
+771	Default	PFCm_16	6
+772	Default	PFCm_17	6
+773	Default	PFCm_18	6
+774	Default	PFCm_19	6
+775	Default	PFCm_20	6
+776	Default	PFCm_21	6
+777	Default	PFCm_22	6
+778	Default	PFCm_23	6
+779	Default	PFCm_24	6
+780	Default	PCC_1	6
+781	Default	PCC_2	6
+782	Default	PCC_3	6
+783	Default	PCC_4	6
+784	Default	PCC_5	6
+785	Default	PCC_6	6
+786	Default	PCC_7	6
+787	Default	PCC_8	6
+788	Default	PCC_9	6
+789	Default	PCC_10	6
+790	Default	PCC_11	6
+791	Default	PCC_12	6
+792	Default	PCC_13	6
+793	Default	PCC_14	6
+794	Default	PCC_15	6
+795	Default	PCC_16	6
+796	Default	PCC_17	6
+797	Default	PCC_18	6
+798	Default	PCC_19	6
+799	Default	PCC_20	6
+800	Cont	PCC_1	5

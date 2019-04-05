@@ -1,1001 +1,1001 @@
-	community	roi	community_id	commmunity_id
-1	VisCent	ExStr_1	ExStr_1	0
-2	VisCent	ExStr_2	ExStr_2	0
-3	VisCent	ExStr_3	ExStr_3	0
-4	VisCent	ExStr_4	ExStr_4	0
-5	VisCent	ExStr_5	ExStr_5	0
-6	VisCent	ExStr_6	ExStr_6	0
-7	VisCent	ExStr_7	ExStr_7	0
-8	VisCent	ExStr_8	ExStr_8	0
-9	VisCent	ExStr_9	ExStr_9	0
-10	VisCent	ExStr_10	ExStr_10	0
-11	VisCent	ExStr_11	ExStr_11	0
-12	VisCent	ExStr_12	ExStr_12	0
-13	VisCent	ExStr_13	ExStr_13	0
-14	VisCent	ExStr_14	ExStr_14	0
-15	VisCent	ExStr_15	ExStr_15	0
-16	VisCent	ExStr_16	ExStr_16	0
-17	VisCent	ExStr_17	ExStr_17	0
-18	VisCent	ExStr_18	ExStr_18	0
-19	VisCent	ExStr_19	ExStr_19	0
-20	VisCent	ExStr_20	ExStr_20	0
-21	VisCent	ExStr_21	ExStr_21	0
-22	VisCent	ExStr_22	ExStr_22	0
-23	VisCent	ExStr_23	ExStr_23	0
-24	VisCent	ExStr_24	ExStr_24	0
-25	VisCent	ExStr_25	ExStr_25	0
-26	VisCent	ExStr_26	ExStr_26	0
-27	VisCent	ExStr_27	ExStr_27	0
-28	VisCent	ExStr_28	ExStr_28	0
-29	VisCent	ExStr_29	ExStr_29	0
-30	VisCent	ExStr_30	ExStr_30	0
-31	VisCent	ExStr_31	ExStr_31	0
-32	VisCent	ExStr_32	ExStr_32	0
-33	VisCent	ExStr_33	ExStr_33	0
-34	VisCent	ExStr_34	ExStr_34	0
-35	VisPeri	ExStrSup_1	ExStrSup_1	1
-36	VisPeri	ExStrSup_2	ExStrSup_2	1
-37	VisPeri	ExStrSup_3	ExStrSup_3	1
-38	VisPeri	ExStrSup_4	ExStrSup_4	1
-39	VisPeri	ExStrSup_5	ExStrSup_5	1
-40	VisPeri	ExStrSup_6	ExStrSup_6	1
-41	VisPeri	ExStrSup_7	ExStrSup_7	1
-42	VisPeri	ExStrSup_8	ExStrSup_8	1
-43	VisPeri	ExStrSup_9	ExStrSup_9	1
-44	VisPeri	ExStrSup_10	ExStrSup_10	1
-45	VisPeri	ExStrSup_11	ExStrSup_11	1
-46	VisPeri	ExStrSup_12	ExStrSup_12	1
-47	VisPeri	ExStrSup_13	ExStrSup_13	1
-48	VisPeri	ExStrSup_14	ExStrSup_14	1
-49	VisPeri	ExStrSup_15	ExStrSup_15	1
-50	VisPeri	ExStrSup_16	ExStrSup_16	1
-51	VisPeri	ExStrSup_17	ExStrSup_17	1
-52	VisPeri	ExStrSup_18	ExStrSup_18	1
-53	VisPeri	ExStrSup_19	ExStrSup_19	1
-54	VisPeri	ExStrSup_20	ExStrSup_20	1
-55	VisPeri	ExStrSup_21	ExStrSup_21	1
-56	VisPeri	ExStrSup_22	ExStrSup_22	1
-57	VisPeri	ExStrSup_23	ExStrSup_23	1
-58	VisPeri	ExStrSup_24	ExStrSup_24	1
-59	VisPeri	ExStrSup_25	ExStrSup_25	1
-60	VisPeri	ExStrSup_26	ExStrSup_26	1
-61	VisPeri	ExStrSup_27	ExStrSup_27	1
-62	VisPeri	ExStrSup_28	ExStrSup_28	1
-63	VisPeri	ExStrSup_29	ExStrSup_29	1
-64	VisPeri	ExStrSup_30	ExStrSup_30	1
-65	VisPeri	ExStrSup_31	ExStrSup_31	1
-66	VisPeri	ExStrSup_32	ExStrSup_32	1
-67	SomMotA	1	1	2
-68	SomMotA	2	2	2
-69	SomMotA	3	3	2
-70	SomMotA	4	4	2
-71	SomMotA	5	5	2
-72	SomMotA	6	6	2
-73	SomMotA	7	7	2
-74	SomMotA	8	8	2
-75	SomMotA	9	9	2
-76	SomMotA	10	10	2
-77	SomMotA	11	11	2
-78	SomMotA	12	12	2
-79	SomMotA	13	13	2
-80	SomMotA	14	14	2
-81	SomMotA	15	15	2
-82	SomMotA	16	16	2
-83	SomMotA	17	17	2
-84	SomMotA	18	18	2
-85	SomMotA	19	19	2
-86	SomMotA	20	20	2
-87	SomMotA	21	21	2
-88	SomMotA	22	22	2
-89	SomMotA	23	23	2
-90	SomMotA	24	24	2
-91	SomMotA	25	25	2
-92	SomMotA	26	26	2
-93	SomMotA	27	27	2
-94	SomMotA	28	28	2
-95	SomMotA	29	29	2
-96	SomMotA	30	30	2
-97	SomMotA	31	31	2
-98	SomMotA	32	32	2
-99	SomMotA	33	33	2
-100	SomMotA	34	34	2
-101	SomMotA	35	35	2
-102	SomMotA	36	36	2
-103	SomMotA	37	37	2
-104	SomMotA	38	38	2
-105	SomMotA	39	39	2
-106	SomMotA	40	40	2
-107	SomMotA	41	41	2
-108	SomMotA	42	42	2
-109	SomMotB	Aud_1	Aud_1	3
-110	SomMotB	Aud_2	Aud_2	3
-111	SomMotB	Aud_3	Aud_3	3
-112	SomMotB	Aud_4	Aud_4	3
-113	SomMotB	Aud_5	Aud_5	3
-114	SomMotB	Aud_6	Aud_6	3
-115	SomMotB	Aud_7	Aud_7	3
-116	SomMotB	Aud_8	Aud_8	3
-117	SomMotB	Aud_9	Aud_9	3
-118	SomMotB	Aud_10	Aud_10	3
-119	SomMotB	Aud_11	Aud_11	3
-120	SomMotB	Aud_12	Aud_12	3
-121	SomMotB	Aud_13	Aud_13	3
-122	SomMotB	Aud_14	Aud_14	3
-123	SomMotB	Aud_15	Aud_15	3
-124	SomMotB	Aud_16	Aud_16	3
-125	SomMotB	Aud_17	Aud_17	3
-126	SomMotB	Aud_18	Aud_18	3
-127	SomMotB	Aud_19	Aud_19	3
-128	SomMotB	Aud_20	Aud_20	3
-129	SomMotB	Aud_21	Aud_21	3
-130	SomMotB	Aud_22	Aud_22	3
-131	SomMotB	Aud_23	Aud_23	3
-132	SomMotB	Aud_24	Aud_24	3
-133	SomMotB	Aud_25	Aud_25	3
-134	SomMotB	Aud_26	Aud_26	3
-135	SomMotB	Aud_27	Aud_27	3
-136	SomMotB	Aud_28	Aud_28	3
-137	SomMotB	Aud_29	Aud_29	3
-138	SomMotB	Aud_30	Aud_30	3
-139	SomMotB	Aud_31	Aud_31	3
-140	SomMotB	Aud_32	Aud_32	3
-141	SomMotB	Aud_33	Aud_33	3
-142	SomMotB	Aud_34	Aud_34	3
-143	SomMotB	Aud_35	Aud_35	3
-144	SomMotB	Aud_36	Aud_36	3
-145	SomMotB	Aud_37	Aud_37	3
-146	SomMotB	Aud_38	Aud_38	3
-147	SomMotB	Aud_39	Aud_39	3
-148	DorsAttnA	TempOcc_1	TempOcc_1	4
-149	DorsAttnA	TempOcc_2	TempOcc_2	4
-150	DorsAttnA	TempOcc_3	TempOcc_3	4
-151	DorsAttnA	TempOcc_4	TempOcc_4	4
-152	DorsAttnA	TempOcc_5	TempOcc_5	4
-153	DorsAttnA	TempOcc_6	TempOcc_6	4
-154	DorsAttnA	TempOcc_7	TempOcc_7	4
-155	DorsAttnA	TempOcc_8	TempOcc_8	4
-156	DorsAttnA	TempOcc_9	TempOcc_9	4
-157	DorsAttnA	SPL_1	SPL_1	4
-158	DorsAttnA	SPL_2	SPL_2	4
-159	DorsAttnA	SPL_3	SPL_3	4
-160	DorsAttnA	SPL_4	SPL_4	4
-161	DorsAttnA	SPL_5	SPL_5	4
-162	DorsAttnA	SPL_6	SPL_6	4
-163	DorsAttnA	SPL_7	SPL_7	4
-164	DorsAttnA	SPL_8	SPL_8	4
-165	DorsAttnA	SPL_9	SPL_9	4
-166	DorsAttnA	SPL_10	SPL_10	4
-167	DorsAttnA	SPL_11	SPL_11	4
-168	DorsAttnA	SPL_12	SPL_12	4
-169	DorsAttnA	SPL_13	SPL_13	4
-170	DorsAttnA	SPL_14	SPL_14	4
-171	DorsAttnA	SPL_15	SPL_15	4
-172	DorsAttnA	SPL_16	SPL_16	4
-173	DorsAttnA	SPL_17	SPL_17	4
-174	DorsAttnA	SPL_18	SPL_18	4
-175	DorsAttnA	SPL_19	SPL_19	4
-176	DorsAttnA	SPL_20	SPL_20	4
-177	DorsAttnA	SPL_21	SPL_21	4
-178	DorsAttnA	SPL_22	SPL_22	4
-179	DorsAttnA	SPL_23	SPL_23	4
-180	DorsAttnA	SPL_24	SPL_24	4
-181	DorsAttnA	SPL_25	SPL_25	4
-182	DorsAttnB	TempOcc_1	TempOcc_1	5
-183	DorsAttnB	TempOcc_2	TempOcc_2	5
-184	DorsAttnB	PostC_1	PostC_1	5
-185	DorsAttnB	PostC_2	PostC_2	5
-186	DorsAttnB	PostC_3	PostC_3	5
-187	DorsAttnB	PostC_4	PostC_4	5
-188	DorsAttnB	PostC_5	PostC_5	5
-189	DorsAttnB	PostC_6	PostC_6	5
-190	DorsAttnB	PostC_7	PostC_7	5
-191	DorsAttnB	PostC_8	PostC_8	5
-192	DorsAttnB	PostC_9	PostC_9	5
-193	DorsAttnB	PostC_10	PostC_10	5
-194	DorsAttnB	PostC_11	PostC_11	5
-195	DorsAttnB	PostC_12	PostC_12	5
-196	DorsAttnB	PostC_13	PostC_13	5
-197	DorsAttnB	PostC_14	PostC_14	5
-198	DorsAttnB	PostC_15	PostC_15	5
-199	DorsAttnB	PostC_16	PostC_16	5
-200	DorsAttnB	PostC_17	PostC_17	5
-201	DorsAttnB	PostC_18	PostC_18	5
-202	DorsAttnB	FEF_1	FEF_1	5
-203	DorsAttnB	FEF_2	FEF_2	5
-204	DorsAttnB	FEF_3	FEF_3	5
-205	DorsAttnB	FEF_4	FEF_4	5
-206	DorsAttnB	FEF_5	FEF_5	5
-207	DorsAttnB	FEF_6	FEF_6	5
-208	DorsAttnB	FEF_7	FEF_7	5
-209	DorsAttnB	PrCv_1	PrCv_1	5
-210	DorsAttnB	PrCv_2	PrCv_2	5
-211	SalVentAttnA	ParOper_1	ParOper_1	6
-212	SalVentAttnA	ParOper_2	ParOper_2	6
-213	SalVentAttnA	ParOper_3	ParOper_3	6
-214	SalVentAttnA	ParOper_4	ParOper_4	6
-215	SalVentAttnA	ParOper_5	ParOper_5	6
-216	SalVentAttnA	ParOper_6	ParOper_6	6
-217	SalVentAttnA	ParOper_7	ParOper_7	6
-218	SalVentAttnA	Ins_1	Ins_1	6
-219	SalVentAttnA	Ins_2	Ins_2	6
-220	SalVentAttnA	Ins_3	Ins_3	6
-221	SalVentAttnA	Ins_4	Ins_4	6
-222	SalVentAttnA	Ins_5	Ins_5	6
-223	SalVentAttnA	Ins_6	Ins_6	6
-224	SalVentAttnA	Ins_7	Ins_7	6
-225	SalVentAttnA	Ins_8	Ins_8	6
-226	SalVentAttnA	Ins_9	Ins_9	6
-227	SalVentAttnA	Ins_10	Ins_10	6
-228	SalVentAttnA	Ins_11	Ins_11	6
-229	SalVentAttnA	Ins_12	Ins_12	6
-230	SalVentAttnA	Ins_13	Ins_13	6
-231	SalVentAttnA	Ins_14	Ins_14	6
-232	SalVentAttnA	Ins_15	Ins_15	6
-233	SalVentAttnA	Ins_16	Ins_16	6
-234	SalVentAttnA	Ins_17	Ins_17	6
-235	SalVentAttnA	Ins_18	Ins_18	6
-236	SalVentAttnA	ParMed_1	ParMed_1	6
-237	SalVentAttnA	ParMed_2	ParMed_2	6
-238	SalVentAttnA	ParMed_3	ParMed_3	6
-239	SalVentAttnA	ParMed_4	ParMed_4	6
-240	SalVentAttnA	ParMed_5	ParMed_5	6
-241	SalVentAttnA	ParMed_6	ParMed_6	6
-242	SalVentAttnA	ParMed_7	ParMed_7	6
-243	SalVentAttnA	ParMed_8	ParMed_8	6
-244	SalVentAttnA	FrMed_1	FrMed_1	6
-245	SalVentAttnA	FrMed_2	FrMed_2	6
-246	SalVentAttnA	FrMed_3	FrMed_3	6
-247	SalVentAttnA	FrMed_4	FrMed_4	6
-248	SalVentAttnA	FrMed_5	FrMed_5	6
-249	SalVentAttnA	FrMed_6	FrMed_6	6
-250	SalVentAttnA	FrMed_7	FrMed_7	6
-251	SalVentAttnB	IPL_1	IPL_1	7
-252	SalVentAttnB	IPL_2	IPL_2	7
-253	SalVentAttnB	PFCd_1	PFCd_1	7
-254	SalVentAttnB	PFCl_1	PFCl_1	7
-255	SalVentAttnB	PFCl_2	PFCl_2	7
-256	SalVentAttnB	PFCl_3	PFCl_3	7
-257	SalVentAttnB	PFCl_4	PFCl_4	7
-258	SalVentAttnB	PFCl_5	PFCl_5	7
-259	SalVentAttnB	PFCl_6	PFCl_6	7
-260	SalVentAttnB	PFCv_1	PFCv_1	7
-261	SalVentAttnB	PFCv_2	PFCv_2	7
-262	SalVentAttnB	PFCv_3	PFCv_3	7
-263	SalVentAttnB	PFCv_4	PFCv_4	7
-264	SalVentAttnB	PFCv_5	PFCv_5	7
-265	SalVentAttnB	PFCv_6	PFCv_6	7
-266	SalVentAttnB	PFCv_7	PFCv_7	7
-267	SalVentAttnB	PFCv_8	PFCv_8	7
-268	SalVentAttnB	OFC_1	OFC_1	7
-269	SalVentAttnB	PFCmp_1	PFCmp_1	7
-270	SalVentAttnB	PFCmp_2	PFCmp_2	7
-271	SalVentAttnB	PFCmp_3	PFCmp_3	7
-272	SalVentAttnB	PFCmp_4	PFCmp_4	7
-273	Limbic	OFC_1	OFC_1	8
-274	Limbic	OFC_2	OFC_2	8
-275	Limbic	OFC_3	OFC_3	8
-276	Limbic	OFC_4	OFC_4	8
-277	Limbic	OFC_5	OFC_5	8
-278	Limbic	OFC_6	OFC_6	8
-279	Limbic	OFC_7	OFC_7	8
-280	Limbic	OFC_8	OFC_8	8
-281	Limbic	OFC_9	OFC_9	8
-282	Limbic	OFC_10	OFC_10	8
-283	Limbic	OFC_11	OFC_11	8
-284	Limbic	OFC_12	OFC_12	8
-285	Limbic	OFC_13	OFC_13	8
-286	Limbic	OFC_14	OFC_14	8
-287	Limbic	OFC_15	OFC_15	8
-288	Limbic	OFC_16	OFC_16	8
-289	Limbic	TempPole_1	TempPole_1	8
-290	Limbic	TempPole_2	TempPole_2	8
-291	Limbic	TempPole_3	TempPole_3	8
-292	Limbic	TempPole_4	TempPole_4	8
-293	Limbic	TempPole_5	TempPole_5	8
-294	Limbic	TempPole_6	TempPole_6	8
-295	Limbic	TempPole_7	TempPole_7	8
-296	Limbic	TempPole_8	TempPole_8	8
-297	Limbic	TempPole_9	TempPole_9	8
-298	Limbic	TempPole_10	TempPole_10	8
-299	Limbic	TempPole_11	TempPole_11	8
-300	Limbic	TempPole_12	TempPole_12	8
-301	Limbic	TempPole_13	TempPole_13	8
-302	Limbic	TempPole_14	TempPole_14	8
-303	ContA	Temp_1	Temp_1	9
-304	ContA	Temp_2	Temp_2	9
-305	ContA	Temp_3	Temp_3	9
-306	ContA	IPS_1	IPS_1	9
-307	ContA	IPS_2	IPS_2	9
-308	ContA	IPS_3	IPS_3	9
-309	ContA	IPS_4	IPS_4	9
-310	ContA	IPS_5	IPS_5	9
-311	ContA	IPS_6	IPS_6	9
-312	ContA	IPS_7	IPS_7	9
-313	ContA	IPS_8	IPS_8	9
-314	ContA	IPS_9	IPS_9	9
-315	ContA	IPS_10	IPS_10	9
-316	ContA	PFCd_1	PFCd_1	9
-317	ContA	PFCd_2	PFCd_2	9
-318	ContA	PFCl_1	PFCl_1	9
-319	ContA	PFCl_2	PFCl_2	9
-320	ContA	PFCl_3	PFCl_3	9
-321	ContA	PFCl_4	PFCl_4	9
-322	ContA	PFCl_5	PFCl_5	9
-323	ContA	PFCl_6	PFCl_6	9
-324	ContA	PFCl_7	PFCl_7	9
-325	ContA	PFCl_8	PFCl_8	9
-326	ContA	PFCl_9	PFCl_9	9
-327	ContA	PFCl_10	PFCl_10	9
-328	ContA	PFCl_11	PFCl_11	9
-329	ContA	PFCl_12	PFCl_12	9
-330	ContA	PFCl_13	PFCl_13	9
-331	ContA	PFCl_14	PFCl_14	9
-332	ContA	Cinga_1	Cinga_1	9
-333	ContA	Cinga_2	Cinga_2	9
-334	ContB	Temp_1	Temp_1	10
-335	ContB	Temp_2	Temp_2	10
-336	ContB	Temp_3	Temp_3	10
-337	ContB	Temp_4	Temp_4	10
-338	ContB	IPL_1	IPL_1	10
-339	ContB	IPL_2	IPL_2	10
-340	ContB	IPL_3	IPL_3	10
-341	ContB	IPL_4	IPL_4	10
-342	ContB	IPL_5	IPL_5	10
-343	ContB	IPL_6	IPL_6	10
-344	ContB	IPL_7	IPL_7	10
-345	ContB	IPL_8	IPL_8	10
-346	ContB	PFCl_1	PFCl_1	10
-347	ContB	PFCl_2	PFCl_2	10
-348	ContB	PFCl_3	PFCl_3	10
-349	ContB	PFCl_4	PFCl_4	10
-350	ContB	PFCl_5	PFCl_5	10
-351	ContB	PFCl_6	PFCl_6	10
-352	ContB	PFClv_1	PFClv_1	10
-353	ContB	PFClv_2	PFClv_2	10
-354	ContB	PFClv_3	PFClv_3	10
-355	ContB	PFClv_4	PFClv_4	10
-356	ContB	PFClv_5	PFClv_5	10
-357	ContB	PFCmp_1	PFCmp_1	10
-358	ContB	PFCmp_2	PFCmp_2	10
-359	ContC	pCun_1	pCun_1	11
-360	ContC	pCun_2	pCun_2	11
-361	ContC	pCun_3	pCun_3	11
-362	ContC	pCun_4	pCun_4	11
-363	ContC	pCun_5	pCun_5	11
-364	ContC	pCun_6	pCun_6	11
-365	ContC	pCun_7	pCun_7	11
-366	ContC	pCun_8	pCun_8	11
-367	ContC	pCun_9	pCun_9	11
-368	ContC	pCun_10	pCun_10	11
-369	ContC	pCun_11	pCun_11	11
-370	ContC	Cingp_1	Cingp_1	11
-371	ContC	Cingp_2	Cingp_2	11
-372	ContC	Cingp_3	Cingp_3	11
-373	ContC	Cingp_4	Cingp_4	11
-374	ContC	Cingp_5	Cingp_5	11
-375	ContC	Cingp_6	Cingp_6	11
-376	ContC	Cingp_7	Cingp_7	11
-377	ContC	Cingp_8	Cingp_8	11
-378	DefaultA	IPL_1	IPL_1	12
-379	DefaultA	IPL_2	IPL_2	12
-380	DefaultA	IPL_3	IPL_3	12
-381	DefaultA	IPL_4	IPL_4	12
-382	DefaultA	IPL_5	IPL_5	12
-383	DefaultA	IPL_6	IPL_6	12
-384	DefaultA	IPL_7	IPL_7	12
-385	DefaultA	PFCd_1	PFCd_1	12
-386	DefaultA	PFCd_2	PFCd_2	12
-387	DefaultA	PFCd_3	PFCd_3	12
-388	DefaultA	PFCd_4	PFCd_4	12
-389	DefaultA	PCC_1	PCC_1	12
-390	DefaultA	PCC_2	PCC_2	12
-391	DefaultA	PCC_3	PCC_3	12
-392	DefaultA	PCC_4	PCC_4	12
-393	DefaultA	PCC_5	PCC_5	12
-394	DefaultA	PCC_6	PCC_6	12
-395	DefaultA	PCC_7	PCC_7	12
-396	DefaultA	PCC_8	PCC_8	12
-397	DefaultA	PCC_9	PCC_9	12
-398	DefaultA	PCC_10	PCC_10	12
-399	DefaultA	PCC_11	PCC_11	12
-400	DefaultA	PCC_12	PCC_12	12
-401	DefaultA	PCC_13	PCC_13	12
-402	DefaultA	PCC_14	PCC_14	12
-403	DefaultA	PCC_15	PCC_15	12
-404	DefaultA	PCC_16	PCC_16	12
-405	DefaultA	PCC_17	PCC_17	12
-406	DefaultA	PCC_18	PCC_18	12
-407	DefaultA	PCC_19	PCC_19	12
-408	DefaultA	PCC_20	PCC_20	12
-409	DefaultA	PCC_21	PCC_21	12
-410	DefaultA	PCC_22	PCC_22	12
-411	DefaultA	PFCm_1	PFCm_1	12
-412	DefaultA	PFCm_2	PFCm_2	12
-413	DefaultA	PFCm_3	PFCm_3	12
-414	DefaultA	PFCm_4	PFCm_4	12
-415	DefaultA	PFCm_5	PFCm_5	12
-416	DefaultA	PFCm_6	PFCm_6	12
-417	DefaultA	PFCm_7	PFCm_7	12
-418	DefaultA	PFCm_8	PFCm_8	12
-419	DefaultA	PFCm_9	PFCm_9	12
-420	DefaultA	PFCm_10	PFCm_10	12
-421	DefaultA	PFCm_11	PFCm_11	12
-422	DefaultA	PFCm_12	PFCm_12	12
-423	DefaultB	Temp_1	Temp_1	13
-424	DefaultB	Temp_2	Temp_2	13
-425	DefaultB	Temp_3	Temp_3	13
-426	DefaultB	Temp_4	Temp_4	13
-427	DefaultB	Temp_5	Temp_5	13
-428	DefaultB	Temp_6	Temp_6	13
-429	DefaultB	Temp_7	Temp_7	13
-430	DefaultB	Temp_8	Temp_8	13
-431	DefaultB	Temp_9	Temp_9	13
-432	DefaultB	Temp_10	Temp_10	13
-433	DefaultB	Temp_11	Temp_11	13
-434	DefaultB	Temp_12	Temp_12	13
-435	DefaultB	Temp_13	Temp_13	13
-436	DefaultB	IPL_1	IPL_1	13
-437	DefaultB	IPL_2	IPL_2	13
-438	DefaultB	IPL_3	IPL_3	13
-439	DefaultB	IPL_4	IPL_4	13
-440	DefaultB	IPL_5	IPL_5	13
-441	DefaultB	IPL_6	IPL_6	13
-442	DefaultB	IPL_7	IPL_7	13
-443	DefaultB	IPL_8	IPL_8	13
-444	DefaultB	IPL_9	IPL_9	13
-445	DefaultB	PFCd_1	PFCd_1	13
-446	DefaultB	PFCd_2	PFCd_2	13
-447	DefaultB	PFCd_3	PFCd_3	13
-448	DefaultB	PFCd_4	PFCd_4	13
-449	DefaultB	PFCd_5	PFCd_5	13
-450	DefaultB	PFCd_6	PFCd_6	13
-451	DefaultB	PFCd_7	PFCd_7	13
-452	DefaultB	PFCd_8	PFCd_8	13
-453	DefaultB	PFCd_9	PFCd_9	13
-454	DefaultB	PFCd_10	PFCd_10	13
-455	DefaultB	PFCd_11	PFCd_11	13
-456	DefaultB	PFCd_12	PFCd_12	13
-457	DefaultB	PFCl_1	PFCl_1	13
-458	DefaultB	PFCl_2	PFCl_2	13
-459	DefaultB	PFCv_1	PFCv_1	13
-460	DefaultB	PFCv_2	PFCv_2	13
-461	DefaultB	PFCv_3	PFCv_3	13
-462	DefaultB	PFCv_4	PFCv_4	13
-463	DefaultB	PFCv_5	PFCv_5	13
-464	DefaultB	PFCv_6	PFCv_6	13
-465	DefaultB	PFCv_7	PFCv_7	13
-466	DefaultB	PFCv_8	PFCv_8	13
-467	DefaultB	PFCv_9	PFCv_9	13
-468	DefaultC	IPL_1	IPL_1	14
-469	DefaultC	IPL_2	IPL_2	14
-470	DefaultC	IPL_3	IPL_3	14
-471	DefaultC	Rsp_1	Rsp_1	14
-472	DefaultC	Rsp_2	Rsp_2	14
-473	DefaultC	Rsp_3	Rsp_3	14
-474	DefaultC	Rsp_4	Rsp_4	14
-475	DefaultC	Rsp_5	Rsp_5	14
-476	DefaultC	Rsp_6	Rsp_6	14
-477	DefaultC	Rsp_7	Rsp_7	14
-478	DefaultC	Rsp_8	Rsp_8	14
-479	DefaultC	PHC_1	PHC_1	14
-480	DefaultC	PHC_2	PHC_2	14
-481	DefaultC	PHC_3	PHC_3	14
-482	DefaultC	PHC_4	PHC_4	14
-483	DefaultC	PHC_5	PHC_5	14
-484	DefaultC	PHC_6	PHC_6	14
-485	TempPar	1	1	15
-486	TempPar	2	2	15
-487	TempPar	3	3	15
-488	TempPar	4	4	15
-489	TempPar	5	5	15
-490	TempPar	6	6	15
-491	TempPar	7	7	15
-492	TempPar	8	8	15
-493	TempPar	9	9	15
-494	TempPar	10	10	15
-495	TempPar	11	11	15
-496	TempPar	12	12	15
-497	TempPar	13	13	15
-498	TempPar	14	14	15
-499	TempPar	15	15	15
-500	TempPar	16	16	15
-501	VisCent	ExStr_1	ExStr_1	0
-502	VisCent	ExStr_2	ExStr_2	0
-503	VisCent	ExStr_3	ExStr_3	0
-504	VisCent	ExStr_4	ExStr_4	0
-505	VisCent	ExStr_5	ExStr_5	0
-506	VisCent	ExStr_6	ExStr_6	0
-507	VisCent	ExStr_7	ExStr_7	0
-508	VisCent	ExStr_8	ExStr_8	0
-509	VisCent	ExStr_9	ExStr_9	0
-510	VisCent	ExStr_10	ExStr_10	0
-511	VisCent	ExStr_11	ExStr_11	0
-512	VisCent	ExStr_12	ExStr_12	0
-513	VisCent	ExStr_13	ExStr_13	0
-514	VisCent	ExStr_14	ExStr_14	0
-515	VisCent	ExStr_15	ExStr_15	0
-516	VisCent	ExStr_16	ExStr_16	0
-517	VisCent	ExStr_17	ExStr_17	0
-518	VisCent	ExStr_18	ExStr_18	0
-519	VisCent	ExStr_19	ExStr_19	0
-520	VisCent	ExStr_20	ExStr_20	0
-521	VisCent	ExStr_21	ExStr_21	0
-522	VisCent	ExStr_22	ExStr_22	0
-523	VisCent	ExStr_23	ExStr_23	0
-524	VisCent	ExStr_24	ExStr_24	0
-525	VisCent	ExStr_25	ExStr_25	0
-526	VisCent	ExStr_26	ExStr_26	0
-527	VisCent	ExStr_27	ExStr_27	0
-528	VisCent	ExStr_28	ExStr_28	0
-529	VisCent	ExStr_29	ExStr_29	0
-530	VisCent	ExStr_30	ExStr_30	0
-531	VisCent	ExStr_31	ExStr_31	0
-532	VisCent	ExStr_32	ExStr_32	0
-533	VisCent	ExStr_33	ExStr_33	0
-534	VisCent	ExStr_34	ExStr_34	0
-535	VisCent	ExStr_35	ExStr_35	0
-536	VisCent	ExStr_36	ExStr_36	0
-537	VisCent	ExStr_37	ExStr_37	0
-538	VisCent	ExStr_38	ExStr_38	0
-539	VisCent	ExStr_39	ExStr_39	0
-540	VisPeri	ExStrSup_1	ExStrSup_1	1
-541	VisPeri	ExStrSup_2	ExStrSup_2	1
-542	VisPeri	ExStrSup_3	ExStrSup_3	1
-543	VisPeri	ExStrSup_4	ExStrSup_4	1
-544	VisPeri	ExStrSup_5	ExStrSup_5	1
-545	VisPeri	ExStrSup_6	ExStrSup_6	1
-546	VisPeri	ExStrSup_7	ExStrSup_7	1
-547	VisPeri	ExStrSup_8	ExStrSup_8	1
-548	VisPeri	ExStrSup_9	ExStrSup_9	1
-549	VisPeri	ExStrSup_10	ExStrSup_10	1
-550	VisPeri	ExStrSup_11	ExStrSup_11	1
-551	VisPeri	ExStrSup_12	ExStrSup_12	1
-552	VisPeri	ExStrSup_13	ExStrSup_13	1
-553	VisPeri	ExStrSup_14	ExStrSup_14	1
-554	VisPeri	ExStrSup_15	ExStrSup_15	1
-555	VisPeri	ExStrSup_16	ExStrSup_16	1
-556	VisPeri	ExStrSup_17	ExStrSup_17	1
-557	VisPeri	ExStrSup_18	ExStrSup_18	1
-558	VisPeri	ExStrSup_19	ExStrSup_19	1
-559	VisPeri	ExStrSup_20	ExStrSup_20	1
-560	VisPeri	ExStrSup_21	ExStrSup_21	1
-561	VisPeri	ExStrSup_22	ExStrSup_22	1
-562	VisPeri	ExStrSup_23	ExStrSup_23	1
-563	VisPeri	ExStrSup_24	ExStrSup_24	1
-564	VisPeri	ExStrSup_25	ExStrSup_25	1
-565	VisPeri	ExStrSup_26	ExStrSup_26	1
-566	VisPeri	ExStrSup_27	ExStrSup_27	1
-567	VisPeri	ExStrSup_28	ExStrSup_28	1
-568	VisPeri	ExStrSup_29	ExStrSup_29	1
-569	SomMotA	1	1	2
-570	SomMotA	2	2	2
-571	SomMotA	3	3	2
-572	SomMotA	4	4	2
-573	SomMotA	5	5	2
-574	SomMotA	6	6	2
-575	SomMotA	7	7	2
-576	SomMotA	8	8	2
-577	SomMotA	9	9	2
-578	SomMotA	10	10	2
-579	SomMotA	11	11	2
-580	SomMotA	12	12	2
-581	SomMotA	13	13	2
-582	SomMotA	14	14	2
-583	SomMotA	15	15	2
-584	SomMotA	16	16	2
-585	SomMotA	17	17	2
-586	SomMotA	18	18	2
-587	SomMotA	19	19	2
-588	SomMotA	20	20	2
-589	SomMotA	21	21	2
-590	SomMotA	22	22	2
-591	SomMotA	23	23	2
-592	SomMotA	24	24	2
-593	SomMotA	25	25	2
-594	SomMotA	26	26	2
-595	SomMotA	27	27	2
-596	SomMotA	28	28	2
-597	SomMotA	29	29	2
-598	SomMotA	30	30	2
-599	SomMotA	31	31	2
-600	SomMotA	32	32	2
-601	SomMotA	33	33	2
-602	SomMotA	34	34	2
-603	SomMotA	35	35	2
-604	SomMotA	36	36	2
-605	SomMotA	37	37	2
-606	SomMotA	38	38	2
-607	SomMotA	39	39	2
-608	SomMotA	40	40	2
-609	SomMotA	41	41	2
-610	SomMotA	42	42	2
-611	SomMotA	43	43	2
-612	SomMotA	44	44	2
-613	SomMotA	45	45	2
-614	SomMotA	46	46	2
-615	SomMotA	47	47	2
-616	SomMotA	48	48	2
-617	SomMotB	S2_1	S2_1	3
-618	SomMotB	S2_2	S2_2	3
-619	SomMotB	S2_3	S2_3	3
-620	SomMotB	S2_4	S2_4	3
-621	SomMotB	S2_5	S2_5	3
-622	SomMotB	S2_6	S2_6	3
-623	SomMotB	S2_7	S2_7	3
-624	SomMotB	S2_8	S2_8	3
-625	SomMotB	S2_9	S2_9	3
-626	SomMotB	S2_10	S2_10	3
-627	SomMotB	S2_11	S2_11	3
-628	SomMotB	S2_12	S2_12	3
-629	SomMotB	S2_13	S2_13	3
-630	SomMotB	S2_14	S2_14	3
-631	SomMotB	S2_15	S2_15	3
-632	SomMotB	S2_16	S2_16	3
-633	SomMotB	S2_17	S2_17	3
-634	SomMotB	S2_18	S2_18	3
-635	SomMotB	S2_19	S2_19	3
-636	SomMotB	S2_20	S2_20	3
-637	SomMotB	S2_21	S2_21	3
-638	SomMotB	S2_22	S2_22	3
-639	SomMotB	S2_23	S2_23	3
-640	SomMotB	S2_24	S2_24	3
-641	SomMotB	S2_25	S2_25	3
-642	SomMotB	S2_26	S2_26	3
-643	SomMotB	S2_27	S2_27	3
-644	SomMotB	S2_28	S2_28	3
-645	SomMotB	S2_29	S2_29	3
-646	SomMotB	S2_30	S2_30	3
-647	SomMotB	S2_31	S2_31	3
-648	SomMotB	S2_32	S2_32	3
-649	SomMotB	S2_33	S2_33	3
-650	SomMotB	S2_34	S2_34	3
-651	SomMotB	S2_35	S2_35	3
-652	SomMotB	S2_36	S2_36	3
-653	SomMotB	S2_37	S2_37	3
-654	SomMotB	S2_38	S2_38	3
-655	SomMotB	S2_39	S2_39	3
-656	SomMotB	S2_40	S2_40	3
-657	SomMotB	S2_41	S2_41	3
-658	SomMotB	S2_42	S2_42	3
-659	DorsAttnA	SPL_1	SPL_1	4
-660	DorsAttnA	SPL_2	SPL_2	4
-661	DorsAttnA	SPL_3	SPL_3	4
-662	DorsAttnA	SPL_4	SPL_4	4
-663	DorsAttnA	SPL_5	SPL_5	4
-664	DorsAttnA	SPL_6	SPL_6	4
-665	DorsAttnA	SPL_7	SPL_7	4
-666	DorsAttnA	SPL_8	SPL_8	4
-667	DorsAttnA	SPL_9	SPL_9	4
-668	DorsAttnA	SPL_10	SPL_10	4
-669	DorsAttnA	SPL_11	SPL_11	4
-670	DorsAttnA	SPL_12	SPL_12	4
-671	DorsAttnA	SPL_13	SPL_13	4
-672	DorsAttnA	SPL_14	SPL_14	4
-673	DorsAttnA	SPL_15	SPL_15	4
-674	DorsAttnA	SPL_16	SPL_16	4
-675	DorsAttnA	SPL_17	SPL_17	4
-676	DorsAttnA	SPL_18	SPL_18	4
-677	DorsAttnA	SPL_19	SPL_19	4
-678	DorsAttnA	SPL_20	SPL_20	4
-679	DorsAttnA	SPL_21	SPL_21	4
-680	DorsAttnA	SPL_22	SPL_22	4
-681	DorsAttnA	SPL_23	SPL_23	4
-682	DorsAttnA	SPL_24	SPL_24	4
-683	DorsAttnA	SPL_25	SPL_25	4
-684	DorsAttnA	SPL_26	SPL_26	4
-685	DorsAttnA	SPL_27	SPL_27	4
-686	DorsAttnA	SPL_28	SPL_28	4
-687	DorsAttnA	SPL_29	SPL_29	4
-688	DorsAttnA	SPL_30	SPL_30	4
-689	DorsAttnA	SPL_31	SPL_31	4
-690	DorsAttnA	SPL_32	SPL_32	4
-691	DorsAttnA	SPL_33	SPL_33	4
-692	DorsAttnA	SPL_34	SPL_34	4
-693	DorsAttnB	TempOcc_1	TempOcc_1	5
-694	DorsAttnB	TempOcc_2	TempOcc_2	5
-695	DorsAttnB	PostC_1	PostC_1	5
-696	DorsAttnB	PostC_2	PostC_2	5
-697	DorsAttnB	PostC_3	PostC_3	5
-698	DorsAttnB	PostC_4	PostC_4	5
-699	DorsAttnB	PostC_5	PostC_5	5
-700	DorsAttnB	PostC_6	PostC_6	5
-701	DorsAttnB	PostC_7	PostC_7	5
-702	DorsAttnB	PostC_8	PostC_8	5
-703	DorsAttnB	PostC_9	PostC_9	5
-704	DorsAttnB	PostC_10	PostC_10	5
-705	DorsAttnB	PostC_11	PostC_11	5
-706	DorsAttnB	PostC_12	PostC_12	5
-707	DorsAttnB	PostC_13	PostC_13	5
-708	DorsAttnB	PostC_14	PostC_14	5
-709	DorsAttnB	PostC_15	PostC_15	5
-710	DorsAttnB	PostC_16	PostC_16	5
-711	DorsAttnB	PostC_17	PostC_17	5
-712	DorsAttnB	PostC_18	PostC_18	5
-713	DorsAttnB	PostC_19	PostC_19	5
-714	DorsAttnB	PostC_20	PostC_20	5
-715	DorsAttnB	FEF_1	FEF_1	5
-716	DorsAttnB	FEF_2	FEF_2	5
-717	DorsAttnB	FEF_3	FEF_3	5
-718	DorsAttnB	FEF_4	FEF_4	5
-719	DorsAttnB	FEF_5	FEF_5	5
-720	DorsAttnB	FEF_6	FEF_6	5
-721	DorsAttnB	PrCv_1	PrCv_1	5
-722	SalVentAttnA	ParOper_1	ParOper_1	6
-723	SalVentAttnA	ParOper_2	ParOper_2	6
-724	SalVentAttnA	ParOper_3	ParOper_3	6
-725	SalVentAttnA	ParOper_4	ParOper_4	6
-726	SalVentAttnA	ParOper_5	ParOper_5	6
-727	SalVentAttnA	ParOper_6	ParOper_6	6
-728	SalVentAttnA	ParOper_7	ParOper_7	6
-729	SalVentAttnA	ParOper_8	ParOper_8	6
-730	SalVentAttnA	ParOper_9	ParOper_9	6
-731	SalVentAttnA	ParOper_10	ParOper_10	6
-732	SalVentAttnA	PrC_1	PrC_1	6
-733	SalVentAttnA	PrC_2	PrC_2	6
-734	SalVentAttnA	Ins_1	Ins_1	6
-735	SalVentAttnA	Ins_2	Ins_2	6
-736	SalVentAttnA	Ins_3	Ins_3	6
-737	SalVentAttnA	Ins_4	Ins_4	6
-738	SalVentAttnA	Ins_5	Ins_5	6
-739	SalVentAttnA	Ins_6	Ins_6	6
-740	SalVentAttnA	Ins_7	Ins_7	6
-741	SalVentAttnA	Ins_8	Ins_8	6
-742	SalVentAttnA	Ins_9	Ins_9	6
-743	SalVentAttnA	Ins_10	Ins_10	6
-744	SalVentAttnA	Ins_11	Ins_11	6
-745	SalVentAttnA	Ins_12	Ins_12	6
-746	SalVentAttnA	Ins_13	Ins_13	6
-747	SalVentAttnA	Ins_14	Ins_14	6
-748	SalVentAttnA	Ins_15	Ins_15	6
-749	SalVentAttnA	Ins_16	Ins_16	6
-750	SalVentAttnA	Ins_17	Ins_17	6
-751	SalVentAttnA	FrMed_1	FrMed_1	6
-752	SalVentAttnA	FrMed_2	FrMed_2	6
-753	SalVentAttnA	FrMed_3	FrMed_3	6
-754	SalVentAttnA	FrMed_4	FrMed_4	6
-755	SalVentAttnA	FrMed_5	FrMed_5	6
-756	SalVentAttnA	FrMed_6	FrMed_6	6
-757	SalVentAttnA	FrMed_7	FrMed_7	6
-758	SalVentAttnA	FrMed_8	FrMed_8	6
-759	SalVentAttnA	FrMed_9	FrMed_9	6
-760	SalVentAttnA	FrMed_10	FrMed_10	6
-761	SalVentAttnA	FrMed_11	FrMed_11	6
-762	SalVentAttnA	FrMed_12	FrMed_12	6
-763	SalVentAttnA	FrMed_13	FrMed_13	6
-764	SalVentAttnA	FrMed_14	FrMed_14	6
-765	SalVentAttnA	FrMed_15	FrMed_15	6
-766	SalVentAttnA	FrMed_16	FrMed_16	6
-767	SalVentAttnA	FrMed_17	FrMed_17	6
-768	SalVentAttnA	FrMed_18	FrMed_18	6
-769	SalVentAttnA	FrMed_19	FrMed_19	6
-770	SalVentAttnA	FrMed_20	FrMed_20	6
-771	SalVentAttnA	FrMed_21	FrMed_21	6
-772	SalVentAttnB	IPL_1	IPL_1	7
-773	SalVentAttnB	IPL_2	IPL_2	7
-774	SalVentAttnB	IPL_3	IPL_3	7
-775	SalVentAttnB	PFCl_1	PFCl_1	7
-776	SalVentAttnB	PFCl_2	PFCl_2	7
-777	SalVentAttnB	PFCl_3	PFCl_3	7
-778	SalVentAttnB	PFCl_4	PFCl_4	7
-779	SalVentAttnB	PFCl_5	PFCl_5	7
-780	SalVentAttnB	PFCl_6	PFCl_6	7
-781	SalVentAttnB	PFCl_7	PFCl_7	7
-782	SalVentAttnB	PFCl_8	PFCl_8	7
-783	SalVentAttnB	PFCv_1	PFCv_1	7
-784	SalVentAttnB	PFCv_2	PFCv_2	7
-785	SalVentAttnB	PFCv_3	PFCv_3	7
-786	SalVentAttnB	PFCv_4	PFCv_4	7
-787	SalVentAttnB	PFCv_5	PFCv_5	7
-788	SalVentAttnB	PFCv_6	PFCv_6	7
-789	SalVentAttnB	PFCv_7	PFCv_7	7
-790	SalVentAttnB	PFCv_8	PFCv_8	7
-791	SalVentAttnB	PFCv_9	PFCv_9	7
-792	SalVentAttnB	PFCmp_1	PFCmp_1	7
-793	SalVentAttnB	PFCmp_2	PFCmp_2	7
-794	SalVentAttnB	PFCmp_3	PFCmp_3	7
-795	SalVentAttnB	PFCmp_4	PFCmp_4	7
-796	SalVentAttnB	PFCmp_5	PFCmp_5	7
-797	SalVentAttnB	PFCmp_6	PFCmp_6	7
-798	Limbic	OFC_1	OFC_1	8
-799	Limbic	OFC_2	OFC_2	8
-800	Limbic	OFC_3	OFC_3	8
-801	Limbic	OFC_4	OFC_4	8
-802	Limbic	OFC_5	OFC_5	8
-803	Limbic	OFC_6	OFC_6	8
-804	Limbic	OFC_7	OFC_7	8
-805	Limbic	OFC_8	OFC_8	8
-806	Limbic	OFC_9	OFC_9	8
-807	Limbic	OFC_10	OFC_10	8
-808	Limbic	OFC_11	OFC_11	8
-809	Limbic	OFC_12	OFC_12	8
-810	Limbic	OFC_13	OFC_13	8
-811	Limbic	OFC_14	OFC_14	8
-812	Limbic	OFC_15	OFC_15	8
-813	Limbic	OFC_16	OFC_16	8
-814	Limbic	TempPole_1	TempPole_1	8
-815	Limbic	TempPole_2	TempPole_2	8
-816	Limbic	TempPole_3	TempPole_3	8
-817	Limbic	TempPole_4	TempPole_4	8
-818	Limbic	TempPole_5	TempPole_5	8
-819	Limbic	TempPole_6	TempPole_6	8
-820	Limbic	TempPole_7	TempPole_7	8
-821	Limbic	TempPole_8	TempPole_8	8
-822	Limbic	TempPole_9	TempPole_9	8
-823	Limbic	TempPole_10	TempPole_10	8
-824	Limbic	TempPole_11	TempPole_11	8
-825	Limbic	TempPole_12	TempPole_12	8
-826	Limbic	TempPole_13	TempPole_13	8
-827	Limbic	TempPole_14	TempPole_14	8
-828	Limbic	TempPole_15	TempPole_15	8
-829	ContA	Temp_1	Temp_1	9
-830	ContA	Temp_2	Temp_2	9
-831	ContA	IPS_1	IPS_1	9
-832	ContA	IPS_2	IPS_2	9
-833	ContA	IPS_3	IPS_3	9
-834	ContA	IPS_4	IPS_4	9
-835	ContA	IPS_5	IPS_5	9
-836	ContA	IPS_6	IPS_6	9
-837	ContA	IPS_7	IPS_7	9
-838	ContA	IPS_8	IPS_8	9
-839	ContA	IPS_9	IPS_9	9
-840	ContA	IPS_10	IPS_10	9
-841	ContA	IPS_11	IPS_11	9
-842	ContA	IPS_12	IPS_12	9
-843	ContA	PFCd_1	PFCd_1	9
-844	ContA	PFCl_1	PFCl_1	9
-845	ContA	PFCl_2	PFCl_2	9
-846	ContA	PFCl_3	PFCl_3	9
-847	ContA	PFCl_4	PFCl_4	9
-848	ContA	PFCl_5	PFCl_5	9
-849	ContA	PFCl_6	PFCl_6	9
-850	ContA	PFCl_7	PFCl_7	9
-851	ContA	PFCl_8	PFCl_8	9
-852	ContA	PFCl_9	PFCl_9	9
-853	ContA	PFCl_10	PFCl_10	9
-854	ContA	PFCl_11	PFCl_11	9
-855	ContA	Cinga_1	Cinga_1	9
-856	ContA	Cinga_2	Cinga_2	9
-857	ContB	Temp_1	Temp_1	10
-858	ContB	Temp_2	Temp_2	10
-859	ContB	Temp_3	Temp_3	10
-860	ContB	Temp_4	Temp_4	10
-861	ContB	Temp_5	Temp_5	10
-862	ContB	IPL_1	IPL_1	10
-863	ContB	IPL_2	IPL_2	10
-864	ContB	IPL_3	IPL_3	10
-865	ContB	IPL_4	IPL_4	10
-866	ContB	IPL_5	IPL_5	10
-867	ContB	IPL_6	IPL_6	10
-868	ContB	IPL_7	IPL_7	10
-869	ContB	IPL_8	IPL_8	10
-870	ContB	IPL_9	IPL_9	10
-871	ContB	IPL_10	IPL_10	10
-872	ContB	IPL_11	IPL_11	10
-873	ContB	IPL_12	IPL_12	10
-874	ContB	PFCld_1	PFCld_1	10
-875	ContB	PFCld_2	PFCld_2	10
-876	ContB	PFCld_3	PFCld_3	10
-877	ContB	PFCld_4	PFCld_4	10
-878	ContB	PFCld_5	PFCld_5	10
-879	ContB	PFCld_6	PFCld_6	10
-880	ContB	PFCld_7	PFCld_7	10
-881	ContB	PFCld_8	PFCld_8	10
-882	ContB	PFCld_9	PFCld_9	10
-883	ContB	PFCld_10	PFCld_10	10
-884	ContB	PFCld_11	PFCld_11	10
-885	ContB	PFClv_1	PFClv_1	10
-886	ContB	PFClv_2	PFClv_2	10
-887	ContB	PFClv_3	PFClv_3	10
-888	ContB	PFClv_4	PFClv_4	10
-889	ContB	PFClv_5	PFClv_5	10
-890	ContB	PFClv_6	PFClv_6	10
-891	ContB	PFClv_7	PFClv_7	10
-892	ContB	PFClv_8	PFClv_8	10
-893	ContB	PFCmp_1	PFCmp_1	10
-894	ContB	PFCmp_2	PFCmp_2	10
-895	ContB	PFCmp_3	PFCmp_3	10
-896	ContC	pCun_1	pCun_1	11
-897	ContC	pCun_2	pCun_2	11
-898	ContC	pCun_3	pCun_3	11
-899	ContC	pCun_4	pCun_4	11
-900	ContC	pCun_5	pCun_5	11
-901	ContC	pCun_6	pCun_6	11
-902	ContC	pCun_7	pCun_7	11
-903	ContC	pCun_8	pCun_8	11
-904	ContC	pCun_9	pCun_9	11
-905	ContC	pCun_10	pCun_10	11
-906	ContC	pCun_11	pCun_11	11
-907	ContC	Cingp_1	Cingp_1	11
-908	ContC	Cingp_2	Cingp_2	11
-909	ContC	Cingp_3	Cingp_3	11
-910	ContC	Cingp_4	Cingp_4	11
-911	DefaultA	Temp_1	Temp_1	12
-912	DefaultA	Temp_2	Temp_2	12
-913	DefaultA	IPL_1	IPL_1	12
-914	DefaultA	IPL_2	IPL_2	12
-915	DefaultA	IPL_3	IPL_3	12
-916	DefaultA	IPL_4	IPL_4	12
-917	DefaultA	IPL_5	IPL_5	12
-918	DefaultA	IPL_6	IPL_6	12
-919	DefaultA	IPL_7	IPL_7	12
-920	DefaultA	IPL_8	IPL_8	12
-921	DefaultA	PFCd_1	PFCd_1	12
-922	DefaultA	PFCd_2	PFCd_2	12
-923	DefaultA	PFCd_3	PFCd_3	12
-924	DefaultA	PFCd_4	PFCd_4	12
-925	DefaultA	PFCd_5	PFCd_5	12
-926	DefaultA	PCC_1	PCC_1	12
-927	DefaultA	PCC_2	PCC_2	12
-928	DefaultA	PCC_3	PCC_3	12
-929	DefaultA	PCC_4	PCC_4	12
-930	DefaultA	PCC_5	PCC_5	12
-931	DefaultA	PCC_6	PCC_6	12
-932	DefaultA	PCC_7	PCC_7	12
-933	DefaultA	PCC_8	PCC_8	12
-934	DefaultA	PCC_9	PCC_9	12
-935	DefaultA	PCC_10	PCC_10	12
-936	DefaultA	PCC_11	PCC_11	12
-937	DefaultA	PCC_12	PCC_12	12
-938	DefaultA	PFCm_1	PFCm_1	12
-939	DefaultA	PFCm_2	PFCm_2	12
-940	DefaultA	PFCm_3	PFCm_3	12
-941	DefaultA	PFCm_4	PFCm_4	12
-942	DefaultA	PFCm_5	PFCm_5	12
-943	DefaultA	PFCm_6	PFCm_6	12
-944	DefaultA	PFCm_7	PFCm_7	12
-945	DefaultA	PFCm_8	PFCm_8	12
-946	DefaultA	PFCm_9	PFCm_9	12
-947	DefaultA	PFCm_10	PFCm_10	12
-948	DefaultB	Temp_1	Temp_1	13
-949	DefaultB	Temp_2	Temp_2	13
-950	DefaultB	Temp_3	Temp_3	13
-951	DefaultB	AntTemp_1	AntTemp_1	13
-952	DefaultB	AntTemp_2	AntTemp_2	13
-953	DefaultB	AntTemp_3	AntTemp_3	13
-954	DefaultB	AntTemp_4	AntTemp_4	13
-955	DefaultB	PFCd_1	PFCd_1	13
-956	DefaultB	PFCd_2	PFCd_2	13
-957	DefaultB	PFCd_3	PFCd_3	13
-958	DefaultB	PFCd_4	PFCd_4	13
-959	DefaultB	PFCd_5	PFCd_5	13
-960	DefaultB	PFCd_6	PFCd_6	13
-961	DefaultB	PFCd_7	PFCd_7	13
-962	DefaultB	PFCd_8	PFCd_8	13
-963	DefaultB	PFCv_1	PFCv_1	13
-964	DefaultB	PFCv_2	PFCv_2	13
-965	DefaultB	PFCv_3	PFCv_3	13
-966	DefaultB	PFCv_4	PFCv_4	13
-967	DefaultB	PFCv_5	PFCv_5	13
-968	DefaultB	PFCv_6	PFCv_6	13
-969	DefaultC	IPL_1	IPL_1	14
-970	DefaultC	IPL_2	IPL_2	14
-971	DefaultC	Rsp_1	Rsp_1	14
-972	DefaultC	Rsp_2	Rsp_2	14
-973	DefaultC	Rsp_3	Rsp_3	14
-974	DefaultC	Rsp_4	Rsp_4	14
-975	DefaultC	PHC_1	PHC_1	14
-976	DefaultC	PHC_2	PHC_2	14
-977	DefaultC	PHC_3	PHC_3	14
-978	DefaultC	PHC_4	PHC_4	14
-979	TempPar	1	1	15
-980	TempPar	2	2	15
-981	TempPar	3	3	15
-982	TempPar	4	4	15
-983	TempPar	5	5	15
-984	TempPar	6	6	15
-985	TempPar	7	7	15
-986	TempPar	8	8	15
-987	TempPar	9	9	15
-988	TempPar	10	10	15
-989	TempPar	11	11	15
-990	TempPar	12	12	15
-991	TempPar	13	13	15
-992	TempPar	14	14	15
-993	TempPar	15	15	15
-994	TempPar	16	16	15
-995	TempPar	17	17	15
-996	TempPar	18	18	15
-997	TempPar	19	19	15
-998	TempPar	20	20	15
-999	TempPar	21	21	15
-1000	TempPar	22	22	15
+	community	roi	commmunity_id
+1	VisCent	ExStr_1	0
+2	VisCent	ExStr_2	0
+3	VisCent	ExStr_3	0
+4	VisCent	ExStr_4	0
+5	VisCent	ExStr_5	0
+6	VisCent	ExStr_6	0
+7	VisCent	ExStr_7	0
+8	VisCent	ExStr_8	0
+9	VisCent	ExStr_9	0
+10	VisCent	ExStr_10	0
+11	VisCent	ExStr_11	0
+12	VisCent	ExStr_12	0
+13	VisCent	ExStr_13	0
+14	VisCent	ExStr_14	0
+15	VisCent	ExStr_15	0
+16	VisCent	ExStr_16	0
+17	VisCent	ExStr_17	0
+18	VisCent	ExStr_18	0
+19	VisCent	ExStr_19	0
+20	VisCent	ExStr_20	0
+21	VisCent	ExStr_21	0
+22	VisCent	ExStr_22	0
+23	VisCent	ExStr_23	0
+24	VisCent	ExStr_24	0
+25	VisCent	ExStr_25	0
+26	VisCent	ExStr_26	0
+27	VisCent	ExStr_27	0
+28	VisCent	ExStr_28	0
+29	VisCent	ExStr_29	0
+30	VisCent	ExStr_30	0
+31	VisCent	ExStr_31	0
+32	VisCent	ExStr_32	0
+33	VisCent	ExStr_33	0
+34	VisCent	ExStr_34	0
+35	VisPeri	ExStrSup_1	1
+36	VisPeri	ExStrSup_2	1
+37	VisPeri	ExStrSup_3	1
+38	VisPeri	ExStrSup_4	1
+39	VisPeri	ExStrSup_5	1
+40	VisPeri	ExStrSup_6	1
+41	VisPeri	ExStrSup_7	1
+42	VisPeri	ExStrSup_8	1
+43	VisPeri	ExStrSup_9	1
+44	VisPeri	ExStrSup_10	1
+45	VisPeri	ExStrSup_11	1
+46	VisPeri	ExStrSup_12	1
+47	VisPeri	ExStrSup_13	1
+48	VisPeri	ExStrSup_14	1
+49	VisPeri	ExStrSup_15	1
+50	VisPeri	ExStrSup_16	1
+51	VisPeri	ExStrSup_17	1
+52	VisPeri	ExStrSup_18	1
+53	VisPeri	ExStrSup_19	1
+54	VisPeri	ExStrSup_20	1
+55	VisPeri	ExStrSup_21	1
+56	VisPeri	ExStrSup_22	1
+57	VisPeri	ExStrSup_23	1
+58	VisPeri	ExStrSup_24	1
+59	VisPeri	ExStrSup_25	1
+60	VisPeri	ExStrSup_26	1
+61	VisPeri	ExStrSup_27	1
+62	VisPeri	ExStrSup_28	1
+63	VisPeri	ExStrSup_29	1
+64	VisPeri	ExStrSup_30	1
+65	VisPeri	ExStrSup_31	1
+66	VisPeri	ExStrSup_32	1
+67	SomMotA	1	2
+68	SomMotA	2	2
+69	SomMotA	3	2
+70	SomMotA	4	2
+71	SomMotA	5	2
+72	SomMotA	6	2
+73	SomMotA	7	2
+74	SomMotA	8	2
+75	SomMotA	9	2
+76	SomMotA	10	2
+77	SomMotA	11	2
+78	SomMotA	12	2
+79	SomMotA	13	2
+80	SomMotA	14	2
+81	SomMotA	15	2
+82	SomMotA	16	2
+83	SomMotA	17	2
+84	SomMotA	18	2
+85	SomMotA	19	2
+86	SomMotA	20	2
+87	SomMotA	21	2
+88	SomMotA	22	2
+89	SomMotA	23	2
+90	SomMotA	24	2
+91	SomMotA	25	2
+92	SomMotA	26	2
+93	SomMotA	27	2
+94	SomMotA	28	2
+95	SomMotA	29	2
+96	SomMotA	30	2
+97	SomMotA	31	2
+98	SomMotA	32	2
+99	SomMotA	33	2
+100	SomMotA	34	2
+101	SomMotA	35	2
+102	SomMotA	36	2
+103	SomMotA	37	2
+104	SomMotA	38	2
+105	SomMotA	39	2
+106	SomMotA	40	2
+107	SomMotA	41	2
+108	SomMotA	42	2
+109	SomMotB	Aud_1	3
+110	SomMotB	Aud_2	3
+111	SomMotB	Aud_3	3
+112	SomMotB	Aud_4	3
+113	SomMotB	Aud_5	3
+114	SomMotB	Aud_6	3
+115	SomMotB	Aud_7	3
+116	SomMotB	Aud_8	3
+117	SomMotB	Aud_9	3
+118	SomMotB	Aud_10	3
+119	SomMotB	Aud_11	3
+120	SomMotB	Aud_12	3
+121	SomMotB	Aud_13	3
+122	SomMotB	Aud_14	3
+123	SomMotB	Aud_15	3
+124	SomMotB	Aud_16	3
+125	SomMotB	Aud_17	3
+126	SomMotB	Aud_18	3
+127	SomMotB	Aud_19	3
+128	SomMotB	Aud_20	3
+129	SomMotB	Aud_21	3
+130	SomMotB	Aud_22	3
+131	SomMotB	Aud_23	3
+132	SomMotB	Aud_24	3
+133	SomMotB	Aud_25	3
+134	SomMotB	Aud_26	3
+135	SomMotB	Aud_27	3
+136	SomMotB	Aud_28	3
+137	SomMotB	Aud_29	3
+138	SomMotB	Aud_30	3
+139	SomMotB	Aud_31	3
+140	SomMotB	Aud_32	3
+141	SomMotB	Aud_33	3
+142	SomMotB	Aud_34	3
+143	SomMotB	Aud_35	3
+144	SomMotB	Aud_36	3
+145	SomMotB	Aud_37	3
+146	SomMotB	Aud_38	3
+147	SomMotB	Aud_39	3
+148	DorsAttnA	TempOcc_1	4
+149	DorsAttnA	TempOcc_2	4
+150	DorsAttnA	TempOcc_3	4
+151	DorsAttnA	TempOcc_4	4
+152	DorsAttnA	TempOcc_5	4
+153	DorsAttnA	TempOcc_6	4
+154	DorsAttnA	TempOcc_7	4
+155	DorsAttnA	TempOcc_8	4
+156	DorsAttnA	TempOcc_9	4
+157	DorsAttnA	SPL_1	4
+158	DorsAttnA	SPL_2	4
+159	DorsAttnA	SPL_3	4
+160	DorsAttnA	SPL_4	4
+161	DorsAttnA	SPL_5	4
+162	DorsAttnA	SPL_6	4
+163	DorsAttnA	SPL_7	4
+164	DorsAttnA	SPL_8	4
+165	DorsAttnA	SPL_9	4
+166	DorsAttnA	SPL_10	4
+167	DorsAttnA	SPL_11	4
+168	DorsAttnA	SPL_12	4
+169	DorsAttnA	SPL_13	4
+170	DorsAttnA	SPL_14	4
+171	DorsAttnA	SPL_15	4
+172	DorsAttnA	SPL_16	4
+173	DorsAttnA	SPL_17	4
+174	DorsAttnA	SPL_18	4
+175	DorsAttnA	SPL_19	4
+176	DorsAttnA	SPL_20	4
+177	DorsAttnA	SPL_21	4
+178	DorsAttnA	SPL_22	4
+179	DorsAttnA	SPL_23	4
+180	DorsAttnA	SPL_24	4
+181	DorsAttnA	SPL_25	4
+182	DorsAttnB	TempOcc_1	5
+183	DorsAttnB	TempOcc_2	5
+184	DorsAttnB	PostC_1	5
+185	DorsAttnB	PostC_2	5
+186	DorsAttnB	PostC_3	5
+187	DorsAttnB	PostC_4	5
+188	DorsAttnB	PostC_5	5
+189	DorsAttnB	PostC_6	5
+190	DorsAttnB	PostC_7	5
+191	DorsAttnB	PostC_8	5
+192	DorsAttnB	PostC_9	5
+193	DorsAttnB	PostC_10	5
+194	DorsAttnB	PostC_11	5
+195	DorsAttnB	PostC_12	5
+196	DorsAttnB	PostC_13	5
+197	DorsAttnB	PostC_14	5
+198	DorsAttnB	PostC_15	5
+199	DorsAttnB	PostC_16	5
+200	DorsAttnB	PostC_17	5
+201	DorsAttnB	PostC_18	5
+202	DorsAttnB	FEF_1	5
+203	DorsAttnB	FEF_2	5
+204	DorsAttnB	FEF_3	5
+205	DorsAttnB	FEF_4	5
+206	DorsAttnB	FEF_5	5
+207	DorsAttnB	FEF_6	5
+208	DorsAttnB	FEF_7	5
+209	DorsAttnB	PrCv_1	5
+210	DorsAttnB	PrCv_2	5
+211	SalVentAttnA	ParOper_1	6
+212	SalVentAttnA	ParOper_2	6
+213	SalVentAttnA	ParOper_3	6
+214	SalVentAttnA	ParOper_4	6
+215	SalVentAttnA	ParOper_5	6
+216	SalVentAttnA	ParOper_6	6
+217	SalVentAttnA	ParOper_7	6
+218	SalVentAttnA	Ins_1	6
+219	SalVentAttnA	Ins_2	6
+220	SalVentAttnA	Ins_3	6
+221	SalVentAttnA	Ins_4	6
+222	SalVentAttnA	Ins_5	6
+223	SalVentAttnA	Ins_6	6
+224	SalVentAttnA	Ins_7	6
+225	SalVentAttnA	Ins_8	6
+226	SalVentAttnA	Ins_9	6
+227	SalVentAttnA	Ins_10	6
+228	SalVentAttnA	Ins_11	6
+229	SalVentAttnA	Ins_12	6
+230	SalVentAttnA	Ins_13	6
+231	SalVentAttnA	Ins_14	6
+232	SalVentAttnA	Ins_15	6
+233	SalVentAttnA	Ins_16	6
+234	SalVentAttnA	Ins_17	6
+235	SalVentAttnA	Ins_18	6
+236	SalVentAttnA	ParMed_1	6
+237	SalVentAttnA	ParMed_2	6
+238	SalVentAttnA	ParMed_3	6
+239	SalVentAttnA	ParMed_4	6
+240	SalVentAttnA	ParMed_5	6
+241	SalVentAttnA	ParMed_6	6
+242	SalVentAttnA	ParMed_7	6
+243	SalVentAttnA	ParMed_8	6
+244	SalVentAttnA	FrMed_1	6
+245	SalVentAttnA	FrMed_2	6
+246	SalVentAttnA	FrMed_3	6
+247	SalVentAttnA	FrMed_4	6
+248	SalVentAttnA	FrMed_5	6
+249	SalVentAttnA	FrMed_6	6
+250	SalVentAttnA	FrMed_7	6
+251	SalVentAttnB	IPL_1	7
+252	SalVentAttnB	IPL_2	7
+253	SalVentAttnB	PFCd_1	7
+254	SalVentAttnB	PFCl_1	7
+255	SalVentAttnB	PFCl_2	7
+256	SalVentAttnB	PFCl_3	7
+257	SalVentAttnB	PFCl_4	7
+258	SalVentAttnB	PFCl_5	7
+259	SalVentAttnB	PFCl_6	7
+260	SalVentAttnB	PFCv_1	7
+261	SalVentAttnB	PFCv_2	7
+262	SalVentAttnB	PFCv_3	7
+263	SalVentAttnB	PFCv_4	7
+264	SalVentAttnB	PFCv_5	7
+265	SalVentAttnB	PFCv_6	7
+266	SalVentAttnB	PFCv_7	7
+267	SalVentAttnB	PFCv_8	7
+268	SalVentAttnB	OFC_1	7
+269	SalVentAttnB	PFCmp_1	7
+270	SalVentAttnB	PFCmp_2	7
+271	SalVentAttnB	PFCmp_3	7
+272	SalVentAttnB	PFCmp_4	7
+273	Limbic	OFC_1	8
+274	Limbic	OFC_2	8
+275	Limbic	OFC_3	8
+276	Limbic	OFC_4	8
+277	Limbic	OFC_5	8
+278	Limbic	OFC_6	8
+279	Limbic	OFC_7	8
+280	Limbic	OFC_8	8
+281	Limbic	OFC_9	8
+282	Limbic	OFC_10	8
+283	Limbic	OFC_11	8
+284	Limbic	OFC_12	8
+285	Limbic	OFC_13	8
+286	Limbic	OFC_14	8
+287	Limbic	OFC_15	8
+288	Limbic	OFC_16	8
+289	Limbic	TempPole_1	8
+290	Limbic	TempPole_2	8
+291	Limbic	TempPole_3	8
+292	Limbic	TempPole_4	8
+293	Limbic	TempPole_5	8
+294	Limbic	TempPole_6	8
+295	Limbic	TempPole_7	8
+296	Limbic	TempPole_8	8
+297	Limbic	TempPole_9	8
+298	Limbic	TempPole_10	8
+299	Limbic	TempPole_11	8
+300	Limbic	TempPole_12	8
+301	Limbic	TempPole_13	8
+302	Limbic	TempPole_14	8
+303	ContA	Temp_1	9
+304	ContA	Temp_2	9
+305	ContA	Temp_3	9
+306	ContA	IPS_1	9
+307	ContA	IPS_2	9
+308	ContA	IPS_3	9
+309	ContA	IPS_4	9
+310	ContA	IPS_5	9
+311	ContA	IPS_6	9
+312	ContA	IPS_7	9
+313	ContA	IPS_8	9
+314	ContA	IPS_9	9
+315	ContA	IPS_10	9
+316	ContA	PFCd_1	9
+317	ContA	PFCd_2	9
+318	ContA	PFCl_1	9
+319	ContA	PFCl_2	9
+320	ContA	PFCl_3	9
+321	ContA	PFCl_4	9
+322	ContA	PFCl_5	9
+323	ContA	PFCl_6	9
+324	ContA	PFCl_7	9
+325	ContA	PFCl_8	9
+326	ContA	PFCl_9	9
+327	ContA	PFCl_10	9
+328	ContA	PFCl_11	9
+329	ContA	PFCl_12	9
+330	ContA	PFCl_13	9
+331	ContA	PFCl_14	9
+332	ContA	Cinga_1	9
+333	ContA	Cinga_2	9
+334	ContB	Temp_1	10
+335	ContB	Temp_2	10
+336	ContB	Temp_3	10
+337	ContB	Temp_4	10
+338	ContB	IPL_1	10
+339	ContB	IPL_2	10
+340	ContB	IPL_3	10
+341	ContB	IPL_4	10
+342	ContB	IPL_5	10
+343	ContB	IPL_6	10
+344	ContB	IPL_7	10
+345	ContB	IPL_8	10
+346	ContB	PFCl_1	10
+347	ContB	PFCl_2	10
+348	ContB	PFCl_3	10
+349	ContB	PFCl_4	10
+350	ContB	PFCl_5	10
+351	ContB	PFCl_6	10
+352	ContB	PFClv_1	10
+353	ContB	PFClv_2	10
+354	ContB	PFClv_3	10
+355	ContB	PFClv_4	10
+356	ContB	PFClv_5	10
+357	ContB	PFCmp_1	10
+358	ContB	PFCmp_2	10
+359	ContC	pCun_1	11
+360	ContC	pCun_2	11
+361	ContC	pCun_3	11
+362	ContC	pCun_4	11
+363	ContC	pCun_5	11
+364	ContC	pCun_6	11
+365	ContC	pCun_7	11
+366	ContC	pCun_8	11
+367	ContC	pCun_9	11
+368	ContC	pCun_10	11
+369	ContC	pCun_11	11
+370	ContC	Cingp_1	11
+371	ContC	Cingp_2	11
+372	ContC	Cingp_3	11
+373	ContC	Cingp_4	11
+374	ContC	Cingp_5	11
+375	ContC	Cingp_6	11
+376	ContC	Cingp_7	11
+377	ContC	Cingp_8	11
+378	DefaultA	IPL_1	12
+379	DefaultA	IPL_2	12
+380	DefaultA	IPL_3	12
+381	DefaultA	IPL_4	12
+382	DefaultA	IPL_5	12
+383	DefaultA	IPL_6	12
+384	DefaultA	IPL_7	12
+385	DefaultA	PFCd_1	12
+386	DefaultA	PFCd_2	12
+387	DefaultA	PFCd_3	12
+388	DefaultA	PFCd_4	12
+389	DefaultA	PCC_1	12
+390	DefaultA	PCC_2	12
+391	DefaultA	PCC_3	12
+392	DefaultA	PCC_4	12
+393	DefaultA	PCC_5	12
+394	DefaultA	PCC_6	12
+395	DefaultA	PCC_7	12
+396	DefaultA	PCC_8	12
+397	DefaultA	PCC_9	12
+398	DefaultA	PCC_10	12
+399	DefaultA	PCC_11	12
+400	DefaultA	PCC_12	12
+401	DefaultA	PCC_13	12
+402	DefaultA	PCC_14	12
+403	DefaultA	PCC_15	12
+404	DefaultA	PCC_16	12
+405	DefaultA	PCC_17	12
+406	DefaultA	PCC_18	12
+407	DefaultA	PCC_19	12
+408	DefaultA	PCC_20	12
+409	DefaultA	PCC_21	12
+410	DefaultA	PCC_22	12
+411	DefaultA	PFCm_1	12
+412	DefaultA	PFCm_2	12
+413	DefaultA	PFCm_3	12
+414	DefaultA	PFCm_4	12
+415	DefaultA	PFCm_5	12
+416	DefaultA	PFCm_6	12
+417	DefaultA	PFCm_7	12
+418	DefaultA	PFCm_8	12
+419	DefaultA	PFCm_9	12
+420	DefaultA	PFCm_10	12
+421	DefaultA	PFCm_11	12
+422	DefaultA	PFCm_12	12
+423	DefaultB	Temp_1	13
+424	DefaultB	Temp_2	13
+425	DefaultB	Temp_3	13
+426	DefaultB	Temp_4	13
+427	DefaultB	Temp_5	13
+428	DefaultB	Temp_6	13
+429	DefaultB	Temp_7	13
+430	DefaultB	Temp_8	13
+431	DefaultB	Temp_9	13
+432	DefaultB	Temp_10	13
+433	DefaultB	Temp_11	13
+434	DefaultB	Temp_12	13
+435	DefaultB	Temp_13	13
+436	DefaultB	IPL_1	13
+437	DefaultB	IPL_2	13
+438	DefaultB	IPL_3	13
+439	DefaultB	IPL_4	13
+440	DefaultB	IPL_5	13
+441	DefaultB	IPL_6	13
+442	DefaultB	IPL_7	13
+443	DefaultB	IPL_8	13
+444	DefaultB	IPL_9	13
+445	DefaultB	PFCd_1	13
+446	DefaultB	PFCd_2	13
+447	DefaultB	PFCd_3	13
+448	DefaultB	PFCd_4	13
+449	DefaultB	PFCd_5	13
+450	DefaultB	PFCd_6	13
+451	DefaultB	PFCd_7	13
+452	DefaultB	PFCd_8	13
+453	DefaultB	PFCd_9	13
+454	DefaultB	PFCd_10	13
+455	DefaultB	PFCd_11	13
+456	DefaultB	PFCd_12	13
+457	DefaultB	PFCl_1	13
+458	DefaultB	PFCl_2	13
+459	DefaultB	PFCv_1	13
+460	DefaultB	PFCv_2	13
+461	DefaultB	PFCv_3	13
+462	DefaultB	PFCv_4	13
+463	DefaultB	PFCv_5	13
+464	DefaultB	PFCv_6	13
+465	DefaultB	PFCv_7	13
+466	DefaultB	PFCv_8	13
+467	DefaultB	PFCv_9	13
+468	DefaultC	IPL_1	14
+469	DefaultC	IPL_2	14
+470	DefaultC	IPL_3	14
+471	DefaultC	Rsp_1	14
+472	DefaultC	Rsp_2	14
+473	DefaultC	Rsp_3	14
+474	DefaultC	Rsp_4	14
+475	DefaultC	Rsp_5	14
+476	DefaultC	Rsp_6	14
+477	DefaultC	Rsp_7	14
+478	DefaultC	Rsp_8	14
+479	DefaultC	PHC_1	14
+480	DefaultC	PHC_2	14
+481	DefaultC	PHC_3	14
+482	DefaultC	PHC_4	14
+483	DefaultC	PHC_5	14
+484	DefaultC	PHC_6	14
+485	TempPar	1	15
+486	TempPar	2	15
+487	TempPar	3	15
+488	TempPar	4	15
+489	TempPar	5	15
+490	TempPar	6	15
+491	TempPar	7	15
+492	TempPar	8	15
+493	TempPar	9	15
+494	TempPar	10	15
+495	TempPar	11	15
+496	TempPar	12	15
+497	TempPar	13	15
+498	TempPar	14	15
+499	TempPar	15	15
+500	TempPar	16	15
+501	VisCent	ExStr_1	0
+502	VisCent	ExStr_2	0
+503	VisCent	ExStr_3	0
+504	VisCent	ExStr_4	0
+505	VisCent	ExStr_5	0
+506	VisCent	ExStr_6	0
+507	VisCent	ExStr_7	0
+508	VisCent	ExStr_8	0
+509	VisCent	ExStr_9	0
+510	VisCent	ExStr_10	0
+511	VisCent	ExStr_11	0
+512	VisCent	ExStr_12	0
+513	VisCent	ExStr_13	0
+514	VisCent	ExStr_14	0
+515	VisCent	ExStr_15	0
+516	VisCent	ExStr_16	0
+517	VisCent	ExStr_17	0
+518	VisCent	ExStr_18	0
+519	VisCent	ExStr_19	0
+520	VisCent	ExStr_20	0
+521	VisCent	ExStr_21	0
+522	VisCent	ExStr_22	0
+523	VisCent	ExStr_23	0
+524	VisCent	ExStr_24	0
+525	VisCent	ExStr_25	0
+526	VisCent	ExStr_26	0
+527	VisCent	ExStr_27	0
+528	VisCent	ExStr_28	0
+529	VisCent	ExStr_29	0
+530	VisCent	ExStr_30	0
+531	VisCent	ExStr_31	0
+532	VisCent	ExStr_32	0
+533	VisCent	ExStr_33	0
+534	VisCent	ExStr_34	0
+535	VisCent	ExStr_35	0
+536	VisCent	ExStr_36	0
+537	VisCent	ExStr_37	0
+538	VisCent	ExStr_38	0
+539	VisCent	ExStr_39	0
+540	VisPeri	ExStrSup_1	1
+541	VisPeri	ExStrSup_2	1
+542	VisPeri	ExStrSup_3	1
+543	VisPeri	ExStrSup_4	1
+544	VisPeri	ExStrSup_5	1
+545	VisPeri	ExStrSup_6	1
+546	VisPeri	ExStrSup_7	1
+547	VisPeri	ExStrSup_8	1
+548	VisPeri	ExStrSup_9	1
+549	VisPeri	ExStrSup_10	1
+550	VisPeri	ExStrSup_11	1
+551	VisPeri	ExStrSup_12	1
+552	VisPeri	ExStrSup_13	1
+553	VisPeri	ExStrSup_14	1
+554	VisPeri	ExStrSup_15	1
+555	VisPeri	ExStrSup_16	1
+556	VisPeri	ExStrSup_17	1
+557	VisPeri	ExStrSup_18	1
+558	VisPeri	ExStrSup_19	1
+559	VisPeri	ExStrSup_20	1
+560	VisPeri	ExStrSup_21	1
+561	VisPeri	ExStrSup_22	1
+562	VisPeri	ExStrSup_23	1
+563	VisPeri	ExStrSup_24	1
+564	VisPeri	ExStrSup_25	1
+565	VisPeri	ExStrSup_26	1
+566	VisPeri	ExStrSup_27	1
+567	VisPeri	ExStrSup_28	1
+568	VisPeri	ExStrSup_29	1
+569	SomMotA	1	2
+570	SomMotA	2	2
+571	SomMotA	3	2
+572	SomMotA	4	2
+573	SomMotA	5	2
+574	SomMotA	6	2
+575	SomMotA	7	2
+576	SomMotA	8	2
+577	SomMotA	9	2
+578	SomMotA	10	2
+579	SomMotA	11	2
+580	SomMotA	12	2
+581	SomMotA	13	2
+582	SomMotA	14	2
+583	SomMotA	15	2
+584	SomMotA	16	2
+585	SomMotA	17	2
+586	SomMotA	18	2
+587	SomMotA	19	2
+588	SomMotA	20	2
+589	SomMotA	21	2
+590	SomMotA	22	2
+591	SomMotA	23	2
+592	SomMotA	24	2
+593	SomMotA	25	2
+594	SomMotA	26	2
+595	SomMotA	27	2
+596	SomMotA	28	2
+597	SomMotA	29	2
+598	SomMotA	30	2
+599	SomMotA	31	2
+600	SomMotA	32	2
+601	SomMotA	33	2
+602	SomMotA	34	2
+603	SomMotA	35	2
+604	SomMotA	36	2
+605	SomMotA	37	2
+606	SomMotA	38	2
+607	SomMotA	39	2
+608	SomMotA	40	2
+609	SomMotA	41	2
+610	SomMotA	42	2
+611	SomMotA	43	2
+612	SomMotA	44	2
+613	SomMotA	45	2
+614	SomMotA	46	2
+615	SomMotA	47	2
+616	SomMotA	48	2
+617	SomMotB	S2_1	3
+618	SomMotB	S2_2	3
+619	SomMotB	S2_3	3
+620	SomMotB	S2_4	3
+621	SomMotB	S2_5	3
+622	SomMotB	S2_6	3
+623	SomMotB	S2_7	3
+624	SomMotB	S2_8	3
+625	SomMotB	S2_9	3
+626	SomMotB	S2_10	3
+627	SomMotB	S2_11	3
+628	SomMotB	S2_12	3
+629	SomMotB	S2_13	3
+630	SomMotB	S2_14	3
+631	SomMotB	S2_15	3
+632	SomMotB	S2_16	3
+633	SomMotB	S2_17	3
+634	SomMotB	S2_18	3
+635	SomMotB	S2_19	3
+636	SomMotB	S2_20	3
+637	SomMotB	S2_21	3
+638	SomMotB	S2_22	3
+639	SomMotB	S2_23	3
+640	SomMotB	S2_24	3
+641	SomMotB	S2_25	3
+642	SomMotB	S2_26	3
+643	SomMotB	S2_27	3
+644	SomMotB	S2_28	3
+645	SomMotB	S2_29	3
+646	SomMotB	S2_30	3
+647	SomMotB	S2_31	3
+648	SomMotB	S2_32	3
+649	SomMotB	S2_33	3
+650	SomMotB	S2_34	3
+651	SomMotB	S2_35	3
+652	SomMotB	S2_36	3
+653	SomMotB	S2_37	3
+654	SomMotB	S2_38	3
+655	SomMotB	S2_39	3
+656	SomMotB	S2_40	3
+657	SomMotB	S2_41	3
+658	SomMotB	S2_42	3
+659	DorsAttnA	SPL_1	4
+660	DorsAttnA	SPL_2	4
+661	DorsAttnA	SPL_3	4
+662	DorsAttnA	SPL_4	4
+663	DorsAttnA	SPL_5	4
+664	DorsAttnA	SPL_6	4
+665	DorsAttnA	SPL_7	4
+666	DorsAttnA	SPL_8	4
+667	DorsAttnA	SPL_9	4
+668	DorsAttnA	SPL_10	4
+669	DorsAttnA	SPL_11	4
+670	DorsAttnA	SPL_12	4
+671	DorsAttnA	SPL_13	4
+672	DorsAttnA	SPL_14	4
+673	DorsAttnA	SPL_15	4
+674	DorsAttnA	SPL_16	4
+675	DorsAttnA	SPL_17	4
+676	DorsAttnA	SPL_18	4
+677	DorsAttnA	SPL_19	4
+678	DorsAttnA	SPL_20	4
+679	DorsAttnA	SPL_21	4
+680	DorsAttnA	SPL_22	4
+681	DorsAttnA	SPL_23	4
+682	DorsAttnA	SPL_24	4
+683	DorsAttnA	SPL_25	4
+684	DorsAttnA	SPL_26	4
+685	DorsAttnA	SPL_27	4
+686	DorsAttnA	SPL_28	4
+687	DorsAttnA	SPL_29	4
+688	DorsAttnA	SPL_30	4
+689	DorsAttnA	SPL_31	4
+690	DorsAttnA	SPL_32	4
+691	DorsAttnA	SPL_33	4
+692	DorsAttnA	SPL_34	4
+693	DorsAttnB	TempOcc_1	5
+694	DorsAttnB	TempOcc_2	5
+695	DorsAttnB	PostC_1	5
+696	DorsAttnB	PostC_2	5
+697	DorsAttnB	PostC_3	5
+698	DorsAttnB	PostC_4	5
+699	DorsAttnB	PostC_5	5
+700	DorsAttnB	PostC_6	5
+701	DorsAttnB	PostC_7	5
+702	DorsAttnB	PostC_8	5
+703	DorsAttnB	PostC_9	5
+704	DorsAttnB	PostC_10	5
+705	DorsAttnB	PostC_11	5
+706	DorsAttnB	PostC_12	5
+707	DorsAttnB	PostC_13	5
+708	DorsAttnB	PostC_14	5
+709	DorsAttnB	PostC_15	5
+710	DorsAttnB	PostC_16	5
+711	DorsAttnB	PostC_17	5
+712	DorsAttnB	PostC_18	5
+713	DorsAttnB	PostC_19	5
+714	DorsAttnB	PostC_20	5
+715	DorsAttnB	FEF_1	5
+716	DorsAttnB	FEF_2	5
+717	DorsAttnB	FEF_3	5
+718	DorsAttnB	FEF_4	5
+719	DorsAttnB	FEF_5	5
+720	DorsAttnB	FEF_6	5
+721	DorsAttnB	PrCv_1	5
+722	SalVentAttnA	ParOper_1	6
+723	SalVentAttnA	ParOper_2	6
+724	SalVentAttnA	ParOper_3	6
+725	SalVentAttnA	ParOper_4	6
+726	SalVentAttnA	ParOper_5	6
+727	SalVentAttnA	ParOper_6	6
+728	SalVentAttnA	ParOper_7	6
+729	SalVentAttnA	ParOper_8	6
+730	SalVentAttnA	ParOper_9	6
+731	SalVentAttnA	ParOper_10	6
+732	SalVentAttnA	PrC_1	6
+733	SalVentAttnA	PrC_2	6
+734	SalVentAttnA	Ins_1	6
+735	SalVentAttnA	Ins_2	6
+736	SalVentAttnA	Ins_3	6
+737	SalVentAttnA	Ins_4	6
+738	SalVentAttnA	Ins_5	6
+739	SalVentAttnA	Ins_6	6
+740	SalVentAttnA	Ins_7	6
+741	SalVentAttnA	Ins_8	6
+742	SalVentAttnA	Ins_9	6
+743	SalVentAttnA	Ins_10	6
+744	SalVentAttnA	Ins_11	6
+745	SalVentAttnA	Ins_12	6
+746	SalVentAttnA	Ins_13	6
+747	SalVentAttnA	Ins_14	6
+748	SalVentAttnA	Ins_15	6
+749	SalVentAttnA	Ins_16	6
+750	SalVentAttnA	Ins_17	6
+751	SalVentAttnA	FrMed_1	6
+752	SalVentAttnA	FrMed_2	6
+753	SalVentAttnA	FrMed_3	6
+754	SalVentAttnA	FrMed_4	6
+755	SalVentAttnA	FrMed_5	6
+756	SalVentAttnA	FrMed_6	6
+757	SalVentAttnA	FrMed_7	6
+758	SalVentAttnA	FrMed_8	6
+759	SalVentAttnA	FrMed_9	6
+760	SalVentAttnA	FrMed_10	6
+761	SalVentAttnA	FrMed_11	6
+762	SalVentAttnA	FrMed_12	6
+763	SalVentAttnA	FrMed_13	6
+764	SalVentAttnA	FrMed_14	6
+765	SalVentAttnA	FrMed_15	6
+766	SalVentAttnA	FrMed_16	6
+767	SalVentAttnA	FrMed_17	6
+768	SalVentAttnA	FrMed_18	6
+769	SalVentAttnA	FrMed_19	6
+770	SalVentAttnA	FrMed_20	6
+771	SalVentAttnA	FrMed_21	6
+772	SalVentAttnB	IPL_1	7
+773	SalVentAttnB	IPL_2	7
+774	SalVentAttnB	IPL_3	7
+775	SalVentAttnB	PFCl_1	7
+776	SalVentAttnB	PFCl_2	7
+777	SalVentAttnB	PFCl_3	7
+778	SalVentAttnB	PFCl_4	7
+779	SalVentAttnB	PFCl_5	7
+780	SalVentAttnB	PFCl_6	7
+781	SalVentAttnB	PFCl_7	7
+782	SalVentAttnB	PFCl_8	7
+783	SalVentAttnB	PFCv_1	7
+784	SalVentAttnB	PFCv_2	7
+785	SalVentAttnB	PFCv_3	7
+786	SalVentAttnB	PFCv_4	7
+787	SalVentAttnB	PFCv_5	7
+788	SalVentAttnB	PFCv_6	7
+789	SalVentAttnB	PFCv_7	7
+790	SalVentAttnB	PFCv_8	7
+791	SalVentAttnB	PFCv_9	7
+792	SalVentAttnB	PFCmp_1	7
+793	SalVentAttnB	PFCmp_2	7
+794	SalVentAttnB	PFCmp_3	7
+795	SalVentAttnB	PFCmp_4	7
+796	SalVentAttnB	PFCmp_5	7
+797	SalVentAttnB	PFCmp_6	7
+798	Limbic	OFC_1	8
+799	Limbic	OFC_2	8
+800	Limbic	OFC_3	8
+801	Limbic	OFC_4	8
+802	Limbic	OFC_5	8
+803	Limbic	OFC_6	8
+804	Limbic	OFC_7	8
+805	Limbic	OFC_8	8
+806	Limbic	OFC_9	8
+807	Limbic	OFC_10	8
+808	Limbic	OFC_11	8
+809	Limbic	OFC_12	8
+810	Limbic	OFC_13	8
+811	Limbic	OFC_14	8
+812	Limbic	OFC_15	8
+813	Limbic	OFC_16	8
+814	Limbic	TempPole_1	8
+815	Limbic	TempPole_2	8
+816	Limbic	TempPole_3	8
+817	Limbic	TempPole_4	8
+818	Limbic	TempPole_5	8
+819	Limbic	TempPole_6	8
+820	Limbic	TempPole_7	8
+821	Limbic	TempPole_8	8
+822	Limbic	TempPole_9	8
+823	Limbic	TempPole_10	8
+824	Limbic	TempPole_11	8
+825	Limbic	TempPole_12	8
+826	Limbic	TempPole_13	8
+827	Limbic	TempPole_14	8
+828	Limbic	TempPole_15	8
+829	ContA	Temp_1	9
+830	ContA	Temp_2	9
+831	ContA	IPS_1	9
+832	ContA	IPS_2	9
+833	ContA	IPS_3	9
+834	ContA	IPS_4	9
+835	ContA	IPS_5	9
+836	ContA	IPS_6	9
+837	ContA	IPS_7	9
+838	ContA	IPS_8	9
+839	ContA	IPS_9	9
+840	ContA	IPS_10	9
+841	ContA	IPS_11	9
+842	ContA	IPS_12	9
+843	ContA	PFCd_1	9
+844	ContA	PFCl_1	9
+845	ContA	PFCl_2	9
+846	ContA	PFCl_3	9
+847	ContA	PFCl_4	9
+848	ContA	PFCl_5	9
+849	ContA	PFCl_6	9
+850	ContA	PFCl_7	9
+851	ContA	PFCl_8	9
+852	ContA	PFCl_9	9
+853	ContA	PFCl_10	9
+854	ContA	PFCl_11	9
+855	ContA	Cinga_1	9
+856	ContA	Cinga_2	9
+857	ContB	Temp_1	10
+858	ContB	Temp_2	10
+859	ContB	Temp_3	10
+860	ContB	Temp_4	10
+861	ContB	Temp_5	10
+862	ContB	IPL_1	10
+863	ContB	IPL_2	10
+864	ContB	IPL_3	10
+865	ContB	IPL_4	10
+866	ContB	IPL_5	10
+867	ContB	IPL_6	10
+868	ContB	IPL_7	10
+869	ContB	IPL_8	10
+870	ContB	IPL_9	10
+871	ContB	IPL_10	10
+872	ContB	IPL_11	10
+873	ContB	IPL_12	10
+874	ContB	PFCld_1	10
+875	ContB	PFCld_2	10
+876	ContB	PFCld_3	10
+877	ContB	PFCld_4	10
+878	ContB	PFCld_5	10
+879	ContB	PFCld_6	10
+880	ContB	PFCld_7	10
+881	ContB	PFCld_8	10
+882	ContB	PFCld_9	10
+883	ContB	PFCld_10	10
+884	ContB	PFCld_11	10
+885	ContB	PFClv_1	10
+886	ContB	PFClv_2	10
+887	ContB	PFClv_3	10
+888	ContB	PFClv_4	10
+889	ContB	PFClv_5	10
+890	ContB	PFClv_6	10
+891	ContB	PFClv_7	10
+892	ContB	PFClv_8	10
+893	ContB	PFCmp_1	10
+894	ContB	PFCmp_2	10
+895	ContB	PFCmp_3	10
+896	ContC	pCun_1	11
+897	ContC	pCun_2	11
+898	ContC	pCun_3	11
+899	ContC	pCun_4	11
+900	ContC	pCun_5	11
+901	ContC	pCun_6	11
+902	ContC	pCun_7	11
+903	ContC	pCun_8	11
+904	ContC	pCun_9	11
+905	ContC	pCun_10	11
+906	ContC	pCun_11	11
+907	ContC	Cingp_1	11
+908	ContC	Cingp_2	11
+909	ContC	Cingp_3	11
+910	ContC	Cingp_4	11
+911	DefaultA	Temp_1	12
+912	DefaultA	Temp_2	12
+913	DefaultA	IPL_1	12
+914	DefaultA	IPL_2	12
+915	DefaultA	IPL_3	12
+916	DefaultA	IPL_4	12
+917	DefaultA	IPL_5	12
+918	DefaultA	IPL_6	12
+919	DefaultA	IPL_7	12
+920	DefaultA	IPL_8	12
+921	DefaultA	PFCd_1	12
+922	DefaultA	PFCd_2	12
+923	DefaultA	PFCd_3	12
+924	DefaultA	PFCd_4	12
+925	DefaultA	PFCd_5	12
+926	DefaultA	PCC_1	12
+927	DefaultA	PCC_2	12
+928	DefaultA	PCC_3	12
+929	DefaultA	PCC_4	12
+930	DefaultA	PCC_5	12
+931	DefaultA	PCC_6	12
+932	DefaultA	PCC_7	12
+933	DefaultA	PCC_8	12
+934	DefaultA	PCC_9	12
+935	DefaultA	PCC_10	12
+936	DefaultA	PCC_11	12
+937	DefaultA	PCC_12	12
+938	DefaultA	PFCm_1	12
+939	DefaultA	PFCm_2	12
+940	DefaultA	PFCm_3	12
+941	DefaultA	PFCm_4	12
+942	DefaultA	PFCm_5	12
+943	DefaultA	PFCm_6	12
+944	DefaultA	PFCm_7	12
+945	DefaultA	PFCm_8	12
+946	DefaultA	PFCm_9	12
+947	DefaultA	PFCm_10	12
+948	DefaultB	Temp_1	13
+949	DefaultB	Temp_2	13
+950	DefaultB	Temp_3	13
+951	DefaultB	AntTemp_1	13
+952	DefaultB	AntTemp_2	13
+953	DefaultB	AntTemp_3	13
+954	DefaultB	AntTemp_4	13
+955	DefaultB	PFCd_1	13
+956	DefaultB	PFCd_2	13
+957	DefaultB	PFCd_3	13
+958	DefaultB	PFCd_4	13
+959	DefaultB	PFCd_5	13
+960	DefaultB	PFCd_6	13
+961	DefaultB	PFCd_7	13
+962	DefaultB	PFCd_8	13
+963	DefaultB	PFCv_1	13
+964	DefaultB	PFCv_2	13
+965	DefaultB	PFCv_3	13
+966	DefaultB	PFCv_4	13
+967	DefaultB	PFCv_5	13
+968	DefaultB	PFCv_6	13
+969	DefaultC	IPL_1	14
+970	DefaultC	IPL_2	14
+971	DefaultC	Rsp_1	14
+972	DefaultC	Rsp_2	14
+973	DefaultC	Rsp_3	14
+974	DefaultC	Rsp_4	14
+975	DefaultC	PHC_1	14
+976	DefaultC	PHC_2	14
+977	DefaultC	PHC_3	14
+978	DefaultC	PHC_4	14
+979	TempPar	1	15
+980	TempPar	2	15
+981	TempPar	3	15
+982	TempPar	4	15
+983	TempPar	5	15
+984	TempPar	6	15
+985	TempPar	7	15
+986	TempPar	8	15
+987	TempPar	9	15
+988	TempPar	10	15
+989	TempPar	11	15
+990	TempPar	12	15
+991	TempPar	13	15
+992	TempPar	14	15
+993	TempPar	15	15
+994	TempPar	16	15
+995	TempPar	17	15
+996	TempPar	18	15
+997	TempPar	19	15
+998	TempPar	20	15
+999	TempPar	21	15
+1000	TempPar	22	15
