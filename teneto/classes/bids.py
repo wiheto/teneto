@@ -1353,21 +1353,22 @@ class TenetoBIDS:
         else:
             subcortical = None
 
+        # TODO Change this path for multiple parcellations
         net_path = teneto.__path__[
             0] + '/data/parcellation_defaults/' + parcellation + '_network.csv'
         nn = 0
         if os.path.exists(parcellation):
             self.network_communities_ = pd.read_csv(parcellation, index_col=0)
             self.network_communities_info_ = self.network_communities_.drop_duplicates(
-            ).sort_values('network_id').reset_index(drop=True)
+            ).sort_values('community_id').reset_index(drop=True)
             self.network_communities_info_[
-                'number_of_nodes'] = self.network_communities_.groupby('network_id').count()
+                'number_of_nodes'] = self.network_communities_.groupby('community_id').count()
         elif os.path.exists(net_path):
             self.network_communities_ = pd.read_csv(net_path, index_col=0)
             self.network_communities_info_ = self.network_communities_.drop_duplicates(
-            ).sort_values('network_id').reset_index(drop=True)
+            ).sort_values('community_id').reset_index(drop=True)
             self.network_communities_info_[
-                'number_of_nodes'] = self.network_communities_.groupby('network_id').count()
+                'number_of_nodes'] = self.network_communities_.groupby('community_id').count()
         else:
             nn = 1
             print('No (static) network community file found.')
@@ -1375,8 +1376,8 @@ class TenetoBIDS:
         if subcortical and nn == 0:
             # Assuming only OH atlas exists for subcortical at the moment.
             node_num = 21
-            sub = pd.DataFrame(data={'Community': ['Subcortical (OH)']*node_num, 'network_id': np.repeat(
-                self.network_communities_['network_id'].max()+1, node_num)})
+            sub = pd.DataFrame(data={'Community': ['Subcortical (OH)']*node_num, 'community_id': np.repeat(
+                self.network_communities_['community_id'].max()+1, node_num)})
             self.network_communities_ = self.network_communities_.append(sub)
             self.network_communities_.reset_index(drop=True, inplace=True)
 
