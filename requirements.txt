@@ -14,3 +14,4 @@ sphinx-automodapi>=0.9
 networkx>=2.0
 python-louvain>=0.13
 tables>=3.4.4
+skopt>=0.5.2

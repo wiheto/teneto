@@ -846,7 +846,7 @@ class TenetoBIDS:
         clean_params : dict
             **kwargs for nilearn function nilearn.signal.clean
         yeonetworkn : int (7 or 17)
-            Only relevant for when parcellation is schaeffer2018. Use 7 or 17 template networks 
+            Only relevant for when parcellation is schaeffer2018. Use 7 or 17 template networks
         njobs : n
             number of processes to run. Overrides TenetoBIDS.njobs
 
@@ -1353,9 +1353,9 @@ class TenetoBIDS:
             # Need to add subcortical info to network_communities and network_communities_info_
             parcin = parcellation
             parcellation = parcellation.split('+')[0]
-            if '+OH' in parcin: 
+            if '+OH' in parcin:
                 subcortical = 'OH'
-            if '+SUIT' in parcin: 
+            if '+SUIT' in parcin:
                 cerebellar = 'SUIT'
         else:
             subcortical = None
