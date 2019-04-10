@@ -16,7 +16,7 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
 
     data : array, dict
         This is either (1) temporal network input (graphlet or contact) with nettype: 'bu', 'bd'. (2) dictionary of ICTs (output of *intercontacttimes*).
-        A weighted network can be applied if you specify threshold_type and threshold_value which will make it binary.  
+        A weighted network can be applied if you specify threshold_type and threshold_value which will make it binary.
 
     calc : str
         Caclulate the bursty coeff over what. Options include 'edge': calculate B on all ICTs between node i and j. (Default); 'node': caclulate B on all ICTs connected to node i.;
@@ -127,8 +127,9 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
 
     """
 
-    if threshold_type is not None: 
-        data = binarize(data, threshold_type, threshold_level, **threshold_params) 
+    if threshold_type is not None:
+        data = binarize(data, threshold_type,
+                        threshold_level, **threshold_params)
 
     if calc == 'communities' and not communities:
         raise ValueError(
