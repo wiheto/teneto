@@ -30,6 +30,8 @@
 
 -   Can specify 7 or 17 communitytemplate size when using schaefer atlas
 
+-   Allow to apply thresholding within bursty_coeff function
+
 ## V0.4.3
 
 -   Added Schaefer atlas

@@ -4,9 +4,10 @@ networkmeasures.bursty_coeff
 
 import numpy as np
 from .intercontacttimes import intercontacttimes
+from ..utils import binarize
 
 
-def bursty_coeff(data, calc='edge', nodes='all', communities=None):
+def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_type=None, threshold_level=None, threshold_params=None):
     r"""
     Calculates the bursty coefficient.[1][2]
 
@@ -15,6 +16,7 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
 
     data : array, dict
         This is either (1) temporal network input (graphlet or contact) with nettype: 'bu', 'bd'. (2) dictionary of ICTs (output of *intercontacttimes*).
+        A weighted network can be applied if you specify threshold_type and threshold_value which will make it binary.  
 
     calc : str
         Caclulate the bursty coeff over what. Options include 'edge': calculate B on all ICTs between node i and j. (Default); 'node': caclulate B on all ICTs connected to node i.;
@@ -27,6 +29,14 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     communities : array, optional
         None (default) or Nx1 vector of communities assignment. This returns a "centrality" per communities instead of per node.
 
+    threshold_type : str, optional
+        If input is weighted. Specify binarizing threshold type. See teneto.utils.binarize
+
+    threshold_level : str, optional
+        If input is weighted. Specify binarizing threshold level. See teneto.utils.binarize
+
+    threhsold_params : dict
+        If input is weighted. Dictionawy with kwargs for teneto.utils.binarize
 
     Returns
     -------
@@ -116,6 +126,9 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None):
     .. [2] Holme, P & Saramäki J (2012) Temporal networks. Physics Reports. 519: 3. [`Link <https://arxiv.org/pdf/1108.1780.pdf>`_] (Discrete formulation used here)
 
     """
+
+    if threshold_type is not None: 
+        data = binarize(data, threshold_type, threshold_level, **threshold_params) 
 
     if calc == 'communities' and not communities:
         raise ValueError(
