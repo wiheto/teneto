@@ -876,7 +876,6 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
         raise ValueError('Unknown parc_type specified')
 
     if subcortical:
-        print('>>doing this<<')
         subatlas = fetch_atlas_harvard_oxford('sub-maxprob-thr0-2mm')['maps']
         region = NiftiLabelsMasker(subatlas, **parc_params)
         data_sub = region.fit_transform(data_path)
