@@ -32,6 +32,8 @@
 
 -   Allow to apply thresholding within bursty_coeff function
 
+-   Fixed flexibility inversion bug (values were previously reversed)
+
 ## V0.4.3
 
 -   Added Schaefer atlas
