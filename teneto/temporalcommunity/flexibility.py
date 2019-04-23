@@ -28,7 +28,7 @@ def flexibility(communities):
     flex = np.zeros(communities.shape[0])
     # Go from the second time point to last, compare with time-point before
     for t in range(1, communities.shape[1]):
-        flex[communities[:, t] == communities[:, t-1]] += 1
+        flex[communities[:, t] != communities[:, t-1]] += 1
     # Normalize
     flex = flex / (communities.shape[1] - 1)
     return flex
