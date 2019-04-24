@@ -133,7 +133,7 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
         data = binarize(data, threshold_type,
                         threshold_level, **threshold_params)
 
-    if calc == 'communities' and not communities:
+    if calc == 'communities' and communities is None:
         raise ValueError(
             "Specified calc='communities' but no communities argument provided (list of clusters/modules)")
 
