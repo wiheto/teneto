@@ -1,10 +1,10 @@
 {"power2012_264": {"params": {"radius": 5}, "type": "sphere"},
 "gordon2014_333": {"params": {}, "type": "region"},
-"schaefer2018_100Parcels_MNI152NLin2009cAsym.nii.gz": {"params": {}, "type": "region"},
-"schaefer2018_200Parcels_MNI152NLin2009cAsym.nii.gz": {"params": {}, "type": "region"},
-"schaefer2018_300Parcels_MNI152NLin2009cAsym.nii.gz": {"params": {}, "type": "region"},
-"schaefer2018_400Parcels_MNI152NLin2009cAsym.nii.gz": {"params": {}, "type": "region"},
-"schaefer2018_500Parcels_MNI152NLin2009cAsym.nii.gz": {"params": {}, "type": "region"},
-"schaefer2018_600Parcels_MNI152NLin2009cAsym.nii.gz": {"params": {}, "type": "region"},
-"schaefer2018_800Parcels_MNI152NLin2009cAsym.nii.gz": {"params": {}, "type": "region"},
-"schaefer2018_1000Parcels_MNI152NLin2009cAsym.nii.gz": {"params": {}, "type": "region"}}
+"schaefer2018_100Parcels_MNI152NLin2009cAsym": {"params": {}, "type": "region"},
+"schaefer2018_200Parcels_MNI152NLin2009cAsym": {"params": {}, "type": "region"},
+"schaefer2018_300Parcels_MNI152NLin2009cAsym": {"params": {}, "type": "region"},
+"schaefer2018_400Parcels_MNI152NLin2009cAsym": {"params": {}, "type": "region"},
+"schaefer2018_500Parcels_MNI152NLin2009cAsym": {"params": {}, "type": "region"},
+"schaefer2018_600Parcels_MNI152NLin2009cAsym": {"params": {}, "type": "region"},
+"schaefer2018_800Parcels_MNI152NLin2009cAsym": {"params": {}, "type": "region"},
+"schaefer2018_1000Parcels_MNI152NLin2009cAsym": {"params": {}, "type": "region"}}
