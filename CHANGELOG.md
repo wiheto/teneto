@@ -34,6 +34,8 @@
 
 -   Fixed flexibility inversion bug (values were previously reversed)
 
+-   Added tctc.
+
 ## V0.4.3
 
 -   Added Schaefer atlas
