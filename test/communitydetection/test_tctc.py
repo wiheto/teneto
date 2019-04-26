@@ -17,7 +17,7 @@ def df_to_array(df, outshape):
     out = np.zeros(outshape)
     for i, r in df.iterrows():
         ind = list(
-            zip(*list(itertools.combinations_with_replacement(r['vec'], 2))))
+            zip(*list(itertools.combinations_with_replacement(r['community'], 2))))
         out[ind[0]+ind[1], ind[1]+ind[0], r['start']:r['end']] = 1
     return out
 
@@ -74,22 +74,22 @@ def test_kappa():
     df2 = tctc(data, 2, 0.5, 2, 0, output='df')
     r = 0
     for i, d in df1.iterrows():
-        if [0, 1] == d['vec']:
+        if [0, 1] == d['community']:
             r += 1
     r2 = 0
     for i, d in df2.iterrows():
-        if [0, 1] == d['vec']:
+        if [0, 1] == d['community']:
             r2 += 1
     if r != 1 or r2 != 2:
         raise AssertionError()
     rt = []
     for i, d in df1.iterrows():
-        if set(d['vec']).issuperset([0, 1]):
+        if set(d['community']).issuperset([0, 1]):
             rt += list(np.arange(d['start'], d['end']))
     rt = np.unique(rt)
     rt2 = []
     for i, d in df2.iterrows():
-        if set(d['vec']).issuperset([0, 1]):
+        if set(d['community']).issuperset([0, 1]):
             rt2 += list(np.arange(d['start'], d['end']))
     rt2 = np.unique(rt2)
     if len(rt) != 13:

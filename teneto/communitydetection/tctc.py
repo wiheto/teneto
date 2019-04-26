@@ -11,11 +11,11 @@ def partition_inference(tctc_mat, comp, tau, sigma, skiptol):
 
     Can take a little bit of time with large datasets and optimizaiton could remove some for loops. 
     """
-    vecinfo = {}
-    vecinfo['vec'] = []
-    vecinfo['start'] = np.empty(0)
-    vecinfo['end'] = np.empty(0)
-    vecinfo['size'] = np.empty(0)
+    communityinfo = {}
+    communityinfo['community'] = []
+    communityinfo['start'] = np.empty(0)
+    communityinfo['end'] = np.empty(0)
+    communityinfo['size'] = np.empty(0)
     for i, tcomp in enumerate(comp):
         # This can go in parallel loop
         if len(tcomp) > 0:
@@ -30,12 +30,12 @@ def partition_inference(tctc_mat, comp, tau, sigma, skiptol):
                     
                     if np.any(np.sum(np.sum(tctc_mat[traj, :, cutoff:i][:, traj], axis=0), axis=0) == np.power(len(traj), 2)):
                         # Make sure that a small trajectory could exist 
-                        for checknode in np.where(vecinfo['end']>=cutoff)[0]:
-                            if traj == vecinfo['vec'][checknode]:
+                        for checknode in np.where(communityinfo['end']>=cutoff)[0]:
+                            if traj == communityinfo['community'][checknode]:
                                 ignore = 1
                         if ignore == 0: 
-                            for checknode in np.where(vecinfo['end']>=cutoff)[0]:
-                                if set(vecinfo['vec'][checknode]).issuperset(traj):
+                            for checknode in np.where(communityinfo['end']>=cutoff)[0]:
+                                if set(communityinfo['community'][checknode]).issuperset(traj):
                                     preexisting = 1                              
                 if ignore == 0:
                     # Check how long it continues
@@ -66,52 +66,52 @@ def partition_inference(tctc_mat, comp, tau, sigma, skiptol):
                                 np.diff(a) > skiptol+1)[0]+1)[0][-1] + 1
                     # Add trajectory to dictionary
                     if ((stopind - i) >= tau or preexisting == 1) and len(traj) >= sigma:
-                        vecinfo['vec'].append(sorted(traj))
-                        vecinfo['start'] = np.append(vecinfo['start'], int(i))
-                        vecinfo['end'] = np.append(
-                            vecinfo['end'], int(stopind))
-                        vecinfo['size'] = np.append(vecinfo['size'], len(traj))
+                        communityinfo['community'].append(sorted(traj))
+                        communityinfo['start'] = np.append(communityinfo['start'], int(i))
+                        communityinfo['end'] = np.append(
+                            communityinfo['end'], int(stopind))
+                        communityinfo['size'] = np.append(communityinfo['size'], len(traj))
 
-    vecinfo = pd.DataFrame(vecinfo)
+    communityinfo = pd.DataFrame(communityinfo)
 
-    vecinfo['start'] = vecinfo['start'].astype(int)
-    vecinfo['end'] = vecinfo['end'].astype(int)
+    communityinfo['start'] = communityinfo['start'].astype(int)
+    communityinfo['end'] = communityinfo['end'].astype(int)
     # First check that there is not already a trajectory that is ongoing
     badrows = []
-    for v in vecinfo.iterrows():
-        skipselrule = (vecinfo['end'] == v[1]['end'])
-        for u in vecinfo[skipselrule].iterrows():
+    for v in communityinfo.iterrows():
+        skipselrule = (communityinfo['end'] == v[1]['end'])
+        for u in communityinfo[skipselrule].iterrows():
             a = 1
-            if u[1]['start'] > v[1]['start'] and sorted(u[1]['vec']) == sorted(v[1]['vec']):
+            if u[1]['start'] > v[1]['start'] and sorted(u[1]['community']) == sorted(v[1]['community']):
                 badrows.append(u[0])
-    vecinfo = vecinfo.drop(badrows)
+    communityinfo = communityinfo.drop(badrows)
 
     # Then see if any subset trajectory can be placed earlier in time.
-    for v in vecinfo.iterrows():
-        skipselrule = (vecinfo['end'] <= v[1]['start']) & (
-            vecinfo['end']+skiptol >= v[1]['start'])
-        for u in vecinfo[skipselrule].iterrows():
+    for v in communityinfo.iterrows():
+        skipselrule = (communityinfo['end'] <= v[1]['start']) & (
+            communityinfo['end']+skiptol >= v[1]['start'])
+        for u in communityinfo[skipselrule].iterrows():
             a = 1
-            if set(u[1]['vec']).issuperset(v[1]['vec']):
-                vecinfo.loc[v[0], 'start'] = u[1]['start']
+            if set(u[1]['community']).issuperset(v[1]['community']):
+                communityinfo.loc[v[0], 'start'] = u[1]['start']
 
     # It is possible to make the condition below effective_length
-    vecinfo['length'] = np.array(vecinfo['end']) - np.array(vecinfo['start'])
-    vecinfo = vecinfo[vecinfo['length'] >= tau]
-    vecinfo = vecinfo[vecinfo['size'] >= sigma]
+    communityinfo['length'] = np.array(communityinfo['end']) - np.array(communityinfo['start'])
+    communityinfo = communityinfo[communityinfo['length'] >= tau]
+    communityinfo = communityinfo[communityinfo['size'] >= sigma]
 
     # Make sure that the traj is not completely enguled by another
     badrows = []
     if skiptol > 0:
-        for v in vecinfo.iterrows():
-            skipselrule = (vecinfo['end'] == v[1]['end']) & (
-                vecinfo['start'] < v[1]['start'])
-            for u in vecinfo[skipselrule].iterrows():
-                if set(v[1]['vec']).issubset(u[1]['vec']):
+        for v in communityinfo.iterrows():
+            skipselrule = (communityinfo['end'] == v[1]['end']) & (
+                communityinfo['start'] < v[1]['start'])
+            for u in communityinfo[skipselrule].iterrows():
+                if set(v[1]['community']).issubset(u[1]['community']):
                     badrows.append(v[0])
-        vecinfo = vecinfo.drop(badrows)
+        communityinfo = communityinfo.drop(badrows)
 
-    return vecinfo
+    return communityinfo
 
 
 def tctc(data, tau, epsilon, sigma, skiptol=0, largedataset=False, rule='flock', noise=None, raw_signal='amplitude', output='array', tempdir=None, njobs=1, largestonly=False):
@@ -219,7 +219,7 @@ def tctc(data, tau, epsilon, sigma, skiptol=0, largedataset=False, rule='flock',
                 # Due to advanced index copy, I've done this with too many forloops
                 for t in range(dat_shape[0]):
                     for c in cliques[t]:
-                        # Make one of index vectors a list.
+                        # Make one of index communitytors a list.
                         cv = [[i] for i in c]
                         tctc_mat[cv, c, t] = 1
 
@@ -228,10 +228,10 @@ def tctc(data, tau, epsilon, sigma, skiptol=0, largedataset=False, rule='flock',
                 # Add some padding as this is going to be needed when flattening (ie different lines must have at least tau+skiptol spacing between them)
                 tctc_mat = np.dstack([np.zeros([dat_shape[1], dat_shape[1], 1]), tctc_mat, np.zeros(
                     [dat_shape[1], dat_shape[1], tau+skiptol])])
-                # Make to singular vector
-                tctc_mat_vec = np.array(tctc_mat.flatten())
+                # Make to singular communitytor
+                tctc_mat_community = np.array(tctc_mat.flatten())
                 # Add an extra 0
-                tctc_mat_dif = np.append(tctc_mat_vec, 0)
+                tctc_mat_dif = np.append(tctc_mat_community, 0)
                 # Use diff. Where there is a 1 trajectory starts, where -1 trajectory ends
                 tctc_mat_dif = np.diff(tctc_mat_dif)
                 start_ones = np.where(tctc_mat_dif == 1)[0]
@@ -247,7 +247,7 @@ def tctc(data, tau, epsilon, sigma, skiptol=0, largedataset=False, rule='flock',
                 # for t in range(tau-1): # this didn't work (but was quicker) because of tau bug
                 #    tctc_mat[ind+t] = 0
                 # Looping over each valid trajectory instance is slower but the safest was to impose tau restrain and reinserting it.
-                tctc_mat = np.zeros(tctc_mat_vec.shape)
+                tctc_mat = np.zeros(tctc_mat_community.shape)
                 for i in range(len(ind)):
                     tctc_mat[ind[i]:ind[i]+l2[i]] = 1
                 tctc_mat = tctc_mat.reshape(
