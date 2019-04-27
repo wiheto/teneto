@@ -94,6 +94,6 @@ def test_kappa():
     rt2 = np.unique(rt2)
     if len(rt) != 13:
         raise AssertionError()
-    # The two time points which shouldnt be included if skiptol = 0
+    # The two time points which shouldnt be included if kappa = 0
     if 7 in rt2 or 10 in rt2:
         raise AssertionError()

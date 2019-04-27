@@ -5,7 +5,7 @@ from scipy.signal import hilbert
 import pandas as pd
 
 
-def partition_inference(tctc_mat, comp, tau, sigma, skiptol):
+def partition_inference(tctc_mat, comp, tau, sigma, kappa):
     r"""
     Takes tctc trajectory matrix and returns dataframe where all multi-label communities are listed
 
@@ -24,7 +24,7 @@ def partition_inference(tctc_mat, comp, tau, sigma, skiptol):
                 ignore = 0
                 preexisting = 0
                 if i != 0:
-                    cutoff = i-1-skiptol
+                    cutoff = i-1-kappa
                     if cutoff < 0:
                         cutoff = 0
                     
@@ -60,10 +60,10 @@ def partition_inference(tctc_mat, comp, tau, sigma, skiptol):
                     if len(a) == 1:
                         stopind = i + 1
                     else:
-                        a = np.append(a, a.max()+skiptol+2)
+                        a = np.append(a, a.max()+kappa+2)
                         # Find the stop index (if stopind = 4 and start = 0, then tctc_mat[:,:,start:stopind]==1)
                         stopind = i + np.split(a, np.where(
-                                np.diff(a) > skiptol+1)[0]+1)[0][-1] + 1
+                                np.diff(a) > kappa+1)[0]+1)[0][-1] + 1
                     # Add trajectory to dictionary
                     if ((stopind - i) >= tau or preexisting == 1) and len(traj) >= sigma:
                         communityinfo['community'].append(sorted(traj))
@@ -89,7 +89,7 @@ def partition_inference(tctc_mat, comp, tau, sigma, skiptol):
     # Then see if any subset trajectory can be placed earlier in time.
     for v in communityinfo.iterrows():
         skipselrule = (communityinfo['end'] <= v[1]['start']) & (
-            communityinfo['end']+skiptol >= v[1]['start'])
+            communityinfo['end']+kappa >= v[1]['start'])
         for u in communityinfo[skipselrule].iterrows():
             a = 1
             if set(u[1]['community']).issuperset(v[1]['community']):
@@ -102,7 +102,7 @@ def partition_inference(tctc_mat, comp, tau, sigma, skiptol):
 
     # Make sure that the traj is not completely enguled by another
     badrows = []
-    if skiptol > 0:
+    if kappa > 0:
         for v in communityinfo.iterrows():
             skipselrule = (communityinfo['end'] == v[1]['end']) & (
                 communityinfo['start'] < v[1]['start'])
@@ -114,7 +114,7 @@ def partition_inference(tctc_mat, comp, tau, sigma, skiptol):
     return communityinfo
 
 
-def tctc(data, tau, epsilon, sigma, skiptol=0, largedataset=False, rule='flock', noise=None, raw_signal='amplitude', output='array', tempdir=None, njobs=1, largestonly=False):
+def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False, rule='flock', noise=None, raw_signal='amplitude', output='array', tempdir=None, njobs=1, largestonly=False):
     r"""
     Runs TCTC community detection
 
@@ -225,9 +225,9 @@ def tctc(data, tau, epsilon, sigma, skiptol=0, largedataset=False, rule='flock',
 
             if tctc_mat.sum() > 0:
                 # Now impose tau criteria. This is done by flattening and (since tau has been added to the final dimension)
-                # Add some padding as this is going to be needed when flattening (ie different lines must have at least tau+skiptol spacing between them)
+                # Add some padding as this is going to be needed when flattening (ie different lines must have at least tau+kappa spacing between them)
                 tctc_mat = np.dstack([np.zeros([dat_shape[1], dat_shape[1], 1]), tctc_mat, np.zeros(
-                    [dat_shape[1], dat_shape[1], tau+skiptol])])
+                    [dat_shape[1], dat_shape[1], tau+kappa])])
                 # Make to singular communitytor
                 tctc_mat_community = np.array(tctc_mat.flatten())
                 # Add an extra 0
@@ -236,7 +236,7 @@ def tctc(data, tau, epsilon, sigma, skiptol=0, largedataset=False, rule='flock',
                 tctc_mat_dif = np.diff(tctc_mat_dif)
                 start_ones = np.where(tctc_mat_dif == 1)[0]
                 end_ones = np.where(tctc_mat_dif == -1)[0]
-                skip_ind = np.where(start_ones[1:]-end_ones[:-1] <= skiptol)[0]
+                skip_ind = np.where(start_ones[1:]-end_ones[:-1] <= kappa)[0]
                 start_ones = np.delete(start_ones, skip_ind+1)
                 end_ones = np.delete(end_ones, skip_ind)
 
@@ -251,7 +251,7 @@ def tctc(data, tau, epsilon, sigma, skiptol=0, largedataset=False, rule='flock',
                 for i in range(len(ind)):
                     tctc_mat[ind[i]:ind[i]+l2[i]] = 1
                 tctc_mat = tctc_mat.reshape(
-                    dat_shape[1], dat_shape[1], dat_shape[0]+skiptol+tau+1)
+                    dat_shape[1], dat_shape[1], dat_shape[0]+kappa+tau+1)
                 # remove padding
                 tctc_mat = tctc_mat[:, :, 1:dat_shape[0]+1]
 
@@ -265,7 +265,7 @@ def tctc(data, tau, epsilon, sigma, skiptol=0, largedataset=False, rule='flock',
         elif output == 'df':
             if np.sum(tctc_mat) != 0:
                 df = partition_inference(
-                    tctc_mat, cliques, tau, sigma, skiptol)
+                    tctc_mat, cliques, tau, sigma, kappa)
                 return df
             else:
                 return []
