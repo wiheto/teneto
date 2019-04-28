@@ -11,7 +11,7 @@ def test_define():
         dataset_path, pipeline='fmriprep', raw_data_exists=False)
     if not len(tnet.get_selected_files(quiet=1, forfile={'sub': '001'})) == 3:
         raise AssertionError()
-    fname = 'sub-001_task-a_run-beta_bold_preproc.nii.gz'
+    fname = 'sub-001_task-a_run-02_bold_preproc.nii.gz'
     if not len(tnet.get_selected_files(quiet=1, forfile=fname)) == 1:
         raise AssertionError()
 
@@ -28,7 +28,7 @@ def test_define_sub_then_task():
 
 def test_define_run_then_sub():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',
-                             pipeline='fmriprep', bids_tags={'run': 'alpha'}, raw_data_exists=False)
+                             pipeline='fmriprep', bids_tags={'run': '01'}, raw_data_exists=False)
     if not len(tnet.get_selected_files(quiet=1)) == 4:
         raise AssertionError()
     tnet.set_bids_tags({'sub': '001'})
@@ -41,7 +41,7 @@ def test_define_task_then_run():
                              0] + '/data/testdata/dummybids/', pipeline='fmriprep', bids_tags={'task': 'a'}, raw_data_exists=False)
     if not len(tnet.get_selected_files(quiet=1)) == 4:
         raise AssertionError()
-    tnet.set_bids_tags({'run': 'beta'})
+    tnet.set_bids_tags({'run': '02'})
     if not len(tnet.get_selected_files(quiet=1)) == 2:
         raise AssertionError()
 
