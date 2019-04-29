@@ -8,3 +8,4 @@ Tutorial
     tutorial/networkrepresentation
     tutorial/networkmeasures
     tutorial/TenetoBIDS
+    tutorial/TCTC
