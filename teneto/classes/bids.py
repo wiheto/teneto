@@ -280,7 +280,8 @@ class TenetoBIDS:
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2))                             : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2))
+                                 : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
@@ -453,10 +454,10 @@ class TenetoBIDS:
                 # Wait 2 seconds so that the error does not try and save something in the directory before it is created
                 time.sleep(2)
         if not os.path.exists(self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/dataset_description.json'):
-            try: 
+            try:
                 with open(self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/dataset_description.json', 'w') as fs:
                     json.dump(self.tenetoinfo, fs)
-            except: 
+            except:
                 # Same as above, just in case parallel does duplicaiton
                 time.sleep(2)
         return save_name, save_dir, base_dir
@@ -1387,13 +1388,15 @@ class TenetoBIDS:
                 0] + '/data/parcellation/staticcommunities/schaefer2018_yeo2011communityinfo_' + roin + 'networks-' + str(netn) + '.tsv'
         nn = 0
         if os.path.exists(net_path):
-            self.communitytemplate_ = pd.read_csv(net_path, index_col=0, sep='\t')
+            self.communitytemplate_ = pd.read_csv(
+                net_path, index_col=0, sep='\t')
             self.communitytemplate_info_ = self.communitytemplate_[['community', 'community_id']].drop_duplicates(
             ).sort_values('community_id').reset_index(drop=True)
             self.communitytemplate_info_[
                 'number_of_nodes'] = self.communitytemplate_.groupby('community_id').count()['community']
         elif os.path.exists(parcellation):
-            self.communitytemplate_ = pd.read_csv(parcellation, index_col=0, sep='\t')
+            self.communitytemplate_ = pd.read_csv(
+                parcellation, index_col=0, sep='\t')
             self.communitytemplate_info_ = self.communitytemplate_.drop_duplicates(
             ).sort_values('community_id').reset_index(drop=True)
             self.communitytemplate_info_[
@@ -1402,7 +1405,7 @@ class TenetoBIDS:
             nn = 1
             print('No (static) network community file found.')
 
-        if subcortical=='OH' and nn == 0:
+        if subcortical == 'OH' and nn == 0:
             # Assuming only OH atlas exists for subcortical at the moment.
             node_num = 21
             sub = pd.DataFrame(data={'community': ['Subcortical (OH)']*node_num, 'community_id': np.repeat(
@@ -1410,13 +1413,12 @@ class TenetoBIDS:
             self.communitytemplate_ = self.communitytemplate_.append(sub)
             self.communitytemplate_.reset_index(drop=True, inplace=True)
 
-        if cerebellar=='SUIT' and nn == 0:
+        if cerebellar == 'SUIT' and nn == 0:
             node_num = 34
             sub = pd.DataFrame(data={'community': ['Cerebellar (SUIT)']*node_num, 'community_id': np.repeat(
                 self.communitytemplate_['community_id'].max()+1, node_num)})
             self.communitytemplate_ = self.communitytemplate_.append(sub)
             self.communitytemplate_.reset_index(drop=True, inplace=True)
-
 
     def set_bids_suffix(self, bids_suffix):
         """
