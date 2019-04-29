@@ -202,7 +202,7 @@ def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False, rule='flock', n
                 if rule == 'flock':
 
                     cliques = [list(filter(lambda x: (len(x) >= sigma) and (len(set(x).intersection(np.arange(N_data, N+1))) == 0), nx.find_cliques(
-                        nx.graph.Graph(tctc_mat[:, :, t])))) for t in range(tctc_mat.shape[-1])]
+                        nx.Graph(tctc_mat[:, :, t])))) for t in range(tctc_mat.shape[-1])]
                     #cliques = []
                     # with ProcessPoolExecutor(max_workers=njobs) as executor:
                     #    job = {executor.submit(_cluster_flocks,tctc_mat[:,:,t],sigma) for t in range(tctc_mat.shape[-1])}
@@ -211,7 +211,7 @@ def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False, rule='flock', n
 
                 elif rule == 'convoy':
                     cliques = [list(map(list, filter(lambda x: (len(x) >= sigma) and (len(set(x).intersection(np.arange(N_data, N+1))) == 0), nx.connected_components(
-                        nx.graph.Graph(tctc_mat[:, :, t]))))) for t in range(tctc_mat.shape[-1])]
+                        nx.Graph(tctc_mat[:, :, t]))))) for t in range(tctc_mat.shape[-1])]
 
                 # Reset the trajectory matrix (since info is now in "cliques").
                 # Add the infomation from clique into tctc_mat (i.e sigma is now implemented)
