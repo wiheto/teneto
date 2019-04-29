@@ -36,6 +36,8 @@
 
 -   Added tctc.
 
+-   dataset_description.json added to teneto pipeline in derivatives (TenetoBIDS)
+
 ## V0.4.3
 
 -   Added Schaefer atlas
