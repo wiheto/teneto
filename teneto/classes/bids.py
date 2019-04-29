@@ -693,7 +693,7 @@ class TenetoBIDS:
                     if relex[i](df[confound[i]].mean(), crit[i]):
                         found_bad_subject = True
                 elif confound_stat[i] == 'std':
-                    if relex(df[i][confound[i]].std(), crit[i]):
+                    if relex[i](df[i][confound[i]].std(), crit[i]):
                         found_bad_subject = True
                 if found_bad_subject:
                     foundconfound.append(confound[i])

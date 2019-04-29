@@ -42,6 +42,8 @@
 
 -   dataset_description exported with export_history (as tenetoinfo.json)
 
+-   fixing exclusion confound when criteria is based on SD (previously an error was raised)
+
 ## V0.4.3
 
 -   Added Schaefer atlas
