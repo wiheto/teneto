@@ -114,6 +114,17 @@ class TenetoBIDS:
         self.temporalnetwork_trialinfo_ = []
         self.fc_trialinfo_ = []
 
+        self.tenetoinfo = {
+            "Name": "TenetoBIDS",
+            "PipelineDescription": {
+                "Name": "teneto",
+                "Version": str(teneto.__version__[0]),
+                "CodeURL": "https://github.com/wiheto/teneto/"
+            },
+            "CodeURL": "https://github.com/wiheto/teneto",
+            "HowToAcknowledge": "Cite Teneto's DOI (http://doi.org/10.5281/zenodo.2535994).",
+        }
+
     def add_history(self, fname, fargs, init=0):
         """
         Adds a processing step to TenetoBIDS.history.
@@ -440,6 +451,13 @@ class TenetoBIDS:
                 os.makedirs(save_dir)
             except:
                 # Wait 2 seconds so that the error does not try and save something in the directory before it is created
+                time.sleep(2)
+        if not os.path.exists(self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/dataset_description.json'):
+            try: 
+                with open(self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/dataset_description.json', 'w') as fs:
+                    json.dump(self.tenetoinfo, fs)
+            except: 
+                # Same as above, just in case parallel does duplicaiton
                 time.sleep(2)
         return save_name, save_dir, base_dir
 
