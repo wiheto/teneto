@@ -31,6 +31,17 @@ class TenetoBIDS:
 
     bids_derivatives_rc_version = '<rc1.0'
 
+    tenetoinfo = {
+        "Name": "TenetoBIDS",
+                "PipelineDescription": {
+                    "Name": "teneto",
+                    "Version": str(teneto.__version__[0]),
+                    "CodeURL": "https://github.com/wiheto/teneto/"
+                },
+        "CodeURL": "https://github.com/wiheto/teneto",
+        "HowToAcknowledge": "Cite Teneto's DOI (http://doi.org/10.5281/zenodo.2535994).",
+    }
+
     def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, bids_tags=None, bids_suffix=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True, njobs=None):
         """
         Parameters
@@ -65,10 +76,8 @@ class TenetoBIDS:
         """
         self.add_history(inspect.stack()[0][3], locals(), 1)
         self.contact = []
-        if raw_data_exists:
-            self.BIDS = BIDSLayout(BIDS_dir)
-        else:
-            self.BIDS = 'Raw data was flagged as not present in directory structure.'
+
+        self.BIDS = BIDSLayout(BIDS_dir, validate=False)
 
         self.BIDS_dir = os.path.abspath(BIDS_dir)
         self.pipeline = pipeline
@@ -114,17 +123,6 @@ class TenetoBIDS:
         self.temporalnetwork_trialinfo_ = []
         self.fc_trialinfo_ = []
 
-        self.tenetoinfo = {
-            "Name": "TenetoBIDS",
-            "PipelineDescription": {
-                "Name": "teneto",
-                "Version": str(teneto.__version__[0]),
-                "CodeURL": "https://github.com/wiheto/teneto/"
-            },
-            "CodeURL": "https://github.com/wiheto/teneto",
-            "HowToAcknowledge": "Cite Teneto's DOI (http://doi.org/10.5281/zenodo.2535994).",
-        }
-
     def add_history(self, fname, fargs, init=0):
         """
         Adds a processing step to TenetoBIDS.history.
@@ -135,7 +133,7 @@ class TenetoBIDS:
 
     def export_history(self, dirname):
         """
-        Exports TenetoBIDShistory.py and requirements.txt (modules currently imported) to dirname
+        Exports TenetoBIDShistory.py, tenetoinfo.json, requirements.txt (modules currently imported) to dirname
 
         Parameters
         ---------
@@ -156,6 +154,9 @@ class TenetoBIDS:
             f.writelines('import teneto\n')
             for func, args in self.history:
                 f.writelines(func + '(**' + str(args) + ')\n')
+
+        with open(dirname + '/tenetoinfo.json', 'w') as f:
+            json.dump(self.tenetoinfo, f)
 
     def derive_temporalnetwork(self, params, update_pipeline=True, tag=None, njobs=1, confound_corr_report=True):
         """
@@ -280,8 +281,7 @@ class TenetoBIDS:
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2))
-                                 : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2)): int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())

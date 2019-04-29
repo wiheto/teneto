@@ -36,7 +36,11 @@
 
 -   Added tctc.
 
--   dataset_description.json added to teneto pipeline in derivatives (TenetoBIDS)
+-   Dataset_description.json added to teneto pipeline in derivatives (TenetoBIDS)
+
+-   pybids always imported in TenetoBIDS (but validator turned off)
+
+-   dataset_description exported with export_history (as tenetoinfo.json)
 
 ## V0.4.3
 
