@@ -77,8 +77,11 @@ class TenetoBIDS:
         self.add_history(inspect.stack()[0][3], locals(), 1)
         self.contact = []
 
-        self.BIDS = BIDSLayout(BIDS_dir, validate=False)
-
+        if raw_data_exists:
+            self.BIDS = BIDSLayout(BIDS_dir, validate=False)
+        else: 
+            self.BIDS = None
+            
         self.BIDS_dir = os.path.abspath(BIDS_dir)
         self.pipeline = pipeline
         self.confound_pipeline = confound_pipeline
