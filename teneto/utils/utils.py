@@ -1081,6 +1081,8 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         else:
             df = pd.DataFrame(
                 data={'i': ind[0], 'j': ind[1], 't': ind[2], 'weight': edges})
+        df['i'] = df['i'].astype(int)
+        df['j'] = df['j'].astype(int)
     else:
         if i is not None and j is not None and t is not None and logic == 'and':
             df = network[(network['i'].isin(i)) & (
