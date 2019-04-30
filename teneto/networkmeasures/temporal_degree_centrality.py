@@ -60,7 +60,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     else:
         fromax = 'i'
         toax = 'j'
-    if tnet.nettype[0] == 'b':
+    if tnet.sparse == True and tnet.nettype[0] == 'b':
         tnet.network['weight'] = 1
     # Diagonal is currently deleted.
     # if ignorediagonal:
@@ -68,13 +68,16 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     # sum sum tnet
     if calc == 'time' and communities is None:
         # Return node,time
-        tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
-        df = tnet.network.groupby([fromax, 't']).sum().reset_index()
-        tdeg[df[fromax], df['t']] = df['weight']
-        # If undirected, do reverse
-        if tnet.nettype[1] == 'u':
-            df = tnet.network.groupby([toax, 't']).sum().reset_index()
-            tdeg[df[toax], df['t']] += df['weight']
+        if tnet.sparse == True: 
+            tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
+            df = tnet.network.groupby([fromax, 't']).sum().reset_index()
+            tdeg[df[fromax], df['t']] = df['weight']
+            # If undirected, do reverse
+            if tnet.nettype[1] == 'u':
+                df = tnet.network.groupby([toax, 't']).sum().reset_index()
+                tdeg[df[toax], df['t']] += df['weight']
+        else:
+            tdeg = np.sum(tnet.network, axis=axis)
     elif calc == 'module_degree_zscore' and communities is None:
         raise ValueError(
             'Communities must be specified when calculating module degree z-score.')
@@ -125,6 +128,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
                 tdeg[s, s, :] = tdeg[s, s, :]/2
     else:
         raise ValueError("invalid calc argument")
+
     if decay > 0 and calc == 'time':
         # Reshape so that time is first dimensions
         tdeg = tdeg.transpose(
