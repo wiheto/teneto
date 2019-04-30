@@ -9,7 +9,7 @@ import pickle
 class TemporalNetwork:
 
     def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False,
-                 timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None, hdf5=False, hdf5path=None):
+                 timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None, hdf5=False, hdf5path=None, forcesparse=False):
         """
         N : int
             number of nodes in network
@@ -43,6 +43,8 @@ class TemporalNetwork:
             if true, pandas dataframe is stored and queried as a h5 file.
         hdf5path : str
             Where the h5 files is saved if hdf5 is True. If left unset, the default is ./teneto_temporalnetwork.h5
+        forcesparse : bool 
+            If importing array, and over 25% edges are present, a dense matrix is created. Can force it to be sparse by making this true. 
         """
         # Check inputs
         if nettype:
@@ -129,7 +131,7 @@ class TemporalNetwork:
         if from_edgelist is not None:
             self.network_from_edgelist(from_edgelist)
         elif from_array is not None:
-            self.network_from_array(from_array)
+            self.network_from_array(from_array, forcesparse=forcesparse)
         elif from_dict is not None:
             self.network_from_dict(from_dict)
 

@@ -81,7 +81,7 @@ class TenetoBIDS:
             self.BIDS = BIDSLayout(BIDS_dir, validate=False)
         else: 
             self.BIDS = None
-            
+
         self.BIDS_dir = os.path.abspath(BIDS_dir)
         self.pipeline = pipeline
         self.confound_pipeline = confound_pipeline
@@ -260,7 +260,7 @@ class TenetoBIDS:
             params['dimord'] = 'time,node'
 
         dfc = teneto.timeseries.derive_temporalnetwork(data.values, params)
-        dfc_net = TemporalNetwork(from_array=dfc, nettype='wu')
+        dfc_net = TemporalNetwork(from_array=dfc, nettype='wu', forcesparse=True)
         dfc_net.network.to_csv(save_dir + save_name + '.tsv', sep='\t')
 
         sidecar = get_sidecar(f)
