@@ -129,7 +129,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
                             np.sum(network[C == s1, :, t][:, C == s2], axis=1), axis=0)
         else:
             unique_communities = np.unique(communities)
-            tdeg_communities = [np.sum(np.sum(network()[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
+            tdeg_communities = [np.sum(np.sum(network[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
                                 for s1 in unique_communities for s2 in unique_communities]
 
         tdeg = np.array(tdeg_communities)
