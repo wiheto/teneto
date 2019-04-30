@@ -1008,6 +1008,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     if isinstance(tnet, pd.DataFrame):
         network = tnet
         hdf5 = False
+        sparse = True
     elif isinstance(tnet, np.ndarray):
         network = tnet
         sparse = False
