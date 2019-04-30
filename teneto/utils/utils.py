@@ -609,10 +609,16 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
     inputtype = checkInput(netIn)
     # Convert TN to G representation
     if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
-        G = netIn.df_to_array()
+        if netIn.sparse == True:
+            G = netIn.df_to_array()
+        else: 
+            G = netIn.network
         netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
     elif inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
-        TN = netIn
+        if netIn.sparse == False and forcesparse == True: 
+            TN = TemporalNetwork(from_array=netIn.network, forcesparse=True)
+        else:
+            TN = netIn
     elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'G':
         G = contact2graphlet(netIn)
         netInfo = dict(netIn)
@@ -1144,6 +1150,7 @@ def create_supraadjacency_matrix(tnet, intersliceweight=1):
     supranet : dataframe
         Supraadjacency matrix
     """
+    tnet = process_input(tnet, ['G', 'C', 'TN'], 'TN', forcesparse=True)
     newnetwork = tnet.network.copy()
     newnetwork['i'] = (tnet.network['i']) + \
         ((tnet.netshape[0]) * (tnet.network['t']))
