@@ -423,7 +423,7 @@ class TemporalNetwork:
         funs = {m[0]: m[1] for m in funs if not m[0].startswith('__')}
         network = funs[networktype](**networkparams)
         self.network_from_array(network)
-        if self.nettype[1] == 'u':
+        if self.nettype[1] == 'u' and self.sparse == 'True':
             self._drop_duplicate_ij()
 
     def plot(self, plottype, ij=None, t=None, ax=None, **plotparams):
