@@ -271,11 +271,8 @@ class TemporalNetwork:
         """
         Drops duplicate entries from the network dataframe.
         """
-        self.network['ij'] = list(map(lambda x: tuple(sorted(x)), list(
-            zip(*[self.network['i'].values, self.network['j'].values]))))
-        self.network.drop_duplicates(['ij', 't'], inplace=True)
-        self.network.reset_index(inplace=True, drop=True)
-        self.network.drop('ij', inplace=True, axis=1)
+        self.network = teneto.utils.df_drop_ij_duplicates(self.network)
+
 
     def _drop_diagonal(self):
         """

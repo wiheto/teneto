@@ -631,7 +631,7 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
         pass
     else:
         raise ValueError('Input invalid.')
-    if outputformat == 'TN' and  isinstance(TN.network, pd.DataFrame):
+    if outputformat == 'TN' and isinstance(TN.network, pd.DataFrame):
         TN.network['i'] = TN.network['i'].astype(int)
         TN.network['j'] = TN.network['j'].astype(int)
         TN.network['t'] = TN.network['t'].astype(int)
@@ -1067,22 +1067,27 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
                 i = np.arange(network.shape[0])
             if j is None:
                 j = np.arange(network.shape[0])
-            if ij is not None and ud == 'u':
+            if ij is not None:
                 i = ij
-            if ij is not None and ud == 'd':
-                raise ValueError(
-                    'OR logic not implemented with array/dense format yet!')
+                j = np.arange(network.shape[0])
         ind = list(zip(*itertools.product(i, j, t)))
+        ind = np.array(ind)
+        if ij is None: 
+            ind2 = np.array(list(zip(*itertools.product(j, i, t))))
+            ind = np.hstack([ind,ind2])
+            
         edges = network[ind[0], ind[1], ind[2]]
+
+        ind = ind[:, edges != 0]
         if bw == 'b':
-            ind = np.array(ind)
-            ind = ind[:, edges == 1]
             df = pd.DataFrame(data={'i': ind[0], 'j': ind[1], 't': ind[2]})
         else:
+            edges = edges[edges != 0]
             df = pd.DataFrame(
                 data={'i': ind[0], 'j': ind[1], 't': ind[2], 'weight': edges})
         df['i'] = df['i'].astype(int)
         df['j'] = df['j'].astype(int)
+        df = df_drop_ij_duplicates(df)
     else:
         if i is not None and j is not None and t is not None and logic == 'and':
             df = network[(network['i'].isin(i)) & (
@@ -1183,3 +1188,12 @@ def check_TemporalNetwork_input(datain, datatype):
             raise ValueError('Columns must be \'i\' \'j\' and \'t\'')
     else:
         raise ValueError('Unknown datatype')
+
+
+def df_drop_ij_duplicates(df):
+    df['ij'] = list(map(lambda x: tuple(sorted(x)), list(
+        zip(*[df['i'].values, df['j'].values]))))
+    df.drop_duplicates(['ij', 't'], inplace=True)
+    df.reset_index(inplace=True, drop=True)
+    df.drop('ij', inplace=True, axis=1)
+    return df
