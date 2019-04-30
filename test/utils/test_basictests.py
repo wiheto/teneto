@@ -200,11 +200,11 @@ def test_process_input():
     tnet.generatenetwork('rand_binomial', prob=[0.5, 0.2], size=[5, 12])
     G = tnet.network
     tnet2 = teneto.utils.process_input(G, 'G', 'TN')
-    if not all(tnet2.network == tnet.network):
+    if not np.all(tnet2.network == tnet.network):
         raise AssertionError()
     C = teneto.utils.process_input(G, 'G', 'C')
     tnet3 = teneto.utils.process_input(C, 'C', 'TN')
-    if not all(tnet2.network == tnet3.network):
+    if not np.all(tnet2.network ==  tnet3.df_to_array()):
         raise AssertionError()
     C2 = teneto.utils.process_input(tnet, 'TN', 'C')
     G2, _ = teneto.utils.process_input(tnet, 'TN', 'G')
