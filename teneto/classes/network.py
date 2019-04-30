@@ -205,6 +205,7 @@ class TemporalNetwork:
         else:
             self.network = np.array(array)
             self.sparse = False
+            self.nettype = teneto.utils.gen_nettype(self.network)
         self.N = int(array.shape[0])
         self.T = int(array.shape[-1])
 
