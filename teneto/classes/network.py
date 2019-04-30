@@ -210,6 +210,7 @@ class TemporalNetwork:
             self.nettype = teneto.utils.gen_nettype(self.network)
         self.N = int(array.shape[0])
         self.T = int(array.shape[-1])
+        self.netshape = (self.N, self.T)
 
     def _update_network(self):
         self._calc_netshape()
