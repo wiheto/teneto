@@ -93,7 +93,7 @@ class TemporalNetwork:
                 hdf5path = hdf5path[:-3]
 
         self.diagonal = diagonal
-
+        self.sparse = True
         # todo - add checks that labels are ok
         if nodelabels:
             self.nodelabels = nodelabels
@@ -147,7 +147,7 @@ class TemporalNetwork:
         self._calc_netshape()
         if not self.diagonal:
             self._drop_diagonal()
-        if nettype:
+        if nettype and self.sparse == True:
             if nettype[1] == 'u':
                 self._drop_duplicate_ij()
 
@@ -176,7 +176,7 @@ class TemporalNetwork:
                 ud = 'd'
             self.nettype = wb + ud
 
-    def network_from_array(self, array):
+    def network_from_array(self, array, forcesparse=False):
         """impo
         Defines a network from an array.
 
@@ -184,22 +184,29 @@ class TemporalNetwork:
         ----------
         array : array
             3D numpy array.
+        forcespace : bool
+            If true, will always make the array sparse (can be slow). If false, dense form will be kept
+            if more than 25% of edges are present.
         """
         if len(array.shape) == 2:
             array = np.array(array, ndmin=3).transpose([1, 2, 0])
         teneto.utils.check_TemporalNetwork_input(array, 'array')
-        uvals = np.unique(array)
-        if len(uvals) == 2 and 1 in uvals and 0 in uvals:
-            i, j, t = np.where(array == 1)
-            self.network = pd.DataFrame(data={'i': i, 'j': j, 't': t})
+        if np.sum([array == 0]) > np.prod(array.shape)*0.75 or forcesparse == True:
+            uvals = np.unique(array)
+            if len(uvals) == 2 and 1 in uvals and 0 in uvals:
+                i, j, t = np.where(array == 1)
+                self.network = pd.DataFrame(data={'i': i, 'j': j, 't': t})
+            else:
+                i, j, t = np.where(array != 0)
+                w = array[array != 0]
+                self.network = pd.DataFrame(
+                    data={'i': i, 'j': j, 't': t, 'weight': w})
+            self._update_network()
         else:
-            i, j, t = np.where(array != 0)
-            w = array[array != 0]
-            self.network = pd.DataFrame(
-                data={'i': i, 'j': j, 't': t, 'weight': w})
+            self.network = np.array(array)
+            self.sparse = False
         self.N = int(array.shape[0])
         self.T = int(array.shape[-1])
-        self._update_network()
 
     def _update_network(self):
         self._calc_netshape()
@@ -271,17 +278,24 @@ class TemporalNetwork:
         """
         Drops self-contacts from the network dataframe.
         """
-        self.network = self.network.where(
-            self.network['i'] != self.network['j']).dropna()
-        self.network.reset_index(inplace=True, drop=True)
+        if self.sparse == True:
+            self.network = self.network.where(
+                self.network['i'] != self.network['j']).dropna()
+            self.network.reset_index(inplace=True, drop=True)
+        else:
+            self.network = teneto.utils.set_diagonal(self.network, 0)
 
     def _calc_netshape(self):
+
         if len(self.network) == 0:
             self.netshape = (0, 0)
+        elif self.sparse == False:
+            N = int(self.network.shape[0])
+            T = int(self.network.shape[-1])
+            self.netshape = (N, T)
         else:
             N = self.network[['i', 'j']].max(axis=1).max()+1
             T = self.network['t'].max()+1
-
             if self.N > N:
                 N = self.N
             else:
@@ -290,9 +304,7 @@ class TemporalNetwork:
                 T = self.T
             else:
                 self.T = int(T)
-
             self.netshape = (int(N), int(T))
-
 
     def add_edge(self, edgelist):
         """
@@ -308,6 +320,8 @@ class TemporalNetwork:
         --------
             Updates TenetoBIDS.network dataframe with new edge
         """
+        if self.sparse == False:
+            raise ValueError('Add edge not compatible with dense network')
         if not isinstance(edgelist[0], list):
             edgelist = [edgelist]
         teneto.utils.check_TemporalNetwork_input(edgelist, 'edgelist')

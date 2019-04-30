@@ -8,7 +8,7 @@
 
 -   Adding export_history to TenetoBIDS.
 
--   Divide reoslution of louvain by number of time-points (so gamma is relative to each snapshot)
+-   Divide resolution of louvain by number of time-points (so gamma is relative to each snapshot)
 
 -   Default of consensus matrix in community detection set to 0.5.
 
@@ -43,6 +43,8 @@
 -   dataset_description exported with export_history (as tenetoinfo.json)
 
 -   fixing exclusion confound when criteria is based on SD (previously an error was raised)
+
+-   Added dense compatibility to TemporalNetwork and get_network_when
 
 ## V0.4.3
 

@@ -6,6 +6,7 @@ Utiltity functions
 
 import numpy as np
 import collections
+import itertools
 import scipy.spatial.distance as distance
 from nilearn.input_data import NiftiSpheresMasker, NiftiLabelsMasker
 from nilearn.datasets import fetch_atlas_harvard_oxford
@@ -882,7 +883,8 @@ def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None)
         data = np.hstack([data, data_sub])
 
     if cerebellar:
-        path = tenetopath[0] + '/data/parcellation/Cerebellum-SUIT_space-MNI152NLin2009cAsym.nii.gz'
+        path = tenetopath[0] + \
+            '/data/parcellation/Cerebellum-SUIT_space-MNI152NLin2009cAsym.nii.gz'
         region = NiftiLabelsMasker(path, **parc_params)
         data_cerebellar = region.fit_transform(data_path)
         data = np.hstack([data, data_cerebellar])
@@ -975,7 +977,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
 
     Parameters
     ----------
-    tnet : df or TemporalNetwork
+    tnet : df, array or TemporalNetwork
         TemporalNetwork object or pandas dataframe edgelist
     i : list or int
         get nodes in column i (source nodes in directed networks)
@@ -1000,10 +1002,14 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     if isinstance(tnet, pd.DataFrame):
         network = tnet
         hdf5 = False
+    if isinstance(tnet, np.ndarray):
+        network = tnet
+        sparse = False
     # Can add hdfstore
     elif isinstance(tnet, object):
         network = tnet.network
         hdf5 = tnet.hdf5
+        sparse = tnet.sparse
     if ij is not None and (i is not None or j is not None):
         raise ValueError('ij cannoed be specifed along with i or j')
     # Make non list inputs a list
@@ -1049,6 +1055,32 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         elif ij is not None:
             isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij)
         df = pd.read_hdf(network, where=isinstr)
+    elif sparse == False:
+        bw, ud = gen_nettype(network)
+        if logic == 'or':
+            raise ValueError(
+                'OR logic not implemented with array/dense format yet!')
+        else:
+            if t is None:
+                t = np.arange(network.shape[-1])
+            if i is None:
+                i = np.arange(network.shape[0])
+            if j is None:
+                j = np.arange(network.shape[0])
+            if ij is not None and ud == 'u':
+                i = ij
+            if ij is not None and ud == 'd':
+                raise ValueError(
+                    'OR logic not implemented with array/dense format yet!')
+        ind = list(zip(*itertools.product(i, j, t)))
+        edges = network[ind[0], ind[1], ind[2]]
+        if bw == 'b':
+            ind = np.array(ind)
+            ind = ind[:, edges == 1]
+            df = pd.DataFrame(data={'i': ind[0], 'j': ind[1], 't': ind[2]})
+        else:
+            df = pd.DataFrame(
+                data={'i': ind[0], 'j': ind[1], 't': ind[2], 'weight': edges})
     else:
         if i is not None and j is not None and t is not None and logic == 'and':
             df = network[(network['i'].isin(i)) & (
