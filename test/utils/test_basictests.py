@@ -198,7 +198,7 @@ def test_utils_fails():
 def test_process_input():
     tnet = teneto.TemporalNetwork()
     tnet.generatenetwork('rand_binomial', prob=[0.5, 0.2], size=[5, 12])
-    G = tnet.df_to_array()
+    G = tnet.network
     tnet2 = teneto.utils.process_input(G, 'G', 'TN')
     if not all(tnet2.network == tnet.network):
         raise AssertionError()
