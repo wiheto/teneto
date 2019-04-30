@@ -573,7 +573,7 @@ def getDistanceFunction(requested_metric):
         raise ValueError('Distance function cannot be found.')
 
 
-def process_input(netIn, allowedformats, outputformat='G'):
+def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
     """
     Takes input network and checks what the input is.
 
@@ -620,7 +620,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
     elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'TN':
         TN = TemporalNetwork(from_dict=netIn)
     elif inputtype == 'G' and 'G' in allowedformats and outputformat == 'TN':
-        TN = TemporalNetwork(from_array=netIn)
+        TN = TemporalNetwork(from_array=netIn, forcesparse=forcesparse)
     # Get network type if not set yet
     elif inputtype == 'G' and 'G' in allowedformats:
         netInfo = {}
@@ -631,7 +631,7 @@ def process_input(netIn, allowedformats, outputformat='G'):
         pass
     else:
         raise ValueError('Input invalid.')
-    if outputformat == 'TN' and not isinstance(TN.network, str):
+    if outputformat == 'TN' and  isinstance(TN.network, pd.DataFrame):
         TN.network['i'] = TN.network['i'].astype(int)
         TN.network['j'] = TN.network['j'].astype(int)
         TN.network['t'] = TN.network['t'].astype(int)
