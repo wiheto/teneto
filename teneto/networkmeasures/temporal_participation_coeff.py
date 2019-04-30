@@ -58,14 +58,23 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
 
     if tnet.nettype[0] == 'w':
         # TODO add contingency when hdf5 data has negative edges
-        if tnet.hdf5 == False:
+        if tnet.hdf5 == False and tnet.sparse==True:
             if sum(tnet.network['weight'] < 0) > 0 and not removeneg:
                 print(
                     'TENETO WARNING: negative edges exist when calculating participation coefficient.')
             else:
                 tnet.network['weight'][tnet.network['weight'] < 0] = 0
+        if tnet.hdf5 == False and tnet.sparse==False:
+            if np.sum(tnet.network< 0) > 0 and not removeneg:
+                print(
+                    'TENETO WARNING: negative edges exist when calculating participation coefficient.')
+            else:
+                tnet.network[tnet.network < 0] = 0
+
 
     part = np.zeros([tnet.netshape[0], tnet.netshape[1]])
+
+
 
     if len(communities.shape) == 1:
         for t in np.arange(0, tnet.netshape[1]):
@@ -98,7 +107,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
                 for c in np.unique(C[j_at_t]):
                     ci = np.where(C == c)[0].tolist()
                     k_is = tnet.get_network_when(i=i, j=ci, t=t)
-                    if tnet.nettype[1] == 'u':
+                    if tnet.nettype[1] == 'u' and tnet.sparse == True:
                         k_is2 = tnet.get_network_when(j=i, i=ci, t=t)
                         k_is = pd.concat([k_is, k_is2])
                     if len(k_is) > 0:
@@ -108,6 +117,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
                             k_is = k_is['weight'].sum()
                         part[i, t] += np.square(k_is/k_i)
             part[i_at_t, t] = 1 - part[i_at_t, t]
+            print(part)
             if decay is not None and t > 0:
                 part[i_at_t, t] += decay*part[i_at_t, t-1]
     else:
@@ -160,3 +170,4 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
     part[np.isnan(part) == 1] = 0
 
     return part
+
