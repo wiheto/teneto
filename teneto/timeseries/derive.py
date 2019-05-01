@@ -11,6 +11,7 @@ from ..utils import set_diagonal, getDistanceFunction
 from .postprocess import postpro_pipeline
 from .report import gen_report
 import scipy.stats as sps
+from scipy.signal import hilbert
 
 
 def derive_temporalnetwork(data, params):
@@ -120,6 +121,14 @@ def derive_temporalnetwork(data, params):
         NxN array to weight the JC estimates (standerdized-JC+W). If weightby is selected, do not standerdize in postpro.
 
 
+    When method == 'instantaneousphasesync'
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    No parameters are necessary.
+
+    params['norm'] : array, (optional)
+        Default is np.pi*2. How to normalize phase relationship. Could also be np.pi if anti-phase signals are considered "connected".
+
     Returns
     -------
 
@@ -185,6 +194,9 @@ def derive_temporalnetwork(data, params):
         elif params['method'] == 'mtd' or params['method'] == 'multiply temporal derivative' or params['method'] == 'multiplytemporalderivative' or params['method'] == 'temporal derivative' or params['method'] == "temporalderivative":
             R, report = _temporal_derivative(data, params, report)
             relation = 'coupling'
+        elif params['method'] == 'instantaneousphasesync' or params['method'] == 'ip':
+            R, report = _instantaneous_phasesync(data, params, report)
+            relation = 'coupling'
         else:
             raise ValueError(
                 'Unrecognoized method. See derive_with_weighted_pearson documentation for predefined methods or enter own weight matrix')
@@ -239,7 +251,7 @@ def derive_temporalnetwork(data, params):
 
 def _weightfun_jackknife(T, report):
     """
-    Creates the weights for the jackknife method. See func: teneto.derive.derive.
+    Creates the weights for the jackknife method. See func: teneto.timeseries.derive_temporalnetwork.
     """
 
     weights = np.ones([T, T])
@@ -251,7 +263,7 @@ def _weightfun_jackknife(T, report):
 
 def _weightfun_sliding_window(T, params, report):
     """
-    Creates the weights for the sliding window method. See func: teneto.derive.derive.
+    Creates the weights for the sliding window method. See func: teneto.timeseries.derive_temporalnetwork.
     """
     weightat0 = np.zeros(T)
     weightat0[0:params['windowsize']] = np.ones(params['windowsize'])
@@ -265,12 +277,12 @@ def _weightfun_sliding_window(T, params, report):
 
 def _weightfun_tapered_sliding_window(T, params, report):
     """
-    Creates the weights for the tapered method. See func: teneto.derive.derive.
+    Creates the weights for the tapered method. See func: teneto.timeseries.derive_temporalnetwork.
     """
     x = np.arange(-(params['windowsize'] - 1) / 2, (params['windowsize']) / 2)
     distribution_parameters = ','.join(map(str, params['distribution_params']))
     taper = eval('sps.' + params['distribution'] +
-                             '.pdf(x,' + distribution_parameters + ')')
+                 '.pdf(x,' + distribution_parameters + ')')
 
     weightat0 = np.zeros(T)
     weightat0[0:params['windowsize']] = taper
@@ -285,7 +297,7 @@ def _weightfun_tapered_sliding_window(T, params, report):
 
 def _weightfun_spatial_distance(data, params, report):
     """
-    Creates the weights for the spatial distance method. See func: teneto.derive.derive.
+    Creates the weights for the spatial distance method. See func: teneto.timeseries.derive_temporalnetwork.
     """
     distance = getDistanceFunction(params['distance'])
     weights = np.array([distance(data[n, :], data[t, :]) for n in np.arange(
@@ -301,7 +313,7 @@ def _weightfun_spatial_distance(data, params, report):
 
 def _temporal_derivative(data, params, report):
     """
-    Performs mtd method. See func: teneto.derive.derive.
+    Performs mtd method. See func: teneto.timeseries.derive_temporalnetwork.
     """
     # Data should be timexnode
     report = {}
@@ -328,3 +340,23 @@ def _temporal_derivative(data, params, report):
     report['temporalderivative']['windowsize'] = params['windowsize']
 
     return coupling_windowed, report
+
+
+def _instantaneous_phasesync(data, params, report):
+    """
+    Derivce instantaneous phase synchrony. See func: teneto.timeseries.derive_temporalnetwork.
+    """
+    analytic_signal = hilbert(data)
+    instantaneous_phase = np.angle(analytic_signal)
+    ips = np.zeros([data.shape[0], data.shape[0], data.shape[1]])
+    for n in range(data.shape[0]):
+        for m in range(data.shape[0]):
+            ips[n, m, :] = np.remainder(
+                np.abs(instantaneous_phase[n, :] - instantaneous_phase[m, :]), 2*np.pi)
+
+    report = {}
+    report['method'] = 'instantaneousphasesync'
+    report['instantaneousphasesync'] = {}
+
+    return ips, report
+

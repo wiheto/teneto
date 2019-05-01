@@ -1,15 +1,15 @@
 import numpy as np
 import networkx as nx
 import scipy.spatial.distance as distance
-from scipy.signal import hilbert
 import pandas as pd
+from teneto.timeseries import derive_temporalnetwork
 
 
 def partition_inference(tctc_mat, comp, tau, sigma, kappa):
     r"""
     Takes tctc trajectory matrix and returns dataframe where all multi-label communities are listed
 
-    Can take a little bit of time with large datasets and optimizaiton could remove some for loops. 
+    Can take a little bit of time with large datasets and optimizaiton could remove some for loops.
     """
     communityinfo = {}
     communityinfo['community'] = []
@@ -27,16 +27,16 @@ def partition_inference(tctc_mat, comp, tau, sigma, kappa):
                     cutoff = i-1-kappa
                     if cutoff < 0:
                         cutoff = 0
-                    
+
                     if np.any(np.sum(np.sum(tctc_mat[traj, :, cutoff:i][:, traj], axis=0), axis=0) == np.power(len(traj), 2)):
-                        # Make sure that a small trajectory could exist 
-                        for checknode in np.where(communityinfo['end']>=cutoff)[0]:
+                        # Make sure that a small trajectory could exist
+                        for checknode in np.where(communityinfo['end'] >= cutoff)[0]:
                             if traj == communityinfo['community'][checknode]:
                                 ignore = 1
-                        if ignore == 0: 
-                            for checknode in np.where(communityinfo['end']>=cutoff)[0]:
+                        if ignore == 0:
+                            for checknode in np.where(communityinfo['end'] >= cutoff)[0]:
                                 if set(communityinfo['community'][checknode]).issuperset(traj):
-                                    preexisting = 1                              
+                                    preexisting = 1
                 if ignore == 0:
                     # Check how long it continues
                     # For efficiency, increase in blocks
@@ -63,14 +63,16 @@ def partition_inference(tctc_mat, comp, tau, sigma, kappa):
                         a = np.append(a, a.max()+kappa+2)
                         # Find the stop index (if stopind = 4 and start = 0, then tctc_mat[:,:,start:stopind]==1)
                         stopind = i + np.split(a, np.where(
-                                np.diff(a) > kappa+1)[0]+1)[0][-1] + 1
+                            np.diff(a) > kappa+1)[0]+1)[0][-1] + 1
                     # Add trajectory to dictionary
                     if ((stopind - i) >= tau or preexisting == 1) and len(traj) >= sigma:
                         communityinfo['community'].append(sorted(traj))
-                        communityinfo['start'] = np.append(communityinfo['start'], int(i))
+                        communityinfo['start'] = np.append(
+                            communityinfo['start'], int(i))
                         communityinfo['end'] = np.append(
                             communityinfo['end'], int(stopind))
-                        communityinfo['size'] = np.append(communityinfo['size'], len(traj))
+                        communityinfo['size'] = np.append(
+                            communityinfo['size'], len(traj))
 
     communityinfo = pd.DataFrame(communityinfo)
 
@@ -96,7 +98,8 @@ def partition_inference(tctc_mat, comp, tau, sigma, kappa):
                 communityinfo.loc[v[0], 'start'] = u[1]['start']
 
     # It is possible to make the condition below effective_length
-    communityinfo['length'] = np.array(communityinfo['end']) - np.array(communityinfo['start'])
+    communityinfo['length'] = np.array(
+        communityinfo['end']) - np.array(communityinfo['start'])
     communityinfo = communityinfo[communityinfo['length'] >= tau]
     communityinfo = communityinfo[communityinfo['size'] >= sigma]
 
@@ -174,13 +177,8 @@ def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False, rule='flock', n
             d = np.reshape(d, [data.shape[-1], data.shape[-1], data.shape[0]])
 
         elif raw_signal == 'phase':
-            analytic_signal = hilbert(data.transpose())
-            instantaneous_phase = np.angle(analytic_signal)
-            d = np.zeros([data.shape[1], data.shape[1], data.shape[0]])
-            for n in range(data.shape[1]):
-                for m in range(data.shape[1]):
-                    d[n, m, :] = np.remainder(
-                        np.abs(instantaneous_phase[n, :] - instantaneous_phase[m, :]), np.pi)
+            params = {'method': 'ips', 'dimord': 'time,node'}
+            d = derive_temporalnetwork(data, dimord=params)
 
         # Shape of datin (with any addiitonal 0s or noise added to nodes)
         dat_shape = [int(d.shape[-1]), int(d.shape[0])]

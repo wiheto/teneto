@@ -46,6 +46,8 @@
 
 -   Added dense compatibility to TemporalNetwork and get_network_when
 
+-   Added instantaneous phase
+
 ## V0.4.3
 
 -   Added Schaefer atlas
