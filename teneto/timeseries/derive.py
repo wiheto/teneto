@@ -359,4 +359,3 @@ def _instantaneous_phasesync(data, params, report):
     report['instantaneousphasesync'] = {}
 
     return ips, report
-
