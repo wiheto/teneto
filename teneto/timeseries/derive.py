@@ -194,7 +194,7 @@ def derive_temporalnetwork(data, params):
         elif params['method'] == 'mtd' or params['method'] == 'multiply temporal derivative' or params['method'] == 'multiplytemporalderivative' or params['method'] == 'temporal derivative' or params['method'] == "temporalderivative":
             R, report = _temporal_derivative(data, params, report)
             relation = 'coupling'
-        elif params['method'] == 'instantaneousphasesync' or params['method'] == 'ip':
+        elif params['method'] == 'instantaneousphasesync' or params['method'] == 'ips':
             R, report = _instantaneous_phasesync(data, params, report)
             relation = 'coupling'
         else:
@@ -346,11 +346,11 @@ def _instantaneous_phasesync(data, params, report):
     """
     Derivce instantaneous phase synchrony. See func: teneto.timeseries.derive_temporalnetwork.
     """
-    analytic_signal = hilbert(data)
+    analytic_signal = hilbert(data.transpose())
     instantaneous_phase = np.angle(analytic_signal)
-    ips = np.zeros([data.shape[0], data.shape[0], data.shape[1]])
-    for n in range(data.shape[0]):
-        for m in range(data.shape[0]):
+    ips = np.zeros([data.shape[1], data.shape[1], data.shape[0]])
+    for n in range(data.shape[1]):
+        for m in range(data.shape[1]):
             ips[n, m, :] = np.remainder(
                 np.abs(instantaneous_phase[n, :] - instantaneous_phase[m, :]), 2*np.pi)
 
