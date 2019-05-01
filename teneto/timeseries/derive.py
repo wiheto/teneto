@@ -48,7 +48,8 @@ def derive_temporalnetwork(data, params):
     Params for all methods (optional)
     =================================
 
-    postpro : "no" (default). Other alternatives are: "fisher", "boxcox", "standardize"
+    postpro : "no" (default). 
+    Other alternatives are: "fisher", "boxcox", "standardize"
      and any combination seperated by a + (e,g, "fisher+boxcox").
       See postpro_pipeline for more information.
     dimord : str
@@ -125,9 +126,6 @@ def derive_temporalnetwork(data, params):
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     No parameters are necessary.
-
-    params['norm'] : array, (optional)
-        Default is np.pi*2. How to normalize phase relationship. Could also be np.pi if anti-phase signals are considered "connected".
 
     Returns
     -------
