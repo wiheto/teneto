@@ -178,7 +178,7 @@ def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False, rule='flock', n
 
         elif raw_signal == 'phase':
             params = {'method': 'ips', 'dimord': 'time,node'}
-            d = derive_temporalnetwork(data, dimord=params)
+            d = derive_temporalnetwork(data, params)
 
         # Shape of datin (with any addiitonal 0s or noise added to nodes)
         dat_shape = [int(d.shape[-1]), int(d.shape[0])]
