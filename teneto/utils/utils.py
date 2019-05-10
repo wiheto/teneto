@@ -1065,10 +1065,6 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
             isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij)
         df = pd.read_hdf(network, where=isinstr)
     elif sparse == False:
-        import time
-        print('starting')
-        t1 = time.time()
-        t2 = time.time()
         if logic == 'or':
             raise ValueError(
                 'OR logic not implemented with array/dense format yet!')
@@ -1082,17 +1078,13 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
             if ij is not None:
                 i = ij
                 j = np.arange(network.shape[0])
-        t3 = time.time()
         ind = list(zip(*itertools.product(i, j, t)))
         ind = np.array(ind)
-        t4 = time.time()
         if ij is None: 
             ind2 = np.array(list(zip(*itertools.product(j, i, t))))
             ind = np.hstack([ind,ind2])
-        t5 = time.time()
           
         edges = network[ind[0], ind[1], ind[2]]
-        t6 = time.time()
 
         ind = ind[:, edges != 0]
         edges = edges[edges != 0]
@@ -1101,19 +1093,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         df['i'] = df['i'].astype(int)
         df['j'] = df['j'].astype(int)
         df = df_drop_ij_duplicates(df)
-        t7 = time.time()
-        print('--- Checkpoint 1 ---')
-        print(t2-t1)
-        print('--- Checkpoint 2 ---')
-        print(t3-t2)
-        print('--- Checkpoint 3 ---')
-        print(t4-t3)
-        print('--- Checkpoint 4 ---')
-        print(t5-t4)
-        print('--- Checkpoint 5 ---')
-        print(t6-t5)
-        print('--- Checkpoint 6 ---')
-        print(t7-t6)
+
     else:
         if i is not None and j is not None and t is not None and logic == 'and':
             df = network[(network['i'].isin(i)) & (
