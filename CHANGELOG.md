@@ -48,6 +48,8 @@
 
 -   Added instantaneous phase
 
+-   Fixing speed problems for temporal network!
+
 ## V0.4.3
 
 -   Added Schaefer atlas
