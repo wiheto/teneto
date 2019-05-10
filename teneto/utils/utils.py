@@ -1068,7 +1068,6 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         import time
         print('starting')
         t1 = time.time()
-        bw = gen_nettype(network, weightonly=True)
         t2 = time.time()
         if logic == 'or':
             raise ValueError(
@@ -1096,12 +1095,9 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         t6 = time.time()
 
         ind = ind[:, edges != 0]
-        if bw == 'b':
-            df = pd.DataFrame(data={'i': ind[0], 'j': ind[1], 't': ind[2]})
-        else:
-            edges = edges[edges != 0]
-            df = pd.DataFrame(
-                data={'i': ind[0], 'j': ind[1], 't': ind[2], 'weight': edges})
+        edges = edges[edges != 0]
+        df = pd.DataFrame(
+            data={'i': ind[0], 'j': ind[1], 't': ind[2], 'weight': edges})
         df['i'] = df['i'].astype(int)
         df['j'] = df['j'].astype(int)
         df = df_drop_ij_duplicates(df)
