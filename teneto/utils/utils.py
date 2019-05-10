@@ -466,7 +466,7 @@ def gen_nettype(G, printWarning=0, weightonly=False):
     """
 
     
-    if np.array_equal(a, a.astype(bool)):
+    if np.array_equal(G, G.astype(bool)):
         nettype = 'b'
     else:
         nettype = 'w'
