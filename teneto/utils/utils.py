@@ -448,7 +448,7 @@ def set_diagonal(G, val=0):
     return G
 
 
-def gen_nettype(G, printWarning=0):
+def gen_nettype(G, printWarning=0, weightonly=False):
     """
 
     Attempts to identify what nettype input graphlet G is. Diagonal is ignored.
@@ -465,17 +465,19 @@ def gen_nettype(G, printWarning=0):
         \'wu\', \'bu\', \'wd\', or \'bd\'
     """
 
-    if np.any((G!=0) & (G!=1)):
-        weights = 'b'
+    
+    if np.array_equal(a, a.astype(bool)):
+        nettype = 'b'
     else:
-        weights = 'w'
+        nettype = 'w'
 
-    if np.allclose(G.transpose(1, 0, 2), G):
-        direction = 'u'
-    else:
-        direction = 'd'
+    if weightonly == False:
+        if np.allclose(G.transpose(1, 0, 2), G):
+            direction = 'u'
+        else:
+            direction = 'd'
 
-    nettype = weights + direction
+        nettype = nettype + direction
 
     return nettype
 
@@ -1066,11 +1068,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         import time
         print('starting')
         t1 = time.time()
-        # This may not be the best assumption and an argument could be passed instead of generating the nettype every call. 
-        if str(network.dtype).startswith('int') == 'int':
-            bw, _ = gen_nettype(network)
-        else:
-            bw = 'w'
+        bw = gen_nettype(network, weightonly=True)
         t2 = time.time()
         if logic == 'or':
             raise ValueError(
