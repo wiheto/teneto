@@ -50,6 +50,8 @@
 
 -   Fixing speed problems for temporal network!
 
+-   Fixing issue in within community estimates for bursty_coef when calc='communities'
+
 ## V0.4.3
 
 -   Added Schaefer atlas

@@ -5,7 +5,7 @@ networkmeasures.bursty_coeff
 import numpy as np
 from .intercontacttimes import intercontacttimes
 from ..utils import binarize
-
+import itertools
 
 def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_type=None, threshold_level=None, threshold_params=None):
     r"""
@@ -173,8 +173,8 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
         ict = np.array([[None] * ict_shape[0]] * ict_shape[1])
         for i, s1 in enumerate(unique_communities):
             for j, s2 in enumerate(unique_communities):
-                if s1 == s2:
-                    ind = np.triu_indices(sum(communities == s1), k=1)
+                if i == j:
+                    ind = list(zip(*itertools.combinations(np.where(communities==s1)[0],2)))
                     ict[i, j] = np.concatenate(
                         data['intercontacttimes'][ind[0], ind[1]])
                 else:
