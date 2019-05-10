@@ -1066,7 +1066,9 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         import time
         print('starting')
         t1 = time.time()
-        bw, ud = gen_nettype(network)
+        # This may not be the best assumption and an argument could be passed instead of generating the nettype every call. 
+        if str(network.dtype).startswith('int') == 'int':
+            bw, _ = gen_nettype(network)
         t2 = time.time()
         if logic == 'or':
             raise ValueError(
