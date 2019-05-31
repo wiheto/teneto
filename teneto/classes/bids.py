@@ -757,7 +757,7 @@ class TenetoBIDS:
         files, confound_files = confound_matching(files, confound_files)
         bad_files = []
         for i, cfile in enumerate(confound_files):
-            data = load_tabular_file(files[i]).values
+            data = load_tabular_file(files[i]).values.T
             df = load_tabular_file(cfile, index_col=None)
             ind = []
             # Can't interpolate values if nanind is at the beginning or end. So keep these as their original values.
@@ -783,7 +783,7 @@ class TenetoBIDS:
                         nonnanind, data[n, nonnanind], kind='cubic')
                     data[n, nanind] = interp(nanind)
             # only save if the subject is not excluded
-            data = pd.DataFrame(data)
+            data = pd.DataFrame(data.T)
             sname, _ = drop_bids_suffix(files[i])
             # Move files to teneto derivatives if the pipeline isn't already set to it
             if self.pipeline != 'teneto_' + teneto.__version__:
