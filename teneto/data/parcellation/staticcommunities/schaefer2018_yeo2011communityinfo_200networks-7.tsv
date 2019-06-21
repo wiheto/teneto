@@ -1,201 +1,201 @@
-	community	roi	community_id
-1	Vis	1	0
-2	Vis	2	0
-3	Vis	3	0
-4	Vis	4	0
-5	Vis	5	0
-6	Vis	6	0
-7	Vis	7	0
-8	Vis	8	0
-9	Vis	9	0
-10	Vis	10	0
-11	Vis	11	0
-12	Vis	12	0
-13	Vis	13	0
-14	Vis	14	0
-15	SomMot	1	1
-16	SomMot	2	1
-17	SomMot	3	1
-18	SomMot	4	1
-19	SomMot	5	1
-20	SomMot	6	1
-21	SomMot	7	1
-22	SomMot	8	1
-23	SomMot	9	1
-24	SomMot	10	1
-25	SomMot	11	1
-26	SomMot	12	1
-27	SomMot	13	1
-28	SomMot	14	1
-29	SomMot	15	1
-30	SomMot	16	1
-31	DorsAttn	Post_1	2
-32	DorsAttn	Post_2	2
-33	DorsAttn	Post_3	2
-34	DorsAttn	Post_4	2
-35	DorsAttn	Post_5	2
-36	DorsAttn	Post_6	2
-37	DorsAttn	Post_7	2
-38	DorsAttn	Post_8	2
-39	DorsAttn	Post_9	2
-40	DorsAttn	Post_10	2
-41	DorsAttn	FEF_1	2
-42	DorsAttn	FEF_2	2
-43	DorsAttn	PrCv_1	2
-44	SalVentAttn	ParOper_1	3
-45	SalVentAttn	ParOper_2	3
-46	SalVentAttn	ParOper_3	3
-47	SalVentAttn	FrOper_1	3
-48	SalVentAttn	FrOper_2	3
-49	SalVentAttn	FrOper_3	3
-50	SalVentAttn	FrOper_4	3
-51	SalVentAttn	PFCl_1	3
-52	SalVentAttn	Med_1	3
-53	SalVentAttn	Med_2	3
-54	SalVentAttn	Med_3	3
-55	Limbic	OFC_1	4
-56	Limbic	OFC_2	4
-57	Limbic	TempPole_1	4
-58	Limbic	TempPole_2	4
-59	Limbic	TempPole_3	4
-60	Limbic	TempPole_4	4
-61	Cont	Par_1	5
-62	Cont	Par_2	5
-63	Cont	Par_3	5
-64	Cont	Temp_1	5
-65	Cont	PFCl_1	5
-66	Cont	PFCl_2	5
-67	Cont	PFCl_3	5
-68	Cont	PFCl_4	5
-69	Cont	PFCl_5	5
-70	Cont	PFCl_6	5
-71	Cont	pCun_1	5
-72	Cont	Cing_1	5
-73	Cont	Cing_2	5
-74	Default	Temp_1	6
-75	Default	Temp_2	6
-76	Default	Temp_3	6
-77	Default	Temp_4	6
-78	Default	Temp_5	6
-79	Default	Temp_6	6
-80	Default	Temp_7	6
-81	Default	Temp_8	6
-82	Default	Temp_9	6
-83	Default	PFC_1	6
-84	Default	PFC_2	6
-85	Default	PFC_3	6
-86	Default	PFC_4	6
-87	Default	PFC_5	6
-88	Default	PFC_6	6
-89	Default	PFC_7	6
-90	Default	PFC_8	6
-91	Default	PFC_9	6
-92	Default	PFC_10	6
-93	Default	PFC_11	6
-94	Default	PFC_12	6
-95	Default	PFC_13	6
-96	Default	PCC_1	6
-97	Default	PCC_2	6
-98	Default	PCC_3	6
-99	Default	PCC_4	6
-100	Default	PHC_1	6
-101	Vis	1	0
-102	Vis	2	0
-103	Vis	3	0
-104	Vis	4	0
-105	Vis	5	0
-106	Vis	6	0
-107	Vis	7	0
-108	Vis	8	0
-109	Vis	9	0
-110	Vis	10	0
-111	Vis	11	0
-112	Vis	12	0
-113	Vis	13	0
-114	Vis	14	0
-115	Vis	15	0
-116	SomMot	1	1
-117	SomMot	2	1
-118	SomMot	3	1
-119	SomMot	4	1
-120	SomMot	5	1
-121	SomMot	6	1
-122	SomMot	7	1
-123	SomMot	8	1
-124	SomMot	9	1
-125	SomMot	10	1
-126	SomMot	11	1
-127	SomMot	12	1
-128	SomMot	13	1
-129	SomMot	14	1
-130	SomMot	15	1
-131	SomMot	16	1
-132	SomMot	17	1
-133	SomMot	18	1
-134	SomMot	19	1
-135	DorsAttn	Post_1	2
-136	DorsAttn	Post_2	2
-137	DorsAttn	Post_3	2
-138	DorsAttn	Post_4	2
-139	DorsAttn	Post_5	2
-140	DorsAttn	Post_6	2
-141	DorsAttn	Post_7	2
-142	DorsAttn	Post_8	2
-143	DorsAttn	Post_9	2
-144	DorsAttn	Post_10	2
-145	DorsAttn	FEF_1	2
-146	DorsAttn	FEF_2	2
-147	DorsAttn	PrCv_1	2
-148	SalVentAttn	TempOccPar_1	3
-149	SalVentAttn	TempOccPar_2	3
-150	SalVentAttn	TempOccPar_3	3
-151	SalVentAttn	PrC_1	3
-152	SalVentAttn	FrOper_1	3
-153	SalVentAttn	FrOper_2	3
-154	SalVentAttn	FrOper_3	3
-155	SalVentAttn	FrOper_4	3
-156	SalVentAttn	Med_1	3
-157	SalVentAttn	Med_2	3
-158	SalVentAttn	Med_3	3
-159	Limbic	OFC_1	4
-160	Limbic	OFC_2	4
-161	Limbic	OFC_3	4
-162	Limbic	TempPole_1	4
-163	Limbic	TempPole_2	4
-164	Limbic	TempPole_3	4
-165	Cont	Par_1	5
-166	Cont	Par_2	5
-167	Cont	Par_3	5
-168	Cont	Temp_1	5
-169	Cont	PFCv_1	5
-170	Cont	PFCl_1	5
-171	Cont	PFCl_2	5
-172	Cont	PFCl_3	5
-173	Cont	PFCl_4	5
-174	Cont	PFCl_5	5
-175	Cont	PFCl_6	5
-176	Cont	PFCl_7	5
-177	Cont	pCun_1	5
-178	Cont	PFCmp_1	5
-179	Cont	PFCmp_2	5
-180	Cont	PFCmp_3	5
-181	Cont	PFCmp_4	5
-182	Default	Par_1	6
-183	Default	Par_2	6
-184	Default	Par_3	6
-185	Default	Temp_1	6
-186	Default	Temp_2	6
-187	Default	Temp_3	6
-188	Default	Temp_4	6
-189	Default	Temp_5	6
-190	Default	PFCv_1	6
-191	Default	PFCm_1	6
-192	Default	PFCm_2	6
-193	Default	PFCm_3	6
-194	Default	PFCm_4	6
-195	Default	PFCm_5	6
-196	Default	PFCm_6	6
-197	Default	PFCm_7	6
-198	Default	PCC_1	6
-199	Default	PCC_2	6
-200	Default	PCC_3	6
+	community	roi	community_id	roi_origindex	roi_index(on17networkmask)
+1	Vis	2	0	2	1
+2	Vis	5	0	5	2
+3	Vis	7	0	7	3
+4	Vis	9	0	9	4
+5	Vis	11	0	11	5
+6	Vis	14	0	14	6
+7	Vis	1	0	1	7
+8	Vis	4	0	4	8
+9	Vis	6	0	6	9
+10	Vis	10	0	10	10
+11	Vis	12	0	12	11
+12	Vis	13	0	13	12
+13	SomMot	8	1	22	13
+14	SomMot	9	1	23	14
+15	SomMot	10	1	24	15
+16	SomMot	12	1	26	16
+17	SomMot	13	1	27	17
+18	SomMot	14	1	28	18
+19	SomMot	15	1	29	19
+20	SomMot	16	1	30	20
+21	SomMot	1	1	15	21
+22	SomMot	2	1	16	22
+23	SomMot	3	1	17	23
+24	SomMot	4	1	18	24
+25	SalVentAttn	ParOper_1	3	44	25
+26	SomMot	5	1	19	26
+27	SomMot	6	1	20	27
+28	SomMot	7	1	21	28
+29	DorsAttn	Post_1	2	31	29
+30	Vis	3	0	3	30
+31	Vis	8	0	8	31
+32	DorsAttn	Post_3	2	33	32
+33	DorsAttn	Post_7	2	37	33
+34	DorsAttn	Post_8	2	38	34
+35	DorsAttn	Post_4	2	34	35
+36	DorsAttn	Post_5	2	35	36
+37	SomMot	11	1	25	37
+38	DorsAttn	Post_10	2	40	38
+39	DorsAttn	FEF_1	2	41	39
+40	SalVentAttn	ParOper_2	3	45	40
+41	SalVentAttn	FrOper_1	3	47	41
+42	SalVentAttn	FrOper_3	3	49	42
+43	SalVentAttn	FrOper_4	3	50	43
+44	SalVentAttn	Med_2	3	53	44
+45	SalVentAttn	Med_1	3	52	45
+46	SalVentAttn	Med_3	3	54	46
+47	SalVentAttn	ParOper_3	3	46	47
+48	SalVentAttn	PFCl_1	3	51	48
+49	SalVentAttn	FrOper_2	3	48	49
+50	Default	PFC_8	6	90	50
+51	Limbic	OFC_1	4	55	51
+52	Limbic	OFC_2	4	56	52
+53	Limbic	TempPole_1	4	57	53
+54	Limbic	TempPole_2	4	58	54
+55	Limbic	TempPole_3	4	59	55
+56	Limbic	TempPole_4	4	60	56
+57	DorsAttn	Post_2	2	32	57
+58	Cont	Par_2	5	62	58
+59	Cont	Par_3	5	63	59
+60	DorsAttn	Post_6	2	36	60
+61	DorsAttn	FEF_2	2	42	61
+62	Cont	PFCl_4	5	68	62
+63	Cont	PFCl_5	5	69	63
+64	DorsAttn	PrCv_1	2	43	64
+65	Cont	PFCl_6	5	70	65
+66	Cont	Cing_2	5	73	66
+67	Cont	Temp_1	5	64	67
+68	Cont	Par_1	5	61	68
+69	Default	PFC_11	6	93	69
+70	Cont	PFCl_2	5	66	70
+71	Cont	PFCl_3	5	67	71
+72	Cont	pCun_1	5	71	72
+73	DorsAttn	Post_9	2	39	73
+74	Cont	Cing_1	5	72	74
+75	Default	Temp_9	6	82	75
+76	Default	PFC_12	6	94	76
+77	Default	PCC_2	6	97	77
+78	Default	PCC_3	6	98	78
+79	Default	PCC_4	6	99	79
+80	Default	PFC_2	6	84	80
+81	Default	PFC_4	6	86	81
+82	Default	PFC_6	6	88	82
+83	Default	Temp_1	6	74	83
+84	Default	Temp_2	6	75	84
+85	Default	Temp_3	6	76	85
+86	Default	Temp_4	6	77	86
+87	Default	Temp_8	6	81	87
+88	Default	PFC_7	6	89	88
+89	Default	PFC_9	6	91	89
+90	Default	PFC_10	6	92	90
+91	Default	PFC_13	6	95	91
+92	Default	PFC_1	6	83	92
+93	Cont	PFCl_1	5	65	93
+94	Default	PFC_3	6	85	94
+95	Default	PFC_5	6	87	95
+96	Default	Temp_7	6	80	96
+97	Default	PCC_1	6	96	97
+98	Default	PHC_1	6	100	98
+99	Default	Temp_5	6	78	99
+100	Default	Temp_6	6	79	100
+101	Vis	3	0	103	101
+102	Vis	5	0	105	102
+103	Vis	6	0	106	103
+104	Vis	8	0	108	104
+105	Vis	11	0	111	105
+106	Vis	12	0	112	106
+107	Vis	4	0	104	107
+108	Vis	7	0	107	108
+109	Vis	9	0	109	109
+110	Vis	10	0	110	110
+111	Vis	13	0	113	111
+112	Vis	14	0	114	112
+113	SomMot	9	1	124	113
+114	SomMot	10	1	125	114
+115	SomMot	11	1	126	115
+116	SomMot	12	1	127	116
+117	SomMot	13	1	128	117
+118	SomMot	14	1	129	118
+119	SomMot	15	1	130	119
+120	SomMot	16	1	131	120
+121	SomMot	17	1	132	121
+122	SomMot	18	1	133	122
+123	SomMot	19	1	134	123
+124	SomMot	1	1	116	124
+125	SomMot	2	1	117	125
+126	SomMot	3	1	118	126
+127	SomMot	4	1	119	127
+128	SomMot	5	1	120	128
+129	SomMot	6	1	121	129
+130	SomMot	7	1	122	130
+131	DorsAttn	Post_1	2	135	131
+132	DorsAttn	Post_2	2	136	132
+133	Vis	15	0	115	133
+134	DorsAttn	Post_6	2	140	134
+135	DorsAttn	Post_7	2	141	135
+136	DorsAttn	Post_8	2	142	136
+137	DorsAttn	Post_3	2	137	137
+138	DorsAttn	Post_5	2	139	138
+139	DorsAttn	Post_9	2	143	139
+140	DorsAttn	Post_10	2	144	140
+141	DorsAttn	FEF_1	2	145	141
+142	SalVentAttn	TempOccPar_3	3	150	142
+143	SalVentAttn	PrC_1	3	151	143
+144	SalVentAttn	FrOper_1	3	152	144
+145	SalVentAttn	FrOper_2	3	153	145
+146	SalVentAttn	FrOper_4	3	155	146
+147	SalVentAttn	Med_1	3	156	147
+148	SomMot	8	1	123	148
+149	SalVentAttn	Med_2	3	157	149
+150	SalVentAttn	Med_3	3	158	150
+151	Cont	Par_1	5	165	151
+152	Cont	PFCl_3	5	172	152
+153	Cont	PFCl_5	5	174	153
+154	Cont	PFCv_1	5	169	154
+155	SalVentAttn	FrOper_3	3	154	155
+156	Cont	PFCmp_3	5	180	156
+157	Limbic	OFC_1	4	159	157
+158	Limbic	OFC_2	4	160	158
+159	Default	PFCm_1	6	191	159
+160	Limbic	OFC_3	4	161	160
+161	Limbic	TempPole_1	4	162	161
+162	Limbic	TempPole_2	4	163	162
+163	Limbic	TempPole_3	4	164	163
+164	Vis	1	0	101	164
+165	Cont	Par_3	5	167	165
+166	DorsAttn	Post_4	2	138	166
+167	DorsAttn	FEF_2	2	146	167
+168	DorsAttn	PrCv_1	2	147	168
+169	Cont	PFCl_4	5	173	169
+170	Cont	PFCmp_2	5	179	170
+171	Default	Temp_2	6	186	171
+172	Cont	Temp_1	5	168	172
+173	Default	Par_3	6	184	173
+174	Cont	Par_2	5	166	174
+175	Cont	PFCl_6	5	175	175
+176	Cont	PFCl_7	5	176	176
+177	Cont	PFCl_1	5	170	177
+178	Cont	PFCl_2	5	171	178
+179	Cont	PFCmp_4	5	181	179
+180	Default	PFCm_7	6	197	180
+181	Cont	pCun_1	5	177	181
+182	Default	PCC_3	6	200	182
+183	Cont	PFCmp_1	5	178	183
+184	Default	Par_2	6	183	184
+185	Default	PFCm_6	6	196	185
+186	Default	PCC_2	6	199	186
+187	Default	PFCm_2	6	192	187
+188	Default	PFCm_3	6	193	188
+189	Default	PFCm_4	6	194	189
+190	Default	Temp_4	6	188	190
+191	Default	Temp_1	6	185	191
+192	Default	PFCm_5	6	195	192
+193	Default	PFCv_1	6	190	193
+194	Default	Par_1	6	182	194
+195	Default	PCC_1	6	198	195
+196	Vis	2	0	102	196
+197	Default	Temp_3	6	187	197
+198	Default	Temp_5	6	189	198
+199	SalVentAttn	TempOccPar_1	3	148	199
+200	SalVentAttn	TempOccPar_2	3	149	200
