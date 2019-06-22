@@ -137,9 +137,9 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
                     if tnet.nettype[1] == 'd':
                         df = tnet.get_network_when(i=i, t=t)
                         j_at_t = df['j'].values
-                        if tnet.nettype == 'wd':
+                        if tnet.nettype[0] == 'w':
                             k_i = df['weight'].sum()
-                        elif tnet.nettype == 'bd':
+                        elif tnet.nettype[0] == 'b':
                             k_i = len(df)
                     elif tnet.nettype[1] == 'u':
                         df = tnet.get_network_when(ij=i, t=t)
@@ -150,6 +150,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
                         elif tnet.nettype == 'bu':
                             k_i = len(df)
                     j_at_t = list(map(int, j_at_t))
+
                     for c in np.unique(C[j_at_t]):
                         ci = np.where(C == c)[0].tolist()
                         k_is = tnet.get_network_when(i=i, j=ci, t=t)

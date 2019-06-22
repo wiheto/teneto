@@ -1,6 +1,8 @@
 # Changelog
 
-## V0.4.4 (pending)
+## V0.4.4
+
+-   Schaefer 7 network communities now reference the packaged image (17network mask). Before they references the 7 network mask that was not included.
 
 -   Added plotedgeweight option to sliceplot for varying edge size.
 
