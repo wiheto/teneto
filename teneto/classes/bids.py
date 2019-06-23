@@ -1807,7 +1807,7 @@ class TenetoBIDS:
         if measure is None: 
             measure = ''
             
-        with open(teneto.__path__[0] + 'config/tenetobids/tenetobids.json') as f:
+        with open(teneto.__path__[0] + '/config/tenetobids/tenetobids.json') as f:
             method_info=json.load(f)
 
         if method == 'temporalnetwork' or method == 'timelocked-temporalnetwork': 
