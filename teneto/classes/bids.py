@@ -287,7 +287,7 @@ class TenetoBIDS:
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2))                             : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2)): int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
@@ -1804,13 +1804,13 @@ class TenetoBIDS:
     #                         np.save(save_dir_base + file_name,tl_data)
 
     def _get_filelist(self, method, sub=None, tags=None, measure=None):
-        if measure is None: 
+        if measure is None:
             measure = ''
-            
-        with open(teneto.__path__[0] + '/config/tenetobids/tenetobids.json') as f:
-            method_info=json.load(f)
 
-        if method == 'temporalnetwork' or method == 'timelocked-temporalnetwork': 
+        with open(teneto.__path__[0] + '/config/tenetobids/tenetobids.json') as f:
+            method_info = json.load(f)
+
+        if method == 'temporalnetwork' or method == 'timelocked-temporalnetwork':
             method_info['method']['pipeline_subdir'] += measure
 
         # a = [{},
