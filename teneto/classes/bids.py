@@ -1811,7 +1811,7 @@ class TenetoBIDS:
             method_info = json.load(f)
 
         if method == 'temporalnetwork' or method == 'timelocked-temporalnetwork':
-            method_info['method']['pipeline_subdir'] += measure
+            method_info[method]['pipeline_subdir'] += measure
 
         # a = [{},
         # {'derivative': 'fc', 'base': 'pipeline', 'bids_suffix': 'conn'},
