@@ -198,11 +198,11 @@ def test_tnet_set_bad_files():
 
 def test_tnet_make_parcellation():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
+                             bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
     # Set the confound pipeline in fmriprep
     tnet.make_parcellation('gordon2014_333+sub-maxprob-thr25-1mm')
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
+                             bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
     tnet.make_parcellation('gordon2014_333')
     tnet.load_data('parcellation')
     # Hard coded facts about dummy data
@@ -212,12 +212,12 @@ def test_tnet_make_parcellation():
 
 def test_tnet_checksidecar():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
+                             bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
     tnet.make_parcellation('gordon2014_333')
     tnet.load_data('parcellation')
     tnet.set_confound_pipeline('fmriprep')
     tnet.set_exclusion_timepoint('confound1', '<=0', replace_with='nan')
-    with open(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/parcellation/sub-001_task-a_run-01_roi.json') as fs:
+    with open(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/parcellation/sub-001_task-a_run-01_desc-preproc_roi.json') as fs:
         sidecar = json.load(fs)
     # Check both steps are in sidecar
     if not 'parcellation' in sidecar.keys():
