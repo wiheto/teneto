@@ -1,5 +1,12 @@
 # Changelog
 
+## V0.4.5-dev
+
+-   Some minor TenetoBIDS fixes
+
+-   Updating to fmriprep 1.4.0 updated BIDS naming conventions. fmriprep<1.4.0 no longer compatible. 
+
+
 ## V0.4.4
 
 -   Schaefer 7 network communities now reference the packaged image (17network mask). Before they references the 7 network mask that was not included.
