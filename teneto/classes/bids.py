@@ -80,7 +80,7 @@ class TenetoBIDS:
 
         if raw_data_exists:
             self.BIDS = BIDSLayout(BIDS_dir, validate=False)
-        else: 
+        else:
             self.BIDS = None
 
         self.BIDS_dir = os.path.abspath(BIDS_dir)
@@ -262,7 +262,8 @@ class TenetoBIDS:
             params['dimord'] = 'time,node'
 
         dfc = teneto.timeseries.derive_temporalnetwork(data.values, params)
-        dfc_net = TemporalNetwork(from_array=dfc, nettype='wu', forcesparse=True)
+        dfc_net = TemporalNetwork(
+            from_array=dfc, nettype='wu', forcesparse=True)
         dfc_net.network.to_csv(save_dir + save_name + '.tsv', sep='\t')
 
         sidecar = get_sidecar(f)
@@ -286,7 +287,8 @@ class TenetoBIDS:
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2)): int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2))
+                                 : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
@@ -336,28 +338,30 @@ class TenetoBIDS:
                 self.bids_tags[d] = indict[d]
                 if not isinstance(self.bids_tags[d], list):
                     self.bids_tags[d] = [self.bids_tags[d]]
-
-        if 'sub' in self.bids_tags:
-            if self.bids_tags['sub'] == 'all':
-                if self.raw_data_exists:
-                    self.bids_tags['sub'] = self.BIDS.get_subjects()
-                else:
-                    self.bids_tags['sub'] = self.get_tags('sub')
-        if 'ses' in self.bids_tags:
-            if self.bids_tags['ses'] == 'all' and self.raw_data_exists:
-                self.bids_tags['ses'] = self.BIDS.get_sessions()
-            elif not self.raw_data_exists:
-                self.bids_tags['ses'] = self.get_tags('ses')
-        if 'task' in self.bids_tags:
-            if self.bids_tags['task'] == 'all' and self.raw_data_exists:
-                self.bids_tags['task'] = self.BIDS.get_tasks()
-            elif not self.raw_data_exists:
-                self.bids_tags['task'] = self.get_tags('task')
-        if 'run' in self.bids_tags:
-            if self.bids_tags['run'] == 'all' and self.raw_data_exists:
-                self.bids_tags['run'] = list(map(str, self.BIDS.get_runs()))
-            elif not self.raw_data_exists:
-                self.bids_tags['run'] = self.get_tags('run')
+            if 'run' in self.bids_tags:
+                self.bids_tags['run'] = list(map(str, map(int, self.bids_tags['run'])))
+        else:
+            if 'sub' in self.bids_tags:
+                if self.bids_tags['sub'] == 'all':
+                    if self.raw_data_exists:
+                        self.bids_tags['sub'] = self.BIDS.get_subjects()
+                    else:
+                        self.bids_tags['sub'] = self.get_tags('sub')
+            if 'ses' in self.bids_tags:
+                if self.bids_tags['ses'] == 'all' and self.raw_data_exists:
+                    self.bids_tags['ses'] = self.BIDS.get_sessions()
+                elif not self.raw_data_exists:
+                    self.bids_tags['ses'] = self.get_tags('ses')
+            if 'task' in self.bids_tags:
+                if self.bids_tags['task'] == 'all' and self.raw_data_exists:
+                    self.bids_tags['task'] = self.BIDS.get_tasks()
+                elif not self.raw_data_exists:
+                    self.bids_tags['task'] = self.get_tags('task')
+            if 'run' in self.bids_tags:
+                if self.bids_tags['run'] == 'all' and self.raw_data_exists:
+                    self.bids_tags['run'] = list(map(str, self.BIDS.get_runs()))
+                elif not self.raw_data_exists:
+                    self.bids_tags['run'] = self.get_tags('run')
 
     def make_functional_connectivity(self, njobs=None, returngroup=False, file_hdr=None, file_idx=None):
         """
@@ -594,8 +598,8 @@ class TenetoBIDS:
         else:
             raise ValueError('unknown request')
 
-        # Add desc to file. 
-        if pipeline == 'confound': 
+        # Add desc to file.
+        if pipeline == 'confound':
             file_dict['desc'] = 'confounds'
 
         found_files = []
@@ -1353,8 +1357,10 @@ class TenetoBIDS:
 
         for f in file_list:
             file_format = f.split('.')[-1]
-            if file_format == 'tsv':
+            if file_format == 'tsv' and os.stat(f).st_size > 0:
                 sub_confounds = list(pd.read_csv(f, delimiter='\t').keys())
+            else: 
+                sub_confounds = []
             for c in confounds:
                 if c not in sub_confounds:
                     print('Warning: the confound (' +
