@@ -63,14 +63,17 @@ def get_bids_tag(filename, tag):
                 tag = t.split('-')
                 if len(tag) == 2:
                     outdict[tag[0]] = tag[1]
-            return outdict
+            tag = 'all'
         else:
             tag = [tag]
-    if '/' in filename:
-        filename = filename.split('/')[-1]
-    for t in tag:
-        if t in filename:
-            outdict[t] = filename.split(t + '-')[1].split('_')[0]
+    if isinstance(tag, list):
+        if '/' in filename:
+            filename = filename.split('/')[-1]
+        for t in tag:
+            if t in filename:
+                outdict[t] = filename.split(t + '-')[1].split('_')[0]
+    if 'run' in outdict:
+        outdict['run'] = str(int(outdict['run'])) 
     return outdict
 
 

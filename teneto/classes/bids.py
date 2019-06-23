@@ -228,7 +228,7 @@ class TenetoBIDS:
         fs, _ = drop_bids_suffix(f)
         save_name, save_dir, _ = self._save_namepaths_bids_derivatives(
             fs, tag, 'tvc', 'tvcconn')
-            
+
         if 'weight-var' in params.keys():
             if params['weight-var'] == 'from-subject-fc':
                 fc_files = self.get_selected_files(
@@ -355,7 +355,7 @@ class TenetoBIDS:
                 self.bids_tags['task'] = self.get_tags('task')
         if 'run' in self.bids_tags:
             if self.bids_tags['run'] == 'all' and self.raw_data_exists:
-                self.bids_tags['run'] = self.BIDS.get_runs()
+                self.bids_tags['run'] = list(map(str, self.BIDS.get_runs()))
             elif not self.raw_data_exists:
                 self.bids_tags['run'] = self.get_tags('run')
 
@@ -594,6 +594,10 @@ class TenetoBIDS:
         else:
             raise ValueError('unknown request')
 
+        # Add desc to file. 
+        if pipeline == 'confound': 
+            file_dict['desc'] = 'confounds'
+
         found_files = []
 
         for f in file_list:
@@ -613,7 +617,7 @@ class TenetoBIDS:
                 wdir += '/fc/'
                 fileending = ['conn' + f for f in allowedfileformats]
             elif pipeline == 'confound':
-                fileending = ['confounds' + f for f in allowedfileformats]
+                fileending = ['regressors' + f for f in allowedfileformats]
 
             if os.path.exists(wdir):
                 # make filenames
@@ -626,12 +630,9 @@ class TenetoBIDS:
                     if len(t) == len(file_dict):
                         found.append(ff)
                 found = [f for f in found for e in fileending if f.endswith(e)]
-                # Include only if all analysis step tags are present
                 # Exclude if confounds tag is present
-                if pipeline == 'confound':
-                    found = [i for i in found if '_confounds' in i]
-                else:
-                    found = [i for i in found if '_confounds' not in i]
+                if pipeline != 'confound':
+                    found = [i for i in found if 'desc-confounds' not in i]
                 # Make full paths
                 found = list(
                     map(str.__add__, [re.sub('/+', '/', wdir)]*len(found), found))
@@ -837,7 +838,7 @@ class TenetoBIDS:
         confounds = []
         for f in file_list:
             file_format = f.split('.')[-1]
-            if file_format == 'tsv':
+            if file_format == 'tsv' and os.stat(f).st_size > 0:
                 confounds += list(pd.read_csv(f, delimiter='\t').keys())
 
         confounds = sorted(list(set(confounds)))
