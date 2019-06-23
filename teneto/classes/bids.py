@@ -38,6 +38,7 @@ class TenetoBIDS:
                     "Version": str(teneto.__version__[0]),
                     "CodeURL": "https://github.com/wiheto/teneto/"
                 },
+        "BIDSVersion": "1.0.0",
         "CodeURL": "https://github.com/wiheto/teneto",
         "HowToAcknowledge": "Cite Teneto's DOI (http://doi.org/10.5281/zenodo.2535994).",
     }
