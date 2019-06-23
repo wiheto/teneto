@@ -228,6 +228,7 @@ class TenetoBIDS:
         fs, _ = drop_bids_suffix(f)
         save_name, save_dir, _ = self._save_namepaths_bids_derivatives(
             fs, tag, 'tvc', 'tvcconn')
+            
         if 'weight-var' in params.keys():
             if params['weight-var'] == 'from-subject-fc':
                 fc_files = self.get_selected_files(
