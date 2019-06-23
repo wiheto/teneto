@@ -1,4 +1,5 @@
 include teneto/data/parcellation/*
 include teneto/data/parcellation/staticcommunities/*
 include teneto/data/parcellation_defaults/*
+include config/tenetobids/*
 recursive-include teneto/data/testdata/*

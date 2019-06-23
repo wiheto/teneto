@@ -1807,62 +1807,12 @@ class TenetoBIDS:
         if measure is None: 
             measure = ''
             
-        method_info = {
-            'tvc': {
-                'pipeline_subdir': 'tvc',
-                'base': 'pipeline',
-                'bids_suffix': 'tvcconn',
-                'datatype': 'trlinfo'
-            },
-            'parcellation': {
-                'pipeline_subdir': 'parcellation',
-                'base': 'pipeline',
-                'bids_suffix': 'roi',
-                'datatype': 'trlinfo'
-            },
-            'participant': {
-                'pipeline_subdir': '',
-                'base': 'BIDS_dir',
-                'bids_suffix': 'participant',
-                'datatype': 'group'
-            },
-            'fc': {
-                'pipeline_subdir': 'fc',
-                'base': 'pipeline',
-                'bids_suffix': 'conn',
-                'datatype': 'trlinfo'
-            },
-            'communities': {
-                'pipeline_subdir': 'communities',
-                'base': 'pipeline',
-                'bids_suffix': 'community',
-                'datatype': 'trlinfo'
-            },
-            'communities_fc': {
-                'pipeline_subdir': 'fc/communities',
-                'base': 'pipeline',
-                'bids_suffix': 'community',
-                'datatype': 'trlinfo'
-            },
-            'temporalnetwork': {
-                'pipeline_subdir': 'temporalnetwork-' + measure,
-                'base': 'pipeline',
-                'bids_suffix': 'tnet',
-                'datatype': 'trlinfo'
-            },
-            'timelocked-temporalnetwork': {
-                'pipeline_subdir': 'temporalnetwork-' + measure,
-                'base': 'pipeline',
-                'bids_suffix': 'avg',
-                'datatype': 'trlinfo'
-            },
-            'timelocked-parcellation': {
-                'pipeline_subdir': 'parcellation',
-                'base': 'pipeline',
-                'bids_suffix': 'avg',
-                'datatype': 'trlinfo'
-            }
-        }
+        with open(teneto.__path__[0] + 'config/tenetobids/tenetobids.json') as f:
+            method_info=json.load(f)
+
+        if method == 'temporalnetwork' or method == 'timelocked-temporalnetwork': 
+            method_info['method']['pipeline_subdir'] += measure
+
         # a = [{},
         # {'derivative': 'fc', 'base': 'pipeline', 'bids_suffix': 'conn'},
         # {'derivative': 'parcellation', 'base': 'pipeline', 'bids_suffix': 'roi'},
