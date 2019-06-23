@@ -57,13 +57,13 @@ def test_get_pipeline_alternatives():
 
 def test_get_pipeline_subdir_alternatives():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',
-                             pipeline='teneto-tests', bids_tags={'task': 'a'}, raw_data_exists=False)
+                             pipeline='teneto-tests', bids_tags={'task': 'a'}, raw_data_exists=True)
     subdir = tnet.get_pipeline_subdir_alternatives()
     if not 'parcellation' in subdir:
         raise AssertionError()
     if not 'tvc' in subdir:
         raise AssertionError()
-    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', bids_tags={'task': 'a'}, raw_data_exists=False)
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', bids_tags={'task': 'a'}, raw_data_exists=True)
     subdir = tnet.get_pipeline_subdir_alternatives()
     if not subdir is None:
         raise AssertionError()
