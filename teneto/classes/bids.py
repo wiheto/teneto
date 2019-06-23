@@ -332,7 +332,7 @@ class TenetoBIDS:
             self.bids_tags['task'] = 'all'
             self.bids_tags['ses'] = 'all'
             self.bids_tags['desc'] = None
-        if indict:
+        if indict is not None:
             for d in indict:
                 self.bids_tags[d] = indict[d]
                 if not isinstance(self.bids_tags[d], list):
@@ -1804,7 +1804,9 @@ class TenetoBIDS:
     #                         np.save(save_dir_base + file_name,tl_data)
 
     def _get_filelist(self, method, sub=None, tags=None, measure=None):
-
+        if measure is None: 
+            measure = ''
+            
         method_info = {
             'tvc': {
                 'pipeline_subdir': 'tvc',
