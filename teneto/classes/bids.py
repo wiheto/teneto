@@ -251,13 +251,6 @@ class TenetoBIDS:
                 else:
                     raise ValueError('Cannot correctly find FC files')
 
-        params['report'] = 'yes'
-        params['report_path'] = save_dir + '/report/'
-        params['report_filename'] = save_name + '_derivationreport.html'
-
-        if not os.path.exists(params['report_path']):
-            os.makedirs(params['report_path'])
-
         if 'dimord' not in params:
             params['dimord'] = 'time,node'
 
@@ -281,13 +274,14 @@ class TenetoBIDS:
 
         if confounds_exist:
             analysis_step = 'tvc-derive'
-            df = pd.read_csv(confound_files[i], sep='\t')
+            df = load_tabular_file(confound_files[i])
             df = df.fillna(df.median())
             ind = np.triu_indices(dfc.shape[0], k=1)
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2)): int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2))
+                                 : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
@@ -296,27 +290,32 @@ class TenetoBIDS:
                 df_z.std(ddof=0)).div(dfc_df_z.std(ddof=0), axis=0)
             R_df_describe = R_df.describe()
             desc_index = R_df_describe.index
-            confound_report_dir = params['report_path'] + \
-                '/' + save_name + '_confoundcorr/'
-            confound_report_figdir = confound_report_dir + 'figures/'
-            if not os.path.exists(confound_report_figdir):
-                os.makedirs(confound_report_figdir)
+            confound_report_dir = save_dir + '/report/'
+            if not os.path.exists(confound_report_dir):
+                os.makedirs(confound_report_dir)
             report = '<html><body>'
             report += '<h1> Correlation of ' + analysis_step + ' and confounds.</h1>'
+            confound_hist = []
             for c in R_df.columns:
-                fig, ax = plt.subplots(1)
-                ax = sns.distplot(
-                    R_df[c], hist=False, color='m', ax=ax, kde_kws={"shade": True})
-                fig.savefig(confound_report_figdir + c + '.png')
-                plt.close(fig)
-                report += '<h2>' + c + '</h2>'
-                for ind_name, r in enumerate(R_df_describe[c]):
-                    report += str(desc_index[ind_name]) + ': '
-                    report += str(r) + '<br>'
-                report += 'Distribution of corrlation values:'
-                report += '<img src=' + \
-                    os.path.abspath(confound_report_figdir) + \
-                    '/' + c + '.png><br><br>'
+                confound_hist.append(pd.cut(
+                    R_df[c], bins=np.arange(-1, 1.01, 0.025)).value_counts().sort_index().values/len(R_df))
+
+            fig, ax = plt.subplots(1, figsize=(8, 1*R_df.shape[-1]))
+            pax = ax.imshow(
+                confound_hist, extent=[-1, 1, R_df.shape[-1], 0], cmap='inferno', vmin=0, vmax=1)
+            ax.set_aspect('auto')
+            ax.set_yticks(np.arange(0.5, R_df.shape[-1]))
+            ax.set_yticklabels(R_df.columns)
+            ax.set_xlabel('r')
+            plt.colorbar(pax)
+            plt.tight_layout()
+            fig.savefig(confound_report_dir + save_name +
+                        'confounds_2dhist.png', r=300)
+            plt.close(fig)
+
+            report += 'The plot below shows histograms of each confound.<br><br>'
+            report += '<img src=' + \
+                confound_report_dir + save_name + 'confounds_2dhist.png><br><br>'
             report += '</body></html>'
 
             with open(confound_report_dir + save_name + '_confoundcorr.html', 'w') as file:
@@ -392,7 +391,6 @@ class TenetoBIDS:
         files = self.get_selected_files(quiet=1)
 
         R_group = []
-
         with ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(
                 self._run_make_functional_connectivity, f, file_hdr, file_idx) for f in files}
@@ -401,8 +399,7 @@ class TenetoBIDS:
 
         if returngroup:
             # Fisher tranform -> mean -> inverse fisher tranform
-            R_group = np.tanh(np.mean(np.arctanh(np.array(R_group)), axis=0))
-            return np.array(R_group)
+            return np.tanh(np.mean(np.arctanh(np.array(R_group)), axis=0))
 
     def _run_make_functional_connectivity(self, f, file_hdr, file_idx):
         sf, _ = drop_bids_suffix(f)
