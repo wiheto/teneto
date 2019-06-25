@@ -1,5 +1,4 @@
 import templateflow.api as tf
-from niworkflows.interfaces.images import SignalExtraction
 from .bidsutils import load_tabular_file
 from nilearn.input_data import NiftiLabelsMasker
 
