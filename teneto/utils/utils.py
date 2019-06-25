@@ -8,8 +8,6 @@ import numpy as np
 import collections
 import itertools
 import scipy.spatial.distance as distance
-from nilearn.input_data import NiftiSpheresMasker, NiftiLabelsMasker
-from nilearn.datasets import fetch_atlas_harvard_oxford
 from ..trajectory import rdp
 from .. import __path__ as tenetopath
 from ..classes import TemporalNetwork
@@ -818,86 +816,6 @@ def load_parcellation_coords(parcellation_name):
     return parc
 
 
-def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None):
-    """
-    Performs a parcellation which reduces voxel space to regions of interest (brain data).
-
-    Parameters
-    ----------
-
-    data_path : str
-        Path to .nii image.
-    parcellation : str
-        Specify which parcellation that you would like to use. For MNI: 'gordon2014_333', 'power2012_264', For TAL: 'shen2013_278'.
-        It is possible to add the OH subcotical atlas on top of a cortical atlas (e.g. gordon) by adding:
-            '+OH' (for oxford harvard subcortical atlas) and '+SUIT' for SUIT cerebellar atlas.
-            e.g.: gordon2014_333+OH+SUIT'
-    parc_type : str
-        Can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
-    parc_params : dict
-        **kwargs for nilearn functions
-
-    Returns
-    -------
-
-    data : array
-        Data after the parcellation.
-
-    NOTE
-    ----
-    These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
-    """
-
-    if isinstance(parcellation, str):
-        parcin = ''
-        if '+' in parcellation:
-            parcin = parcellation
-            parcellation = parcellation.split('+')[0]
-        if '+OH' in parcin:
-            subcortical = True
-        else:
-            subcortical = None
-        if '+SUIT' in parcin:
-            cerebellar = True
-        else:
-            cerebellar = None
-
-        if not parc_type or not parc_params:
-            path = tenetopath[0] + '/data/parcellation_defaults/defaults.json'
-            with open(path) as data_file:
-                defaults = json.load(data_file)
-        if not parc_type:
-            parc_type = defaults[parcellation]['type']
-            print('Using default parcellation type')
-        if not parc_params:
-            parc_params = defaults[parcellation]['params']
-            print('Using default parameters')
-
-    if parc_type == 'sphere':
-        parcellation = load_parcellation_coords(parcellation)
-        seed = NiftiSpheresMasker(np.array(parcellation), **parc_params)
-        data = seed.fit_transform(data_path)
-    elif parc_type == 'region':
-        path = tenetopath[0] + '/data/parcellation/' + parcellation + '.nii.gz'
-        region = NiftiLabelsMasker(path, **parc_params)
-        data = region.fit_transform(data_path)
-    else:
-        raise ValueError('Unknown parc_type specified')
-
-    if subcortical:
-        subatlas = fetch_atlas_harvard_oxford('sub-maxprob-thr0-2mm')['maps']
-        region = NiftiLabelsMasker(subatlas, **parc_params)
-        data_sub = region.fit_transform(data_path)
-        data = np.hstack([data, data_sub])
-
-    if cerebellar:
-        path = tenetopath[0] + \
-            '/data/parcellation/Cerebellum-SUIT_space-MNI152NLin2009cAsym.nii.gz'
-        region = NiftiLabelsMasker(path, **parc_params)
-        data_cerebellar = region.fit_transform(data_path)
-        data = np.hstack([data, data_cerebellar])
-
-    return data
 
 
 def create_traj_ranges(start, stop, N):
