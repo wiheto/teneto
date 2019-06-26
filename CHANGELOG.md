@@ -4,11 +4,11 @@
 
 - Some minor TenetoBIDS fixes
 
-- Updating to fmriprep 1.4.0 updated BIDS naming conventions. fmriprep<1.4.0 no longer compatible. 
+- Updating to fmriprep 1.4.0 updated BIDS naming conventions. fmriprep<1.4.0 no longer compatible.
 
 - Renaming of dummybids data
 
-- Placing custom BIDS formatting in external json config folder. 
+- Placing custom BIDS formatting in external json config folder.
 
 - make_parcellation now uses templateflow and all atlases therein
 
