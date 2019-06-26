@@ -950,7 +950,7 @@ class TenetoBIDS:
         sidecar = get_sidecar(f)
         sidecar['parcellation'] = parc_params
         sidecar['parcellation']['description'] = 'The parcellation reduces the FD nifti files to time-series for some parcellation. Parcellation is made using teneto and nilearn.'
-        sidecar['parcellation']['atlas'] = parcellation
+        sidecar['parcellation']['atlas'] = atlas
         sidecar['parcellation']['atlas_desc'] = atlas_desc
         sidecar['parcellation']['template'] = template
         sidecar['parcellation']['resolution'] = resolution
