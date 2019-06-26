@@ -895,8 +895,6 @@ class TenetoBIDS:
             njobs = self.njobs
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
-        parc_name = parcellation.split('_')[0].lower()
-
         # Check confounds have been specified
         if not self.confounds and removeconfounds:
             raise ValueError(
