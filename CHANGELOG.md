@@ -12,6 +12,8 @@
 
 -   make_parcellation now uses templateflow and all atlases therein
 
+-   Removing function load_parcellation_coords
+
 ## V0.4.4
 
 -   Schaefer 7 network communities now reference the packaged image (17network mask). Before they references the 7 network mask that was not included.

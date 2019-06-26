@@ -11,15 +11,18 @@ def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_de
 
     data_path : str
         Path to .nii image.
-    parcellation : str
-        Specify which parcellation that you would like to use. For MNI: 'gordon2014_333', 'power2012_264', For TAL: 'shen2013_278'.
-        It is possible to add the OH subcotical atlas on top of a cortical atlas (e.g. gordon) by adding:
-            '+OH' (for oxford harvard subcortical atlas) and '+SUIT' for SUIT cerebellar atlas.
-            e.g.: gordon2014_333+OH+SUIT'
-    parc_type : str
-        Can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
+    atlas : str
+        Specify which atlas you want to use (see github.com/templateflow/)
+    template : str
+        What space you data is in. If fmriprep, leave as MNI152NLin2009cAsym.
+    atlas_desc : str 
+        Specify which description of atlas.
+    resolution : int 
+        Resolution of atlas. Can be 1 or 2. 
     parc_params : dict
-        **kwargs for nilearn functions
+        **kwargs for nilearn functions. 
+    return_meta : bool
+        If true, tries to return any meta-information that exists about parcellation. 
 
     Returns
     -------

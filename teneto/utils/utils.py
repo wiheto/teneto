@@ -793,31 +793,6 @@ def check_distance_funciton_input(distance_func_name, netinfo):
     return distance_func_name
 
 
-def load_parcellation_coords(parcellation_name):
-    """
-    Loads coordinates of included parcellations.
-
-    Parameters
-    ----------
-
-    parcellation_name : str
-        options: 'gordon2014_333', 'power2012_264', 'shen2013_278'.
-
-    Returns
-    -------
-    parc : array
-        parcellation cordinates
-
-    """
-
-    path = tenetopath[0] + '/data/parcellation/' + parcellation_name + '.csv'
-    parc = np.loadtxt(path, skiprows=1, delimiter=',', usecols=[1, 2, 3])
-
-    return parc
-
-
-
-
 def create_traj_ranges(start, stop, N):
     """
     Fills in the trajectory range.
