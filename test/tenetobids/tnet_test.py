@@ -199,14 +199,10 @@ def test_tnet_set_bad_files():
 def test_tnet_make_parcellation():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
                              bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
-    # Set the confound pipeline in fmriprep
-    tnet.make_parcellation('gordon2014_333+sub-maxprob-thr25-1mm')
-    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                             bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
-    tnet.make_parcellation('gordon2014_333')
+    tnet.make_parcellation(atlas='Schaefer2018', atlas_desc='400Parcels17Networks')
     tnet.load_data('parcellation')
     # Hard coded facts about dummy data
-    if not tnet.parcellation_data_[0].shape == (2, 333):
+    if not tnet.parcellation_data_[0].shape == (2, 400):
         raise AssertionError()
 
 

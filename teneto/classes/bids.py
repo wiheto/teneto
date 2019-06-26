@@ -280,8 +280,7 @@ class TenetoBIDS:
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2))
-                                 : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2))                             : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
@@ -849,21 +848,27 @@ class TenetoBIDS:
             print('Confounds in confound files: \n - ' + '\n - '.join(confounds))
         return confounds
 
-    def make_parcellation(self, parcellation, parc_type=None, parc_params=None, network='defaults', update_pipeline=True, removeconfounds=False, tag=None, njobs=None, clean_params=None, yeonetworkn=None):
+    def make_parcellation(self, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=2, parc_params=None, return_meta=False, update_pipeline=True, removeconfounds=False, tag=None, njobs=None, clean_params=None):
         """
         Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end.
 
         Parameters
         -----------
 
-        parcellation : str
-            specify which parcellation that you would like to use. For MNI: 'power2012_264', 'gordon2014_333'. TAL: 'shen2013_278'
-        parc_type : str
-            can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
+        data_path : str
+            Path to .nii image.
+        atlas : str
+            Specify which atlas you want to use (see github.com/templateflow/)
+        template : str
+            What space you data is in. If fmriprep, leave as MNI152NLin2009cAsym.
+        atlas_desc : str
+            Specify which description of atlas.
+        resolution : int
+            Resolution of atlas. Can be 1 or 2.
         parc_params : dict
-            **kwargs for nilearn functions
-        network : str
-            if "defaults", it selects static parcellation, _if available_ (other options will be made available soon).
+            **kwargs for nilearn functions.
+        return_meta : bool
+            If true, tries to return any meta-information that exists about parcellation.
         removeconfounds : bool
             if true, regresses out confounds that are specfied in self.set_confounds with linear regression.
         update_pipeline : bool
@@ -906,7 +911,7 @@ class TenetoBIDS:
         # A matching algorithem may be needed if cases arise where this isnt the case
         files = self.get_selected_files(quiet=1)
         # Load network communities, if possible.
-        self.set_network_communities(parcellation, netn=yeonetworkn)
+        #self.set_network_communities(parcellation, netn=yeonetworkn)
 
         if not tag:
             tag = ''
@@ -917,8 +922,8 @@ class TenetoBIDS:
             parc_params = {}
 
         with ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_make_parcellation, f, i, tag, parcellation,
-                                   parc_name, parc_type, parc_params) for i, f in enumerate(files)}
+            job = {executor.submit(self._run_make_parcellation, f, i, tag, atlas, template,
+                                   atlas_desc, resolution, parc_params, return_meta) for i, f in enumerate(files)}
             for j in as_completed(job):
                 j.result()
 
@@ -934,12 +939,12 @@ class TenetoBIDS:
                 self.removeconfounds(
                     clean_params=clean_params, transpose=None, njobs=njobs)
 
-    def _run_make_parcellation(self, f, i, tag, parcellation, parc_name, parc_type, parc_params):
+    def _run_make_parcellation(self, f, i, tag, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=2, parc_params=None, return_meta=False):
         fsave, _ = drop_bids_suffix(f)
         save_name, save_dir, _ = self._save_namepaths_bids_derivatives(
             fsave, tag, 'parcellation', 'roi')
         roi = teneto.utils.make_parcellation(
-            f, parcellation, parc_type, parc_params)
+            f, atlas, template=template, atlas_desc=atlas_desc, resolution=resolution, parc_params=parc_params, return_meta=return_meta)
         # Make data node,time
         roi = roi.transpose()
         roi = pd.DataFrame(roi.transpose())
@@ -947,8 +952,10 @@ class TenetoBIDS:
         sidecar = get_sidecar(f)
         sidecar['parcellation'] = parc_params
         sidecar['parcellation']['description'] = 'The parcellation reduces the FD nifti files to time-series for some parcellation. Parcellation is made using teneto and nilearn.'
-        sidecar['parcellation']['parcellation'] = parcellation
-        sidecar['parcellation']['parc_type'] = parc_type
+        sidecar['parcellation']['atlas'] = parcellation
+        sidecar['parcellation']['atlas_desc'] = atlas_desc
+        sidecar['parcellation']['template'] = template
+        sidecar['parcellation']['resolution'] = resolution
         with open(save_dir + save_name + '.json', 'w') as fs:
             json.dump(sidecar, fs)
 
