@@ -13,7 +13,7 @@ from .. import __path__ as tenetopath
 from ..classes import TemporalNetwork
 import json
 import pandas as pd
-
+import operator
 
 def graphlet2contact(G, params=None):
     """
@@ -900,6 +900,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     df : pandas dataframe
         Unless asarray are set to true.
     """
+
     if isinstance(tnet, pd.DataFrame):
         network = tnet
         hdf5 = False
@@ -924,30 +925,19 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     if ij is not None and not isinstance(ij, list):
         ij = [ij]
     if hdf5:
-        if i is not None and j is not None and t is not None and logic == 'and':
-            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + \
-                str(j) + ' & ' + 't in ' + str(t)
-        elif ij is not None and t is not None and logic == 'and':
+        l = {'or': ' | ', 'and': ' & '}    
+        if i is not None and j is not None and t is not None:
+            isinstr = 'i in ' + str(i) + l[logic] + 'j in ' + \
+                str(j) + l[logic] + 't in ' + str(t)
+        elif ij is not None and t is not None:
             isinstr = '(i in ' + str(ij) + ' | ' + 'j in ' + \
                 str(ij) + ') & ' + 't in ' + str(t)
-        elif ij is not None and t is not None and logic == 'or':
-            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + \
-                str(ij) + ' | ' + 't in ' + str(t)
-        elif i is not None and j is not None and logic == 'and':
-            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + str(j)
-        elif i is not None and t is not None and logic == 'and':
-            isinstr = 'i in ' + str(i) + ' & ' + 't in ' + str(t)
-        elif j is not None and t is not None and logic == 'and':
-            isinstr = 'j in ' + str(j) + ' & ' + 't in ' + str(t)
-        elif i is not None and j is not None and t is not None and logic == 'or':
-            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + \
-                str(j) + ' | ' + 't in ' + str(t)
-        elif i is not None and j is not None and logic == 'or':
-            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + str(j)
-        elif i is not None and t is not None and logic == 'or':
-            isinstr = 'i in ' + str(i) + ' | ' + 't in ' + str(t)
-        elif j is not None and t is not None and logic == 'or':
-            isinstr = 'j in ' + str(j) + ' | ' + 't in ' + str(t)
+        elif i is not None and j is not None:
+            isinstr = 'i in ' + str(i) + l[logic] + 'j in ' + str(j)
+        elif i is not None and t is not None:
+            isinstr = 'i in ' + str(i) + l[logic] + 't in ' + str(t)
+        elif j is not None and t is not None:
+            isinstr = 'j in ' + str(j) + l[logic] + 't in ' + str(t)
         elif i is not None:
             isinstr = 'i in ' + str(i)
         elif j is not None:
@@ -955,7 +945,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         elif t is not None:
             isinstr = 't in ' + str(t)
         elif ij is not None:
-            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij)
+            isinstr = 'i in ' + str(ij) + l['or'] + 'j in ' + str(ij)
         df = pd.read_hdf(network, where=isinstr)
     elif sparse == False:
         if logic == 'or':
@@ -988,6 +978,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         df = df_drop_ij_duplicates(df)
 
     else:
+        l = {'or': operator.or_, 'and': operator.and_}    
         if i is not None and j is not None and t is not None and logic == 'and':
             df = network[(network['i'].isin(i)) & (
                 network['j'].isin(j)) & (network['t'].isin(t))]
