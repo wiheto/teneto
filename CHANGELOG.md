@@ -583,7 +583,6 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 -   scipy dependency now exists (in graphlet_stack_plot).
 
 -   removed unnecessary and unused import of networkx
-
 -   restructured the `__init__.py` files for better import of teneto.
 
 ## v0.1 - Released Dec 23 2016

@@ -290,7 +290,6 @@ class TenetoBIDS:
             R_df = dfc_df_z.T.dot(df_z).div(len(dfc_df)).div(
                 df_z.std(ddof=0)).div(dfc_df_z.std(ddof=0), axis=0)
             R_df_describe = R_df.describe()
-            desc_index = R_df_describe.index
             confound_report_dir = save_dir + '/report/'
             if not os.path.exists(confound_report_dir):
                 os.makedirs(confound_report_dir)
