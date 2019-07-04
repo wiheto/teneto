@@ -42,7 +42,7 @@ class TenetoBIDS:
         "HowToAcknowledge": "Cite Teneto's DOI (http://doi.org/10.5281/zenodo.2535994).",
     }
 
-    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, bids_tags=None, bids_suffix=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True, njobs=None):
+    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, bids_tags=None, bids_suffix=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True, njobs=None, history=None):
         """
         Parameters
         ----------
@@ -74,7 +74,10 @@ class TenetoBIDS:
         njobs : int, optional
             How many parallel jobs to run. Default: 1. The set value can be overruled in individual functions.
         """
-        self.add_history(inspect.stack()[0][3], locals(), 1)
+        if history is not None:
+            self.history = history
+        else:        
+            self.add_history(inspect.stack()[0][3], locals(), 1)
         self.contact = []
 
         if raw_data_exists:
@@ -173,7 +176,7 @@ class TenetoBIDS:
         params : dict.
             See teneto.timeseries.derive_temporalnetwork for the structure of the param dictionary. Assumes dimord is time,node (output of other TenetoBIDS funcitons)
 
-        update_pipeline : bool
+        update_pipeline : bo    ol
             If true, the object updates the selected files with those derived here.
 
         njobs : int
@@ -334,7 +337,7 @@ class TenetoBIDS:
         if indict is not None:
             for d in indict:
                 self.bids_tags[d] = indict[d]
-                if not isinstance(self.bids_tags[d], list):
+                if self.bids_tags[d] is not None and not isinstance(self.bids_tags[d], list):
                     self.bids_tags[d] = [self.bids_tags[d]]
             if 'run' in self.bids_tags:
                 self.bids_tags['run'] = list(
@@ -1832,5 +1835,39 @@ class TenetoBIDS:
             return None, None, None
 
 
+    def save_tenetobids_snapshot(self, path, filename='TenetoBIDS_snapshot'):
+        """
+        Saves the TenetoBIDS settings.
+
+        Parameters
+        ----------
+        path : str
+            path to saved snapshot.
+        filename : str
+            filename for the tenetobids snapshot.
+
+        Notes
+        ----- 
+
+        To restart: 
+
+        import json
+        with open(path + 'TenetoBIDS_snapshot.json') as f
+            params = json.load(f)
+        tnet = teneto.TenetoBIDS(**params)
+
+        """ 
+        tenetobids_dict = self.__dict__
+        tenetobids_init = self.history[0][1]
+        tenetobids_snapshot = {}
+        for n in tenetobids_init: 
+            tenetobids_snapshot[n] = tenetobids_dict[n]
+        if not filename.endswith('.json'):
+            filename += '.json'
+        with open(path + '/' + filename, 'w') as fs:
+            json.dump(tenetobids_snapshot, fs)
+
 if __name__ == '__main__':
     pass
+
+

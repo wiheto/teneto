@@ -276,3 +276,14 @@ def test_tnet_scrubbing_and_exclusion_options():
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
     tnet.set_confound_pipeline('fmriprep')
     tnet.set_exclusion_file('confound2', '>=1')
+
+
+def test_savesnapshot():
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',                             pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)                             
+    tnet.save_tenetobids_snapshot(teneto.__path__[0])
+    with open(teneto.__path__[0] + '/TenetoBIDS_snapshot.json') as f:     
+        params = json.load(f)    
+    tnet2 = teneto.TenetoBIDS(**params)
+    if tnet2.__dict__ == tnet.__dict__:
+        raise AssertionError()
+
