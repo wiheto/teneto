@@ -34,13 +34,16 @@ def integration(temporalcommunities, staticcommunities):
     if staticcommunities.shape[0] != temporalcommunities.shape[0]:
         raise ValueError(
             'Temporal and static communities have different dimensions')
+    if len(staticcommunities.shape) > 1:
+            raise ValueError(
+                'Incorrect static community shape')
 
     alleg = allegiance(temporalcommunities)
 
     integration_coeff = np.zeros(len(staticcommunities))
 
     # calc integration for each node
-    for i, statcom in enumerate(len(staticcommunities)):
+    for i, statcom in enumerate(staticcommunities):
         integration_coeff[i] = np.nanmean(alleg[i, staticcommunities != statcom])
 
     return integration_coeff
