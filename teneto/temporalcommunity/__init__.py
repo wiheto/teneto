@@ -7,3 +7,4 @@ from .allegiance import allegiance
 from .recruitment import recruitment
 from .integration import integration
 from .promiscuity import promiscuity
+from .persistence import persistence

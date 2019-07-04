@@ -2,7 +2,7 @@ import numpy as np
 from teneto.temporalcommunity import integration
 import pytest
 
-def test_recruitment():
+def test_integration():
     temporalcommunities = np.array([[0, 0, 0], [0, 0, 1], [1, 1, 1], [1, 1, 2], [1, 2, 2], [1, 1, 2]])
     staticcommunities = np.array([[0, 0, 1, 1, 2, 2]])
     icoeff = integration(temporalcommunities, staticcommunities)
