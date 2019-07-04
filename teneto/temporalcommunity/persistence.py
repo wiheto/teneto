@@ -8,24 +8,24 @@ def persistence(communities, calc='global'):
 
     Parameters
     ----------
-    communities : array 
-        temporal communities of type: node,time (singlelabel) or node,node,time (for multilabel) communities 
+    communities : array
+        temporal communities of type: node,time (singlelabel) or node,node,time (for multilabel) communities
 
-    calc : str 
+    calc : str
         can be 'global', 'time', or 'node'
 
     Returns
     --------
-    persit_coeff : array 
+    persit_coeff : array
         the percentage of nodes that calculate the overall persistence (calc=global), or each node (calc=node), or for each time-point (calc=time)
 
-    References 
+    References
     -------
     Bazzi, Marya, et al. "Community detection in temporal multilayer networks, with an application to correlation networks." Multiscale Modeling & Simulation 14.1 (2016): 1-41.
 
     Note
     -----
-    Bazzi et al present a non-normalized version with the global output. 
+    Bazzi et al present a non-normalized version with the global output.
 
     """
 
