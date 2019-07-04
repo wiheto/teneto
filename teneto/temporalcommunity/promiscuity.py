@@ -3,12 +3,12 @@ import numpy as np
 def promiscuity(communities):
     """
     Promiscuity calculates the number of communities each node is a member of.
-    0 entails only 1 community. 1 entails all communities.  
+    0 entails only 1 community. 1 entails all communities.
 
     Parameters
     ---------
-    communities : array 
-        temporal communities labels of type (node,time). Temporal communities labels should be non-trivial through snapshots (i.e. temporal consensus clustering should be run) 
+    communities : array
+        temporal communities labels of type (node,time). Temporal communities labels should be non-trivial through snapshots (i.e. temporal consensus clustering should be run)
 
     Returns
     -------
