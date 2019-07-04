@@ -216,7 +216,7 @@ class TenetoBIDS:
 
         if update_pipeline == True:
             if not self.confound_pipeline and len(self.get_selected_files(quiet=1, pipeline='confound')) > 0:
-                self.set_confound_pipeline = self.pipeline
+                self.set_confound_pipeline(self.pipeline)
             self.set_pipeline('teneto_' + teneto.__version__)
             self.set_pipeline_subdir('tvc')
             self.set_bids_suffix('tvcconn')
@@ -1019,12 +1019,7 @@ class TenetoBIDS:
             save_name, _, _ = self._save_namepaths_bids_derivatives(
                 f, tag, '', suffix='community')
             save_dir = f.split('fc')[0] + '/communities/'
-        if not os.path.exists(save_dir):
-            try:
-                os.makedirs(save_dir)
-            except:
-                # Wait 2 seconds so that the error does not try and save something in the directory before it is created
-                time.sleep(2)
+        make_directories(save_dir)
         data = load_tabular_file(f)
         # Change this to other algorithms possible in future
         data = TemporalNetwork(from_df=data)
