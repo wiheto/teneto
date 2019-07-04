@@ -15,6 +15,7 @@ import json
 import pandas as pd
 import operator
 
+
 def graphlet2contact(G, params=None):
     """
 
@@ -463,7 +464,6 @@ def gen_nettype(G, printWarning=0, weightonly=False):
         \'wu\', \'bu\', \'wd\', or \'bd\'
     """
 
-    
     if np.array_equal(G, G.astype(bool)):
         nettype = 'b'
     else:
@@ -611,11 +611,11 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
     if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
         if netIn.sparse == True:
             G = netIn.df_to_array()
-        else: 
+        else:
             G = netIn.network
         netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
     elif inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
-        if netIn.sparse == False and forcesparse == True: 
+        if netIn.sparse == False and forcesparse == True:
             TN = TemporalNetwork(from_array=netIn.network, forcesparse=True)
         else:
             TN = netIn
@@ -925,7 +925,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     if ij is not None and not isinstance(ij, list):
         ij = [ij]
     if hdf5:
-        l = {'or': ' | ', 'and': ' & '}    
+        l = {'or': ' | ', 'and': ' & '}
         if i is not None and j is not None and t is not None:
             isinstr = 'i in ' + str(i) + l[logic] + 'j in ' + \
                 str(j) + l[logic] + 't in ' + str(t)
@@ -963,10 +963,10 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
                 j = np.arange(network.shape[0])
         ind = list(zip(*itertools.product(i, j, t)))
         ind = np.array(ind)
-        if ij is None: 
+        if ij is None:
             ind2 = np.array(list(zip(*itertools.product(j, i, t))))
-            ind = np.hstack([ind,ind2])
-          
+            ind = np.hstack([ind, ind2])
+
         edges = network[ind[0], ind[1], ind[2]]
 
         ind = ind[:, edges != 0]
@@ -978,7 +978,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         df = df_drop_ij_duplicates(df)
 
     else:
-        l = {'or': operator.or_, 'and': operator.and_}    
+        l = {'or': operator.or_, 'and': operator.and_}
         if i is not None and j is not None and t is not None and logic == 'and':
             df = network[(network['i'].isin(i)) & (
                 network['j'].isin(j)) & (network['t'].isin(t))]
