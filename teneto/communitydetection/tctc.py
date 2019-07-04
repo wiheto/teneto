@@ -245,8 +245,8 @@ def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False, rule='flock', n
                 #    tctc_mat[ind+t] = 0
                 # Looping over each valid trajectory instance is slower but the safest was to impose tau restrain and reinserting it.
                 tctc_mat = np.zeros(tctc_mat_community.shape)
-                for i in range(len(ind)):
-                    tctc_mat[ind[i]:ind[i]+l2[i]] = 1
+                for i, irow in enumerate(ind):
+                    tctc_mat[irow:irow+l2[i]] = 1
                 tctc_mat = tctc_mat.reshape(
                     dat_shape[1], dat_shape[1], dat_shape[0]+kappa+tau+1)
                 # remove padding
