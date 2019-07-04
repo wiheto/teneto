@@ -160,7 +160,7 @@ def test_tnet_scrubbing():
     tnet.set_exclusion_timepoint('confound1', '>1', replace_with='nan')
     tnet.load_data('parcellation')
     dat = np.where(np.isnan(np.squeeze(tnet.parcellation_data_[0].values)))
-    targ = np.array([[0, 0, 1, 1], [4, 5, 4, 5]])
+    targ = np.array([[0, 0, 0, 1, 1, 1], [0, 15, 18,  0, 15, 18]])
     if not np.all(targ == dat):
         raise AssertionError()
 
