@@ -11,3 +11,6 @@ def test_recruitment():
     # Check tests that input is right size
     with pytest.raises(ValueError):
         recruitment(temporalcommunities, temporalcommunities)
+    staticcommunities = np.array([[0, 0, 1, 1, 2]])
+    with pytest.raises(ValueError):
+        recruitment(temporalcommunities, staticcommunities)

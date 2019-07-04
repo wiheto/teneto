@@ -35,6 +35,9 @@ def recruitment(temporalcommunities, staticcommunities):
     if staticcommunities.shape[0] != temporalcommunities.shape[0]:
         raise ValueError(
             'Temporal and static communities have different dimensions')
+    if len(staticcommunities.shape) > 1:
+        raise ValueError(
+            'Incorrect static community shape')
 
     alleg = allegiance(temporalcommunities)
 
