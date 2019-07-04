@@ -105,7 +105,8 @@ def test_networkmeasure():
                              raw_data_exists=False)
     tnet.networkmeasures('volatility', {'calc': 'time'}, tag='time')
     tnet.load_data('temporalnetwork', measure='volatility', tag='time')
-    if not tnet.temporalnetwork_data_['volatility'][0].shape == (19, 1):
+    vol = tnet.temporalnetwork_data_['volatility'][0]
+    if not vol.shape == (19, 1):
         raise AssertionError()
 
 
