@@ -135,7 +135,7 @@ class TenetoBIDS:
             self.history = []
         # Remove self from input arguments
         if 'self' in fargs:
-            fargs.pop(self)
+            fargs.pop('self')
         self.history.append([fname, fargs])
 
     def export_history(self, dirname):
