@@ -2,17 +2,19 @@
 
 ## V0.4.5-dev
 
--   Some minor TenetoBIDS fixes
+-   [FIX] Removed self from teneto 
 
--   Updating to fmriprep 1.4.0 updated BIDS naming conventions. fmriprep&lt;1.4.0 no longer compatible.
+-   [FIX] Some minor TenetoBIDS fixes
 
--   Renaming of dummybids data
+-   [ENH] Updating to fmriprep 1.4.0 updated BIDS naming conventions. fmriprep&lt;1.4.0 no longer compatible.
 
--   Placing custom BIDS formatting in external json config folder.
+-   [ADJ] Renaming of dummybids data
 
--   make_parcellation now uses templateflow and all atlases therein
+-   [AJD] Placing custom BIDS formatting in external json config folder.
 
--   Removing function load_parcellation_coords
+-   [ENH] make_parcellation now uses templateflow and all atlases therein
+
+-   [AHD] Removing function load_parcellation_coords
 
 ## V0.4.4
 

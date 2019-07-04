@@ -5,20 +5,15 @@ import os
 import json
 
 
-def make_new_description_string():
-    desc_id = np.floor(time.time())
-    # check if in data set
-    # Get all desc
-    return desc_id
-
-
 def make_directories(path):
-    # Error can occur with os.makedirs when parallel so here a try/error is added to fix that.
-    if not os.path.exists(path):
-        try:
-            os.makedirs(path)
-        except:
-            time.sleep(5)
+    # Updated function to this and will eventuall merge remove function if this does not raise error when in parallel
+    os.makedirs(path, exist_ok=True)
+    # # Error can occur with os.makedirs when parallel so here a try/error is added to fix that.
+    # if not os.path.exists(path):
+    #     try:
+    #         os.makedirs(path, exist_ok=True)
+    #     except:
+    #         time.sleep(5)
 
 
 def drop_bids_suffix(fname):
