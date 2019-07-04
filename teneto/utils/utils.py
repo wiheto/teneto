@@ -978,31 +978,22 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         df = df_drop_ij_duplicates(df)
 
     else:
-        l = {'or': operator.or_, 'and': operator.and_}
-        if i is not None and j is not None and t is not None and logic == 'and':
-            df = network[(network['i'].isin(i)) & (
-                network['j'].isin(j)) & (network['t'].isin(t))]
-        elif ij is not None and t is not None and logic == 'and':
-            df = network[((network['i'].isin(ij)) | (
-                network['j'].isin(ij))) & (network['t'].isin(t))]
-        elif ij is not None and t is not None and logic == 'or':
-            df = network[((network['i'].isin(ij)) | (
-                network['j'].isin(ij))) | (network['t'].isin(t))]
-        elif i is not None and j is not None and logic == 'and':
-            df = network[(network['i'].isin(i)) & (network['j'].isin(j))]
-        elif i is not None and t is not None and logic == 'and':
-            df = network[(network['i'].isin(i)) & (network['t'].isin(t))]
-        elif j is not None and t is not None and logic == 'and':
-            df = network[(network['j'].isin(j)) & (network['t'].isin(t))]
-        elif i is not None and j is not None and t is not None and logic == 'or':
-            df = network[(network['i'].isin(i)) | (
-                network['j'].isin(j)) | (network['t'].isin(t))]
-        elif i is not None and j is not None and logic == 'or':
-            df = network[(network['i'].isin(i)) | (network['j'].isin(j))]
-        elif i is not None and t is not None and logic == 'or':
-            df = network[(network['i'].isin(i)) | (network['t'].isin(t))]
-        elif j is not None and t is not None and logic == 'or':
-            df = network[(network['j'].isin(j)) | (network['t'].isin(t))]
+        l = {'or': operator.__or__, 'and': operator.__and__}
+        if i is not None and j is not None and t is not None:
+            df = network[l[logic]((network['i'].isin(i)), l[logic]((
+                network['j'].isin(j)), (network['t'].isin(t))))]
+        elif ij is not None and t is not None:
+            df = network[((network['i'].isin(ij)) | l[logic]((
+                network['j'].isin(ij))), (network['t'].isin(t)))]
+        elif i is not None and j is not None:
+            df = network[l[logic]((network['i'].isin(i)),
+                                  (network['j'].isin(j)))]
+        elif i is not None and t is not None:
+            df = network[l[logic]((network['i'].isin(i)),
+                                  (network['t'].isin(t)))]
+        elif j is not None and t is not None:
+            df = network[l[logic]((network['j'].isin(j)),
+                                  (network['t'].isin(t)))]
         elif i is not None:
             df = network[network['i'].isin(i)]
         elif j is not None:
