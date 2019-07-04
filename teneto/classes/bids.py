@@ -453,20 +453,9 @@ class TenetoBIDS:
         base_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + \
             teneto.__version__ + '/' + paths_post_pipeline + '/'
         save_dir = base_dir + '/' + save_directory + '/'
-        if not os.path.exists(save_dir):
-            # A case has happened where this has been done in parallel and an error was raised. So do try/except
-            try:
-                os.makedirs(save_dir)
-            except:
-                # Wait 2 seconds so that the error does not try and save something in the directory before it is created
-                time.sleep(2)
-        if not os.path.exists(self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/dataset_description.json'):
-            try:
-                with open(self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/dataset_description.json', 'w') as fs:
-                    json.dump(self.tenetoinfo, fs)
-            except:
-                # Same as above, just in case parallel does duplicaiton
-                time.sleep(2)
+        make_directories(save_dir)
+        with open(self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/dataset_description.json', 'w') as fs:
+            json.dump(self.tenetoinfo, fs)
         return save_name, save_dir, base_dir
 
     def get_tags(self, tag, quiet=1):
