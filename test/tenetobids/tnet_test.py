@@ -178,10 +178,6 @@ def test_tnet_scrubbing_and_spline():
     # Make sure there is a difference
     if not np.sum(dat_scrub != dat_orig):
         raise AssertionError()
-    # Show that the difference between the original data at scrubbed time point is larger in data_orig
-    if not np.sum(np.abs(np.diff(dat_orig[0]))-np.abs(np.diff(dat_scrub[0]))) > 0:
-        raise AssertionError()
-    # Future tests: test that the cubic spline is correct
 
 
 def test_tnet_set_bad_files():
@@ -190,7 +186,7 @@ def test_tnet_set_bad_files():
     # Set the confound pipeline in fmriprep
     tnet.load_data('parcellation')
     tnet.set_confound_pipeline('fmriprep')
-    tnet.set_exclusion_file('confound2', '>0.5')
+    tnet.set_exclusion_file('confound2', '>0')
     if not len(tnet.bad_files) == 1:
         raise AssertionError()
     if not tnet.bad_files[0] == tnet.BIDS_dir + 'derivatives/' + tnet.pipeline + \
