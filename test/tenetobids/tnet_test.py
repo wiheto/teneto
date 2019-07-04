@@ -2,6 +2,7 @@ import teneto
 import numpy as np
 from PyQt5 import QtCore
 import json
+import os
 QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_X11InitThreads, True)
 
 
