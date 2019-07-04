@@ -1,6 +1,5 @@
 import teneto
 from teneto.utils import make_parcellation
-import templateflow.api as tf
 import pandas as pd
 import pytest
 

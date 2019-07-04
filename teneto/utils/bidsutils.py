@@ -73,7 +73,7 @@ def get_bids_tag(filename, tag):
             if t in filename:
                 outdict[t] = filename.split(t + '-')[1].split('_')[0]
     if 'run' in outdict:
-        outdict['run'] = str(int(outdict['run'])) 
+        outdict['run'] = str(int(outdict['run']))
     return outdict
 
 
