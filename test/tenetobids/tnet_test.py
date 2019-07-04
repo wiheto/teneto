@@ -285,5 +285,8 @@ def test_savesnapshot():
     with open(teneto.__path__[0] + '/TenetoBIDS_snapshot.json') as f:
         params = json.load(f)
     tnet2 = teneto.TenetoBIDS(**params)
-    if tnet2.__dict__ == tnet.__dict__:
+    for n in tnet2.__dict__:
+        if tnet.__dict__[n] != tnet2.__dict__[n]:
+            raise AssertionError()
+    if not tnet2.__dict__.keys() != tnet.__dict__.keys():
         raise AssertionError()
