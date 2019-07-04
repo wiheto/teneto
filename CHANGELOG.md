@@ -10,6 +10,8 @@
 
 -   make_parcellation now uses templateflow and all atlases therein
 
+-   save_tenetobids_snapshot to export current teneto settings. 
+
 ### Fixes
 
 -   NaNs in allegiance, which fixes recruitment and integration. Also added squeeze to input. And bug in integration where for loop would generate error. 
@@ -541,13 +543,9 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 ## V0.1.2 - Released Jan 6 2017
 
 -   Fixed bug in `graphlet_stack_plot` which made white colours have black smudges on them. (Also multiple background colours _should_ theoretically be possible now.)
-
 -   Added option to remove sharpening filter in `graphlet_stack_plot`
-
 -   Added `misc` and `distance_functions` (fixing `volatility`)
-
 -   Fixed naming of call to `temporal_shortest_path` in `temporal_efficiency`,`reachability_latency` and `temporal_closeness_centrality`
-
 -   Added `process_input` function to cut down on repeating code at beginning of networkmeasures
 
 ## v0.1.1 - Released Jan 2 2017

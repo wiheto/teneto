@@ -76,7 +76,7 @@ class TenetoBIDS:
         """
         if history is not None:
             self.history = history
-        else:        
+        else:
             self.add_history(inspect.stack()[0][3], locals(), 1)
         self.contact = []
 
@@ -285,7 +285,7 @@ class TenetoBIDS:
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2))                             : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2)): int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
@@ -1834,7 +1834,6 @@ class TenetoBIDS:
         else:
             return None, None, None
 
-
     def save_tenetobids_snapshot(self, path, filename='TenetoBIDS_snapshot'):
         """
         Saves the TenetoBIDS settings.
@@ -1847,27 +1846,26 @@ class TenetoBIDS:
             filename for the tenetobids snapshot.
 
         Notes
-        ----- 
+        -----
 
-        To restart: 
+        To restart:
 
         import json
         with open(path + 'TenetoBIDS_snapshot.json') as f
             params = json.load(f)
         tnet = teneto.TenetoBIDS(**params)
 
-        """ 
+        """
         tenetobids_dict = self.__dict__
         tenetobids_init = self.history[0][1]
         tenetobids_snapshot = {}
-        for n in tenetobids_init: 
+        for n in tenetobids_init:
             tenetobids_snapshot[n] = tenetobids_dict[n]
         if not filename.endswith('.json'):
             filename += '.json'
         with open(path + '/' + filename, 'w') as fs:
             json.dump(tenetobids_snapshot, fs)
 
+
 if __name__ == '__main__':
     pass
-
-
