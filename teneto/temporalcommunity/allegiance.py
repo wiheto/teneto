@@ -35,5 +35,6 @@ def allegiance(community):
 
     # module allegiance matrix, probability that ij were assigned to the same community
     P = (1/C)*T
-
+    # Make diagonal nan
+    np.fill_diagonal(P, np.nan)
     return P

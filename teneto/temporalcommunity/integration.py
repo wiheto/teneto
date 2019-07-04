@@ -16,7 +16,7 @@ def integration(temporalcommunities, staticcommunities):
 
       Returns:
       -------
-      Icoeff : array
+      integration_coeff : array
           integration coefficient for each node
 
     References:
@@ -30,16 +30,17 @@ def integration(temporalcommunities, staticcommunities):
     """
 
     # make sure the static and temporal communities have the same number of nodes
+    staticcommunities = np.squeeze(staticcommunities)
     if staticcommunities.shape[0] != temporalcommunities.shape[0]:
         raise ValueError(
             'Temporal and static communities have different dimensions')
 
     alleg = allegiance(temporalcommunities)
 
-    Icoeff = np.zeros(len(staticcommunities))
+    integration_coeff = np.zeros(len(staticcommunities))
 
     # calc integration for each node
     for i, statcom in enumerate(len(staticcommunities)):
-        Icoeff[i] = np.mean(alleg[i, staticcommunities != statcom])
+        integration_coeff[i] = np.nanmean(alleg[i, staticcommunities != statcom])
 
-    return Icoeff
+    return integration_coeff
