@@ -93,6 +93,7 @@ def test_communitydetection():
     # if not C[4, 2] != C[0, 2]:
     #     raise AssertionError()
 
+
 def test_networkmeasure():
     # calculate and load a network measure
     bids_path = teneto.__path__[0] + '/data/testdata/dummybids/'
@@ -146,8 +147,9 @@ def test_tnet_derive_with_removeconfounds():
     # Removing below tests due to errors caused by concurrent images.
     #tnet.derive_temporalnetwork({'method': 'jackknife'})
     # Make sure report directory exists
-    #if not os.path.exists(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/tvc/report'):
+    # if not os.path.exists(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/tvc/report'):
     #raise AssertionError()
+
 
 def test_tnet_scrubbing():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
@@ -192,14 +194,15 @@ def test_tnet_set_bad_files():
         raise AssertionError()
     if not tnet.bad_files[0] == tnet.BIDS_dir + 'derivatives/' + tnet.pipeline + \
         '/sub-001/func/' + tnet.pipeline_subdir + \
-        '/sub-001_task-a_run-01_roi.tsv':
+            '/sub-001_task-a_run-01_roi.tsv':
         raise AssertionError()
 
 
 def test_tnet_make_parcellation():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
                              bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
-    tnet.make_parcellation(atlas='Schaefer2018', atlas_desc='400Parcels17Networks')
+    tnet.make_parcellation(atlas='Schaefer2018',
+                           atlas_desc='400Parcels17Networks')
     tnet.load_data('parcellation')
     # Hard coded facts about dummy data
     if not tnet.parcellation_data_[0].shape == (2, 400):
@@ -209,7 +212,8 @@ def test_tnet_make_parcellation():
 def test_tnet_checksidecar():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
                              bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
-    tnet.make_parcellation(atlas='Schaefer2018', atlas_desc='400Parcels17Networks')
+    tnet.make_parcellation(atlas='Schaefer2018',
+                           atlas_desc='400Parcels17Networks')
     tnet.load_data('parcellation')
     tnet.set_confound_pipeline('fmriprep')
     tnet.set_exclusion_timepoint('confound1', '<=0', replace_with='nan')
@@ -230,6 +234,19 @@ def test_tnet_io():
     tnet2 = teneto.TenetoBIDS.load_frompickle(
         teneto.__path__[0] + '/data/testdata/dummybids/teneosave.pkl')
     if not tnet2.get_selected_files() == tnet.get_selected_files():
+        raise AssertionError()
+
+
+def test_export_history():
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
+                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
+    export_path = teneto.__path__[0] + '/data/testdata/dummybids/'
+    tnet.export_history(export_path)
+    if not os.path.exists(export_path + 'requirements.txt'):
+        raise AssertionError()
+    if not os.path.exists(export_path + 'TenetoBIDShistory.py'):
+        raise AssertionError()
+    if not os.path.exists(export_path + 'tenetoinfo.json'):
         raise AssertionError()
 
 
