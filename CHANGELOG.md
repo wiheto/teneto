@@ -2,7 +2,11 @@
 
 ## V0.4.5-dev
 
--   [FIX] Removed self from teneto 
+-   [ENH/FIX] NaNs in allegiance, which fixes recruitment and integration. Also added squeeze to input. 
+
+-   [ADJ] Removing unused description_string function from bidsutils
+
+-   [FIX] Removed self from teneto history.
 
 -   [FIX] Some minor TenetoBIDS fixes
 
@@ -10,11 +14,11 @@
 
 -   [ADJ] Renaming of dummybids data
 
--   [AJD] Placing custom BIDS formatting in external json config folder.
+-   [ADJ] Placing custom BIDS formatting in external json config folder.
 
 -   [ENH] make_parcellation now uses templateflow and all atlases therein
 
--   [AHD] Removing function load_parcellation_coords
+-   [ADJ] Removing function load_parcellation_coords
 
 ## V0.4.4
 
