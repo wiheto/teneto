@@ -1,7 +1,5 @@
 import numpy as np
 from .allegiance import allegiance
-from ..utils import set_diagonal
-
 
 def recruitment(temporalcommunities, staticcommunities):
     """

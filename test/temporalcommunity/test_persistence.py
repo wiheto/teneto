@@ -1,7 +1,5 @@
 import numpy as np
 from teneto.temporalcommunity import persistence
-import pytest
-
 
 def test_persistence():
     temporalcommunities = np.array([[0, 0, 0, 0], [0, 0, 1, 1], [1, 1, 2, 1]])

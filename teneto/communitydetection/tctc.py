@@ -1,6 +1,5 @@
 import numpy as np
 import networkx as nx
-import scipy.spatial.distance as distance
 import pandas as pd
 from teneto.timeseries import derive_temporalnetwork
 

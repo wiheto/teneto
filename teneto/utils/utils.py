@@ -11,7 +11,6 @@ import scipy.spatial.distance as distance
 from ..trajectory import rdp
 from .. import __path__ as tenetopath
 from ..classes import TemporalNetwork
-import json
 import pandas as pd
 import operator
 

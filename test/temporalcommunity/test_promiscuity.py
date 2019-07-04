@@ -1,6 +1,5 @@
 import numpy as np
 from teneto.temporalcommunity import promiscuity
-import pytest
 
 def test_promiscuity():
     temporalcommunities = np.array([[0, 0, 0], [0, 1, 0], [0, 1, 2]])

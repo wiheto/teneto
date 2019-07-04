@@ -1,6 +1,4 @@
 import numpy as np
-from ..utils import set_diagonal
-
 
 def persistence(communities, calc='global'):
     """
