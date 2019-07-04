@@ -8,13 +8,11 @@ import numpy as np
 import collections
 import itertools
 import scipy.spatial.distance as distance
-from nilearn.input_data import NiftiSpheresMasker, NiftiLabelsMasker
-from nilearn.datasets import fetch_atlas_harvard_oxford
 from ..trajectory import rdp
 from .. import __path__ as tenetopath
 from ..classes import TemporalNetwork
-import json
 import pandas as pd
+import operator
 
 
 def graphlet2contact(G, params=None):
@@ -465,7 +463,6 @@ def gen_nettype(G, printWarning=0, weightonly=False):
         \'wu\', \'bu\', \'wd\', or \'bd\'
     """
 
-    
     if np.array_equal(G, G.astype(bool)):
         nettype = 'b'
     else:
@@ -613,11 +610,11 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
     if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
         if netIn.sparse == True:
             G = netIn.df_to_array()
-        else: 
+        else:
             G = netIn.network
         netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
     elif inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
-        if netIn.sparse == False and forcesparse == True: 
+        if netIn.sparse == False and forcesparse == True:
             TN = TemporalNetwork(from_array=netIn.network, forcesparse=True)
         else:
             TN = netIn
@@ -795,111 +792,6 @@ def check_distance_funciton_input(distance_func_name, netinfo):
     return distance_func_name
 
 
-def load_parcellation_coords(parcellation_name):
-    """
-    Loads coordinates of included parcellations.
-
-    Parameters
-    ----------
-
-    parcellation_name : str
-        options: 'gordon2014_333', 'power2012_264', 'shen2013_278'.
-
-    Returns
-    -------
-    parc : array
-        parcellation cordinates
-
-    """
-
-    path = tenetopath[0] + '/data/parcellation/' + parcellation_name + '.csv'
-    parc = np.loadtxt(path, skiprows=1, delimiter=',', usecols=[1, 2, 3])
-
-    return parc
-
-
-def make_parcellation(data_path, parcellation, parc_type=None, parc_params=None):
-    """
-    Performs a parcellation which reduces voxel space to regions of interest (brain data).
-
-    Parameters
-    ----------
-
-    data_path : str
-        Path to .nii image.
-    parcellation : str
-        Specify which parcellation that you would like to use. For MNI: 'gordon2014_333', 'power2012_264', For TAL: 'shen2013_278'.
-        It is possible to add the OH subcotical atlas on top of a cortical atlas (e.g. gordon) by adding:
-            '+OH' (for oxford harvard subcortical atlas) and '+SUIT' for SUIT cerebellar atlas.
-            e.g.: gordon2014_333+OH+SUIT'
-    parc_type : str
-        Can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
-    parc_params : dict
-        **kwargs for nilearn functions
-
-    Returns
-    -------
-
-    data : array
-        Data after the parcellation.
-
-    NOTE
-    ----
-    These functions make use of nilearn. Please cite nilearn if used in a publicaiton.
-    """
-
-    if isinstance(parcellation, str):
-        parcin = ''
-        if '+' in parcellation:
-            parcin = parcellation
-            parcellation = parcellation.split('+')[0]
-        if '+OH' in parcin:
-            subcortical = True
-        else:
-            subcortical = None
-        if '+SUIT' in parcin:
-            cerebellar = True
-        else:
-            cerebellar = None
-
-        if not parc_type or not parc_params:
-            path = tenetopath[0] + '/data/parcellation_defaults/defaults.json'
-            with open(path) as data_file:
-                defaults = json.load(data_file)
-        if not parc_type:
-            parc_type = defaults[parcellation]['type']
-            print('Using default parcellation type')
-        if not parc_params:
-            parc_params = defaults[parcellation]['params']
-            print('Using default parameters')
-
-    if parc_type == 'sphere':
-        parcellation = load_parcellation_coords(parcellation)
-        seed = NiftiSpheresMasker(np.array(parcellation), **parc_params)
-        data = seed.fit_transform(data_path)
-    elif parc_type == 'region':
-        path = tenetopath[0] + '/data/parcellation/' + parcellation + '.nii.gz'
-        region = NiftiLabelsMasker(path, **parc_params)
-        data = region.fit_transform(data_path)
-    else:
-        raise ValueError('Unknown parc_type specified')
-
-    if subcortical:
-        subatlas = fetch_atlas_harvard_oxford('sub-maxprob-thr0-2mm')['maps']
-        region = NiftiLabelsMasker(subatlas, **parc_params)
-        data_sub = region.fit_transform(data_path)
-        data = np.hstack([data, data_sub])
-
-    if cerebellar:
-        path = tenetopath[0] + \
-            '/data/parcellation/Cerebellum-SUIT_space-MNI152NLin2009cAsym.nii.gz'
-        region = NiftiLabelsMasker(path, **parc_params)
-        data_cerebellar = region.fit_transform(data_path)
-        data = np.hstack([data, data_cerebellar])
-
-    return data
-
-
 def create_traj_ranges(start, stop, N):
     """
     Fills in the trajectory range.
@@ -1007,6 +899,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     df : pandas dataframe
         Unless asarray are set to true.
     """
+
     if isinstance(tnet, pd.DataFrame):
         network = tnet
         hdf5 = False
@@ -1031,30 +924,19 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     if ij is not None and not isinstance(ij, list):
         ij = [ij]
     if hdf5:
-        if i is not None and j is not None and t is not None and logic == 'and':
-            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + \
-                str(j) + ' & ' + 't in ' + str(t)
-        elif ij is not None and t is not None and logic == 'and':
+        l = {'or': ' | ', 'and': ' & '}
+        if i is not None and j is not None and t is not None:
+            isinstr = 'i in ' + str(i) + l[logic] + 'j in ' + \
+                str(j) + l[logic] + 't in ' + str(t)
+        elif ij is not None and t is not None:
             isinstr = '(i in ' + str(ij) + ' | ' + 'j in ' + \
                 str(ij) + ') & ' + 't in ' + str(t)
-        elif ij is not None and t is not None and logic == 'or':
-            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + \
-                str(ij) + ' | ' + 't in ' + str(t)
-        elif i is not None and j is not None and logic == 'and':
-            isinstr = 'i in ' + str(i) + ' & ' + 'j in ' + str(j)
-        elif i is not None and t is not None and logic == 'and':
-            isinstr = 'i in ' + str(i) + ' & ' + 't in ' + str(t)
-        elif j is not None and t is not None and logic == 'and':
-            isinstr = 'j in ' + str(j) + ' & ' + 't in ' + str(t)
-        elif i is not None and j is not None and t is not None and logic == 'or':
-            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + \
-                str(j) + ' | ' + 't in ' + str(t)
-        elif i is not None and j is not None and logic == 'or':
-            isinstr = 'i in ' + str(i) + ' | ' + 'j in ' + str(j)
-        elif i is not None and t is not None and logic == 'or':
-            isinstr = 'i in ' + str(i) + ' | ' + 't in ' + str(t)
-        elif j is not None and t is not None and logic == 'or':
-            isinstr = 'j in ' + str(j) + ' | ' + 't in ' + str(t)
+        elif i is not None and j is not None:
+            isinstr = 'i in ' + str(i) + l[logic] + 'j in ' + str(j)
+        elif i is not None and t is not None:
+            isinstr = 'i in ' + str(i) + l[logic] + 't in ' + str(t)
+        elif j is not None and t is not None:
+            isinstr = 'j in ' + str(j) + l[logic] + 't in ' + str(t)
         elif i is not None:
             isinstr = 'i in ' + str(i)
         elif j is not None:
@@ -1062,7 +944,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         elif t is not None:
             isinstr = 't in ' + str(t)
         elif ij is not None:
-            isinstr = 'i in ' + str(ij) + ' | ' + 'j in ' + str(ij)
+            isinstr = 'i in ' + str(ij) + l['or'] + 'j in ' + str(ij)
         df = pd.read_hdf(network, where=isinstr)
     elif sparse == False:
         if logic == 'or':
@@ -1080,10 +962,10 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
                 j = np.arange(network.shape[0])
         ind = list(zip(*itertools.product(i, j, t)))
         ind = np.array(ind)
-        if ij is None: 
+        if ij is None:
             ind2 = np.array(list(zip(*itertools.product(j, i, t))))
-            ind = np.hstack([ind,ind2])
-          
+            ind = np.hstack([ind, ind2])
+
         edges = network[ind[0], ind[1], ind[2]]
 
         ind = ind[:, edges != 0]
@@ -1095,30 +977,22 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         df = df_drop_ij_duplicates(df)
 
     else:
-        if i is not None and j is not None and t is not None and logic == 'and':
-            df = network[(network['i'].isin(i)) & (
-                network['j'].isin(j)) & (network['t'].isin(t))]
-        elif ij is not None and t is not None and logic == 'and':
-            df = network[((network['i'].isin(ij)) | (
-                network['j'].isin(ij))) & (network['t'].isin(t))]
-        elif ij is not None and t is not None and logic == 'or':
-            df = network[((network['i'].isin(ij)) | (
-                network['j'].isin(ij))) | (network['t'].isin(t))]
-        elif i is not None and j is not None and logic == 'and':
-            df = network[(network['i'].isin(i)) & (network['j'].isin(j))]
-        elif i is not None and t is not None and logic == 'and':
-            df = network[(network['i'].isin(i)) & (network['t'].isin(t))]
-        elif j is not None and t is not None and logic == 'and':
-            df = network[(network['j'].isin(j)) & (network['t'].isin(t))]
-        elif i is not None and j is not None and t is not None and logic == 'or':
-            df = network[(network['i'].isin(i)) | (
-                network['j'].isin(j)) | (network['t'].isin(t))]
-        elif i is not None and j is not None and logic == 'or':
-            df = network[(network['i'].isin(i)) | (network['j'].isin(j))]
-        elif i is not None and t is not None and logic == 'or':
-            df = network[(network['i'].isin(i)) | (network['t'].isin(t))]
-        elif j is not None and t is not None and logic == 'or':
-            df = network[(network['j'].isin(j)) | (network['t'].isin(t))]
+        l = {'or': operator.__or__, 'and': operator.__and__}
+        if i is not None and j is not None and t is not None:
+            df = network[l[logic]((network['i'].isin(i)), l[logic]((
+                network['j'].isin(j)), (network['t'].isin(t))))]
+        elif ij is not None and t is not None:
+            df = network[((network['i'].isin(ij)) | l[logic]((
+                network['j'].isin(ij))), (network['t'].isin(t)))]
+        elif i is not None and j is not None:
+            df = network[l[logic]((network['i'].isin(i)),
+                                  (network['j'].isin(j)))]
+        elif i is not None and t is not None:
+            df = network[l[logic]((network['i'].isin(i)),
+                                  (network['t'].isin(t)))]
+        elif j is not None and t is not None:
+            df = network[l[logic]((network['j'].isin(j)),
+                                  (network['t'].isin(t)))]
         elif i is not None:
             df = network[network['i'].isin(i)]
         elif j is not None:

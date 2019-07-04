@@ -43,8 +43,8 @@ class TemporalNetwork:
             if true, pandas dataframe is stored and queried as a h5 file.
         hdf5path : str
             Where the h5 files is saved if hdf5 is True. If left unset, the default is ./teneto_temporalnetwork.h5
-        forcesparse : bool 
-            If importing array, and over 25% edges are present, a dense matrix is created. Can force it to be sparse by making this true. 
+        forcesparse : bool
+            If importing array, and over 25% edges are present, a dense matrix is created. Can force it to be sparse by making this true.
         """
         # Check inputs
         if nettype:

@@ -2,6 +2,7 @@ import teneto
 import numpy as np
 from PyQt5 import QtCore
 import json
+import os
 QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_X11InitThreads, True)
 
 
@@ -93,6 +94,7 @@ def test_communitydetection():
     # if not C[4, 2] != C[0, 2]:
     #     raise AssertionError()
 
+
 def test_networkmeasure():
     # calculate and load a network measure
     bids_path = teneto.__path__[0] + '/data/testdata/dummybids/'
@@ -103,7 +105,8 @@ def test_networkmeasure():
                              raw_data_exists=False)
     tnet.networkmeasures('volatility', {'calc': 'time'}, tag='time')
     tnet.load_data('temporalnetwork', measure='volatility', tag='time')
-    if not tnet.temporalnetwork_data_['volatility'][0].shape == (19, 1):
+    vol = tnet.temporalnetwork_data_['volatility']
+    if not vol[0].shape == (19, 1):
         raise AssertionError()
 
 
@@ -146,8 +149,9 @@ def test_tnet_derive_with_removeconfounds():
     # Removing below tests due to errors caused by concurrent images.
     #tnet.derive_temporalnetwork({'method': 'jackknife'})
     # Make sure report directory exists
-    #if not os.path.exists(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/tvc/report'):
+    # if not os.path.exists(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/tvc/report'):
     #raise AssertionError()
+
 
 def test_tnet_scrubbing():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
@@ -157,7 +161,7 @@ def test_tnet_scrubbing():
     tnet.set_exclusion_timepoint('confound1', '>1', replace_with='nan')
     tnet.load_data('parcellation')
     dat = np.where(np.isnan(np.squeeze(tnet.parcellation_data_[0].values)))
-    targ = np.array([[0, 0, 1, 1], [4, 5, 4, 5]])
+    targ = np.array([[0, 0, 0, 1, 1, 1], [0, 15, 18,  0, 15, 18]])
     if not np.all(targ == dat):
         raise AssertionError()
 
@@ -175,10 +179,6 @@ def test_tnet_scrubbing_and_spline():
     # Make sure there is a difference
     if not np.sum(dat_scrub != dat_orig):
         raise AssertionError()
-    # Show that the difference between the original data at scrubbed time point is larger in data_orig
-    if not np.sum(np.abs(np.diff(dat_orig[0]))-np.abs(np.diff(dat_scrub[0]))) > 0:
-        raise AssertionError()
-    # Future tests: test that the cubic spline is correct
 
 
 def test_tnet_set_bad_files():
@@ -187,37 +187,35 @@ def test_tnet_set_bad_files():
     # Set the confound pipeline in fmriprep
     tnet.load_data('parcellation')
     tnet.set_confound_pipeline('fmriprep')
-    tnet.set_exclusion_file('confound2', '>0.5')
+    tnet.set_exclusion_file('confound2', '>0')
     if not len(tnet.bad_files) == 1:
         raise AssertionError()
     if not tnet.bad_files[0] == tnet.BIDS_dir + 'derivatives/' + tnet.pipeline + \
         '/sub-001/func/' + tnet.pipeline_subdir + \
-        '/sub-001_task-a_run-01_roi.tsv':
+            '/sub-001_task-a_run-01_roi.tsv':
         raise AssertionError()
 
 
 def test_tnet_make_parcellation():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
-    # Set the confound pipeline in fmriprep
-    tnet.make_parcellation('gordon2014_333+sub-maxprob-thr25-1mm')
-    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
-    tnet.make_parcellation('gordon2014_333')
+                             bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
+    tnet.make_parcellation(atlas='Schaefer2018',
+                           atlas_desc='400Parcels17Networks')
     tnet.load_data('parcellation')
     # Hard coded facts about dummy data
-    if not tnet.parcellation_data_[0].shape == (2, 333):
+    if not tnet.parcellation_data_[0].shape == (2, 400):
         raise AssertionError()
 
 
 def test_tnet_checksidecar():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
-    tnet.make_parcellation('gordon2014_333')
+                             bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
+    tnet.make_parcellation(atlas='Schaefer2018',
+                           atlas_desc='400Parcels17Networks')
     tnet.load_data('parcellation')
     tnet.set_confound_pipeline('fmriprep')
     tnet.set_exclusion_timepoint('confound1', '<=0', replace_with='nan')
-    with open(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/parcellation/sub-001_task-a_run-01_roi.json') as fs:
+    with open(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/parcellation/sub-001_task-a_run-01_desc-preproc_roi.json') as fs:
         sidecar = json.load(fs)
     # Check both steps are in sidecar
     if not 'parcellation' in sidecar.keys():
@@ -234,6 +232,19 @@ def test_tnet_io():
     tnet2 = teneto.TenetoBIDS.load_frompickle(
         teneto.__path__[0] + '/data/testdata/dummybids/teneosave.pkl')
     if not tnet2.get_selected_files() == tnet.get_selected_files():
+        raise AssertionError()
+
+
+def test_export_history():
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
+                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
+    export_path = teneto.__path__[0] + '/data/testdata/dummybids/'
+    tnet.export_history(export_path)
+    if not os.path.exists(export_path + 'requirements.txt'):
+        raise AssertionError()
+    if not os.path.exists(export_path + 'TenetoBIDShistory.py'):
+        raise AssertionError()
+    if not os.path.exists(export_path + 'tenetoinfo.json'):
         raise AssertionError()
 
 

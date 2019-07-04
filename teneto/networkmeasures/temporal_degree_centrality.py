@@ -68,7 +68,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     # sum sum tnet
     if calc == 'time' and communities is None:
         # Return node,time
-        if tnet.sparse == True: 
+        if tnet.sparse == True:
             tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
             df = tnet.network.groupby([fromax, 't']).sum().reset_index()
             tdeg[df[fromax], df['t']] = df['weight']
@@ -83,7 +83,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
             'Communities must be specified when calculating module degree z-score.')
     elif calc != 'time' and communities is None:
         # Return node
-        if tnet.sparse == True: 
+        if tnet.sparse == True:
             tdeg = np.zeros([tnet.netshape[0]])
             # Strength if weighted
             df = tnet.network.groupby([fromax])['weight'].sum().reset_index()
@@ -92,15 +92,15 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
             if tnet.nettype[1] == 'u':
                 df = tnet.network.groupby([toax])['weight'].sum().reset_index()
                 tdeg[df[toax]] += df['weight']
-        else: 
+        else:
             tdeg = np.sum(np.sum(tnet.network, axis=-1), axis=axis)
     elif calc == 'module_degree_zscore' and communities is not None:
         tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
         # Need to make this fully sparse
-        if tnet.sparse == True: 
+        if tnet.sparse == True:
             network = tnet.df_to_array()
-        else: 
-            network = tnet.network        
+        else:
+            network = tnet.network
         for t in range(tnet.netshape[1]):
             if len(communities.shape) == 2:
                 C = communities[:, t]
@@ -113,10 +113,10 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
         tdeg[np.isnan(tdeg) == 1] = 0
     elif calc == 'time' and communities is not None:
         # neet to make this fully sparse
-        if tnet.sparse == True: 
+        if tnet.sparse == True:
             network = tnet.df_to_array()
-        else: 
-            network = tnet.network        
+        else:
+            network = tnet.network
         tdeg_communities = np.zeros(
             [communities.max()+1, communities.max()+1, communities.shape[-1]])
         if len(communities.shape) == 2:

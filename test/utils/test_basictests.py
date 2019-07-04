@@ -115,12 +115,6 @@ def test_cleancommunityindicies():
         raise AssertionError()
 
 
-def test_load_parc_cords():
-    parc = teneto.utils.load_parcellation_coords('power2012_264')
-    if not parc.shape == (264, 3):
-        raise AssertionError()
-
-
 def test_contact2graphletfail():
 
     C = {}

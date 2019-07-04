@@ -1,5 +1,35 @@
 # Changelog
 
+## V0.4.5-dev
+
+### Enhancements
+
+-   Added promiscuity and persitence to temporalcommunity measures
+
+-   Updating to fmriprep 1.4.0 updated BIDS naming conventions. fmriprep&lt;1.4.0 no longer compatible.
+
+-   make_parcellation now uses templateflow and all atlases therein
+
+### Fixes
+
+-   NaNs in allegiance, which fixes recruitment and integration. Also added squeeze to input. And bug in integration where for loop would generate error. 
+
+-   Removed self from teneto history.
+
+-   Some minor TenetoBIDS fixes
+
+### Changes
+
+-   Removing unused description_string function from bidsutils
+
+-   Renaming of dummybids data
+
+-   Placing custom BIDS formatting in external json config folder.
+
+-   Removing seaborn as requirement (unused)
+
+-   Removing function load_parcellation_coords
+
 ## V0.4.4
 
 -   Schaefer 7 network communities now reference the packaged image (17network mask). Before they references the 7 network mask that was not included.
@@ -24,11 +54,11 @@
 
 -   Better loading of communities in TenetoBIDS
 
--   Renmaed network_communities_ to communitytemplate_
+-   Renmaed network_communities_ to communitytemplate\_
 
 -   Fixed a bug where SUIT and OH were not loaded in make_parcellation
 
--   Better communitytemplate_ tables loaded (OH and SUIT included)
+-   Better communitytemplate\_ tables loaded (OH and SUIT included)
 
 -   Can specify 7 or 17 communitytemplate size when using schaefer atlas
 
@@ -359,7 +389,7 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 
 -   Added Gordon2014_333 parcellation
 
--   Renamed parcellations to \[firstauthor\]\[publicationyear\]\_\[numberofrois\]
+-   Renamed parcellations to \[firstauthor]\[publicationyear]\_\[numberofrois]
 
 -   Added more documentation to functions
 
@@ -525,35 +555,20 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 ### The changes in v0.1.1 make some functions obsolete in v0.1
 
 -   setup.py has been added for installation (e.g. via pip)
-
 -   Restructured file structure so that importing teneto has 4 submodules: `plot`, `utils`, `networkmeasures`, `generatenetwork`.
-
 -   Functions renamed from camel-case to underscore for python-like code.
-
 -   More comments added to plotting functions
-
 -   Docs generated and integration with readthedocs.io
-
 -   Contact representation field `contacts` is now numpy array instead of tuple.
-
 -   `graphlet_stack_plot` plotting function added.
-
 -   Examples folder added with several jupyter notebook examples.
-
 -   Generatenetwork module added. `rand_binomial` function added which generates a random temporal network.
-
 -   `circle_plot.py` created containing `circle_plot` function (previously in `slice_graph.py`).
-
 -   variable `vlabs` has been changed to `nlabs`. `dlabs` has been changed to `tlabs`.
-
 -   Field `nlabs` has been added to contact representation.
-
 -   `slice_plot` uses information in contact representation when plotting.
-
 -   scipy dependency now exists (in graphlet_stack_plot).
-
 -   removed unnecessary and unused import of networkx
-
 -   restructured the `__init__.py` files for better import of teneto.
 
 ## v0.1 - Released Dec 23 2016

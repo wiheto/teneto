@@ -1,24 +1,18 @@
 import numpy as np
-import time
 import pandas as pd
 import os
 import json
 
 
-def make_new_description_string():
-    desc_id = np.floor(time.time())
-    # check if in data set
-    # Get all desc
-    return desc_id
-
-
 def make_directories(path):
-    # Error can occur with os.makedirs when parallel so here a try/error is added to fix that.
-    if not os.path.exists(path):
-        try:
-            os.makedirs(path)
-        except:
-            time.sleep(5)
+    # Updated function to this and will eventuall merge remove function if this does not raise error when in parallel
+    os.makedirs(path, exist_ok=True)
+    # # Error can occur with os.makedirs when parallel so here a try/error is added to fix that.
+    # if not os.path.exists(path):
+    #     try:
+    #         os.makedirs(path, exist_ok=True)
+    #     except:
+    #         time.sleep(5)
 
 
 def drop_bids_suffix(fname):
@@ -63,14 +57,17 @@ def get_bids_tag(filename, tag):
                 tag = t.split('-')
                 if len(tag) == 2:
                     outdict[tag[0]] = tag[1]
-            return outdict
+            tag = 'all'
         else:
             tag = [tag]
-    if '/' in filename:
-        filename = filename.split('/')[-1]
-    for t in tag:
-        if t in filename:
-            outdict[t] = filename.split(t + '-')[1].split('_')[0]
+    if isinstance(tag, list):
+        if '/' in filename:
+            filename = filename.split('/')[-1]
+        for t in tag:
+            if t in filename:
+                outdict[t] = filename.split(t + '-')[1].split('_')[0]
+    if 'run' in outdict:
+        outdict['run'] = str(int(outdict['run']))
     return outdict
 
 

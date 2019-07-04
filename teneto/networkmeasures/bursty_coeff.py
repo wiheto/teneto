@@ -128,7 +128,7 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
     """
 
     if threshold_type is not None:
-        if threshold_params is None: 
+        if threshold_params is None:
             threshold_params = {}
         data = binarize(data, threshold_type,
                         threshold_level, **threshold_params)

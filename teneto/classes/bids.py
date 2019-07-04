@@ -5,7 +5,6 @@ import re
 from bids import BIDSLayout
 import numpy as np
 import inspect
-import seaborn as sns
 import matplotlib.pyplot as plt
 import json
 import pickle
@@ -80,7 +79,7 @@ class TenetoBIDS:
 
         if raw_data_exists:
             self.BIDS = BIDSLayout(BIDS_dir, validate=False)
-        else: 
+        else:
             self.BIDS = None
 
         self.BIDS_dir = os.path.abspath(BIDS_dir)
@@ -133,6 +132,9 @@ class TenetoBIDS:
         """
         if init == 1:
             self.history = []
+        # Remove self from input arguments
+        if 'self' in fargs:
+            fargs.pop('self')
         self.history.append([fname, fargs])
 
     def export_history(self, dirname):
@@ -214,7 +216,7 @@ class TenetoBIDS:
 
         if update_pipeline == True:
             if not self.confound_pipeline and len(self.get_selected_files(quiet=1, pipeline='confound')) > 0:
-                self.set_confound_pipeline = self.pipeline
+                self.set_confound_pipeline(self.pipeline)
             self.set_pipeline('teneto_' + teneto.__version__)
             self.set_pipeline_subdir('tvc')
             self.set_bids_suffix('tvcconn')
@@ -228,6 +230,7 @@ class TenetoBIDS:
         fs, _ = drop_bids_suffix(f)
         save_name, save_dir, _ = self._save_namepaths_bids_derivatives(
             fs, tag, 'tvc', 'tvcconn')
+
         if 'weight-var' in params.keys():
             if params['weight-var'] == 'from-subject-fc':
                 fc_files = self.get_selected_files(
@@ -250,18 +253,12 @@ class TenetoBIDS:
                 else:
                     raise ValueError('Cannot correctly find FC files')
 
-        params['report'] = 'yes'
-        params['report_path'] = save_dir + '/report/'
-        params['report_filename'] = save_name + '_derivationreport.html'
-
-        if not os.path.exists(params['report_path']):
-            os.makedirs(params['report_path'])
-
         if 'dimord' not in params:
             params['dimord'] = 'time,node'
 
         dfc = teneto.timeseries.derive_temporalnetwork(data.values, params)
-        dfc_net = TemporalNetwork(from_array=dfc, nettype='wu', forcesparse=True)
+        dfc_net = TemporalNetwork(
+            from_array=dfc, nettype='wu', forcesparse=True)
         dfc_net.network.to_csv(save_dir + save_name + '.tsv', sep='\t')
 
         sidecar = get_sidecar(f)
@@ -279,13 +276,13 @@ class TenetoBIDS:
 
         if confounds_exist:
             analysis_step = 'tvc-derive'
-            df = pd.read_csv(confound_files[i], sep='\t')
+            df = load_tabular_file(confound_files[i])
             df = df.fillna(df.median())
             ind = np.triu_indices(dfc.shape[0], k=1)
             dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
             # If windowed, prune df so that it matches with dfc_df
             if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2)): int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                df = df.iloc[int(np.round((params['windowsize']-1)/2))                             : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                 df.reset_index(inplace=True, drop=True)
             # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
             dfc_df_z = (dfc_df - dfc_df.mean())
@@ -293,28 +290,32 @@ class TenetoBIDS:
             R_df = dfc_df_z.T.dot(df_z).div(len(dfc_df)).div(
                 df_z.std(ddof=0)).div(dfc_df_z.std(ddof=0), axis=0)
             R_df_describe = R_df.describe()
-            desc_index = R_df_describe.index
-            confound_report_dir = params['report_path'] + \
-                '/' + save_name + '_confoundcorr/'
-            confound_report_figdir = confound_report_dir + 'figures/'
-            if not os.path.exists(confound_report_figdir):
-                os.makedirs(confound_report_figdir)
+            confound_report_dir = save_dir + '/report/'
+            if not os.path.exists(confound_report_dir):
+                os.makedirs(confound_report_dir)
             report = '<html><body>'
             report += '<h1> Correlation of ' + analysis_step + ' and confounds.</h1>'
+            confound_hist = []
             for c in R_df.columns:
-                fig, ax = plt.subplots(1)
-                ax = sns.distplot(
-                    R_df[c], hist=False, color='m', ax=ax, kde_kws={"shade": True})
-                fig.savefig(confound_report_figdir + c + '.png')
-                plt.close(fig)
-                report += '<h2>' + c + '</h2>'
-                for ind_name, r in enumerate(R_df_describe[c]):
-                    report += str(desc_index[ind_name]) + ': '
-                    report += str(r) + '<br>'
-                report += 'Distribution of corrlation values:'
-                report += '<img src=' + \
-                    os.path.abspath(confound_report_figdir) + \
-                    '/' + c + '.png><br><br>'
+                confound_hist.append(pd.cut(
+                    R_df[c], bins=np.arange(-1, 1.01, 0.025)).value_counts().sort_index().values/len(R_df))
+
+            fig, ax = plt.subplots(1, figsize=(8, 1*R_df.shape[-1]))
+            pax = ax.imshow(
+                confound_hist, extent=[-1, 1, R_df.shape[-1], 0], cmap='inferno', vmin=0, vmax=1)
+            ax.set_aspect('auto')
+            ax.set_yticks(np.arange(0.5, R_df.shape[-1]))
+            ax.set_yticklabels(R_df.columns)
+            ax.set_xlabel('r')
+            plt.colorbar(pax)
+            plt.tight_layout()
+            fig.savefig(confound_report_dir + save_name +
+                        'confounds_2dhist.png', r=300)
+            plt.close(fig)
+
+            report += 'The plot below shows histograms of each confound.<br><br>'
+            report += '<img src=' + \
+                confound_report_dir + save_name + 'confounds_2dhist.png><br><br>'
             report += '</body></html>'
 
             with open(confound_report_dir + save_name + '_confoundcorr.html', 'w') as file:
@@ -330,33 +331,37 @@ class TenetoBIDS:
             self.bids_tags['task'] = 'all'
             self.bids_tags['ses'] = 'all'
             self.bids_tags['desc'] = None
-        if indict:
+        if indict is not None:
             for d in indict:
                 self.bids_tags[d] = indict[d]
                 if not isinstance(self.bids_tags[d], list):
                     self.bids_tags[d] = [self.bids_tags[d]]
-
-        if 'sub' in self.bids_tags:
-            if self.bids_tags['sub'] == 'all':
-                if self.raw_data_exists:
-                    self.bids_tags['sub'] = self.BIDS.get_subjects()
-                else:
-                    self.bids_tags['sub'] = self.get_tags('sub')
-        if 'ses' in self.bids_tags:
-            if self.bids_tags['ses'] == 'all' and self.raw_data_exists:
-                self.bids_tags['ses'] = self.BIDS.get_sessions()
-            elif not self.raw_data_exists:
-                self.bids_tags['ses'] = self.get_tags('ses')
-        if 'task' in self.bids_tags:
-            if self.bids_tags['task'] == 'all' and self.raw_data_exists:
-                self.bids_tags['task'] = self.BIDS.get_tasks()
-            elif not self.raw_data_exists:
-                self.bids_tags['task'] = self.get_tags('task')
-        if 'run' in self.bids_tags:
-            if self.bids_tags['run'] == 'all' and self.raw_data_exists:
-                self.bids_tags['run'] = self.BIDS.get_runs()
-            elif not self.raw_data_exists:
-                self.bids_tags['run'] = self.get_tags('run')
+            if 'run' in self.bids_tags:
+                self.bids_tags['run'] = list(
+                    map(str, map(int, self.bids_tags['run'])))
+        else:
+            if 'sub' in self.bids_tags:
+                if self.bids_tags['sub'] == 'all':
+                    if self.raw_data_exists:
+                        self.bids_tags['sub'] = self.BIDS.get_subjects()
+                    else:
+                        self.bids_tags['sub'] = self.get_tags('sub')
+            if 'ses' in self.bids_tags:
+                if self.bids_tags['ses'] == 'all' and self.raw_data_exists:
+                    self.bids_tags['ses'] = self.BIDS.get_sessions()
+                elif not self.raw_data_exists:
+                    self.bids_tags['ses'] = self.get_tags('ses')
+            if 'task' in self.bids_tags:
+                if self.bids_tags['task'] == 'all' and self.raw_data_exists:
+                    self.bids_tags['task'] = self.BIDS.get_tasks()
+                elif not self.raw_data_exists:
+                    self.bids_tags['task'] = self.get_tags('task')
+            if 'run' in self.bids_tags:
+                if self.bids_tags['run'] == 'all' and self.raw_data_exists:
+                    self.bids_tags['run'] = list(
+                        map(str, self.BIDS.get_runs()))
+                elif not self.raw_data_exists:
+                    self.bids_tags['run'] = self.get_tags('run')
 
     def make_functional_connectivity(self, njobs=None, returngroup=False, file_hdr=None, file_idx=None):
         """
@@ -386,7 +391,6 @@ class TenetoBIDS:
         files = self.get_selected_files(quiet=1)
 
         R_group = []
-
         with ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(
                 self._run_make_functional_connectivity, f, file_hdr, file_idx) for f in files}
@@ -395,8 +399,7 @@ class TenetoBIDS:
 
         if returngroup:
             # Fisher tranform -> mean -> inverse fisher tranform
-            R_group = np.tanh(np.mean(np.arctanh(np.array(R_group)), axis=0))
-            return np.array(R_group)
+            return np.tanh(np.mean(np.arctanh(np.array(R_group)), axis=0))
 
     def _run_make_functional_connectivity(self, f, file_hdr, file_idx):
         sf, _ = drop_bids_suffix(f)
@@ -450,20 +453,9 @@ class TenetoBIDS:
         base_dir = self.BIDS_dir + '/derivatives/' + 'teneto_' + \
             teneto.__version__ + '/' + paths_post_pipeline + '/'
         save_dir = base_dir + '/' + save_directory + '/'
-        if not os.path.exists(save_dir):
-            # A case has happened where this has been done in parallel and an error was raised. So do try/except
-            try:
-                os.makedirs(save_dir)
-            except:
-                # Wait 2 seconds so that the error does not try and save something in the directory before it is created
-                time.sleep(2)
-        if not os.path.exists(self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/dataset_description.json'):
-            try:
-                with open(self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/dataset_description.json', 'w') as fs:
-                    json.dump(self.tenetoinfo, fs)
-            except:
-                # Same as above, just in case parallel does duplicaiton
-                time.sleep(2)
+        make_directories(save_dir)
+        with open(self.BIDS_dir + '/derivatives/' + 'teneto_' + teneto.__version__ + '/dataset_description.json', 'w') as fs:
+            json.dump(self.tenetoinfo, fs)
         return save_name, save_dir, base_dir
 
     def get_tags(self, tag, quiet=1):
@@ -593,6 +585,10 @@ class TenetoBIDS:
         else:
             raise ValueError('unknown request')
 
+        # Add desc to file.
+        if pipeline == 'confound':
+            file_dict['desc'] = 'confounds'
+
         found_files = []
 
         for f in file_list:
@@ -612,7 +608,7 @@ class TenetoBIDS:
                 wdir += '/fc/'
                 fileending = ['conn' + f for f in allowedfileformats]
             elif pipeline == 'confound':
-                fileending = ['confounds' + f for f in allowedfileformats]
+                fileending = ['regressors' + f for f in allowedfileformats]
 
             if os.path.exists(wdir):
                 # make filenames
@@ -625,12 +621,9 @@ class TenetoBIDS:
                     if len(t) == len(file_dict):
                         found.append(ff)
                 found = [f for f in found for e in fileending if f.endswith(e)]
-                # Include only if all analysis step tags are present
                 # Exclude if confounds tag is present
-                if pipeline == 'confound':
-                    found = [i for i in found if '_confounds' in i]
-                else:
-                    found = [i for i in found if '_confounds' not in i]
+                if pipeline != 'confound':
+                    found = [i for i in found if 'desc-confounds' not in i]
                 # Make full paths
                 found = list(
                     map(str.__add__, [re.sub('/+', '/', wdir)]*len(found), found))
@@ -836,7 +829,7 @@ class TenetoBIDS:
         confounds = []
         for f in file_list:
             file_format = f.split('.')[-1]
-            if file_format == 'tsv':
+            if file_format == 'tsv' and os.stat(f).st_size > 0:
                 confounds += list(pd.read_csv(f, delimiter='\t').keys())
 
         confounds = sorted(list(set(confounds)))
@@ -845,21 +838,27 @@ class TenetoBIDS:
             print('Confounds in confound files: \n - ' + '\n - '.join(confounds))
         return confounds
 
-    def make_parcellation(self, parcellation, parc_type=None, parc_params=None, network='defaults', update_pipeline=True, removeconfounds=False, tag=None, njobs=None, clean_params=None, yeonetworkn=None):
+    def make_parcellation(self, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=2, parc_params=None, return_meta=False, update_pipeline=True, removeconfounds=False, tag=None, njobs=None, clean_params=None):
         """
         Reduces the data from voxel to parcellation space. Files get saved in a teneto folder in the derivatives with a roi tag at the end.
 
         Parameters
         -----------
 
-        parcellation : str
-            specify which parcellation that you would like to use. For MNI: 'power2012_264', 'gordon2014_333'. TAL: 'shen2013_278'
-        parc_type : str
-            can be 'sphere' or 'region'. If nothing is specified, the default for that parcellation will be used.
+        data_path : str
+            Path to .nii image.
+        atlas : str
+            Specify which atlas you want to use (see github.com/templateflow/)
+        template : str
+            What space you data is in. If fmriprep, leave as MNI152NLin2009cAsym.
+        atlas_desc : str
+            Specify which description of atlas.
+        resolution : int
+            Resolution of atlas. Can be 1 or 2.
         parc_params : dict
-            **kwargs for nilearn functions
-        network : str
-            if "defaults", it selects static parcellation, _if available_ (other options will be made available soon).
+            **kwargs for nilearn functions.
+        return_meta : bool
+            If true, tries to return any meta-information that exists about parcellation.
         removeconfounds : bool
             if true, regresses out confounds that are specfied in self.set_confounds with linear regression.
         update_pipeline : bool
@@ -886,8 +885,6 @@ class TenetoBIDS:
             njobs = self.njobs
         self.add_history(inspect.stack()[0][3], locals(), 1)
 
-        parc_name = parcellation.split('_')[0].lower()
-
         # Check confounds have been specified
         if not self.confounds and removeconfounds:
             raise ValueError(
@@ -902,7 +899,7 @@ class TenetoBIDS:
         # A matching algorithem may be needed if cases arise where this isnt the case
         files = self.get_selected_files(quiet=1)
         # Load network communities, if possible.
-        self.set_network_communities(parcellation, netn=yeonetworkn)
+        #self.set_network_communities(parcellation, netn=yeonetworkn)
 
         if not tag:
             tag = ''
@@ -913,8 +910,8 @@ class TenetoBIDS:
             parc_params = {}
 
         with ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(self._run_make_parcellation, f, i, tag, parcellation,
-                                   parc_name, parc_type, parc_params) for i, f in enumerate(files)}
+            job = {executor.submit(self._run_make_parcellation, f, i, tag, atlas, template,
+                                   atlas_desc, resolution, parc_params, return_meta) for i, f in enumerate(files)}
             for j in as_completed(job):
                 j.result()
 
@@ -930,12 +927,12 @@ class TenetoBIDS:
                 self.removeconfounds(
                     clean_params=clean_params, transpose=None, njobs=njobs)
 
-    def _run_make_parcellation(self, f, i, tag, parcellation, parc_name, parc_type, parc_params):
+    def _run_make_parcellation(self, f, i, tag, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=2, parc_params=None, return_meta=False):
         fsave, _ = drop_bids_suffix(f)
         save_name, save_dir, _ = self._save_namepaths_bids_derivatives(
             fsave, tag, 'parcellation', 'roi')
         roi = teneto.utils.make_parcellation(
-            f, parcellation, parc_type, parc_params)
+            f, atlas, template=template, atlas_desc=atlas_desc, resolution=resolution, parc_params=parc_params, return_meta=return_meta)
         # Make data node,time
         roi = roi.transpose()
         roi = pd.DataFrame(roi.transpose())
@@ -943,8 +940,10 @@ class TenetoBIDS:
         sidecar = get_sidecar(f)
         sidecar['parcellation'] = parc_params
         sidecar['parcellation']['description'] = 'The parcellation reduces the FD nifti files to time-series for some parcellation. Parcellation is made using teneto and nilearn.'
-        sidecar['parcellation']['parcellation'] = parcellation
-        sidecar['parcellation']['parc_type'] = parc_type
+        sidecar['parcellation']['atlas'] = atlas
+        sidecar['parcellation']['atlas_desc'] = atlas_desc
+        sidecar['parcellation']['template'] = template
+        sidecar['parcellation']['resolution'] = resolution
         with open(save_dir + save_name + '.json', 'w') as fs:
             json.dump(sidecar, fs)
 
@@ -1009,12 +1008,7 @@ class TenetoBIDS:
             save_name, _, _ = self._save_namepaths_bids_derivatives(
                 f, tag, '', suffix='community')
             save_dir = f.split('fc')[0] + '/communities/'
-        if not os.path.exists(save_dir):
-            try:
-                os.makedirs(save_dir)
-            except:
-                # Wait 2 seconds so that the error does not try and save something in the directory before it is created
-                time.sleep(2)
+        make_directories(save_dir)
         data = load_tabular_file(f)
         # Change this to other algorithms possible in future
         data = TemporalNetwork(from_df=data)
@@ -1351,8 +1345,10 @@ class TenetoBIDS:
 
         for f in file_list:
             file_format = f.split('.')[-1]
-            if file_format == 'tsv':
+            if file_format == 'tsv' and os.stat(f).st_size > 0:
                 sub_confounds = list(pd.read_csv(f, delimiter='\t').keys())
+            else:
+                sub_confounds = []
             for c in confounds:
                 if c not in sub_confounds:
                     print('Warning: the confound (' +
@@ -1795,63 +1791,15 @@ class TenetoBIDS:
     #                         np.save(save_dir_base + file_name,tl_data)
 
     def _get_filelist(self, method, sub=None, tags=None, measure=None):
+        if measure is None:
+            measure = ''
 
-        method_info = {
-            'tvc': {
-                'pipeline_subdir': 'tvc',
-                'base': 'pipeline',
-                'bids_suffix': 'tvcconn',
-                'datatype': 'trlinfo'
-            },
-            'parcellation': {
-                'pipeline_subdir': 'parcellation',
-                'base': 'pipeline',
-                'bids_suffix': 'roi',
-                'datatype': 'trlinfo'
-            },
-            'participant': {
-                'pipeline_subdir': '',
-                'base': 'BIDS_dir',
-                'bids_suffix': 'participant',
-                'datatype': 'group'
-            },
-            'fc': {
-                'pipeline_subdir': 'fc',
-                'base': 'pipeline',
-                'bids_suffix': 'conn',
-                'datatype': 'trlinfo'
-            },
-            'communities': {
-                'pipeline_subdir': 'communities',
-                'base': 'pipeline',
-                'bids_suffix': 'community',
-                'datatype': 'trlinfo'
-            },
-            'communities_fc': {
-                'pipeline_subdir': 'fc/communities',
-                'base': 'pipeline',
-                'bids_suffix': 'community',
-                'datatype': 'trlinfo'
-            },
-            'temporalnetwork': {
-                'pipeline_subdir': 'temporalnetwork-' + measure,
-                'base': 'pipeline',
-                'bids_suffix': 'tnet',
-                'datatype': 'trlinfo'
-            },
-            'timelocked-temporalnetwork': {
-                'pipeline_subdir': 'temporalnetwork-' + measure,
-                'base': 'pipeline',
-                'bids_suffix': 'avg',
-                'datatype': 'trlinfo'
-            },
-            'timelocked-parcellation': {
-                'pipeline_subdir': 'parcellation',
-                'base': 'pipeline',
-                'bids_suffix': 'avg',
-                'datatype': 'trlinfo'
-            }
-        }
+        with open(teneto.__path__[0] + '/config/tenetobids/tenetobids.json') as f:
+            method_info = json.load(f)
+
+        if method == 'temporalnetwork' or method == 'timelocked-temporalnetwork':
+            method_info[method]['pipeline_subdir'] += measure
+
         # a = [{},
         # {'derivative': 'fc', 'base': 'pipeline', 'bids_suffix': 'conn'},
         # {'derivative': 'parcellation', 'base': 'pipeline', 'bids_suffix': 'roi'},

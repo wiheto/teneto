@@ -15,7 +15,7 @@ data += np.random.uniform(-0.2, 0.2, data.shape)
 
 def df_to_array(df, outshape):
     out = np.zeros(outshape)
-    for i, r in df.iterrows():
+    for _, r in df.iterrows():
         ind = list(
             zip(*list(itertools.combinations_with_replacement(r['community'], 2))))
         out[ind[0]+ind[1], ind[1]+ind[0], r['start']:r['end']] = 1
@@ -39,7 +39,6 @@ def test_output_simularity():
 def test_epsilon():
     # Test goes through and makes sure that the epsilon parameter is working correctly by using input data
     epsilon = np.sort(np.abs(data[:, 0]-data[:, 1]))
-    data[:, :2]
     result = []
     for e in epsilon:
         array = tctc(data[:, :2], 1, e, 2, 0, output='array')
@@ -73,11 +72,11 @@ def test_kappa():
     df1 = tctc(data, 2, 0.5, 2, 1, output='df')
     df2 = tctc(data, 2, 0.5, 2, 0, output='df')
     r = 0
-    for i, d in df1.iterrows():
+    for _, d in df1.iterrows():
         if [0, 1] == d['community']:
             r += 1
     r2 = 0
-    for i, d in df2.iterrows():
+    for _, d in df2.iterrows():
         if [0, 1] == d['community']:
             r2 += 1
     if r != 1 or r2 != 2:

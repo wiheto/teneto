@@ -60,8 +60,8 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
         comtmp = np.stack(comtmp)
         comtmp = comtmp.transpose()
         comtmp = np.reshape(comtmp, [tnet.N, tnet.T, n_iter], order='F')
-        if n_iter == 1: 
-            break        
+        if n_iter == 1:
+            break
         nxsupra_old = nxsupra
         nxsupra = make_consensus_matrix(comtmp, consensus_threshold)
         # If there was no consensus, there are no communities possible, return
@@ -75,7 +75,7 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
     return communities
 
 
-def _run_louvain(nxsupra, resolution, N, T): 
+def _run_louvain(nxsupra, resolution, N, T):
     comtmp = np.zeros([N*T])
     com = community.best_partition(nxsupra, resolution=resolution, random_state=None)
     comtmp[np.array(list(com.keys()), dtype=int)] = list(com.values())
