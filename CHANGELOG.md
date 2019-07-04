@@ -2,23 +2,33 @@
 
 ## V0.4.5-dev
 
--   [ENH/FIX] NaNs in allegiance, which fixes recruitment and integration. Also added squeeze to input. 
+### Enhancements
 
--   [ADJ] Removing unused description_string function from bidsutils
+-   Added promiscuity and persitence to temporalcommunity measures
 
--   [FIX] Removed self from teneto history.
+-   Updating to fmriprep 1.4.0 updated BIDS naming conventions. fmriprep&lt;1.4.0 no longer compatible.
 
--   [FIX] Some minor TenetoBIDS fixes
+-   make_parcellation now uses templateflow and all atlases therein
 
--   [ENH] Updating to fmriprep 1.4.0 updated BIDS naming conventions. fmriprep&lt;1.4.0 no longer compatible.
+### Fixes
 
--   [ADJ] Renaming of dummybids data
+-   NaNs in allegiance, which fixes recruitment and integration. Also added squeeze to input. And bug in integration where for loop would generate error. 
 
--   [ADJ] Placing custom BIDS formatting in external json config folder.
+-   Removed self from teneto history.
 
--   [ENH] make_parcellation now uses templateflow and all atlases therein
+-   Some minor TenetoBIDS fixes
 
--   [ADJ] Removing function load_parcellation_coords
+### Changes
+
+-   Removing unused description_string function from bidsutils
+
+-   Renaming of dummybids data
+
+-   Placing custom BIDS formatting in external json config folder.
+
+-   Removing seaborn as requirement (unused)
+
+-   Removing function load_parcellation_coords
 
 ## V0.4.4
 
