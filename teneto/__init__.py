@@ -15,7 +15,7 @@ from . import misc
 from . import trajectory
 from . import temporalcommunity
 from . import communitydetection
-from .classes import TenetoBIDS, TemporalNetwork
+from .classes import TenetoBIDS, TemporalNetwork, TenetoWorkflow
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering
 
