@@ -311,7 +311,7 @@ class TenetoBIDS:
             #plt.colorbar(pax)
             #plt.tight_layout()
             #fig.savefig(confound_report_dir + save_name +
-                        'confounds_2dhist.png', r=300)
+            #            'confounds_2dhist.png', r=300)
 
             report += 'The plot below shows histograms of each confound.<br><br>'
             #report += '<img src=' + \
