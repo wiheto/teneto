@@ -291,7 +291,6 @@ class TenetoBIDS:
             df_z = (df - df.mean())
             R_df = dfc_df_z.T.dot(df_z).div(len(dfc_df)).div(
                 df_z.std(ddof=0)).div(dfc_df_z.std(ddof=0), axis=0)
-            R_df_describe = R_df.describe()
             confound_report_dir = save_dir + '/report/'
             if not os.path.exists(confound_report_dir):
                 os.makedirs(confound_report_dir)
@@ -313,7 +312,6 @@ class TenetoBIDS:
             plt.tight_layout()
             fig.savefig(confound_report_dir + save_name +
                         'confounds_2dhist.png', r=300)
-            plt.close(fig)
 
             report += 'The plot below shows histograms of each confound.<br><br>'
             report += '<img src=' + \
