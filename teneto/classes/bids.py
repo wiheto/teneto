@@ -7,7 +7,6 @@ import numpy as np
 import inspect
 import matplotlib.pyplot as plt
 import json
-import pickle
 import nilearn
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from scipy.interpolate import interp1d
@@ -1531,38 +1530,6 @@ class TenetoBIDS:
             print('Numnber of selected files: ' + str(len(selected_files)))
             print('\n - '.join(selected_files))
 
-    def save_aspickle(self, fname):
-        if fname[-4:] != '.pkl':
-            fname += '.pkl'
-        with open(fname, 'wb') as f:
-            pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
-
-    @classmethod
-    def load_frompickle(cls, fname, reload_object=False):
-        """
-        Loaded saved instance of
-
-        fname : str
-            path to pickle object (output of TenetoBIDS.save_aspickle)
-        reload_object : bool (default False)
-            reloads object by calling teneto.TenetoBIDS (some information lost, for development)
-
-        Returns
-        -------
-            self :
-                TenetoBIDS instance
-        """
-        if fname[-4:] != '.pkl':
-            fname += '.pkl'
-        with open(fname, 'rb') as f:
-            tnet = pickle.load(f)
-        if reload_object:
-            reloadnet = teneto.TenetoBIDS(tnet.BIDS_dir, pipeline=tnet.pipeline, pipeline_subdir=tnet.pipeline_subdir, bids_tags=tnet.bids_tags,  bids_suffix=tnet.bids_suffix,
-                                          bad_subjects=tnet.bad_subjects, confound_pipeline=tnet.confound_pipeline, raw_data_exists=tnet.raw_data_exists, njobs=tnet.njobs)
-            reloadnet.histroy = tnet.history
-            tnet = reloadnet
-        return tnet
-
     # timelocked average
     # np.stack(a['timelocked-tvc'].values).mean(axis=0)
     # Remaked based on added meta data derived from events
@@ -1848,7 +1815,7 @@ class TenetoBIDS:
         Notes
         -----
 
-        To restart:
+        To load the snapshot:
 
         import json
         with open(path + 'TenetoBIDS_snapshot.json') as f

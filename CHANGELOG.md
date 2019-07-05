@@ -10,7 +10,7 @@
 
 -   make_parcellation now uses templateflow and all atlases therein
 
--   save_tenetobids_snapshot to export current teneto settings. 
+-   save_tenetobids_snapshot to export current teneto settings. save_to_pickle (and corresponding load function) have been removed as they are not secure.
 
 ### Fixes
 

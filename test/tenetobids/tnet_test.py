@@ -224,17 +224,6 @@ def test_tnet_checksidecar():
         raise AssertionError()
 
 
-def test_tnet_io():
-    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
-    tnet.save_aspickle(teneto.__path__[0] +
-                       '/data/testdata/dummybids/teneosave.pkl')
-    tnet2 = teneto.TenetoBIDS.load_frompickle(
-        teneto.__path__[0] + '/data/testdata/dummybids/teneosave.pkl')
-    if not tnet2.get_selected_files() == tnet.get_selected_files():
-        raise AssertionError()
-
-
 def test_export_history():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
                              bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
