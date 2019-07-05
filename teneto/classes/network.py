@@ -3,7 +3,6 @@ import numpy as np
 import teneto
 import inspect
 import matplotlib.pyplot as plt
-import pickle
 
 
 class TemporalNetwork:
