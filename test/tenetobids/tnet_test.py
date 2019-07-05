@@ -23,6 +23,11 @@ def test_tnet_derive():
         tnet.tvc_data_[0]['j'] == 1) & (tnet.tvc_data_[0]['t'] == 0)]['weight'])
     if not np.round(R_jc, 12) == np.round(jc, 12):
         raise AssertionError()
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
+                             pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
+    tnet.set_confound_pipeline('fmriprep')
+    tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time'},
+                                update_pipeline=True, confound_corr_report=True)
 
 
 def test_make_fc_and_tvc():
