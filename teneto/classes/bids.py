@@ -301,21 +301,21 @@ class TenetoBIDS:
                 confound_hist.append(pd.cut(
                     R_df[c], bins=np.arange(-1, 1.01, 0.025)).value_counts().sort_index().values/len(R_df))
 
-            fig, ax = plt.subplots(1, figsize=(8, 1*R_df.shape[-1]))
-            pax = ax.imshow(
-                confound_hist, extent=[-1, 1, R_df.shape[-1], 0], cmap='inferno', vmin=0, vmax=1)
-            ax.set_aspect('auto')
-            ax.set_yticks(np.arange(0.5, R_df.shape[-1]))
-            ax.set_yticklabels(R_df.columns)
-            ax.set_xlabel('r')
-            plt.colorbar(pax)
-            plt.tight_layout()
-            fig.savefig(confound_report_dir + save_name +
+            #fig, ax = plt.subplots(1, figsize=(8, 1*R_df.shape[-1]))
+            #pax = ax.imshow(
+            #    confound_hist, extent=[-1, 1, R_df.shape[-1], 0], cmap='inferno', vmin=0, vmax=1)
+            #ax.set_aspect('auto')
+            #ax.set_yticks(np.arange(0.5, R_df.shape[-1]))
+            #ax.set_yticklabels(R_df.columns)
+            #ax.set_xlabel('r')
+            #plt.colorbar(pax)
+            #plt.tight_layout()
+            #fig.savefig(confound_report_dir + save_name +
                         'confounds_2dhist.png', r=300)
 
             report += 'The plot below shows histograms of each confound.<br><br>'
-            report += '<img src=' + \
-                confound_report_dir + save_name + 'confounds_2dhist.png><br><br>'
+            #report += '<img src=' + \
+            #    confound_report_dir + save_name + 'confounds_2dhist.png><br><br>'
             report += '</body></html>'
 
             with open(confound_report_dir + save_name + '_confoundcorr.html', 'w') as file:
