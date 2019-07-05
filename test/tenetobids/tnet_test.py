@@ -288,5 +288,5 @@ def test_savesnapshot():
     for n in tnet2.__dict__:
         if tnet.__dict__[n] != tnet2.__dict__[n]:
             raise AssertionError()
-    if not tnet2.__dict__.keys() != tnet.__dict__.keys():
+    if tnet2.__dict__.keys() != tnet.__dict__.keys():
         raise AssertionError()
