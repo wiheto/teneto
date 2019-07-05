@@ -134,7 +134,7 @@ class TenetoWorkflow():
                     self.output_[dependent_step])
                 out = getattr(self.output_[step['node']], self.nodes[step['node']]['func'])(
                     **self.nodes[step['node']]['params'])
-                if out is not None: 
+                if out is not None:
                     self.output_[step['node']] = out
             if (step['level'] > level or len(self.runorder)-1 == i) and self.remove_nonterminal_output:
                 nolonger_needed_nodes = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist(
