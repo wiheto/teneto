@@ -452,18 +452,6 @@ class TemporalNetwork:
         ax = funs[plottype](data_plot, ax=ax, **plotparams)
         return ax
 
-    def save_aspickle(self, fname):
-        """
-        Saves object as pickle.
-
-        fname : str
-            file path.
-        """
-        if fname[-4:] != '.pkl':
-            fname += '.pkl'
-        with open(fname, 'wb') as f:
-            pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
-
     def hdf5_setup(self, hdf5path):
         hdf = pd.HDFStore(hdf5path)
         hdf.put('network', self.network, format='table', data_columns=True)
