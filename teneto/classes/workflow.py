@@ -27,7 +27,7 @@ class TenetoWorkflow():
 
     def add_node(self, nodename, func, depends_on=None, params=None):
         """
-        Adds a node to the workflow graph. 
+        Adds a node to the workflow graph.
 
         Parameters
         ----------
@@ -36,13 +36,13 @@ class TenetoWorkflow():
         func : str
             The function that is to be called. The alternatives here are 'TemporalNetwork' or 'TenetoBIDS', or any of the functions that can be called within these classes.
         depends_on : str
-            which step the node depends on. If empty, is considered to preceed the previous step. If 'isroot' is specified, it is considered an input variable. 
+            which step the node depends on. If empty, is considered to preceed the previous step. If 'isroot' is specified, it is considered an input variable.
         params : dict
-            Parameters that are passed into func. 
+            Parameters that are passed into func.
 
         Note
         ----
-        These functions are not run until TenetoWorkflow.run() is called. 
+        These functions are not run until TenetoWorkflow.run() is called.
         """
         if depends_on is None:
             if func == 'TenetoBIDS' or func == 'TemporalNetwork':
@@ -79,7 +79,7 @@ class TenetoWorkflow():
 
     def remove_node(self, nodename):
         """
-        Remove a node from the graph. 
+        Remove a node from the graph.
 
         Parameters
         ---------
@@ -156,12 +156,12 @@ class TenetoWorkflow():
                 level = step['level']
         self.delete_output_from_level(level)
 
-
     def delete_output_from_level(self, level):
         """
         Delete the output found after calling TenetoWorkflow.run().
         """
-        nolonger_needed_nodes = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist()
+        nolonger_needed_nodes = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist(
+        )
         for node in nolonger_needed_nodes:
             self.output_.pop(node)
 
@@ -178,14 +178,14 @@ class TenetoWorkflow():
 
         Parameters
         ----------
-        fig : matplotlib 
-        ax : matplotlib 
+        fig : matplotlib
+        ax : matplotlib
 
-        if fig is used as input, ax should be too. 
+        if fig is used as input, ax should be too.
 
         Returns
         -------
-        fig, ax : matplotlib 
+        fig, ax : matplotlib
             matplotlib figure and axis
         """
         self.calc_runorder()
@@ -210,7 +210,6 @@ class TenetoWorkflow():
                 width += p.get_bbox_patch().get_extents().width + 1
                 if width > xmax:
                     xmax = width
-
 
         print(coord)
         for i, n in self.graph.iterrows():
