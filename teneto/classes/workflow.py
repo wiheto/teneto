@@ -25,7 +25,7 @@ class TenetoWorkflow():
             teneto.TenetoBIDS, predicate=inspect.isfunction))
         self.remove_nonterminal_output = remove_nonterminal_output
 
-    def add_node(self, nodename, func, depends_on=None, func_params=None):
+    def add_node(self, nodename, func, depends_on=None, params=None):
         """
         Adds a node to the workflow graph. 
 
@@ -37,7 +37,7 @@ class TenetoWorkflow():
             The function that is to be called. The alternatives here are 'TemporalNetwork' or 'TenetoBIDS', or any of the functions that can be called within these classes.
         depends_on : str
             which step the node depends on. If empty, is considered to preceed the previous step. If 'isroot' is specified, it is considered an input variable. 
-        func_params : dict
+        params : dict
             Parameters that are passed into func. 
 
         Note
@@ -49,8 +49,8 @@ class TenetoWorkflow():
                 depends_on = 'isroot'
             else:
                 depends_on = self.graph.iloc[-1]['j']
-        if func_params is None:
-            func_params = {}
+        if params is None:
+            params = {}
         if nodename == 'isroot':
             raise ValueError('isroot cannot be nodename')
         if nodename in self.nodes:
@@ -73,7 +73,9 @@ class TenetoWorkflow():
             self.graph = self.graph.append(
                 {'i': step, 'j': nodename}, ignore_index=True).reset_index(drop=True)
 
-        self.nodes[nodename] = {'func': func, 'params': func_params}
+        # make sure that the i,j ordering is kept
+        self.graph = self.graph.reindex(sorted(self.graph.columns), axis=1)
+        self.nodes[nodename] = {'func': func, 'params': params}
 
     def remove_node(self, nodename):
         """
@@ -141,7 +143,6 @@ class TenetoWorkflow():
             else:
                 dependent_step = teneto.utils.get_network_when(
                     self.graph, j=step['node'], logic='and')['i'].tolist()
-                print(dependent_step)
                 # In future this will isolate the primary and auxillary dependent steps when  multiple dependencies are allowed.
                 dependent_step = dependent_step[0]
                 self.output_[step['node']] = copy.copy(
@@ -159,7 +160,7 @@ class TenetoWorkflow():
 
     def delete_output(self, nodename):
         """
-        Delete the output found after calling twf.run().
+        Delete the output found after calling TenetoWorkflow.run().
         """
         self.output_.pop(nodename)
 
@@ -196,28 +197,29 @@ class TenetoWorkflow():
 
         coord = {}
         xmax = 0
-        for level in range(levelmax+1):
+        for level in range(levelnum):
             width = 0
             for i, node in enumerate(self.runorder[self.runorder['level'] == level].iterrows()):
                 props = dict(boxstyle='round', facecolor='gainsboro', alpha=1)
                 p = ax.text(
                     width, levelnum-level, node[1]['node'], fontsize=14, verticalalignment='center', bbox=props)
-                midpoint_x = width + p.get_bbox_patch().get_extents().width/2
+                midpoint_x = width
                 midpoint_y = levelnum - level
                 coord[node[1]['node']] = [midpoint_x, midpoint_y]
+                width += p.get_bbox_patch().get_extents().width + 1
                 if width > xmax:
                     xmax = width
-                width += p.get_bbox_patch().get_extents().width + 1
 
-        ax.set_ylim([0.5, levelnum])
-        ax.set_xlim([0, xmax])
 
+        print(coord)
         for i, n in self.graph.iterrows():
             if n['i'] == 'isroot':
                 pass
             else:
                 ax.plot([coord[n['i']][0], coord[n['j']][0]], [
                         coord[n['i']][1], coord[n['j']][1]], zorder=-10000, color='darkgray')
-
+                print('1')
         ax.axis('off')
+        ax.set_ylim([0.5, levelnum])
+        ax.set_xlim([0, xmax])
         return fig, ax
