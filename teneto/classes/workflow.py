@@ -151,10 +151,11 @@ class TenetoWorkflow():
                     **self.nodes[step['node']]['params'])
                 if out is not None:
                     self.output_[step['node']] = out
-            if (step['level'] > level or len(self.runorder)-1 == i) and self.remove_nonterminal_output:
+            if step['level'] > level and self.remove_nonterminal_output:
                 self.delete_output_from_level(level)
                 level = step['level']
-        self.delete_output_from_level(level)
+        if self.remove_nonterminal_output:
+            self.delete_output_from_level(level)
 
     def delete_output_from_level(self, level):
         """
@@ -163,13 +164,6 @@ class TenetoWorkflow():
         output_todelete = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist()
         for node in output_todelete:
             self.output_.pop(node)
-
-    def view(self):
-        """
-        Prints the runorder of the created workflow.
-        """
-        self.calc_runorder()
-        print(self.graph)
 
     def make_workflow_figure(self, fig=None, ax=None):
         """
@@ -210,14 +204,12 @@ class TenetoWorkflow():
                 if width > xmax:
                     xmax = width
 
-        print(coord)
         for i, n in self.graph.iterrows():
             if n['i'] == 'isroot':
                 pass
             else:
                 ax.plot([coord[n['i']][0], coord[n['j']][0]], [
                         coord[n['i']][1], coord[n['j']][1]], zorder=-10000, color='darkgray')
-                print('1')
         ax.axis('off')
         ax.set_ylim([0.5, levelnum])
         ax.set_xlim([0, xmax])
