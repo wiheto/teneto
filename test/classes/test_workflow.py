@@ -44,3 +44,5 @@ def test_workflow_incorrect_input():
         twf.add_node('tn2', 'TemporalNetwork',depends_on=['a','b'])
     with pytest.raises(ValueError):
         twf.add_node('tn2', 'TemporalNetwork',depends_on=['isroot','b'])
+    twf.remove_node('tn')
+    twf.add_node('tn', 'TemporalNetwork')
