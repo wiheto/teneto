@@ -25,15 +25,24 @@ class TenetoWorkflow():
             teneto.TenetoBIDS, predicate=inspect.isfunction))
         self.remove_nonterminal_output = remove_nonterminal_output
 
-    def add_node(self, name, func, depends_on=None, func_params=None):
+    def add_node(self, nodename, func, depends_on=None, func_params=None):
         """
+        Adds a node to the workflow graph. 
+
         Parameters
         ----------
-        name : str
+        nodename : str
+            Name of the node
         func : str
+            The function that is to be called. The alternatives here are 'TemporalNetwork' or 'TenetoBIDS', or any of the functions that can be called within these classes.
         depends_on : str
-        func_params :
+            which step the node depends on. If empty, is considered to preceed the previous step. If 'isroot' is specified, it is considered an input variable. 
+        func_params : dict
+            Parameters that are passed into func. 
 
+        Note
+        ----
+        These functions are not run until TenetoWorkflow.run() is called. 
         """
         if depends_on is None:
             if func == 'TenetoBIDS' or func == 'TemporalNetwork':
@@ -42,11 +51,11 @@ class TenetoWorkflow():
                 depends_on = self.graph.iloc[-1]['j']
         if func_params is None:
             func_params = {}
-        if name == 'isroot':
-            raise ValueError('root cannot be name of node')
-        if name in self.nodes:
+        if nodename == 'isroot':
+            raise ValueError('isroot cannot be nodename')
+        if nodename in self.nodes:
             raise ValueError(
-                name + ' is already part of workflow graph. Each node must have unique name.')
+                nodename + ' is already part of workflow graph. Each node must have unique nodename.')
         if isinstance(depends_on, str):
             depends_on = [depends_on]
         if 'isroot' in depends_on:
@@ -62,16 +71,21 @@ class TenetoWorkflow():
 
         for step in depends_on:
             self.graph = self.graph.append(
-                {'i': step, 'j': name}, ignore_index=True).reset_index(drop=True)
+                {'i': step, 'j': nodename}, ignore_index=True).reset_index(drop=True)
 
-        self.nodes[name] = {'func': func, 'params': func_params}
+        self.nodes[nodename] = {'func': func, 'params': func_params}
 
-    def remove_node(self, name):
+    def remove_node(self, nodename):
         """
-        Remove a node from the graph
+        Remove a node from the graph. 
+
+        Parameters
+        ---------
+        nodename : str
+            Name of node that is to be removed.
         """
-        self.nodes.pop(name)
-        ind = teneto.utils.get_network_when(self.graph, ij=name).index
+        self.nodes.pop(nodename)
+        ind = teneto.utils.get_network_when(self.graph, ij=nodename).index
         self.graph = self.graph.drop(ind).reset_index(drop=True)
         # Could add checks to see if network is broken
 
@@ -150,11 +164,28 @@ class TenetoWorkflow():
         self.output_.pop(nodename)
 
     def view(self):
+        """
+        Prints the runorder of the created workflow.
+        """
         self.calc_runorder()
-
         print(self.graph)
 
     def make_workflow_figure(self, fig=None, ax=None):
+        """
+        Creates a figure depicting the workflow figure.
+
+        Parameters
+        ----------
+        fig : matplotlib 
+        ax : matplotlib 
+
+        if fig is used as input, ax should be too. 
+
+        Returns
+        -------
+        fig, ax : matplotlib 
+            matplotlib figure and axis
+        """
         self.calc_runorder()
         levelunique = np.unique(self.runorder.level, return_counts=True)[1]
         levelnum = len(levelunique)
@@ -165,7 +196,6 @@ class TenetoWorkflow():
 
         coord = {}
         xmax = 0
-        height = 0
         for level in range(levelmax+1):
             width = 0
             for i, node in enumerate(self.runorder[self.runorder['level'] == level].iterrows()):
