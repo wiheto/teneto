@@ -152,17 +152,18 @@ class TenetoWorkflow():
                 if out is not None:
                     self.output_[step['node']] = out
             if (step['level'] > level or len(self.runorder)-1 == i) and self.remove_nonterminal_output:
-                nolonger_needed_nodes = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist(
-                )
-                for node in nolonger_needed_nodes:
-                    self.delete_output(node)
+                self.delete_output_from_level(level)
                 level = step['level']
+        self.delete_output_from_level(level)
 
-    def delete_output(self, nodename):
+
+    def delete_output_from_level(self, level):
         """
         Delete the output found after calling TenetoWorkflow.run().
         """
-        self.output_.pop(nodename)
+        nolonger_needed_nodes = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist()
+        for node in nolonger_needed_nodes:
+            self.output_.pop(node)
 
     def view(self):
         """
