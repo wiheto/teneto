@@ -48,7 +48,7 @@ class TenetoWorkflow():
             if func == 'TenetoBIDS' or func == 'TemporalNetwork':
                 depends_on = 'isroot'
             else:
-                depends_on = self.graph.iloc[-1]['j']
+                depends_on = 'lastnode'
         if params is None:
             params = {}
         if nodename == 'isroot':
@@ -64,11 +64,12 @@ class TenetoWorkflow():
             elif not (func == 'TenetoBIDS' or func == 'TemporalNetwork'):
                 raise ValueError(
                     'root node must be TemporalNetwork or TenetoBIDS')
+        if depends_on[0] == 'lastnode':
+            depends_on[0] = self.graph.iloc[-1]['j']
         if len(depends_on) > 1:
             raise ValueError(
                 'At present, only one dependent per step (multiple steps can share the same depndent).')
             # Needs to add weights to depends_on if multiple inputs to indicate what is primary input
-
         for step in depends_on:
             self.graph = self.graph.append(
                 {'i': step, 'j': nodename}, ignore_index=True).reset_index(drop=True)

@@ -93,7 +93,8 @@ Now let us add the next two nodes and we will see the params argument add_node:
     >>> nodename = 'degree'
     >>> func = 'calc_networkmeasure'
     >>> params = {
-        'networkmeasure': 'temporal_degree_centrality'
+        'networkmeasure': 'temporal_degree_centrality',
+        'calc': 'time'
         }
     >>> twf.add_node(nodename, func, params=params)
 
@@ -166,9 +167,130 @@ _remove_nonterminal_output_ to False and all node output will be stored.
 The output from the above is found in:
 
     >>> tfw.output_['degree']
-    array([18., 14., 12., 21., 14., 15., 18., 17., 16., 13.])
+    ...
 
 More complicated workflows
 ==========================
 
-Much more complex workflows can be defined.
+The previous example consists of only three steps and occurs linearly.
+In practice analyses are usually more complex.
+One typical example is where multiple parameters are run
+(e.g. to demonstrate that a result is dependent on that parameter).
+
+Here we define a more complex network where we generate two different
+networks. One where there is a high probability of edges in the network 
+and one where there is a low probability.
+
+When adding a node, the node refers to the last node defined unless
+depends_on is set. This should point to another preset node.
+
+Example:
+
+First define the object.
+
+    >>> from teneto import TenetoWorkflow
+    >>> twf = TenetoWorkflow()
+    >>> nodename = 'create_temporalnetwork'
+    >>> func = 'TemporalNetwork'
+    >>> twf.add_node(nodename=nodename, func=func)
+
+Then we generate the first network where edges
+have low probability.
+
+    >>> nodename = 'generatenetwork_lowprob'
+    >>> func = 'generatenetwork'
+    >>> params = {
+        'networktype': 'rand_binomial',
+        'size': (10,5),
+        'prob': (0.25,0.25),
+        'randomseed': 2019
+        }
+    >>> twf.add_node(nodename, func, params=params)
+
+Then add the calculate degree step.
+
+    >>> nodename = 'degree_lowprob'
+    >>> func = 'calc_networkmeasure'
+    >>> params = {
+        'networkmeasure': 'temporal_degree_centrality',
+        'calc': 'time'
+        }
+    >>> twf.add_node(nodename, func, params=params)
+
+Now we generate a second network where edges have
+higher probability. Here depends_on is called and
+refers back to the create_temporalnetwork node.
+
+    >>> nodename = 'generatenetwork_highprob'
+    >>> func = 'generatenetwork'
+    >>> depends_on = 'create_temporalnetwork'
+    >>> params = {
+        'networktype': 'rand_binomial',
+        'size': (10,5),
+        'prob': (0.75,0.1),
+        'randomseed': 2019
+        }
+    >>> twf.add_node(nodename, func, depends_on, params)
+
+Now we can calculate temporal degree centrality on this network:
+
+    >>> nodename = 'degree_highprob'
+    >>> func = 'calc_networkmeasure'
+    >>> params = {
+        'networkmeasure': 'temporal_degree_centrality',
+        'calc': 'time'
+        }
+    >>> twf.add_node(nodename, func, params=params)
+
+And this workflow can be plotted like before:
+
+    >>> fig, ax = twf.make_workflow_figure()
+    >>> fig.show()
+
+
+.. plot::
+
+    from teneto import TenetoWorkflow
+    twf = TenetoWorkflow()
+    nodename = 'create_temporalnetwork'
+    func = 'TemporalNetwork'
+    twf.add_node(nodename=nodename, func=func)
+    # Generate network node 1
+    nodename = 'generatenetwork_lowprob'
+    func = 'generatenetwork'
+    params = {
+        'networktype': 'rand_binomial',
+        'size': (10,5),
+        'prob': (0.25,0.25),
+        'randomseed': 2019
+        }
+    twf.add_node(nodename, func, params=params)
+    # Calc temporal degree centrality node
+    nodename = 'degree_lowprob'
+    func = 'calc_networkmeasure'
+    params = {
+        'networkmeasure': 'temporal_degree_centrality',
+        'calc': 'time'
+        }
+    twf.add_node(nodename, func, params=params)
+    # Generate network node 2
+    nodename = 'generatenetwork_highprob'
+    func = 'generatenetwork'
+    depends_on = 'create_temporalnetwork'
+    params = {
+        'networktype': 'rand_binomial',
+        'size': (10,5),
+        'prob': (0.75,0.1),
+        'randomseed': 2019
+        }
+    twf.add_node(nodename, func, depends_on, params)    
+    # Calc temporal degree centrality node
+    nodename = 'degree_highprob'
+    func = 'calc_networkmeasure'
+    params = {
+        'networkmeasure': 'temporal_degree_centrality',
+        'calc': 'time'
+        }
+    twf.add_node(nodename, func, params=params)
+    fig, ax = twf.make_workflow_figure()
+    fig.show()

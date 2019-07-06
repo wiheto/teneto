@@ -4,6 +4,8 @@
 
 ### Enhancements
 
+-   Added teneto.TenetoWorkflows (name may change to just workflows)
+
 -   Added promiscuity and persitence to temporalcommunity measures
 
 -   Updating to fmriprep 1.4.0 updated BIDS naming conventions. fmriprep&lt;1.4.0 no longer compatible.
