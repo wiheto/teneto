@@ -27,7 +27,7 @@ There are three different types of nodes in this graph:
  These are nodes that are intermediate steps in the anlaysis.
 
 *terminal nodes*:
- These are the final nodes in the analysis. 
+ These are the final nodes in the analysis.
  These nodes will include the output of the analysis.
 
 Understanding the concept of root and terminal nodes are useful
@@ -46,7 +46,7 @@ We start by creating a workflow object, and defining the first node:
 
     >>> from teneto import TenetoWorkflow
     >>> twf = TenetoWorkflow()
-    >>> nodename = 'create_temporal_network'
+    >>> nodename = 'create_temporalnetwork'
     >>> func = 'TemporalNetwork'
     >>> twf.add_node(nodename=nodename, func=func)
 
@@ -64,28 +64,29 @@ By adding a node,
  this creates an attribute in the workflow object which can be viewed as:
 
     >>> twf.nodes
-    {'create_temporal_network': {'func': 'TemporalNetwork', 'params': {}}}
+    {'create_temporalnetwork': {'func': 'TemporalNetwork', 'params': {}}}
 
 It also creates a graph (pandas dataframe)
  which is found in TenetoWorkflow.graph.
 
     >>> twf.graph
         i   j
-    0   isroot  create_temporal_network
+    0   isroot  create_temporalnetwork
 
 Since this is the first node in the workflow,
  _isroot_ is placed in the _i_ column
- to signify that _create_temporal_network_ is the root node.
+ to signify that _create_temporalnetwork_ is the root node.
 
 Now let us add the next two nodes and we will see the params argument add_node:
 
     >>> # Generate network node
-    >>> nodename = 'generate_network'
-    >>> func = 'generate_network'
+    >>> nodename = 'generatenetwork'
+    >>> func = 'generatenetwork'
     >>> params = {
-        'networktype': 'binomial',
+        'networktype': 'rand_binomial',
         'size': (10,5),
-        'prob': (0.5,0.25)
+        'prob': (0.5,0.25),
+        'randomseed': 2019
         }
     >>> twf.add_node(nodename, func, params=params)
     >>> # Calc temporal degree centrality node
@@ -97,7 +98,7 @@ Now let us add the next two nodes and we will see the params argument add_node:
     >>> twf.add_node(nodename, func, params=params)
 
 Here we see that the params argument is a dictionary of _*kwargs_
- for the _TemporalNetwork.generate_network_
+ for the _TemporalNetwork.generatenetwork_
  and _TemporalNetwork.calc_networkmeasure_ functions.
 
 Now we have three nodes defined,
@@ -105,9 +106,9 @@ Now we have three nodes defined,
 
     >>> twf.graph
         i   j
-    0   isroot  create_temporal_network
-    1   create_temporal_network generate_network
-    2   generate_network    degree
+    0   isroot  create_temporalnetwork
+    1   create_temporalnetwork generatenetwork
+    2   generatenetwork    degree
 
 Each row here shows the new node in the _j_-th column
  and the step preceeding node in the _i_-th column.
@@ -121,16 +122,17 @@ The workflow graph can be plotted with:
 
     from teneto import TenetoWorkflow
     twf = TenetoWorkflow()
-    nodename = 'create_temporal_network'
+    nodename = 'create_temporalnetwork'
     func = 'TemporalNetwork'
     twf.add_node(nodename=nodename, func=func)
     # Generate network node
-    nodename = 'generate_network'
-    func = 'generate_network'
+    nodename = 'generatenetwork'
+    func = 'generatenetwork'
     params = {
-        'networktype': 'binomial',
+        'networktype': 'rand_binomial',
         'size': (10,5),
-        'prob': (0.5,0.25)
+        'prob': (0.5,0.25),
+        'randomseed': 2019
         }
     twf.add_node(nodename, func, params=params)
     # Calc temporal degree centrality node
@@ -143,3 +145,30 @@ The workflow graph can be plotted with:
     fig, ax = twf.make_workflow_figure()
     fig.show()
 
+Running a workflow 
+=================
+
+Now the workflow has been defined, it can be run by typing:
+
+    >>> tfw.run()
+
+And this will run all of steps.
+
+Viewing the output
+==================
+
+The output of the final step will be found in TenetoWorkflow.output_[<nodename>].
+
+The nodes included here will be all the terminal nodes.
+However when defining the TenetoWorkflow, you can set the argument,
+ _remove_nonterminal_output_ to False and all node output will be stored.
+
+The output from the above is found in:
+
+    >>> tfw.output_['degree']
+    array([18., 14., 12., 21., 14., 15., 18., 17., 16., 13.])
+
+More complicated workflows
+==========================
+
+Much more complex workflows can be defined.
