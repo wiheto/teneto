@@ -2,7 +2,8 @@
 Workflows
 --------------------------
 
-Many analyses can be constructed as a graph to depict all the steps that are made during the analysis.
+Many analyses can be constructed as a graph to depict 
+all the steps that are made during the analysis.
 This graph of an analysis is called a workflow.
 There are many benefits to creating a workflow:
 
@@ -178,7 +179,7 @@ One typical example is where multiple parameters are run
 (e.g. to demonstrate that a result is dependent on that parameter).
 
 Here we define a more complex network where we generate two different
-networks. One where there is a high probability of edges in the network 
+networks. One where there is a high probability of edges in the network
 and one where there is a low probability.
 
 When adding a node, the node refers to the last node defined unless
