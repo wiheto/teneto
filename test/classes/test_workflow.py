@@ -2,7 +2,7 @@
 from teneto import TenetoWorkflow
 import numpy as np
 import teneto
-
+import pytest
 
 def test_workflow_temporalnetwork():
     G = np.random.normal(0, 1, [3, 3, 5])
@@ -29,3 +29,18 @@ def test_workflow_temporalnetwork():
         raise AssertionError()
     if not all(Dmag == twf.output_['degree_th-magnitude']):
         raise AssertionError()
+
+def test_workflow_incorrect_input():
+    twf = TenetoWorkflow()
+    with pytest.raises(ValueError):
+        twf.add_node('isroot', 'TemporalNetwork')
+    with pytest.raises(ValueError):
+        twf.add_node('tn', 'TemporalNetwork2', depends_on='isroot')
+    twf.add_node('tn', 'TemporalNetwork')
+    with pytest.raises(ValueError):
+        twf.add_node('tn', 'TemporalNetwork')
+    # This test should be removed once depends_on can have more input
+    with pytest.raises(ValueError):
+        twf.add_node('tn2', 'TemporalNetwork',depends_on=['a','b'])
+    with pytest.raises(ValueError):
+        twf.add_node('tn2', 'TemporalNetwork',depends_on=['isroot','b'])
