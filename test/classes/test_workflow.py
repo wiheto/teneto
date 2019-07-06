@@ -25,7 +25,7 @@ def test_workflow_temporalnetwork():
                  func_params={'networkmeasure': 'temporal_degree_centrality'})
     twf.run()
     fig, ax = twf.make_workflow_figure()
-    if Dth != twf.output_['degree_th-percent']:
+    if not all(Dth == twf.output_['degree_th-percent']):
         raise AssertionError()
-    if Dmag != twf.output_['degree_th-magnitude']:
+    if not all(Dmag == twf.output_['degree_th-magnitude']):
         raise AssertionError()
