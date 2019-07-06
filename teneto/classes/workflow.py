@@ -160,9 +160,8 @@ class TenetoWorkflow():
         """
         Delete the output found after calling TenetoWorkflow.run().
         """
-        nolonger_needed_nodes = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist(
-        )
-        for node in nolonger_needed_nodes:
+        output_todelete = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist()
+        for node in output_todelete:
             self.output_.pop(node)
 
     def view(self):
