@@ -34,6 +34,8 @@
 
 -   Removing function load_parcellation_coords
 
+-   Removing call to eval and instead getattr in tapered windowed method.
+
 ## V0.4.4
 
 -   Schaefer 7 network communities now reference the packaged image (17network mask). Before they references the 7 network mask that was not included.

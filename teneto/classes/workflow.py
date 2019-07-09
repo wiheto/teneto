@@ -205,7 +205,7 @@ class TenetoWorkflow():
                 if width > xmax:
                     xmax = width
 
-        for i, n in self.graph.iterrows():
+        for _, n in self.graph.iterrows():
             if n['i'] == 'isroot':
                 pass
             else:
