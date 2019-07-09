@@ -278,9 +278,7 @@ def _weightfun_tapered_sliding_window(T, params, report):
     Creates the weights for the tapered method. See func: teneto.timeseries.derive_temporalnetwork.
     """
     x = np.arange(-(params['windowsize'] - 1) / 2, (params['windowsize']) / 2)
-    distribution_parameters = ','.join(map(str, params['distribution_params']))
-    taper = eval('sps.' + params['distribution'] +
-                 '.pdf(x,' + distribution_parameters + ')')
+    taper = getattr(sps, params['distribution']).pdf(x, **params['distribution_params'])
 
     weightat0 = np.zeros(T)
     weightat0[0:params['windowsize']] = taper
