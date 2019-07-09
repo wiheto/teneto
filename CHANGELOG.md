@@ -25,16 +25,12 @@
 ### Changes
 
 -   Removing unused description_string function from bidsutils
-
 -   Renaming of dummybids data
-
 -   Placing custom BIDS formatting in external json config folder.
-
 -   Removing seaborn as requirement (unused)
-
 -   Removing function load_parcellation_coords
-
--   Removing call to eval and instead getattr in tapered windowed method.
+-   Removing call to eval and instead getattr in tapered windowed method in genereate_temporalnetwork.
+-   Params for distribution in tapered window method in genereate_temporalnetwork should now be a dictionary not a list.
 
 ## V0.4.4
 
@@ -418,23 +414,18 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 ## V0.2.4b
 
 -   Reverted back the incorrect fix for #1, added
-
 -   Added distutils version to requirements.
 
 ## V0.2.4
 
 -   Fixed `bursty_coeff` when ICT is empty.
-
 -   Fix for #1
 
 ## V0.2.3
 
 -   Added `confound_pipeline` option to TenetoBIDS.
-
 -   Added nan-to-median for nans in confounds in removal in `TenetoBIDS.make_parcellation`
-
 -   made `TenetoBIDS.networkmeasures` functional (i.e. saving files, removing an error).
-
 -   replaced function `betai` with `betainc` for scipy 1.0 compatibility.
 
 ## V0.2.2
@@ -479,17 +470,11 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 ## V0.2.1
 
 -   Code now follows PEP8
-
 -   Fixed somwe variable names in `stats.shufflegroups`
-
 -   Removed `misc.distancefuncitons`
-
 -   All distance funcitons are now through `scipy.spatial.distance`
-
 -   Renamed the argument "do" in `networkmeasures` to "calc".
-
 -   Renamed the argument "sumOverDim" in `networkmeasures.temporal_degree_centrality` to "axis".
-
 -   added function `utils.check_distance_funciton_input`
 
 ## V0.2.0
@@ -537,11 +522,8 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 ## V0.1.3 - Released Jan 26 2017
 
 -   Provided clearer documentation in `shortest_temporal_path`
-
 -   Add possibility of calculating per time point (or per edge/node - but this takes a tone of time) in `volatility`
-
 -   Added possibility of calculating `temporal_efficiency` per node (either "\_from" to "\_to")
-
 -   Improved documentation and added references to `rand_binomial`.
 
 ## V0.1.2 - Released Jan 6 2017
