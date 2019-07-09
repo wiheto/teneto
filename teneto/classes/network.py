@@ -489,7 +489,7 @@ class TemporalNetwork:
         gbin = teneto.utils.binarize(self.network, threshold_type, threshold_level, **kwargs)
         if self.sparse == True:
             gbin = teneto.utils.process_input(gbin, 'G', outputformat='TN', forcesparse=True)
-            self.network = tmp.network
+            self.network = gbin.network
         else:
             self.network = gbin
         self.nettype = 'b' + self.nettype[1]
