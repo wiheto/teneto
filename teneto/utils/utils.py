@@ -581,7 +581,7 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
 
     netIn : array, dict, or TemporalNetwork
         Network (graphlet, contact or object)
-    allowedformats : str
+    allowedformats : list or str
         Which format of network objects that are allowed. Options: 'C', 'TN', 'G'.
     outputformat: str, default=G
         Target output format. Options: 'C' or 'G'.

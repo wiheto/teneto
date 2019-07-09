@@ -7,11 +7,9 @@ import numpy as np
 import inspect
 import matplotlib.pyplot as plt
 import json
-import pickle
 import nilearn
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from scipy.interpolate import interp1d
-import time
 from ..utils.bidsutils import load_tabular_file, get_bids_tag, get_sidecar, confound_matching, process_exclusion_criteria, drop_bids_suffix, make_directories
 import pandas as pd
 from .network import TemporalNetwork
@@ -42,7 +40,7 @@ class TenetoBIDS:
         "HowToAcknowledge": "Cite Teneto's DOI (http://doi.org/10.5281/zenodo.2535994).",
     }
 
-    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, bids_tags=None, bids_suffix=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True, njobs=None):
+    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, bids_tags=None, bids_suffix=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True, njobs=None, history=None):
         """
         Parameters
         ----------
@@ -74,7 +72,10 @@ class TenetoBIDS:
         njobs : int, optional
             How many parallel jobs to run. Default: 1. The set value can be overruled in individual functions.
         """
-        self.add_history(inspect.stack()[0][3], locals(), 1)
+        if history is not None:
+            self.history = history
+        else:
+            self.add_history(inspect.stack()[0][3], locals(), 1)
         self.contact = []
 
         if raw_data_exists:
@@ -173,7 +174,7 @@ class TenetoBIDS:
         params : dict.
             See teneto.timeseries.derive_temporalnetwork for the structure of the param dictionary. Assumes dimord is time,node (output of other TenetoBIDS funcitons)
 
-        update_pipeline : bool
+        update_pipeline : bo    ol
             If true, the object updates the selected files with those derived here.
 
         njobs : int
@@ -210,9 +211,62 @@ class TenetoBIDS:
 
         with ProcessPoolExecutor(max_workers=njobs) as executor:
             job = {executor.submit(self._derive_temporalnetwork, f, i, tag, params,
-                                   confounds_exist, confound_files) for i, f in enumerate(files) if f}
+                                   confound_files) for i, f in enumerate(files) if f}
             for j in as_completed(job):
                 j.result()
+
+        if confounds_exist:
+            for i, f in enumerate(files):
+                analysis_step = 'tvc-derive'
+                df = load_tabular_file(confound_files[i])
+                df = df.fillna(df.median())
+                fs, _ = drop_bids_suffix(f)
+                saved_name, saved_dir, _ = self._save_namepaths_bids_derivatives(fs, tag, 'tvc', 'tvcconn')
+                data = load_tabular_file(saved_dir + saved_name + '.tsv')
+                dfc = TemporalNetwork(from_df=data).df_to_array()
+                ind = np.triu_indices(dfc.shape[0], k=1)
+                dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
+                # If windowed, prune df so that it matches with dfc_df
+                if len(df) != len(dfc_df):
+                    df = df.iloc[int(np.round((params['windowsize']-1)/2)): int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                    df.reset_index(inplace=True, drop=True)
+                # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
+                dfc_df_z = (dfc_df - dfc_df.mean())
+                df_z = (df - df.mean())
+                R_df = dfc_df_z.T.dot(df_z).div(len(dfc_df)).div(
+                    df_z.std(ddof=0)).div(dfc_df_z.std(ddof=0), axis=0)
+                description = R_df.describe().transpose().to_html()
+                confound_report_dir = saved_dir + '/report/'
+                if not os.path.exists(confound_report_dir):
+                    os.makedirs(confound_report_dir)
+                report = '<html><body>'
+                report += '<h1> Correlation of ' + analysis_step + ' and confounds.</h1>'
+                confound_hist = []
+                for c in R_df.columns:
+                    confound_hist.append(pd.cut(
+                        R_df[c], bins=np.arange(-1, 1.01, 0.025)).value_counts().sort_index().values/len(R_df))
+
+                fig, ax = plt.subplots(1, figsize=(8, 1*R_df.shape[-1]))
+                pax = ax.imshow(
+                    confound_hist, extent=[-1, 1, R_df.shape[-1], 0], cmap='inferno', vmin=0, vmax=1)
+                ax.set_aspect('auto')
+                ax.set_yticks(np.arange(0.5, R_df.shape[-1]))
+                ax.set_yticklabels(R_df.columns)
+                ax.set_xlabel('r')
+                plt.colorbar(pax)
+                plt.tight_layout()
+                fig.savefig(confound_report_dir + saved_name +
+                            'confounds_2dhist.png', r=300)
+
+                report += 'The plot below shows histograms of each confound.<br><br>'
+                report += '<img src=' + \
+                    confound_report_dir + saved_name + 'confounds_2dhist.png><br><br>'
+                report += '<p>'
+                report += description
+                report += '</body></html>'
+
+                with open(confound_report_dir + saved_name + '_confoundcorr.html', 'w') as file:
+                    file.write(report)
 
         if update_pipeline == True:
             if not self.confound_pipeline and len(self.get_selected_files(quiet=1, pipeline='confound')) > 0:
@@ -221,7 +275,7 @@ class TenetoBIDS:
             self.set_pipeline_subdir('tvc')
             self.set_bids_suffix('tvcconn')
 
-    def _derive_temporalnetwork(self, f, i, tag, params, confounds_exist, confound_files):
+    def _derive_temporalnetwork(self, f, i, tag, params, confound_files):
         """
         Funciton called by TenetoBIDS.derive_temporalnetwork for concurrent processing.
         """
@@ -274,52 +328,6 @@ class TenetoBIDS:
         with open(save_dir + save_name + '.json', 'w') as fs:
             json.dump(sidecar, fs)
 
-        if confounds_exist:
-            analysis_step = 'tvc-derive'
-            df = load_tabular_file(confound_files[i])
-            df = df.fillna(df.median())
-            ind = np.triu_indices(dfc.shape[0], k=1)
-            dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
-            # If windowed, prune df so that it matches with dfc_df
-            if len(df) != len(dfc_df):
-                df = df.iloc[int(np.round((params['windowsize']-1)/2))                             : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
-                df.reset_index(inplace=True, drop=True)
-            # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
-            dfc_df_z = (dfc_df - dfc_df.mean())
-            df_z = (df - df.mean())
-            R_df = dfc_df_z.T.dot(df_z).div(len(dfc_df)).div(
-                df_z.std(ddof=0)).div(dfc_df_z.std(ddof=0), axis=0)
-            R_df_describe = R_df.describe()
-            confound_report_dir = save_dir + '/report/'
-            if not os.path.exists(confound_report_dir):
-                os.makedirs(confound_report_dir)
-            report = '<html><body>'
-            report += '<h1> Correlation of ' + analysis_step + ' and confounds.</h1>'
-            confound_hist = []
-            for c in R_df.columns:
-                confound_hist.append(pd.cut(
-                    R_df[c], bins=np.arange(-1, 1.01, 0.025)).value_counts().sort_index().values/len(R_df))
-
-            fig, ax = plt.subplots(1, figsize=(8, 1*R_df.shape[-1]))
-            pax = ax.imshow(
-                confound_hist, extent=[-1, 1, R_df.shape[-1], 0], cmap='inferno', vmin=0, vmax=1)
-            ax.set_aspect('auto')
-            ax.set_yticks(np.arange(0.5, R_df.shape[-1]))
-            ax.set_yticklabels(R_df.columns)
-            ax.set_xlabel('r')
-            plt.colorbar(pax)
-            plt.tight_layout()
-            fig.savefig(confound_report_dir + save_name +
-                        'confounds_2dhist.png', r=300)
-            plt.close(fig)
-
-            report += 'The plot below shows histograms of each confound.<br><br>'
-            report += '<img src=' + \
-                confound_report_dir + save_name + 'confounds_2dhist.png><br><br>'
-            report += '</body></html>'
-
-            with open(confound_report_dir + save_name + '_confoundcorr.html', 'w') as file:
-                file.write(report)
 
     def set_bids_tags(self, indict=None):
         if not hasattr(self, 'bids_tags'):
@@ -334,7 +342,7 @@ class TenetoBIDS:
         if indict is not None:
             for d in indict:
                 self.bids_tags[d] = indict[d]
-                if not isinstance(self.bids_tags[d], list):
+                if self.bids_tags[d] is not None and not isinstance(self.bids_tags[d], list):
                     self.bids_tags[d] = [self.bids_tags[d]]
             if 'run' in self.bids_tags:
                 self.bids_tags['run'] = list(
@@ -1528,38 +1536,6 @@ class TenetoBIDS:
             print('Numnber of selected files: ' + str(len(selected_files)))
             print('\n - '.join(selected_files))
 
-    def save_aspickle(self, fname):
-        if fname[-4:] != '.pkl':
-            fname += '.pkl'
-        with open(fname, 'wb') as f:
-            pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
-
-    @classmethod
-    def load_frompickle(cls, fname, reload_object=False):
-        """
-        Loaded saved instance of
-
-        fname : str
-            path to pickle object (output of TenetoBIDS.save_aspickle)
-        reload_object : bool (default False)
-            reloads object by calling teneto.TenetoBIDS (some information lost, for development)
-
-        Returns
-        -------
-            self :
-                TenetoBIDS instance
-        """
-        if fname[-4:] != '.pkl':
-            fname += '.pkl'
-        with open(fname, 'rb') as f:
-            tnet = pickle.load(f)
-        if reload_object:
-            reloadnet = teneto.TenetoBIDS(tnet.BIDS_dir, pipeline=tnet.pipeline, pipeline_subdir=tnet.pipeline_subdir, bids_tags=tnet.bids_tags,  bids_suffix=tnet.bids_suffix,
-                                          bad_subjects=tnet.bad_subjects, confound_pipeline=tnet.confound_pipeline, raw_data_exists=tnet.raw_data_exists, njobs=tnet.njobs)
-            reloadnet.histroy = tnet.history
-            tnet = reloadnet
-        return tnet
-
     # timelocked average
     # np.stack(a['timelocked-tvc'].values).mean(axis=0)
     # Remaked based on added meta data derived from events
@@ -1830,6 +1806,38 @@ class TenetoBIDS:
             return base_path, file_list, method_info[method]['datatype']
         else:
             return None, None, None
+
+    def save_tenetobids_snapshot(self, path, filename='TenetoBIDS_snapshot'):
+        """
+        Saves the TenetoBIDS settings.
+
+        Parameters
+        ----------
+        path : str
+            path to saved snapshot.
+        filename : str
+            filename for the tenetobids snapshot.
+
+        Notes
+        -----
+
+        To load the snapshot:
+
+        import json
+        with open(path + 'TenetoBIDS_snapshot.json') as f
+            params = json.load(f)
+        tnet = teneto.TenetoBIDS(**params)
+
+        """
+        tenetobids_dict = self.__dict__
+        tenetobids_init = self.history[0][1]
+        tenetobids_snapshot = {}
+        for n in tenetobids_init:
+            tenetobids_snapshot[n] = tenetobids_dict[n]
+        if not filename.endswith('.json'):
+            filename += '.json'
+        with open(path + '/' + filename, 'w') as fs:
+            json.dump(tenetobids_snapshot, fs)
 
 
 if __name__ == '__main__':

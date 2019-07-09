@@ -23,6 +23,11 @@ def test_tnet_derive():
         tnet.tvc_data_[0]['j'] == 1) & (tnet.tvc_data_[0]['t'] == 0)]['weight'])
     if not np.round(R_jc, 12) == np.round(jc, 12):
         raise AssertionError()
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
+                             pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
+    tnet.set_confound_pipeline('fmriprep')
+    tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time'},
+                                update_pipeline=True, confound_corr_report=True)
 
 
 def test_make_fc_and_tvc():
@@ -224,17 +229,6 @@ def test_tnet_checksidecar():
         raise AssertionError()
 
 
-def test_tnet_io():
-    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
-                             bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
-    tnet.save_aspickle(teneto.__path__[0] +
-                       '/data/testdata/dummybids/teneosave.pkl')
-    tnet2 = teneto.TenetoBIDS.load_frompickle(
-        teneto.__path__[0] + '/data/testdata/dummybids/teneosave.pkl')
-    if not tnet2.get_selected_files() == tnet.get_selected_files():
-        raise AssertionError()
-
-
 def test_export_history():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
                              bids_suffix='preproc', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
@@ -276,3 +270,17 @@ def test_tnet_scrubbing_and_exclusion_options():
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
     tnet.set_confound_pipeline('fmriprep')
     tnet.set_exclusion_file('confound2', '>=1')
+
+
+def test_savesnapshot():
+    tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
+                             pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
+    tnet.save_tenetobids_snapshot(teneto.__path__[0])
+    with open(teneto.__path__[0] + '/TenetoBIDS_snapshot.json') as f:
+        params = json.load(f)
+    tnet2 = teneto.TenetoBIDS(**params)
+    for n in tnet2.__dict__:
+        if tnet.__dict__[n] != tnet2.__dict__[n]:
+            raise AssertionError()
+    if tnet2.__dict__.keys() != tnet.__dict__.keys():
+        raise AssertionError()

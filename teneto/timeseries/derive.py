@@ -86,22 +86,17 @@ def derive_temporalnetwork(data, params):
         Size of window.
     params['distribution'] : str
         Scipy distribution (e.g. 'norm','expon'). Any distribution here: https://docs.scipy.org/doc/scipy/reference/stats.html
-    params['distribution_params'] : list
-        Each parameter, excluding the data "x" (in their scipy function order) to generate pdf.
+    params['distribution_params'] : dict
+        Dictionary of distribution parameter, excluding the data "x" to generate pdf.
 
-        NOTE
-        !!!!!!!!!!
         The data x should be considered to be centered at 0 and have a length of window size.
          (i.e. a window size of 5 entails x is [-2, -1, 0, 1, 2] a window size of 6 entails [-2.5, -1.5, 0.5, 0.5, 1.5, 2.5])
         Given x params['distribution_params'] contains the remaining parameters.
 
         e.g. normal distribution requires pdf(x, loc, scale) where loc=mean and scale=std.
-         This means that the mean and std have to be provided in distribution_params.
 
-        Say we have a gaussian distribution, a window size of 21 and params['distribution_params'] is [0,5].
+        Say we have a gaussian distribution, a window size of 21 and params['distribution_params'] = {'loc': 0, 'scale': 5}.
          This will lead to a gaussian with its peak at in the middle of each window with a standard deviation of 5.
-
-        Instead, if we set params['distribution_params'] is [10,5] this will lead to a half gaussian with its peak at the final time point with a standard deviation of 5.
 
     When method == "temporalderivative"
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -278,9 +273,7 @@ def _weightfun_tapered_sliding_window(T, params, report):
     Creates the weights for the tapered method. See func: teneto.timeseries.derive_temporalnetwork.
     """
     x = np.arange(-(params['windowsize'] - 1) / 2, (params['windowsize']) / 2)
-    distribution_parameters = ','.join(map(str, params['distribution_params']))
-    taper = eval('sps.' + params['distribution'] +
-                 '.pdf(x,' + distribution_parameters + ')')
+    taper = getattr(sps, params['distribution']).pdf(x, **params['distribution_params'])
 
     weightat0 = np.zeros(T)
     weightat0[0:params['windowsize']] = taper

@@ -30,7 +30,7 @@ def test_slidingwindow_postpro():
 def test_taperedslidingwindow():
     X = np.random.multivariate_normal([0, 0], [[1, 0.5], [0.5, 1]], 20)
     TR_tsw = teneto.timeseries.derive_temporalnetwork(X, {'method': 'taperedslidingwindow', 'windowsize': 10,
-                                                          'dimord': 'time,node', 'distribution': 'norm', 'distribution_params': [0, 5], 'report': True})
+                                                          'dimord': 'time,node', 'distribution': 'norm', 'distribution_params': {'loc': 0, 'scale': 5}, 'report': True})
     # Perhaps make a better test
     if not TR_tsw.shape == (2, 2, 11):
         raise AssertionError()

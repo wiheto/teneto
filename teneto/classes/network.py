@@ -3,7 +3,6 @@ import numpy as np
 import teneto
 import inspect
 import matplotlib.pyplot as plt
-import pickle
 
 
 class TemporalNetwork:
@@ -453,18 +452,6 @@ class TemporalNetwork:
         ax = funs[plottype](data_plot, ax=ax, **plotparams)
         return ax
 
-    def save_aspickle(self, fname):
-        """
-        Saves object as pickle.
-
-        fname : str
-            file path.
-        """
-        if fname[-4:] != '.pkl':
-            fname += '.pkl'
-        with open(fname, 'wb') as f:
-            pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
-
     def hdf5_setup(self, hdf5path):
         hdf = pd.HDFStore(hdf5path)
         hdf.put('network', self.network, format='table', data_columns=True)
@@ -477,3 +464,32 @@ class TemporalNetwork:
 
     def df_to_array(self):
         return teneto.utils.df_to_array(self.network, self.netshape, self.nettype)
+
+    def binarize(self, threshold_type, threshold_level, **kwargs):
+        """
+        Parameters
+        ----------
+
+        threshold_type : str
+            What type of thresholds to make binarization. Options: 'rdp', 'percent', 'magnitude'.
+
+        threshold_level : str
+            Paramter dependent on threshold type.
+            If 'rdp', it is the delta (i.e. error allowed in compression).
+            If 'percent', it is the percentage to keep (e.g. 0.1, means keep 10% of signal).
+            If 'magnitude', it is the amplitude of signal to keep.
+
+        See teneto.utils.binarize for kwarg arguments.
+
+        Returns
+        ---------
+        Updates tnet.network to be binarized
+
+        """
+        gbin = teneto.utils.binarize(self.network, threshold_type, threshold_level, **kwargs)
+        if self.sparse == True:
+            gbin = teneto.utils.process_input(gbin, 'G', outputformat='TN', forcesparse=True)
+            self.network = gbin.network
+        else:
+            self.network = gbin
+        self.nettype = 'b' + self.nettype[1]
