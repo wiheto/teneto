@@ -109,7 +109,7 @@ class TenetoWorkflow():
             remove_candidate_steps = teneto.utils.get_network_when(
                 self.graph, i=not_run, j=candidate_steps, logic='and')['j'].tolist()
             remove_candidate_steps = list(set(remove_candidate_steps))
-            [candidate_steps.remove(step) for step in remove_candidate_steps]
+            _ = [candidate_steps.remove(step) for step in remove_candidate_steps]
             for step in candidate_steps:
                 run.append(step)
                 not_run.remove(step)
@@ -194,7 +194,7 @@ class TenetoWorkflow():
         xmax = 0
         for level in range(levelnum):
             width = 0
-            for i, node in enumerate(self.runorder[self.runorder['level'] == level].iterrows()):
+            for _, node in enumerate(self.runorder[self.runorder['level'] == level].iterrows()):
                 props = dict(boxstyle='round', facecolor='gainsboro', alpha=1)
                 p = ax.text(
                     width, levelnum-level, node[1]['node'], fontsize=14, verticalalignment='center', bbox=props)

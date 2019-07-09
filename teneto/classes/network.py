@@ -465,7 +465,7 @@ class TemporalNetwork:
     def df_to_array(self):
         return teneto.utils.df_to_array(self.network, self.netshape, self.nettype)
 
-    def binarize(self, threshold_type, threshold_level, **kwargs): 
+    def binarize(self, threshold_type, threshold_level, **kwargs):
         """
         Parameters
         ----------
@@ -481,15 +481,15 @@ class TemporalNetwork:
 
         See teneto.utils.binarize for kwarg arguments.
 
-        Returns  
+        Returns
         ---------
         Updates tnet.network to be binarized
 
         """
         gbin = teneto.utils.binarize(self.network, threshold_type, threshold_level, **kwargs)
-        if self.sparse == True: 
+        if self.sparse == True:
             gbin = teneto.utils.process_input(gbin, 'G', outputformat='TN', forcesparse=True)
             self.network = tmp.network
-        else: 
+        else:
             self.network = gbin
         self.nettype = 'b' + self.nettype[1]
