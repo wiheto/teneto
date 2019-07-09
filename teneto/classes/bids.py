@@ -10,7 +10,6 @@ import json
 import nilearn
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from scipy.interpolate import interp1d
-import time
 from ..utils.bidsutils import load_tabular_file, get_bids_tag, get_sidecar, confound_matching, process_exclusion_criteria, drop_bids_suffix, make_directories
 import pandas as pd
 from .network import TemporalNetwork
