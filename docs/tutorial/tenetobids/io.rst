@@ -1,18 +1,19 @@
 Load/Save TenetoBIDS
-=================
+==========================
 
-TenetoBIDS objects can be easily saved as a pickle file (.pkl). 
-
-You can save you progress by using *save_tenetobids_snapshot*.
+The configurations of a TenetoBIDS object can be
+easily saved by using *save_tenetobids_snapshot*.
 
 .. code-block:: python
 
     path = './'
     tnet.save_tenetobids_snapshot(path)
 
-This creates a json file called, 
-Then to load it you just need to create a new TenetoBIDS object using these paramerers. 
-All the history (in tnet.history) is also perserved:
+This creates a json file called, _TenetoBIDS_snapshot.json_
+(unless you set the filename argument).
+
+Then to load it you just need to create a new TenetoBIDS
+and pass the json file as a dictionary.
 
 .. code-block:: python
 
@@ -21,4 +22,5 @@ All the history (in tnet.history) is also perserved:
         params = json.load(f)
     tnet = teneto.TenetoBIDS(**params)
 
-Note that any loaded files need to be reloaded.
+All the history (in tnet.history) is preserved when saving.
+However, any loaded files need to be reloaded.
