@@ -56,7 +56,7 @@ def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_de
     data = region.fit_transform(data_path)
 
     if return_meta:
-        meta_info = tf.get(template=template, atlas=atlas,
+        meta_info = tf.get(template=template, resolution=resolution, atlas=atlas,
                            desc=atlas_desc, extensions='tsv')
         meta_info = load_tabular_file(str(meta_info))
         return data, meta_info
