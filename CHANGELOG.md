@@ -1,5 +1,15 @@
 # Changelog
 
+## V0.4.6-dev
+
+### Enhacnements 
+
+-    asarray flag in get_network_when returns dense version of network.
+
+### Fixes
+
+-    Fixing case where, for array input, get_network_when with directed edges droped duplicates. 
+
 ## V0.4.5
 
 ### Enhancements

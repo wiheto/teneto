@@ -7,7 +7,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/wiheto/teneto/badge.svg?branch=master)](https://coveralls.io/github/wiheto/teneto?branch=master)
 [![DOI](https://zenodo.org/badge/61498436.svg)](https://zenodo.org/badge/latestdoi/61498436)
 
-**Te**mporal **ne**twork **to**ols. Version 0.4.5
+**Te**mporal **ne**twork **to**ols. Version 0.4.6dev
 
 ## What is the package
 
