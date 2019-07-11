@@ -5,6 +5,7 @@
 ### Enhacnements 
 
 -    asarray flag in get_network_when returns dense version of network.
+-    adding CustomBIDS to derivative description json file in TenetoBIDS. 
 
 ### Fixes
 
