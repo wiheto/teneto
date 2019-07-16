@@ -1,5 +1,5 @@
 Tutorial: Network representation in Teneto
-###############################
+############################################
 
 There are three ways that network's are represented in Teneto:
 
@@ -140,7 +140,7 @@ The TemporalNetwork functions such as get_network_when()
 still function with the dense representation.
 
 Exporting to a numpy array
-=========================
+=============================
 
 You can export the network to a numpy array
 from the pandas data frame by calling to array:
@@ -206,15 +206,15 @@ using the *nodelabels* (give names to the nodes),
   plt.show()
 
 Importing data to TemporalNetwork
-=========================
+=====================================
 
 There are multiple ways to add data to the TemporalNetwork object.
 These include:
 
   1. A 3D numpy array
-  2. Contact representation 
-  3. Pandas data frame 
-  4. List of edges. 
+  2. Contact representation
+  3. Pandas data frame
+  4. List of edges
 
 Numpy Arrays
 -----------------
@@ -222,7 +222,7 @@ Numpy Arrays
 For example, here we create a random network based on a beta distribution.
 
   >>> np.random.seed(2019)
-  >>> G = np.random.beta(1, 1, [5,5,3]) 
+  >>> G = np.random.beta(1, 1, [5,5,3])
   >>> G.shape
   (5, 5, 3)
 
@@ -235,7 +235,7 @@ Or for an already defined object:
   >>> tnet.network_from_array(G)
 
 Contact representation
------------------
+-------------------------
 
 The contact representation (see below) is a dictionary which a key called
 *contacts* includes a contact list of lists and some additional metadata.
@@ -281,48 +281,61 @@ Alternatively a list of lists can be given to *TemporalNetwork*,
 in such cases each sublist should follow the order [i,j,t,[weight]].
 For example:
 
-  >>> edgelist = [[0,1,0,0.5], [0,1,1,0.75]] 
+  >>> edgelist = [[0,1,0,0.5], [0,1,1,0.75]]
   >>> tnet = TemporalNetwork(from_edgelist=edgelist)
   >>> tnet.network
      i  j  t  weight
   0  0  1  0    0.50
   1  0  1  1    0.75
 
-This creates two edges with between nodes 0 and 1 at two different time-points with differing weights.
+This creates two edges between nodes 0 and 1
+at two different time-points with two weights.
 
 Array/snapshot representation
 *****************************
 
-The array/snapshort representation is a three dimensional numpy array. The dimensions are (node,node,time). 
+The array/snapshort representation is a three dimensional numpy array.
+The dimensions are (node,node,time).
 
-The positives of this representation is that it is easy to understand and manipulate. The downside is that any metainformation about the network is lost and, when the networks are big, can use a lot of memory. 
+The positives of arrays are that they is easy to understand and manipulate.
+The downside is that any meta-information about the network is lost and,
+when the networks are big, can use a lot of memory.
 
 
 Contact representation
 *****************************
 
-The contact representations is a dictionary that includes more information about the network. 
+Note, the contact representation is going to be phased out in
+favour for the TemporalNetwork object with time.
 
-The keys in the dictionary include 'contact' which specified the network information (node,node,timestamp). A weights key is present in weighted networks containing the weights. 
-Other keys include: 'dimord' (dimension order), 'Fs' (sampling rate), 'timeunit', 'nettype' (if network is weighted/binary, undirected/directed), 'timetype', `nodelabels` (node labels), `t0` (the first time point). 
+The contact representations is a dictionary that can
+includes more information about the network than an array.
 
-Note, the contact representation is going to be phased out for the TemporalNetwork object with time. 
+The keys in the dictionary include 'contact' (node,node,timestamp)
+which define all the edges in te network.
+A weights key is present in weighted networks containing the weights.
+Other keys for meta-information include:
+'dimord' (dimension order), 'Fs' (sampling rate),
+'timeunit', 'nettype' (if network is weighted/binary, undirected/directed),
+'timetype', `nodelabels` (node labels), `t0` (the first time point).
+
 
 Converting between contact and graphlet representations
-*****************************
+*********************************************************
 
-Converting between the two different network representations is quite easy. First let us generate a random network that consists of 3 nodes and 5 time points. 
+Converting between the two different network representations is quite easy.
+Let us generate a random network that consists of 3 nodes and 5 time points.
 
 .. code-block:: python
 
   import teneto
   import numpy as np
 
-  # For reproduceability
-  np.random.seed(2018) 
+  # For reproducibility
+  np.random.seed(2018)
   # Number of nodes
   N = 3
-  # Number of timepoints
+  # Number of time-points
   T = 5
   # Probability of edge activation
   p0to1 = 0.2
@@ -330,15 +343,16 @@ Converting between the two different network representations is quite easy. Firs
   G = teneto.generatenetwork.rand_binomial([N,N,T],[p0to1, p1to1],'graphlet','bu')
   # Show shape of network
   print(G.shape)
-    
-You can convert a graphlet representatoin to contact representation with teneto.utils.graphlet2contact
+
+You can convert a graphlet representation to contact representation with:
+teneto.utils.graphlet2contact
 
 .. code-block:: python
 
   C = teneto.utils.graphlet2contact(G)
   print(C.keys)
 
-To convert the opposite direction, type teneto.utils.contact2graphlet and check that the new numpy array is equal to the previous one. 
+To convert the opposite direction, type teneto.utils.contact2graphlet:
 
 .. code-block:: python
 
