@@ -18,7 +18,7 @@ The following suffixes can get applied to files while using the TenetoBIDS funct
 File formats are all .tsv files. 
 
 Note: These are not approved in the BIDS derivaives/connectivity at the moment as the connectivity is not finalized yet. So these may change over time.
-For example, the current suggestion is to use _connectivity as a suffix.  
+For example, the current suggestion is to use _connectivity as a suffix. 
 
 
 Information in JSON sidecars
