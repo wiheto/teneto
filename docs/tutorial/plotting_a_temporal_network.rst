@@ -2,27 +2,15 @@
 Plotting temporal networks
 --------------------------
 
-Conceptual introduction
-========================
-
-Communication is important in science. 
-There is a lot of complex information that we want to display in as simple ways possible. 
-Conveying multi-dimensional information is hard. 
-With temporal networks we have (at least) 3 different dimensions (nodes x nodes x time). 
-It is also possible that additional dimensions play a part in research (such as subjects or groups).
-
-How do we convey this information? One strategy is to resolve global properties or isolate which nodes differ significantly. 
-This often results in us able to plot this information in convenstional 1-2D ways. 
-However teneto allows for some plots for temporal networks visualizations. 
-
 Plotting in teneto
 ==================
 
-Being able to view the network information through time is very useful. 
-It is not a problem which has been solved adequately yet, but teneto offers two solutions which are very helpful. 
-They function best are clearer when the networks are smaller. 
+Being able to view the network information through time is very useful.
+Teneto offers two solutions that help convey
+an overview of temporal networks.
+These functions are clearer when the networks are smaller.
 
-For the example, first we'll start by generating a network to visualize. 
+For the example, first we'll start by generating a network to visualize.
 
 .. code-block:: python
 
@@ -32,7 +20,9 @@ For the example, first we'll start by generating a network to visualize.
   >>> #Set colourmap
   >>> plt.rcParams['image.cmap'] = 'autumn'
 
-Then we need to generate a binary undirected network to work with. Here we have 5 nodes over 10 time points. There is a 0.2% probability each 0. (see the tutorial/generating_a_random_network example for more information)
+Then we need to generate a binary undirected network to work with.
+Here we have 5 nodes over 10 time points
+(see the tutorial/generating_a_random_network example for more information)
 
 .. code-block:: python
 
@@ -56,7 +46,9 @@ Then we need to generate a binary undirected network to work with. Here we have 
 Slice plots
 ================
 
-Plotting tools are found in teneto.plot module. Slice_plot's line up all the nodes for a time point into a "slice" and connect edges with curved lines. 
+Plotting tools are found in teneto.plot module.
+Slice_plot's line up all the nodes for a time point into a "slice".
+Each edge is plotted with a curved line.
 
 .. code-block:: python
 
@@ -73,9 +65,12 @@ This will produce the following figure:
 Graphlet stack plots
 ======================
 
-Graphlet stack plots takes the temporal network input and automatically scales each 2D adjacency matrix, creating a 3D effect, and stacks them up in a time series.
+Graphlet stack plots takes the temporal network input and
+automatically scales each 2D adjacency matrix, creating a 3D effect,
+and stacks them up in a time series.
 
-With only the generated network above (C), we then create a matplotlib figure and then call graphlet_stack_plot.
+With only the generated network above (C),
+we then create a matplotlib figure and then call graphlet_stack_plot.
 
 .. code-block:: python
 
@@ -86,7 +81,10 @@ With only the generated network above (C), we then create a matplotlib figure an
   >>> # Only new parameter is "q" which stands for figure quality
   >>> ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap=colorMap)
 
-The argument q stands for figure quality. A higher number exports a higher figure. While the figure can be exported as a svg (and figure labels can be changed), the graphlet stack itself is a bitmap. 
+The argument q stands for figure quality.
+A higher number exports a higher figure.
+While the figure can be exported as a svg (and figure labels can be changed),
+the graphlet stack itself is a bitmap due to how it is created.
 
 This will produce the following figure:
 
@@ -98,22 +96,28 @@ This will produce the following figure:
 Customizing graphlet_stack_plot
 ===============================
 
-There are some possibilities to modify graphlet_stack_plot after ones own style over and above the default graphlet plot and specifying the colormap.
+There are some possibilities to modify graphlet_stack_plot after
+ones own style instead of the default plot.
 
-Below we see an example of customization by removing the grids between edge values, changing the border colour to a grey and making the border much larger. (This isn't pretty. But shows what can be done).
+Below we see an example of customization by:
+removing the grids between edge values,
+changing the border colour to a grey and making the border much larger.
+This isn't pretty, but shows what can be done.
 
-There are still a couple of restrictions. At the moment some border must be present. As too are the rounded rectangles border. But these, and more customizatoin, is possible to add quite easily (so feel free to request something that you feel is missing).
+There are still a couple of restrictions.
+At the moment some border must be present.
+As too are the rounded rectangles border.
 
 .. code-block:: python
 
   >>> # Create matplotlib figure
   >>> fig,ax = plt.subplots(figsize=(10,3))
-  >>> ax = plt.subplot(1,1,1) 
+  >>> ax = plt.subplot(1,1,1)
   >>> colorMap = 'seismic'
-  >>> # Call graphlet_stack_plot adding only specified parameters. (Only new parameter is "q" which stands for figure quality)
+  >>> # Call graphlet_stack_plot adding only specified parameters.
   >>> ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap=colorMap,gridcolor='none',borderwidth=12,bordercolor=[.3,.3,.3])
 
-This will produce the following figure (although as pretty as before):
+This will produce the following figure:
 
 .. image:: images/graphlet_example2.png
     :align: center

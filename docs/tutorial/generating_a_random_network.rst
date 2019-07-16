@@ -1,5 +1,5 @@
 
-Creating temporal networks
+Generating temporal networks
 --------------------------
 
 Generating a matrix from teneto.generatenetwork
