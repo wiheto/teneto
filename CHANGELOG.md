@@ -4,12 +4,12 @@
 
 ### Enhacnements 
 
--    asarray flag in get_network_when returns dense version of network.
--    adding CustomBIDS to derivative description json file in TenetoBIDS. 
+-   Asarray flag in get_network_when returns dense version of network.
+-   Adding CustomBIDS to derivative description json file in TenetoBIDS.
 
 ### Fixes
 
--    Fixing case where, for array input, get_network_when with directed edges droped duplicates. 
+-   Fixing case where, for array input, get_network_when with directed edges droped duplicates.
 
 ## V0.4.5
 
@@ -223,8 +223,7 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 
 ## V0.3.5
 
--   Due to problems with installation of iGraph, temporarily removing communitydetection (commenting out code in TenetoBIDS, communitydetection module is not imported and tests commented.) This
-    is until a more user friendly louvain detection is implemented (and is quick).
+-   Due to problems with installation of iGraph, temporarily removing communitydetection (commenting out code in TenetoBIDS, communitydetection module is not imported and tests commented.) This is until a more user friendly louvain detection is implemented (and is quick).
 
 ## V0.3.4
 
@@ -327,61 +326,37 @@ Not yet compatible with HDF5-compatible:, temporal_degree_centrality, volatility
 ## V0.3.1
 
 -   **main** added (this may be removed at later date as I don't have an interest in maintaining this).
-
 -   Added `njobs` argument to `TenetoBIDS` (and various other functions therein) for parallel computing.
-
 -   added nilearn.signal.clean for denoising
-
 -   removed statsmodels as dependence.
 
 ## V0.3.0
 
 -   Dockerfile added
-
 -   Added weight-var and weight-mean options to jackknife correlation.
-
 -   Added make_static_connectivity in TenetoBIDS
-
 -   Added from-subject-fc open to jackknife correlation in TenetoBIDS.derive.
-
 -   Numpydoc adopted in docstrings (teneto.utils, teneto.generatenetwork).
-
 -   Added `bad_subjects` and `set_bad_subjects()` in `TenetoBIDS`
-
 -   Added readthedocs and pypi badge
-
 -   Fixed `teneto.networkmeasures.volatility` when subnet is given.
-
 -   Changed argument subnet_id in `teneto.networkmeasures.volatility` to subnet.
-
 -   Added possibility to append OH subcortical atlas to make_parcellation.
-
 -   Added tag option to TenetoBIDS
-
 -   Changed cfg variable name to params in teneto.utils.
-
 -   Fixed bug in teneto_degree_centrality where decay and subnet set.
-
 -   Allow \* and + in tag in TenetoBIDS.
-
 -   clean_community_indexes works with temporal clustering
-
 -   Added iGraph as requirement
-
 -   Added `teneto.communitydetection.louvain`
 
 ## V0.2.7
 
 -   Added calc option to `TenetoBIDS.make_time_locked_events` allowing for selecting one of multiple networkmeasures
-
 -   Corrected bug where timelocked files were not placed in timelocked directory
-
 -   Changed all forms of time_locked and event-locked to timelocked
-
 -   Added `load_parcellation_data` to `TenetoBIDS`
-
 -   Added history to TenetoBIDS
-
 -   Added install_requires to `setup.py`
 
 ## V0.2.6 (and partly V0.2.5)
