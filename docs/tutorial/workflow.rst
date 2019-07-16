@@ -2,7 +2,7 @@
 Workflows
 --------------------------
 
-Many analyses can be constructed as a graph to depict 
+Many analyses can be constructed as a graph to depict
 all the steps that are made during the analysis.
 This graph of an analysis is called a workflow.
 There are many benefits to creating a workflow:
@@ -21,11 +21,12 @@ Any analysis made using those classes can be made into a workflow.
 
 There are three different types of nodes in this graph:
 
-*root nodes*: These are nodes that do not depend on any other step in the analysis.
-These are calls to create a _TenetoBIDS_ or _TemporalNetwork_ object.
+*root nodes*: These are nodes that do not depend on any other nodes
+in the analysis. These are calls to create a
+_TenetoBIDS_ or _TemporalNetwork_ object.
 
 *non-terminal nodes*:
-These are nodes that are intermediate steps in the anlaysis.
+These are nodes that are intermediate steps in the analysis.
 
 *terminal nodes*:
 These are the final nodes in the analysis.
@@ -113,7 +114,7 @@ so we can look at the TenetoWorkflow.graph:
     2   generatenetwork    degree
 
 Each row here shows the new node in the _j_-th column
-and the step preceeding node in the _i_-th column.
+and the step preceding node in the _i_-th column.
 
 The workflow graph can be plotted with:
 
@@ -147,8 +148,8 @@ The workflow graph can be plotted with:
     fig, ax = twf.make_workflow_figure()
     fig.show()
 
-Running a workflow 
-=================
+Running a workflow
+======================
 
 Now the workflow has been defined, it can be run by typing:
 
@@ -159,7 +160,8 @@ And this will run all of steps.
 Viewing the output
 ==================
 
-The output of the final step will be found in TenetoWorkflow.output_[<nodename>].
+The output of the final step will be found in
+TenetoWorkflow.output_[<nodename>].
 
 The nodes included here will be all the terminal nodes.
 However when defining the TenetoWorkflow, you can set the argument,
@@ -284,7 +286,7 @@ And this workflow can be plotted like before:
         'prob': (0.75,0.1),
         'randomseed': 2019
         }
-    twf.add_node(nodename, func, depends_on, params)    
+    twf.add_node(nodename, func, depends_on, params)
     # Calc temporal degree centrality node
     nodename = 'degree_highprob'
     func = 'calc_networkmeasure'
