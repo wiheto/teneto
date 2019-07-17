@@ -871,7 +871,7 @@ def get_dimord(measure, calc=None, community=None):
         return 'unknown'
 
 
-def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=False, asarray=False):
+def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=False, asarray=False, netshape=None, nettype=None):
     """
     Returns subset of dataframe that matches index
 
@@ -892,7 +892,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     copy : bool
         default False. If True, returns a copy of the dataframe. Note relevant if hd5 data.
     asarray : bool
-        default False. If True, returns the list of edges as an array.
+        default False. If True, returns the list of edges as a numpy array.
 
     Returns
     -------
@@ -912,6 +912,8 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         network = tnet.network
         hdf5 = tnet.hdf5
         sparse = tnet.sparse
+        nettype = tnet.nettype
+        netshape = tnet.netshape
     if ij is not None and (i is not None or j is not None):
         raise ValueError('ij cannoed be specifed along with i or j')
     # Make non list inputs a list
@@ -974,7 +976,8 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
             data={'i': ind[0], 'j': ind[1], 't': ind[2], 'weight': edges})
         df['i'] = df['i'].astype(int)
         df['j'] = df['j'].astype(int)
-        df = df_drop_ij_duplicates(df)
+        if nettype[1] == 'u':
+            df = df_drop_ij_duplicates(df)
 
     else:
         l = {'or': operator.__or__, 'and': operator.__and__}
@@ -1004,7 +1007,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         if copy:
             df = df.copy()
     if asarray:
-        df = df.values
+        df = df_to_array(df, netshape, nettype)
     return df
 
 

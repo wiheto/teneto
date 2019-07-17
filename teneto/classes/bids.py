@@ -26,7 +26,7 @@ import sys
 
 class TenetoBIDS:
 
-    bids_derivatives_rc_version = '<rc1.0'
+    bids_derivatives_version = '<rc1.0'
 
     tenetoinfo = {
         "Name": "TenetoBIDS",
@@ -35,10 +35,19 @@ class TenetoBIDS:
                     "Version": str(teneto.__version__[0]),
                     "CodeURL": "https://github.com/wiheto/teneto/"
                 },
-        "BIDSVersion": "1.0.0",
+        "BIDSVersion": bids_derivatives_version,
         "CodeURL": "https://github.com/wiheto/teneto",
-        "HowToAcknowledge": "Cite Teneto's DOI (http://doi.org/10.5281/zenodo.2535994).",
-    }
+        "HowToAcknowledge": "Cite Teneto's DOI (http://doi.org/10.5281/zenodo.2535994)",
+        "CustomBIDS": {
+                "suffix": {
+                    "tvcconn": "time-varying connectivity estimate",
+                    "roi": "time series of regions of interst",
+                    "conn": "functional connectivity estimate",
+                    "tnet": "temporal network estimate",
+                    }
+                }
+        },
+
 
     def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, bids_tags=None, bids_suffix=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True, njobs=None, history=None):
         """
