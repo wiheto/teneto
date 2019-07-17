@@ -81,6 +81,9 @@ class TenetoBIDS:
         njobs : int, optional
             How many parallel jobs to run. Default: 1. The set value can be overruled in individual functions.
         """
+        DeprecationWarning('From Teneto 0.5 and onwards TenetoBIDS is rewritten with many functions and file structure will changes\
+        Everything will be made dramatically simplier to use.\
+        From 0.4.7 teneto.NewTenetoBIDS will be available which will be the new function. From Teneto 0.5 this class will be called TenetoBIDS')
         if history is not None:
             self.history = history
         else:
