@@ -12,7 +12,7 @@
 ### Fixes
 
 -   Fixing case where, for array input, get_network_when with directed edges dropped duplicates.
--   Fixed missing bracket in get_network_when
+-   Fixed missing bracket in get_network_when (credit to: lcandeago #45)
 
 
 ## V0.4.5
