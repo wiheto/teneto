@@ -1,15 +1,19 @@
 # Changelog
 
-## V0.4.6-dev
+## V0.4.6rc1
 
 ### Enhacnements 
 
 -   Asarray flag in get_network_when returns dense version of network.
 -   Adding CustomBIDS to derivative description json file in TenetoBIDS.
+-   Added deprecation warning to TenetoBIDS
+-   Better docs
 
 ### Fixes
 
--   Fixing case where, for array input, get_network_when with directed edges droped duplicates.
+-   Fixing case where, for array input, get_network_when with directed edges dropped duplicates.
+-   Fixed missing bracket in get_network_when
+
 
 ## V0.4.5
 
