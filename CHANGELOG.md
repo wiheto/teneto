@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.4.6rc1
+## V0.4.6dev
 
 ### Enhacnements 
 
@@ -8,6 +8,7 @@
 -   Adding CustomBIDS to derivative description json file in TenetoBIDS.
 -   Added deprecation warning to TenetoBIDS
 -   Better docs
+-   Renaming temporalcommunity to communitymeasures for clarity/consistency
 
 ### Fixes
 

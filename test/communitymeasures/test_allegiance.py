@@ -1,6 +1,6 @@
 import numpy as np
 import teneto
-from teneto.temporalcommunity import allegiance
+from teneto.communitymeasures import allegiance
 
 def test_allegiance():
 

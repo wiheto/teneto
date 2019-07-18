@@ -53,3 +53,12 @@ Edge measures quantify a property for each edge.
 -  :py:func:`.shortest_temporal_paths`
 -  :py:func:`.intercontacttimes`
 -  :py:func:`.local_variation`
+
+Community measures
+****************************
+
+Community measures quantify the community partion instead of the underlying network. These are found in the module :ref:`teneto.communitymeasures`
+
+-  :py:func:`.shortest_temporal_paths`
+-  :py:func:`.intercontacttimes`
+-  :py:func:`.local_variation`

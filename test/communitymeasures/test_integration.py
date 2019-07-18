@@ -1,5 +1,5 @@
 import numpy as np
-from teneto.temporalcommunity import integration
+from teneto.communitymeasures import integration
 import pytest
 
 def test_integration():
