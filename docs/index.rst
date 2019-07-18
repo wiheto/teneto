@@ -14,6 +14,7 @@ Welcome to teneto's documentation!
     :hidden:
     :maxdepth: 1
 
+    what_is_tnt
     tutorial
     teneto
     contribute
