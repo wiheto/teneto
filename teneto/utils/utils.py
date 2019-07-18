@@ -1045,6 +1045,8 @@ def create_supraadjacency_matrix(tnet, intersliceweight=1):
 
 
 def check_TemporalNetwork_input(datain, datatype):
+    """
+    """
     if datatype == 'edgelist':
         if not isinstance(datain, list):
             raise ValueError('edgelist should be list')
@@ -1075,6 +1077,8 @@ def check_TemporalNetwork_input(datain, datatype):
 
 
 def df_drop_ij_duplicates(df):
+    """
+    """
     df['ij'] = list(map(lambda x: tuple(sorted(x)), list(
         zip(*[df['i'].values, df['j'].values]))))
     df.drop_duplicates(['ij', 't'], inplace=True)

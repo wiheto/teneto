@@ -3,7 +3,8 @@ import numpy as np
 
 
 def rdp(datin, delta=1, report=10, quiet=True):
-
+    """
+    """
     # This needs to be added to utils for trajectory detection
     # T will be for trajectory or timeseries data, (roi x time).
     datin, datinfo = teneto.utils.process_input(datin, ['C', 'G', 'TO', 'T'])

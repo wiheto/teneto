@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt
 
 
 class TemporalNetwork:
-
+    """
+    """
+    
     def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False,
                  timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None, hdf5=False, hdf5path=None, forcesparse=False):
         """
@@ -157,6 +159,8 @@ class TemporalNetwork:
             self.hdf5_setup(hdf5path)
 
     def _set_nettype(self):
+        """
+        """
         # Only run if not manually set and network values exist
         if not hasattr(self, 'nettype') and len(self.network) > 0:
             # Then check if weighted
@@ -212,6 +216,8 @@ class TemporalNetwork:
         self.netshape = (self.N, self.T)
 
     def _update_network(self):
+        """
+        """
         self._calc_netshape()
         self._set_nettype()
         if self.nettype:
@@ -253,7 +259,8 @@ class TemporalNetwork:
         self._update_network()
 
     def network_from_dict(self, contact):
-
+        """
+        """
         teneto.utils.check_TemporalNetwork_input(contact, 'dict')
         self.network = pd.DataFrame(
             contact['contacts'], columns=['i', 'j', 't'])
@@ -286,7 +293,8 @@ class TemporalNetwork:
             self.network = teneto.utils.set_diagonal(self.network, 0)
 
     def _calc_netshape(self):
-
+        """
+        """
         if len(self.network) == 0:
             self.netshape = (0, 0)
         elif self.sparse == False:
@@ -427,6 +435,8 @@ class TemporalNetwork:
             self._drop_duplicate_ij()
 
     def plot(self, plottype, ij=None, t=None, ax=None, **plotparams):
+        """
+        """
         if 'nodelabels' not in plotparams and self.nodelabels:
             plotparams['nodelabels'] = self.nodelabels
         if 'timeunit' not in plotparams and self.timeunit:
@@ -453,6 +463,8 @@ class TemporalNetwork:
         return ax
 
     def hdf5_setup(self, hdf5path):
+        """
+        """
         hdf = pd.HDFStore(hdf5path)
         hdf.put('network', self.network, format='table', data_columns=True)
         hdf.close()
@@ -460,9 +472,13 @@ class TemporalNetwork:
         self.network = hdf5path
 
     def get_network_when(self, **kwargs):
+        """
+        """
         return teneto.utils.get_network_when(self, **kwargs)
 
     def df_to_array(self):
+        """
+        """
         return teneto.utils.df_to_array(self.network, self.netshape, self.nettype)
 
     def binarize(self, threshold_type, threshold_level, **kwargs):
