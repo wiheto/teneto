@@ -1305,7 +1305,7 @@ class TenetoBIDS:
         for f in bad_files:
             sidecar = get_sidecar(f)
             if not oops:
-                sidecar['filestatus']['reject'] = True
+                sidecar['BadFile'] = True
                 sidecar['filestatus']['reason'].append(reason)
             else:
                 if reason == 'last':
@@ -1314,7 +1314,7 @@ class TenetoBIDS:
                 else:
                     sidecar['filestatus']['reason'].remove(reason)
                 if len(sidecar['filestatus']['reason']) == 0:
-                    sidecar['filestatus']['reject'] = False
+                    sidecar['BadFile'] = False
             for af in ['.tsv', '.nii.gz']:
                 f = f.split(af)[0]
             f += '.json'
