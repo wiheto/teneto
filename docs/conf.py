@@ -14,7 +14,7 @@
 #
 import os
 import sys
-from better import better_theme_path
+import guzzle_sphinx_theme
 
 # -- Project information -----------------------------------------------------
 
@@ -88,62 +88,48 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'better'
-html_theme_path = [better_theme_path]
+html_theme_path = guzzle_sphinx_theme.html_theme_path()
+html_theme = 'guzzle_sphinx_theme'
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#
-# html_theme_options = {}
+# Register the theme as an extension to generate a sitemap.xml
+extensions.append("guzzle_sphinx_theme")
 
-# (Optional) Logo. Should be small enough to fit the navbar (ideally 24x24).
-# Path should be relative to the ``_static`` files directory.
-#html_logo = "my_logo.png"
-
-# Theme options are theme-specific and customize the look and feel of a
-# theme further.
+# Guzzle theme options (see theme.conf for more information)
 html_theme_options = {
-  # show sidebar on the right instead of on the left
-  'rightsidebar': False,
 
-  # inline CSS to insert into the page if you're too lazy to make a
-  # separate file
-  'inlinecss': 'font-family: open-sans',
+    # Set the path to a special layout to include for the homepage
+    "index_template": "index.html",
 
-  # CSS files to include after all other CSS files
-  # (refer to by relative path from conf.py directory, or link to a
-  # remote file)
-  #'cssfiles': ['_static/my_style.css'],  # default is empty list
+    # Set the name of the project to appear in the left sidebar.
+    "project_nav_name": "Teneto",
 
-  # show a big text header with the value of html_title
-  'showheader': True,
+    # Set your Disqus short name to enable comments
+    #"disqus_comments_shortname": "my_disqus_comments_short_name",
 
-  # show the breadcrumbs and index|next|previous links at the top of
-  # the page
-  'showrelbartop': True,
-  # same for bottom of the page
-  'showrelbarbottom': True,
+    # Set you GA account ID to enable tracking
+    #"google_analytics_account": "my_ga_account",
 
-  # show the self-serving link in the footer
-  'linktotheme': True,
+    # Path to a touch icon
+    #"touch_icon": "",
 
-  # width of the sidebar. page width is determined by a CSS rule.
-  # I prefer to define things in rem because it scales with the
-  # global font size rather than pixels or the local font size.
-  'sidebarwidth': '15rem',
+    # Specify a base_url used to generate sitemap.xml links. If not
+    # specified, then no sitemap will be built.
+    #"base_url": "",
 
-  # color of all body text
-  'textcolor': '#000000',
+    # Allow a separate homepage from the master_doc
+    #"homepage": "index",
 
-  # color of all headings (<h1> tags); defaults to the value of
-  # textcolor, which is why it's defined here at all.
-  'headtextcolor': '',
+    # Allow the project link to be overriden to a custom URL.
+    #"projectlink": "http://github.com/wiheto/teneto",
 
-  # color of text in the footer, including links; defaults to the
-  # value of textcolor
-  'footertextcolor': '',
+    # Visible levels of the global TOC; -1 means unlimited
+    "globaltoc_depth": 3,
 
+    # If False, expand all TOC entries
+    #"globaltoc_collapse": False,
+
+    # If True, show hidden TOC entries
+    "globaltoc_includehidden": True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
