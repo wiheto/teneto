@@ -87,7 +87,8 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
+
+extensions.append("guzzle_sphinx_theme")
 html_theme_path = guzzle_sphinx_theme.html_theme_path()
 html_theme = 'guzzle_sphinx_theme'
 
@@ -98,7 +99,7 @@ extensions.append("guzzle_sphinx_theme")
 html_theme_options = {
 
     # Set the path to a special layout to include for the homepage
-    "index_template": "index.html",
+    #"index_template": "index.html",
 
     # Set the name of the project to appear in the left sidebar.
     "project_nav_name": "Teneto",
