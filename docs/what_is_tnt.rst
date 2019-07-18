@@ -1,7 +1,9 @@
 What are temporal networks?
 =================================
 
-This page goes over some of the basic concepts of temporal network theory.
+Temporal networks are, quite simply, network representations that flow through time. They are useful for analysing how a network develops, changes or evolves through time. This can be how information spreads along a social network or how different brain areas cooperate to perform a task.
+
+This page introduces some of the basic concepts of temporal network theory.
 
 Node and edges: the basics of a network
 ------------------------------------------
@@ -21,8 +23,8 @@ Different network types
 
 There are a few different versions of networks. Two key distinctions are:
 
-1. Are the connections _binary_ or _weighted_.
-2. Are the connections _undirected_ or _directed_.
+1. Are the connections *binary* or *weighted*.
+2. Are the connections *undirected* or *directed*.
 
 If a connection is binary, then (as in the section above) an edge is either present or not. When a weight is added, an edge is now represented as a 3-tuple *(i,j,w)* where *w* is the magnitude of the weight. And in the connectivity matrix, :math:`A_{ij} = w`. Often the weight is between 0 and 1 or -1 and 1, but this does not have to be the case.
 

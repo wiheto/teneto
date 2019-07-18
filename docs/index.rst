@@ -14,5 +14,6 @@ Teneto Docs
     tutorial
     teneto
     contribute
+    faq
 
 .. mdinclude:: ../README.md
