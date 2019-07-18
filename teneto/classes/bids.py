@@ -1306,14 +1306,16 @@ class TenetoBIDS:
             sidecar = get_sidecar(f)
             if not oops:
                 sidecar['BadFile'] = True
-                sidecar['filestatus']['reason'].append(reason)
+                if not 'BadFileReason' in sidecar: 
+                    sidecar['BadFileReason'] = []
+                sidecar['BadFileReason'].append(reason)
             else:
                 if reason == 'last':
-                    sidecar['filestatus']['reason'].remove(
-                        sidecar['filestatus']['reason'][-1])
+                    sidecar['BadFileReason'].remove(
+                        sidecar['BadFileReason'][-1])
                 else:
-                    sidecar['filestatus']['reason'].remove(reason)
-                if len(sidecar['filestatus']['reason']) == 0:
+                    sidecar['BadFileReason'].remove(reason)
+                if len(sidecar['BadFileReason']) == 0:
                     sidecar['BadFile'] = False
             for af in ['.tsv', '.nii.gz']:
                 f = f.split(af)[0]
