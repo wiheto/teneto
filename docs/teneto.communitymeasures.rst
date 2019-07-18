@@ -1,4 +1,4 @@
-teneto.networkmeasures
+teneto.communitymeasures
 ==============================
 
 .. automodapi:: teneto.communitymeasures

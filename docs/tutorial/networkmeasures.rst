@@ -57,8 +57,12 @@ Edge measures quantify a property for each edge.
 Community measures
 ****************************
 
-Community measures quantify the community partion instead of the underlying network. These are found in the module :ref:`teneto.communitymeasures`
+Community measures quantify the community partition instead of the underlying network. These are found in the module :ref:`teneto.communitymeasures`
 
--  :py:func:`.shortest_temporal_paths`
--  :py:func:`.intercontacttimes`
--  :py:func:`.local_variation`
+-  :py:func:`.allegiance`
+-  :py:func:`.flexibility`
+-  :py:func:`.integration`
+-  :py:func:`.persistence`
+-  :py:func:`.promiscuity`
+-  :py:func:`.recruitment`
+

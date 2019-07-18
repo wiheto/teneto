@@ -1,5 +1,5 @@
-teneto.classes
-==============================
+TemporalNetwork, TenetoBIDS and TenetoWorkflow
+================================================
 
 .. automodapi:: teneto.classes
     :classes-only:
