@@ -14,7 +14,8 @@
 #
 import os
 import sys
-import sphinx_bootstrap_theme
+from better import better_theme_path
+
 # -- Project information -----------------------------------------------------
 
 project = 'teneto'
@@ -87,8 +88,8 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'bootstrap'
-html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+html_theme = 'better'
+html_theme_path = [better_theme_path]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -103,74 +104,46 @@ html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.
 html_theme_options = {
-    # Navigation bar title. (Default: ``project`` value)
-    #'navbar_title': "Demo",
+  # show sidebar on the right instead of on the left
+  'rightsidebar': False,
 
-    # Tab name for entire site. (Default: "Site")
-    #'navbar_site_name': "Teneto",
+  # inline CSS to insert into the page if you're too lazy to make a
+  # separate file
+  'inlinecss': 'font-family: open-sans',
 
-    # A list of tuples containing pages or urls to link to.
-    # Valid tuples should be in the following forms:
-    #    (name, page)                 # a link to a page
-    #    (name, "/aa/bb", 1)          # a link to an arbitrary relative url
-    #    (name, "http://example.com", True) # arbitrary absolute url
-    # Note the "1" or "True" value above as the third argument to indicate
-    # an arbitrary url.
-    #'navbar_links': [
-    #    ("Examples", "examples"),
-    #    ("Link", "http://example.com", True),
-    #],
+  # CSS files to include after all other CSS files
+  # (refer to by relative path from conf.py directory, or link to a
+  # remote file)
+  #'cssfiles': ['_static/my_style.css'],  # default is empty list
 
-    # Render the next and previous page links in navbar. (Default: true)
-    'navbar_sidebarrel': False,
+  # show a big text header with the value of html_title
+  'showheader': True,
 
-    # Render the current pages TOC in the navbar. (Default: true)
-    'navbar_pagenav': False,
+  # show the breadcrumbs and index|next|previous links at the top of
+  # the page
+  'showrelbartop': True,
+  # same for bottom of the page
+  'showrelbarbottom': True,
 
-    # Tab name for the current pages TOC. (Default: "Page")
-    'navbar_pagenav_name': "Page",
+  # show the self-serving link in the footer
+  'linktotheme': True,
 
-    # Global TOC depth for "site" navbar tab. (Default: 1)
-    # Switching to -1 shows all levels.
-    'globaltoc_depth': 2,
+  # width of the sidebar. page width is determined by a CSS rule.
+  # I prefer to define things in rem because it scales with the
+  # global font size rather than pixels or the local font size.
+  'sidebarwidth': '15rem',
 
-    # Include hidden TOCs in Site navbar?
-    #
-    # Note: If this is "false", you cannot have mixed ``:hidden:`` and
-    # non-hidden ``toctree`` directives in the same page, or else the build
-    # will break.
-    #
-    # Values: "true" (default) or "false"
-    'globaltoc_includehidden': "true",
+  # color of all body text
+  'textcolor': '#000000',
 
-    # HTML navbar class (Default: "navbar") to attach to <div> element.
-    # For black navbar, do "navbar navbar-inverse"
-    'navbar_class': "navbar",
+  # color of all headings (<h1> tags); defaults to the value of
+  # textcolor, which is why it's defined here at all.
+  'headtextcolor': '',
 
-    # Fix navigation bar to top of page?
-    # Values: "true" (default) or "false"
-    'navbar_fixed_top': "False",
+  # color of text in the footer, including links; defaults to the
+  # value of textcolor
+  'footertextcolor': '',
 
-    # Location of link to source.
-    # Options are "nav" (default), "footer" or anything else to exclude.
-    'source_link_position': "footer",
-
-    # Bootswatch (http://bootswatch.com/) theme.
-    #
-    # Options are nothing (default) or the name of a valid theme
-    # such as "cosmo" or "sandstone".
-    #
-    # The set of valid themes depend on the version of Bootstrap
-    # that's used (the next config option).
-    #
-    # Currently, the supported themes are:
-    # - Bootstrap 2: https://bootswatch.com/2
-    # - Bootstrap 3: https://bootswatch.com/3
-    'bootswatch_theme': "cosmo",
-
-    # Choose Bootstrap version.
-    # Values: "3" (default) or "2" (in quotes)
-    'bootstrap_version': "3",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
