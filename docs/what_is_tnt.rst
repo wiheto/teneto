@@ -6,7 +6,7 @@ This page goes over some of the basic concepts of temporal network theory.
 Node and edges: the basics of a network
 ------------------------------------------
 
-A network is a representation of _something_ using a graph from mathematics. This _something_ can be a representation of an empirical phenomena or a simulation. A graph contains nodes (sometimes called vertices) and edges (sometimes called links).
+A network is a representation of *something* using a graph from mathematics. This *something* can be a representation of an empirical phenomena or a simulation. A graph contains nodes (sometimes called vertices) and edges (sometimes called links).
 
 Nodes and edges can represent a vast amount of different things in the world. For example, nodes can be friends, cities, or brain regions. Edges between could could represent trust relationships, train lines, and neuronal communication.
 
@@ -14,7 +14,7 @@ The flexibility in what nodes are is one of the reasons network theory is very i
 
 With a network you can analyse for example, if there is any "hub" node. In transportation networks, there are often hubs which connect many different areas where passengers often have to change at (e.g. airports like Frankfurt, Heathrow or Denver). In social networks you can quantify how many steps it is to another person in that network (see the famous 6 steps to Kevin Bacon).
 
-Mathematically, A network if often referenced as G or :math:`\mathcal(G)`; _i_ and _j_ are a indices of nodes; a tuple (i,j) reference an edge between nodes _i_ and _j_. G is often expressed in the form of a connectivity matrix (or adjacency matrix) :math:`A_{ij} = 1` if a connection is present and :math:`A_{ij} = 0` if a connection is not present. The number of nodes if often referenced to as _N_. Thus, _A_ is a _N_x_N_ matrix.
+Mathematically, A network if often referenced as G or :math:`\mathcal(G)`; *i* and *j* are a indices of nodes; a tuple *(i,j)* reference an edge between nodes *i* and *j*. *G* is often expressed in the form of a connectivity matrix (or adjacency matrix) :math:`A_{ij} = 1` if a connection is present and :math:`A_{ij} = 0` if a connection is not present. The number of nodes if often referenced to as *N*. Thus, *A* is a *N x N* matrix.
 
 Different network types
 -----------------------
@@ -24,7 +24,7 @@ There are a few different versions of networks. Two key distinctions are:
 1. Are the connections _binary_ or _weighted_.
 2. Are the connections _undirected_ or _directed_.
 
-If a connection is binary, then (as in the section above) an edge is either present or not. When a weight is added, an edge is now represented as a 3-tuple (i,j,w) where w is the magnitude of the weight. And in the connectivity matrix, :math:`A_{ij} = w`. Often the weight is between 0 and 1 or -1 and 1, but this does not have to be the case.
+If a connection is binary, then (as in the section above) an edge is either present or not. When a weight is added, an edge is now represented as a 3-tuple *(i,j,w)* where *w* is the magnitude of the weight. And in the connectivity matrix, :math:`A_{ij} = w`. Often the weight is between 0 and 1 or -1 and 1, but this does not have to be the case.
 
 When connections are undirected, it means that both nodes share the connection. Examples of such networks can be if two cities are connected by train lines. For such networks :math:`A_{ij} = A_{ji}`. When connections are directed, it means that the connection goes from i to j. Examples of these types of networks can be citation networks. If a scientific article i cites another article j, it is not common for j to also cite i. So in such cases, :math:`A_{ij}` does not need to equal :math:`A_{ji}`. It is common notation for the source node (sending the information) to be written first and the target node (receiving the information) to be second.
 
@@ -73,7 +73,7 @@ In the temporal network, we can see a progression of who met who and when. At ev
 What is time-varying connectivity?
 -----------------------------------
 
-Another concept that is often used within fields such as cognitive neuroscience is _time_-_varying_ _connectivity_. Time-varying connectivity can be seen as a larger domain of methods that analyse distributed patterns over time where temporal network theory is one set of analysis methods within it. Temporal network theory is a way to analyse time-varying connectivity representations that consist of time-stamped edges between nodes, but there are other alternatives to analyse such representations and other time-varying connectivity representations as well (e.g. temporal ICA).
+Another concept that is often used within fields such as cognitive neuroscience is *time-varying  connectivity*. Time-varying connectivity can be seen as a larger domain of methods that analyse distributed patterns over time where temporal network theory is one set of analysis methods within it. Temporal network theory is a way to analyse time-varying connectivity representations that consist of time-stamped edges between nodes, but there are other alternatives to analyse such representations and other time-varying connectivity representations as well (e.g. temporal ICA).
 
 What is teneto?
 -----------------
