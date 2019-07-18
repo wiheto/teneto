@@ -14,7 +14,6 @@
 #
 import os
 import sys
-import guzzle_sphinx_theme
 
 # -- Project information -----------------------------------------------------
 
@@ -88,50 +87,9 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 
-extensions.append("guzzle_sphinx_theme")
-html_theme_path = guzzle_sphinx_theme.html_theme_path()
-html_theme = 'guzzle_sphinx_theme'
+html_theme = 'default'
 
-# Register the theme as an extension to generate a sitemap.xml
-extensions.append("guzzle_sphinx_theme")
 
-# Guzzle theme options (see theme.conf for more information)
-html_theme_options = {
-
-    # Set the path to a special layout to include for the homepage
-    #"index_template": "index.html",
-
-    # Set the name of the project to appear in the left sidebar.
-    "project_nav_name": "Teneto",
-
-    # Set your Disqus short name to enable comments
-    #"disqus_comments_shortname": "my_disqus_comments_short_name",
-
-    # Set you GA account ID to enable tracking
-    #"google_analytics_account": "my_ga_account",
-
-    # Path to a touch icon
-    #"touch_icon": "",
-
-    # Specify a base_url used to generate sitemap.xml links. If not
-    # specified, then no sitemap will be built.
-    #"base_url": "",
-
-    # Allow a separate homepage from the master_doc
-    #"homepage": "index",
-
-    # Allow the project link to be overriden to a custom URL.
-    #"projectlink": "http://github.com/wiheto/teneto",
-
-    # Visible levels of the global TOC; -1 means unlimited
-    "globaltoc_depth": 3,
-
-    # If False, expand all TOC entries
-    #"globaltoc_collapse": False,
-
-    # If True, show hidden TOC entries
-    "globaltoc_includehidden": True,
-}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
