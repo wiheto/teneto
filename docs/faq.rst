@@ -1,7 +1,7 @@
 FAQ
 ==================================
 
-What are the dimension orders for dense arrays in *Teneto*?
+What is the dimension order for dense arrays in *Teneto*?
 --------------------------------------------------------------
 
 Inputs/outputs in Teneto can be in both Numpy arrays (time series or temporal works) or Pandas Dataframes (time series).

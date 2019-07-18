@@ -5,11 +5,9 @@ Generating temporal networks
 Generating a matrix from teneto.generatenetwork
 ===============================================
 
-Instead of manually specifying networks, teneto provides tools to generate networks. Currently there are two methods of generating networks:
-using binomial or poisson distributions. Both of these networks are binary. In this tutorial we focus on the binomial distribution.
+Instead of manually specifying networks, teneto provides tools to generate networks. Currently there are two methods of generating networks: using binomial or poisson distributions. Both of these  etworks are binary. In this tutorial we focus on the binomial distribution.
 
-In the teneto.generatenetwork.rand_binomial each connection is determined based on a binomial distribution. It takes two necessary inputs: size of network and probability of connection.
-Additional inputs such as whether the output format and if the network should be directed or undirected. Each edge is determined independently of all others (i.e. if p=0.5 each each has a 50% chance of being possible).
+In the teneto.generatenetwork.rand_binomial each connection is determined based on a binomial  distribution. It takes two necessary inputs: size of network and probability of connection. Additional inputs such as whether the output format and if the network should be directed or undirected. Each edge is determined independently of all others (i.e. if p=0.5 each each has a 50% chance of being possible).
 
 .. code-block:: python
 
