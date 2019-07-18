@@ -14,3 +14,4 @@ python-louvain>=0.13
 tables>=3.4.4
 scikit-optimize>=0.5.2
 templateflow>=0.4.1rc5
+guzzle-sphinx-theme>=0.7.11
