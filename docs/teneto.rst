@@ -6,6 +6,7 @@ API
 
     teneto.classes
     teneto.communitydetection
+    teneto.communitymeasures
     teneto.derive
     teneto.networkmeasures
     teneto.plot

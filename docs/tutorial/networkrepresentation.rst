@@ -7,8 +7,7 @@ There are three ways that network's are represented in Teneto:
 2. Numpy array/snapshot
 3. Dictionary/contact representation
 
-This tutorial goes through what these different representations.
-Teneto is migrating towards the TemporalNetwork object.
+This tutorial goes through what these different representations. Teneto is migrating towards the TemporalNetwork object.
 However, it is possible to still use with the other two representations.
 
 TemporalNetwork object
