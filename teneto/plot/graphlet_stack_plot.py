@@ -137,7 +137,13 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     elif vminmax == 'minmax':
         vminmax = [np.nanmin(netin), np.nanmax(netin)]
 
-    qb = q * borderwidth
+    if borderwidth == 0: 
+        addon = 1
+        lw = 0
+    else: 
+        addon = 0
+        lw = q * 2
+    qb = q * borderwidth + addon
     figmat = np.zeros([80 * q + (qb * 2), int(((netin.shape[-1]) *
                                                (80 * q) + (qb * 2)) - ((netin.shape[-1] - 1) * q * 80) / 2), 4])
     for n in range(0, netin.shape[-1]):
@@ -145,7 +151,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         figtmp, axtmp = plt.subplots(
             1, facecolor='white', figsize=(q, q), dpi=80)
         axtmp.pcolormesh(v, vr, netin[:, :, n], cmap=cmap, edgecolor=gridcolor,
-                         linewidth=q * 2, vmin=vminmax[0], vmax=vminmax[1])
+                         linewidth=lw, vmin=vminmax[0], vmax=vminmax[1])
         axtmp.set_xticklabels('')
         axtmp.set_yticklabels('')
         axtmp.set_xticks([])
