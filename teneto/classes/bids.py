@@ -1306,7 +1306,7 @@ class TenetoBIDS:
             sidecar = get_sidecar(f)
             if not oops:
                 sidecar['BadFile'] = True
-                if not 'BadFileReason' in sidecar: 
+                if not 'BadFileReason' in sidecar:
                     sidecar['BadFileReason'] = []
                 sidecar['BadFileReason'].append(reason)
             else:

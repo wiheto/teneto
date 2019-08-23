@@ -29,7 +29,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     gridcolor : str
         The color of the grid section of the graphlets. Set to 'none' if not wanted.
     borderwidth : int
-        Scales the size of border. (at the moment it cannot be set to 0.)
+        Scales the size of border.
     bordorcolor :
         color of the border (at the moment it must be in RGB values between 0 and 1 -> this will be changed sometime in the future). Default: black.
     vminmax : str
@@ -137,10 +137,10 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     elif vminmax == 'minmax':
         vminmax = [np.nanmin(netin), np.nanmax(netin)]
 
-    if borderwidth == 0: 
+    if borderwidth == 0:
         addon = 1
         lw = 0
-    else: 
+    else:
         addon = 0
         lw = q * 2
     qb = q * borderwidth + addon
