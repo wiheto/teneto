@@ -1,5 +1,5 @@
 import numpy as np
-from teneto.temporalcommunity import flexibility
+from teneto.communitymeasures import flexibility
 
 # Tests could import results from community detection toolbox
 

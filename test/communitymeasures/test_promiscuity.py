@@ -1,5 +1,5 @@
 import numpy as np
-from teneto.temporalcommunity import promiscuity
+from teneto.communitymeasures import promiscuity
 
 def test_promiscuity():
     temporalcommunities = np.array([[0, 0, 0], [0, 1, 0], [0, 1, 2]])

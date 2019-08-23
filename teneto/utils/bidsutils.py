@@ -5,6 +5,8 @@ import json
 
 
 def make_directories(path):
+    """
+    """
     # Updated function to this and will eventuall merge remove function if this does not raise error when in parallel
     os.makedirs(path, exist_ok=True)
     # # Error can occur with os.makedirs when parallel so here a try/error is added to fix that.
@@ -49,6 +51,8 @@ def drop_bids_suffix(fname):
 
 
 def get_bids_tag(filename, tag):
+    """
+    """
     outdict = {}
     filename, _ = drop_bids_suffix(filename)
     if isinstance(tag, str):
@@ -126,15 +130,14 @@ def get_sidecar(fname, allowedfileformats='default'):
             sidecar = json.load(fs)
     else:
         sidecar = {}
-    if 'filestatus' not in sidecar:
-        sidecar['filestatus'] = {}
-        sidecar['filestatus']['reject'] = False
-        sidecar['filestatus']['reason'] = []
+    if 'BadFile' not in sidecar:
+        sidecar['BadFile'] = False
     return sidecar
 
 
 def confound_matching(files, confound_files):
-
+    """
+    """
     files_out = []
     confounds_out = []
     files_taglist = []

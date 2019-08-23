@@ -13,7 +13,7 @@ from . import generatenetwork
 from . import timeseries
 from . import misc
 from . import trajectory
-from . import temporalcommunity
+from . import communitymeasures
 from . import communitydetection
 from .classes import TenetoBIDS, TemporalNetwork, TenetoWorkflow
 #del misc.teneto

@@ -5,10 +5,7 @@ Plotting temporal networks
 Plotting in teneto
 ==================
 
-Being able to view the network information through time is very useful.
-Teneto offers two solutions that help convey
-an overview of temporal networks.
-These functions are clearer when the networks are smaller.
+Being able to view the network information through time is very useful. Teneto offers two solutions that help convey an overview of temporal networks. These functions are clearer when the networks are smaller.
 
 For the example, first we'll start by generating a network to visualize.
 
@@ -46,9 +43,7 @@ Here we have 5 nodes over 10 time points
 Slice plots
 ================
 
-Plotting tools are found in teneto.plot module.
-Slice_plot's line up all the nodes for a time point into a "slice".
-Each edge is plotted with a curved line.
+Plotting tools are found in teneto.plot module. Slice_plot's line up all the nodes for a time point into a "slice". Each edge is plotted with a curved line.
 
 .. code-block:: python
 
@@ -65,12 +60,9 @@ This will produce the following figure:
 Graphlet stack plots
 ======================
 
-Graphlet stack plots takes the temporal network input and
-automatically scales each 2D adjacency matrix, creating a 3D effect,
-and stacks them up in a time series.
+Graphlet stack plots takes the temporal network input and automatically scales each 2D adjacency matrix, creating a 3D effect, and stacks them up in a time series.
 
-With only the generated network above (C),
-we then create a matplotlib figure and then call graphlet_stack_plot.
+With only the generated network above (C), we then create a matplotlib figure and then call graphlet_stack_plot.
 
 .. code-block:: python
 
@@ -81,10 +73,7 @@ we then create a matplotlib figure and then call graphlet_stack_plot.
   >>> # Only new parameter is "q" which stands for figure quality
   >>> ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap=colorMap)
 
-The argument q stands for figure quality.
-A higher number exports a higher figure.
-While the figure can be exported as a svg (and figure labels can be changed),
-the graphlet stack itself is a bitmap due to how it is created.
+The argument q stands for figure quality. A higher number exports a higher figure. While the figure can be exported as a svg (and figure labels can be changed), the graphlet stack itself is a bitmap due to how it is created.
 
 This will produce the following figure:
 
@@ -96,17 +85,11 @@ This will produce the following figure:
 Customizing graphlet_stack_plot
 ===============================
 
-There are some possibilities to modify graphlet_stack_plot after
-ones own style instead of the default plot.
+There are some possibilities to modify graphlet_stack_plot after ones own style instead of the default plot.
 
-Below we see an example of customization by:
-removing the grids between edge values,
-changing the border colour to a grey and making the border much larger.
-This isn't pretty, but shows what can be done.
+Below we see an example of customization by: removing the grids between edge values, changing the border colour to a grey and making the border much larger. This isn't pretty, but shows what can be done.
 
-There are still a couple of restrictions.
-At the moment some border must be present.
-As too are the rounded rectangles border.
+There are still a couple of restrictions. At the moment some border must be present. As too are the rounded rectangles border.
 
 .. code-block:: python
 

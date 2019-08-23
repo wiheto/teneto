@@ -1,4 +1,4 @@
-teneto.trajectory package
+teneto.trajectory
 =========================
 
 

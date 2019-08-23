@@ -1,5 +1,5 @@
 import numpy as np
-from teneto.temporalcommunity import recruitment
+from teneto.communitymeasures import recruitment
 import pytest
 
 def test_recruitment():

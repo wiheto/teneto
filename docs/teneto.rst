@@ -1,4 +1,4 @@
-Documentation
+API
 ==============
 
 .. toctree::
@@ -6,7 +6,7 @@ Documentation
 
     teneto.classes
     teneto.communitydetection
-    teneto.derive
+    teneto.communitymeasures
     teneto.networkmeasures
     teneto.plot
     teneto.timeseries
