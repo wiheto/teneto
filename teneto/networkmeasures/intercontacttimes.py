@@ -14,7 +14,7 @@ def intercontacttimes(tnet):
     -----------
 
     tnet : array, dict
-        Temporal network (craphlet or contact). Nettype: 'bu', 'bd'
+        Temporal network (craphlet or contact). Nettype: 'bu',
 
     Returns
     ---------
@@ -76,7 +76,7 @@ def intercontacttimes(tnet):
     if tnet.nettype[0] == 'w':
         print('WARNING: assuming connections to be binary when computing intercontacttimes')
 
-    # Each time series is padded with a 0 at the start and end. Then t[0:-1]-[t:].
+    # Each time series is padded with a 0 at the start and end.g Then t[0:-1]-[t:].
     # Then discard the noninformative ones (done automatically)
     # Finally return back as np array
     contacts = np.array([[None] * tnet.netshape[0]] * tnet.netshape[0])
@@ -84,7 +84,7 @@ def intercontacttimes(tnet):
     if tnet.nettype[1] == 'u':
         for i in range(0, tnet.netshape[0]):
             for j in range(i + 1, tnet.netshape[0]):
-                edge_on = tnet.get_network_when(i=i, j=j, logic='or')['t'].values
+                edge_on = tnet.get_network_when(i=i, j=j)['t'].values
                 if len(edge_on) > 0:
                     edge_on_diff = edge_on[1:] - edge_on[:-1]
                     contacts[i, j] = np.array(edge_on_diff)
