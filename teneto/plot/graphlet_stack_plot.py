@@ -101,7 +101,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     '''
 
     # Get input type (C, G, TO)
-    inputType = checkInput(netin)
+    inputType = check_input(netin)
 
     # Convert TO to C representation
     if inputType == 'TO':
