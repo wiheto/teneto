@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 from scipy.spatial.distance import jaccard
 import networkx as nx
-from ..utils import process_input, create_supraadjacency_matrix, tnet_to_nx, clean_community_indexes
-from ..classes import TemporalNetwork
+from teneto.utils import process_input, create_supraadjacency_matrix, tnet_to_nx, clean_community_indexes
+from teneto.classes import TemporalNetwork
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
@@ -44,24 +44,31 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
 
     tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
     # Divide resolution by the number of timepoints
-    resolution = resolution / tnet.T
+    #resolution = resolution / tnet.T
     supranet = create_supraadjacency_matrix(
         tnet, intersliceweight=intersliceweight)
     if negativeedge == 'ignore':
         supranet = supranet[supranet['weight'] > 0]
     nxsupra = tnet_to_nx(supranet)
     np.random.seed(randomseed)
+    i = 0
     while True:
+        print(i)
+        i+=1
         comtmp = []
-        with ProcessPoolExecutor(max_workers=njobs) as executor:
-            job = {executor.submit(_run_louvain, nxsupra, resolution, tnet.N, tnet.T) for n in range(n_iter)}
-            for j in as_completed(job):
-                comtmp.append(j.result())
+        if njobs > 1:
+            with ProcessPoolExecutor(max_workers=njobs) as executor:
+                job = {executor.submit(_run_louvain, nxsupra, resolution, tnet.N, tnet.T) for n in range(n_iter)}
+                for j in as_completed(job):
+                    comtmp.append(j.result())
+            comtmp = np.stack(comtmp)
+        else: 
+            comtmp = np.array([_run_louvain(nxsupra, resolution, tnet.N, tnet.T) for n in range(n_iter)])
         comtmp = np.stack(comtmp)
         comtmp = comtmp.transpose()
         comtmp = np.reshape(comtmp, [tnet.N, tnet.T, n_iter], order='F')
-        if n_iter == 1:
-            break
+        #if n_iter == 1:
+        #    break
         nxsupra_old = nxsupra
         nxsupra = make_consensus_matrix(comtmp, consensus_threshold)
         # If there was no consensus, there are no communities possible, return
@@ -117,6 +124,7 @@ def make_consensus_matrix(com_membership, th=0.5):
         Dnx = tnet_to_nx(D)
     else:
         Dnx = None
+    print(D)
     return Dnx
 
 
