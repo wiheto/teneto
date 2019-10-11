@@ -1,6 +1,6 @@
 # Main function to draw a slice_graph
 import numpy as np
-from ..utils import *
+from ..utils import check_input, graphlet2contact
 
 
 def slice_plot(netin, ax, nodelabels=None, timelabels=None, communities=None, plotedgeweights=False, edgeweightscalar=1, timeunit='', linestyle='k-', cmap=None, nodesize=100, nodekwargs=None, edgekwargs=None):
@@ -152,7 +152,6 @@ def slice_plot(netin, ax, nodelabels=None, timelabels=None, communities=None, pl
         else:
             nodekwargs['c'] = communities.flatten(order='F')
 
-
     # plt.plot(points)
     # Draw Bezier vectors around egde positions
     for ei, edge in enumerate(edgelist):
@@ -194,9 +193,8 @@ def bezier_points(p1, p2, negxLim, pointN):
     return bvx, bvy
 
 
-# These two functions originated from the plot.ly's documentation for python API.
-# They create points along a curve.
 def make_bezier(xys):
+    # This function originated from the plot.ly's documentation for python API.
     # xys should be a sequence of 2-tuples (Bezier control points)
     n = len(xys)
     combinations = pascal_row(n - 1)
@@ -217,6 +215,7 @@ def make_bezier(xys):
 
 
 def pascal_row(n):
+    # This function originated from the plot.ly's documentation for python API.
     # This returns the nth row of Pascal's Triangle
     result = [1]
     x, numerator = 1, n
