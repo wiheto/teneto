@@ -25,9 +25,6 @@ def test_tnet_derive():
         raise AssertionError()
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
                              pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
-    tnet.set_confound_pipeline('fmriprep')
-    tnet.derive_temporalnetwork({'method': 'jackknife', 'dimord': 'node,time'},
-                                update_pipeline=True, confound_corr_report=True)
 
 
 def test_make_fc_and_tvc():
@@ -133,8 +130,8 @@ def test_networkmeasure():
 def test_tnet_derive_with_removeconfounds():
     # load parc file with data
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='teneto-tests',
-                             pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False, dimord={'node', 'time'})
-    # Set the confound pipeline in fmriprep
+                             pipeline_subdir='parcellation', bids_suffix='roi', bids_tags={'sub': '001', 'task': 'a', 'run': '01'}, raw_data_exists=False)
+    # Set gthe confound pipeline in fmriprep
     tnet.set_confound_pipeline('fmriprep')
     alt = tnet.get_confound_alternatives()
     if not 'confound1' in alt:
@@ -144,7 +141,7 @@ def test_tnet_derive_with_removeconfounds():
     # Set the confounds
     tnet.set_confounds('confound1')
     # Remove confounds
-    tnet.removeconfounds(transpose=True)
+    tnet.removeconfounds()
     f = tnet.get_selected_files()[0]
     f = f.replace('.tsv', '.json')
     with open(f) as fs:

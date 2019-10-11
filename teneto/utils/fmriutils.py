@@ -3,6 +3,9 @@ from .bidsutils import load_tabular_file
 from nilearn.input_data import NiftiLabelsMasker
 import pandas as pd
 
+atlas='Schaefer2018'
+atlas_desc='100Parcels17Networks' 
+return_meta=True
 def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=2, parc_params=None, return_meta=False):
     """
     Performs a parcellation which reduces voxel space to regions of interest (brain data).
@@ -61,7 +64,6 @@ def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_de
         meta_info = load_tabular_file(str(meta_info))
         data.index = meta_info['name'].values
     if return_meta:
-        meta_info = load_tabular_file(str(meta_info))
         return data, meta_info
     else:
         return data
