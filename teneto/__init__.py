@@ -12,6 +12,7 @@ from . import plot
 from . import generatenetwork
 from . import timeseries
 from . import misc
+from . import io
 from . import trajectory
 from . import communitymeasures
 from . import communitydetection
