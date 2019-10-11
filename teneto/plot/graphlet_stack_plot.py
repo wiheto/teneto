@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import ndimage
-from ..utils import contact2graphlet, checkInput
+from ..utils import contact2graphlet, check_input
 
 plt.rcParams['axes.facecolor'] = 'white'
 

@@ -2,7 +2,7 @@
 import numpy as np
 import math
 from .slice_plot import make_bezier
-from ..utils import checkInput, graphlet2contact
+from ..utils import check_input, graphlet2contact
 import matplotlib.cm as cm
 
 
