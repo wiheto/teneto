@@ -6,20 +6,6 @@ import os
 QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_X11InitThreads, True)
 
 
-def test_networkmeasure():
-    # calculate and load a network measure
-    bids_path = teneto.__path__[0] + '/data/testdata/dummybids/'
-    pipeline = 'teneto_' + teneto.__version__
-    tags = {'sub': '001', 'task': 'a', 'run': '01'}
-    tnet = teneto.TenetoBIDS(bids_path, pipeline=pipeline, pipeline_subdir='tvc',
-                             bids_suffix='tvcconn', bids_tags=tags,
-                             raw_data_exists=False)
-    tnet.networkmeasures('volatility', {'calc': 'time'}, tag='time')
-    tnet.load_data('temporalnetwork', measure='volatility', tag='time')
-    vol = tnet.temporalnetwork_data_['volatility']
-    if not vol[0].shape == (19, 1):
-        raise AssertionError()
-
 
 def test_tnet_derive():
     # load parc file with data
@@ -272,3 +258,15 @@ def test_savesnapshot():
             raise AssertionError()
     if tnet2.__dict__.keys() != tnet.__dict__.keys():
         raise AssertionError()
+
+def test_networkmeasure():
+    # calculate and load a network measure
+    bids_path = teneto.__path__[0] + '/data/testdata/dummybids/'
+    pipeline = 'teneto_' + teneto.__version__
+    tags = {'sub': '001', 'task': 'a', 'run': '01'}
+    tnet = teneto.TenetoBIDS(bids_path, pipeline=pipeline, pipeline_subdir='tvc',
+                             bids_suffix='tvcconn', bids_tags=tags,
+                             raw_data_exists=False)
+    tnet.networkmeasures('volatility', {'calc': 'time'}, tag='time')
+    tnet.load_data('temporalnetwork', measure='volatility', tag='time')
+    vol = tnet.temporalnetwork_data_['volatility']
