@@ -84,7 +84,7 @@ def intercontacttimes(tnet):
     if tnet.nettype[1] == 'u':
         for i in range(0, tnet.netshape[0]):
             for j in range(i + 1, tnet.netshape[0]):
-                edge_on = tnet.get_network_when(i=i, j=j)['t'].values
+                edge_on = tnet.get_network_when(i=i, j=j, logic='or')['t'].values
                 if len(edge_on) > 0:
                     edge_on_diff = edge_on[1:] - edge_on[:-1]
                     contacts[i, j] = np.array(edge_on_diff)
