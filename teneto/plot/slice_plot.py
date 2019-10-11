@@ -101,7 +101,7 @@ def slice_plot(netin, ax, nodelabels=None, timelabels=None, communities=None, pl
 
     '''
     # Get input type (C or G)
-    inputType = checkInput(netin)
+    inputType = check_input(netin)
     # Convert C representation to G
 
     if inputType == 'G':
