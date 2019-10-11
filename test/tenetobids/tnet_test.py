@@ -208,7 +208,7 @@ def test_tnet_make_parcellation():
                            atlas_desc='100Parcels17Networks')
     tnet.load_data('parcellation')
     # Hard coded facts about dummy data
-    if not tnet.parcellation_data_[0].shape == (2, 100):
+    if not tnet.parcellation_data_[0].shape == (100, 10):
         raise AssertionError()
 
 
