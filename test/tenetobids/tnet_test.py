@@ -205,10 +205,10 @@ def test_tnet_make_parcellation():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
                              bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
     tnet.make_parcellation(atlas='Schaefer2018',
-                           atlas_desc='400Parcels17Networks')
+                           atlas_desc='100Parcels17Networks')
     tnet.load_data('parcellation')
     # Hard coded facts about dummy data
-    if not tnet.parcellation_data_[0].shape == (2, 400):
+    if not tnet.parcellation_data_[0].shape == (2, 100):
         raise AssertionError()
 
 
@@ -216,7 +216,7 @@ def test_tnet_checksidecar():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', pipeline='fmriprep',
                              bids_suffix='bold', bids_tags={'sub': '001', 'task': 'a', 'run': '01', 'desc': 'preproc'}, raw_data_exists=False)
     tnet.make_parcellation(atlas='Schaefer2018',
-                           atlas_desc='400Parcels17Networks')
+                           atlas_desc='100Parcels17Networks')
     tnet.load_data('parcellation')
     tnet.set_confound_pipeline('fmriprep')
     tnet.set_exclusion_timepoint('confound1', '<=0', replace_with='nan')
