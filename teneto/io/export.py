@@ -1,5 +1,5 @@
 import networkx as nx
-from ..utils import get_network_when, process_input, create_supraadjacency_matrix
+from ..utils import process_input, create_supraadjacency_matrix
 
 
 def to_networkx(tnet, export_type='supra', t=None, ):

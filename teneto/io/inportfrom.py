@@ -1,6 +1,6 @@
 import networkx as nx
 from ..classes import TemporalNetwork
-from ..utils import get_network_when, process_input, create_supraadjacency_matrix
+from ..utils import get_network_when, process_input
 import numpy as np
 
 

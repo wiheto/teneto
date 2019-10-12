@@ -609,7 +609,7 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
     """
     inputtype = check_input(netIn)
     if inputtype == 'DF':
-        netIn = TemporalNetwork(from_df=netIn) 
+        netIn = TemporalNetwork(from_df=netIn)
         inputtype = 'TN'
     # Convert TN to G representation
     if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
@@ -974,7 +974,6 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
             ind = np.hstack([ind, ind2])
 
         edges = network[ind[0], ind[1], ind[2]]
-
         ind = ind[:, edges != 0]
         edges = edges[edges != 0]
         df = pd.DataFrame(
