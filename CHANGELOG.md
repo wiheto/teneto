@@ -9,6 +9,7 @@
 -   Added deprecation warning to TenetoBIDS
 -   Better docs
 -   Renaming temporalcommunity to communitymeasures for clarity/consistency
+-   teneto.io added
 
 ### Fixes
 
