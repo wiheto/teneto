@@ -1,5 +1,5 @@
 """
-Imports when importing generatenetwork
+Imports when importing io
 """
 
 from .inportfrom import from_networkx
