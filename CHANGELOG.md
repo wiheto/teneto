@@ -10,6 +10,7 @@
 -   Better docs
 -   Renaming temporalcommunity to communitymeasures for clarity/consistency
 -   teneto.io added
+-   readthedocs.yaml added
 
 ### Fixes
 
