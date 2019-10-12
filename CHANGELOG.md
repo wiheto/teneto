@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.4.6dev
+## V0.4.6
 
 ### Enhacnements 
 

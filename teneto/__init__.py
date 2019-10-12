@@ -4,7 +4,7 @@
 """Teneto is a module with tools for analyzing network patterns in time."""
 #
 __author__ = "William Hedley Thompson (wiheto)"
-__version__ = "0.4.6rc1"
+__version__ = "0.4.6"
 #
 from . import networkmeasures
 from . import utils
