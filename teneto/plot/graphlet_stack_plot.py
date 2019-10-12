@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import ndimage
-from ..utils import contact2graphlet, checkInput
+from ..utils import contact2graphlet, check_input
 
 plt.rcParams['axes.facecolor'] = 'white'
 
@@ -101,7 +101,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     '''
 
     # Get input type (C, G, TO)
-    inputType = checkInput(netin)
+    inputType = check_input(netin)
 
     # Convert TO to C representation
     if inputType == 'TO':

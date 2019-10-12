@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.4.6dev
+## V0.4.6
 
 ### Enhacnements 
 
@@ -9,6 +9,8 @@
 -   Added deprecation warning to TenetoBIDS
 -   Better docs
 -   Renaming temporalcommunity to communitymeasures for clarity/consistency
+-   teneto.io added
+-   readthedocs.yaml added
 
 ### Fixes
 

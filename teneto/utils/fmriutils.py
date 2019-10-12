@@ -1,8 +1,11 @@
 import templateflow.api as tf
 from .bidsutils import load_tabular_file
 from nilearn.input_data import NiftiLabelsMasker
+import pandas as pd
 
-
+atlas='Schaefer2018'
+atlas_desc='100Parcels17Networks' 
+return_meta=True
 def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=2, parc_params=None, return_meta=False):
     """
     Performs a parcellation which reduces voxel space to regions of interest (brain data).
@@ -28,7 +31,7 @@ def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_de
     Returns
     -------
 
-    data : array
+    data : dataframe
         Data after the parcellation.
 
     NOTE
@@ -53,12 +56,14 @@ def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_de
                          atlas + ') to see available desc for atlas')
 
     region = NiftiLabelsMasker(str(file), **parc_params)
-    data = region.fit_transform(data_path)
-
-    if return_meta:
-        meta_info = tf.get(template=template, atlas=atlas,
-                           desc=atlas_desc, extension='tsv')
+    data = region.fit_transform(data_path).transpose()
+    data = pd.DataFrame(data=data)
+    meta_info = tf.get(template=template, atlas=atlas,
+                        desc=atlas_desc, extension='tsv')
+    if len(str(meta_info)) > 0: 
         meta_info = load_tabular_file(str(meta_info))
+        data.index = meta_info['name'].values
+    if return_meta:
         return data, meta_info
     else:
         return data

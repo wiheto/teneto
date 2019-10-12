@@ -1,7 +1,7 @@
 {"Name": "fmriprep dummy output",
  "BIDSVersion": "1.0.0",
  "PipelineDescription": {
-     "Name": "fMRIPrep",
+     "Name": "fmriprep",
      "Version": "x,x,x"
  }
 }

@@ -10,7 +10,7 @@ def test_parcellation():
     # Run correctly
     parc = make_parcellation(
         datafile, atlas='Schaefer2018', atlas_desc='100Parcels17Networks')
-    if not parc.shape == (2, 100):
+    if not parc.shape == (100, 10):
         raise AssertionError()
     # Error returns if too many atlases found
     with pytest.raises(ValueError):
@@ -18,7 +18,7 @@ def test_parcellation():
     # Run correctly and get meta data
     parc, parcinfo = make_parcellation(
         datafile, atlas='Schaefer2018', atlas_desc='100Parcels17Networks', return_meta=True)
-    if not parc.shape == (2, 100):
+    if not parc.shape == (100, 10):
         raise AssertionError()
     if not isinstance(parcinfo, pd.DataFrame):
         raise AssertionError()

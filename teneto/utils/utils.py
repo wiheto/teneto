@@ -479,15 +479,15 @@ def gen_nettype(G, printWarning=0, weightonly=False):
     return nettype
 
 
-def checkInput(netIn, raiseIfU=1, conMat=0):
+def check_input(netin, raiseIfU=1, conMat=0):
     """
 
-    This function checks that netIn input is either graphlet (G) or contact (C).
+    This function checks that netin input is either graphlet (G) or contact (C).
 
     Parameters
     ----------
 
-    netIn : array or dict
+    netin : array or dict
         temporal network, (graphlet or contact).
     raiseIfU : int, default=1.
         Options 1 or 0. Error is raised if not found to be G or C
@@ -502,28 +502,30 @@ def checkInput(netIn, raiseIfU=1, conMat=0):
 
     """
 
-    inputIs = 'U'
-    if isinstance(netIn, np.ndarray):
-        netShape = netIn.shape
+    inputis = 'U'
+    if isinstance(netin, np.ndarray):
+        netShape = netin.shape
         if len(netShape) == 3 and netShape[0] == netShape[1]:
-            inputIs = 'G'
+            inputis = 'G'
         elif netShape[0] == netShape[1] and conMat == 1:
-            inputIs = 'M'
+            inputis = 'M'
 
-    elif isinstance(netIn, dict):
-        if 'nettype' in netIn and 'contacts' in netIn and 'dimord' in netIn and 'timetype' in netIn:
-            if netIn['nettype'] in {'bd', 'bu', 'wd', 'wu'} and netIn['timetype'] == 'discrete' and netIn['dimord'] == 'node,node,time':
-                inputIs = 'C'
+    elif isinstance(netin, dict):
+        if 'nettype' in netin and 'contacts' in netin and 'dimord' in netin and 'timetype' in netin:
+            if netin['nettype'] in {'bd', 'bu', 'wd', 'wu'} and netin['timetype'] == 'discrete' and netin['dimord'] == 'node,node,time':
+                inputis = 'C'
 
-    elif isinstance(netIn, object):
-        if hasattr(netIn, 'network'):
-            inputIs = 'TN'
+    elif isinstance(netin, object):
+        if hasattr(netin, 'network'):
+            inputis = 'TN'
+        elif isinstance(netin, pd.DataFrame):
+            inputis = 'DF'
 
-    if raiseIfU == 1 and inputIs == 'U':
+    if raiseIfU == 1 and inputis == 'U':
         raise ValueError(
             'Input cannot be identified as graphlet or contact representation')
 
-    return inputIs
+    return inputis
 
 
 def getDistanceFunction(requested_metric):
@@ -605,7 +607,10 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
         object of TemporalNetwork class
 
     """
-    inputtype = checkInput(netIn)
+    inputtype = check_input(netIn)
+    if inputtype == 'DF':
+        netIn = TemporalNetwork(from_df=netIn)
+        inputtype = 'TN'
     # Convert TN to G representation
     if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
         if netIn.sparse == True:
@@ -969,7 +974,6 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
             ind = np.hstack([ind, ind2])
 
         edges = network[ind[0], ind[1], ind[2]]
-
         ind = ind[:, edges != 0]
         edges = edges[edges != 0]
         df = pd.DataFrame(

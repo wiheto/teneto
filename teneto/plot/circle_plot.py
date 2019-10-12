@@ -2,7 +2,7 @@
 import numpy as np
 import math
 from .slice_plot import make_bezier
-from ..utils import checkInput, graphlet2contact
+from ..utils import check_input, graphlet2contact
 import matplotlib.cm as cm
 
 
@@ -57,7 +57,7 @@ def circle_plot(netIn, ax, nodelabels=None, linestyle='k-', nodesize=1000, cmap=
 
     '''
     # Get input type (C or G)
-    inputType = checkInput(netIn, conMat=1)
+    inputType = check_input(netIn, conMat=1)
     if nodelabels is None:
         nodelabels = []
     # Convert C representation to G
