@@ -62,7 +62,7 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
                 for j in as_completed(job):
                     comtmp.append(j.result())
             comtmp = np.stack(comtmp)
-        else: 
+        else:
             comtmp = np.array([_run_louvain(nxsupra, resolution, tnet.N, tnet.T) for n in range(n_iter)])
         comtmp = np.stack(comtmp)
         comtmp = comtmp.transpose()
