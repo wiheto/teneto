@@ -19,7 +19,7 @@ Centrality measures quantify a value per node. These can be useful for finding i
 Community dependent measures
 *****************************
 
-Commuinty measure quantify a value per comunity or a value for community interactions. Communities are an important part of network theory, where nodes are grouped into groups.
+Community measure quantify a value per community or a value for community interactions. Communities are an important part of network theory, where nodes are grouped into groups.
 
 -  :py:func:`.sid`, when *calc='community_avg'* or *calc='community_pairs'*
 -  :py:func:`.bursty_coeff`, when *calc='communities'*
