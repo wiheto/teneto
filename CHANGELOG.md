@@ -10,6 +10,7 @@
 ## Changes
 
 -   Python 3.6 is now required.
+-   Scipy requirements updated.
 
 ## V0.4.6
 
