@@ -109,7 +109,6 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
         <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_]
 
     """
-
     # Get input in right format
     tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
     if axis == 1:
@@ -206,7 +205,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
         tdeg = tdeg.transpose(
             np.hstack([len(tdeg.shape) - 1, np.arange(len(tdeg.shape) - 1)]))
         for n in range(1, tdeg.shape[0]):
-            tdeg[n] = np.exp(- decay) * tdeg[n-1] + tdeg[n]
+            tdeg[n] = np.exp(0 - decay) * tdeg[n-1] + tdeg[n]
         tdeg = tdeg.transpose(np.hstack([np.arange(1, len(tdeg.shape)), 0]))
     elif decay > 0:
         print('WARNING: decay cannot be applied unless calc=time, ignoring decay')
