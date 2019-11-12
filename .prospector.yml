@@ -1,0 +1,9 @@
+strictness: high
+test-warnings: true
+doc-warnings: true
+
+ignore-patterns:
+  - (^|/)__init__?(/|$)
+
+mccabe:
+  run: false
