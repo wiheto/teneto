@@ -1,3 +1,6 @@
+"""
+TenetoBIDS is teneto's integration with neuroimaging data organized with BIDS. 
+"""
 import itertools
 import teneto
 import os

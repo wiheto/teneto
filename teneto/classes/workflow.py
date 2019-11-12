@@ -1,3 +1,7 @@
+"""
+TenetoWorkflows are a way of predefining and saving an analysis pipeline using TemporalNetworks or TenetoBIDS.
+"""
+
 import teneto
 import numpy as np
 import matplotlib.pyplot as plt
