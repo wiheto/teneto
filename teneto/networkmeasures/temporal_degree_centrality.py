@@ -87,9 +87,9 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
     This entails that ..math::`D_{it}`, uses some of the previous time-points estimate.
     An exponential decay is used here.
 
-    .. math:: D_{it} = -e^\gamma D_{i(t-1)} + \sum_j A_{ijt}
+    .. math:: D_{it} = e^{-b} D_{i(t-1)} + \sum_j A_{ijt}
 
-    where :math:`\gamma` is the deay parameter specified in the function.
+    where b is the deay parameter specified in the function.
     This, to my knowledge, was first introdueced by [Degree-2]_.
 
     References
