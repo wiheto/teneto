@@ -3,7 +3,7 @@ test-warnings: true
 doc-warnings: true
 
 ignore-patterns:
-  - (^|/)__init__.py?(/|$)
+  - (^|/)__init__.py
 
 mccabe:
   run: false
