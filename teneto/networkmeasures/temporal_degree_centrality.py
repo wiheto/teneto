@@ -6,11 +6,12 @@ import numpy as np
 from ..utils import process_input
 
 
-def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, decay=0, ignorediagonal=True):
+def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
+                               decay=0, ignorediagonal=True):
     r"""
 
     Temporal degree of network.
-    
+
     The sum of all connections each node has through time
     (either per timepoint or over the entire temporal sequence).
 
@@ -44,7 +45,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
     decay : int
         if calc = 'pertime', then decay is possible where the centrality of
         the previous time point is carried over to the next time point but decays
-        at a value of $e^decay$ such that $D_d(t+1) = e^{-decay}D_d(t) + D(t+1)$. 
+        at a value of $e^decay$ such that $D_d(t+1) = e^{-decay}D_d(t) + D(t+1)$.
         If decay is 0 then the final D will equal D when calc='overtime',
         if decay = inf then this will equal calc='pertime'.
 
@@ -64,7 +65,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
     or "temporal strength centrality".
     This is a simple extension of the static definition.
     At times this has been defined slightly differently.
-    Here we followed the definitions in [degree-1]_ or [degree-2]_.
+    Here we followed the definitions in [Degree-1]_ or [Degree-2]_.
     There are however many authors prior to this that have used temporal degree centrality.
 
     There are two basic versions of temporal degree centrality implemented:
@@ -89,7 +90,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
     This entails that ..math::`D_{it}`, uses some of the previous time-points estimate.
     An exponential decay is used here.
 
-    .. math:: D_{it} = e^\gamma D_{i(t-1)} + \sigma_j {A_ijt}
+    .. math:: D_{it} = -e^\gamma D_{i(t-1)} + \sigma_j {A_ijt}
 
     where :math:`\gamma` is the deay parameter specified in the function.
     This, to my knowledge, was first introdueced by [Degree-2]_.
@@ -167,7 +168,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
                 coms = communities[:, t]
             else:
                 coms = communities
-            for c in np.unique(C):
+            for c in np.unique(coms):
                 k_i = np.sum(network[
                              :, coms == c, t][coms == c], axis=axis)
                 tdeg[coms == c, t] = (k_i - np.mean(k_i)) / np.std(k_i)
@@ -190,7 +191,8 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
                             np.sum(network[coms == s1, :, t][:, coms == s2], axis=1), axis=0)
         else:
             unique_communities = np.unique(communities)
-            tdeg_communities = [np.sum(np.sum(network[communities == s1, :, :][:, communities == s2, :], axis=1), axis=0)
+            tdeg_communities = [np.sum(np.sum(network[communities == s1, :, :][:, communities == s2, :],
+                                              axis=1), axis=0)
                                 for s1 in unique_communities for s2 in unique_communities]
 
         tdeg = np.array(tdeg_communities)
@@ -206,9 +208,9 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
     if decay > 0 and calc == 'pertime':
         # Reshape so that time is first dimensions
         tdeg = tdeg.transpose(
-            np.hstack([len(tdeg.shape)-1, np.arange(len(tdeg.shape)-1)]))
+            np.hstack([len(tdeg.shape) - 1, np.arange(len(tdeg.shape)-1)]))
         for n in range(1, tdeg.shape[0]):
-            tdeg[n] = np.exp(-decay)*tdeg[n-1] + tdeg[n]
+            tdeg[n] = np.exp(-decay) * tdeg[n-1] + tdeg[n]
         tdeg = tdeg.transpose(np.hstack([np.arange(1, len(tdeg.shape)), 0]))
     elif decay > 0:
         print('WARNING: decay cannot be applied unless calc=time, ignoring decay')
