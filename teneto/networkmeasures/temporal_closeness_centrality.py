@@ -5,7 +5,7 @@ from .shortest_temporal_path import shortest_temporal_path
 
 
 def temporal_closeness_centrality(tnet=None, paths=None):
-    r"""
+    u"""
     Returns temporal closeness centrality per node.
 
     Temporal closeness centrlaity is the sum of a node's
@@ -37,7 +37,7 @@ def temporal_closeness_centrality(tnet=None, paths=None):
     Notes
     -------
 
-    Temporal closeness centrality is defined in [Close-1]_: 
+    Temporal closeness centrality is defined in [Close-1]_:
 
     .. math C^T_{i} = {{1} \over {N-1}}\sum_j{1\over\tau_{ij}}
 
@@ -51,9 +51,9 @@ def temporal_closeness_centrality(tnet=None, paths=None):
 
     .. [Close-1]
 
-        Pan, R. K., & Saramäki, J. (2011). 
-        Path lengths, correlations, and centrality in temporal networks. 
-        Physical Review E - Statistical, Nonlinear, and Soft Matter Physics, 84(1). 
+        Pan, R. K., & Saramäki, J. (2011).
+        Path lengths, correlations, and centrality in temporal networks.
+        Physical Review E - Statistical, Nonlinear, and Soft Matter Physics, 84(1).
         [`Link https://doi.org/10.1103/PhysRevE.84.016105`_]
 
     """
@@ -65,8 +65,11 @@ def temporal_closeness_centrality(tnet=None, paths=None):
     if tnet is not None:
         paths = shortest_temporal_path(tnet)
 
-    pathmat = np.zeros([paths[['from', 'to']].max().max(
-    )+1, paths[['from', 'to']].max().max()+1, paths[['t_start']].max().max()+1]) * np.nan
+    # Change for HDF5: paths.groupby([from,to])
+    # Then put preallocated in a pathmat 2D array
+    pathmat = np.zeros([paths[['from', 'to']].max().max() + 1,
+                        paths[['from', 'to']].max().max() + 1,
+                        paths[['t_start']].max().max() + 1]) * np.nan
     pathmat[paths['from'].values, paths['to'].values,
             paths['t_start'].values] = paths['temporal-distance']
 
