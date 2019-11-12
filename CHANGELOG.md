@@ -1,10 +1,14 @@
 # Changelog
 
-## V0.4.7 (rc1)
+## V0.4.7 (development branch)
 
 ### Improvements
 -  Changing name argument names in network measures to 'pertime' and 'overtime' replacing 'time' and 'global' to be clearer. 
--  More docuemntaiton.
+-  More detailed documentation to temporal_degree_centrality.
+
+## Changes
+
+-  Python 3.6 is now required.
 
 ## V0.4.6
 
