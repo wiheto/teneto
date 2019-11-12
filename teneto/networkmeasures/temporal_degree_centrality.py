@@ -71,14 +71,14 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
 
     When ``calc='pertime'``:
 
-    .. math:: D_{it} = \sigma_j {A_ijt}
+    .. math:: D_{it} = \sum_j {A_ijt}
 
     i.e. :math:`D_{it}` is the sum of a node i's degree/strength at t.
     This has also been called the instantaneous degree centrality [Degree-2]_.
 
     When ``calc='overtime'``:
 
-    .. math:: D_{i} = \sigma_t\sigma_j {A_ijt}
+    .. math:: D_{i} = \sum_t\sum_j {A_ijt}
 
     i.e. :math:`D_{i}` is the sum of a node i's degree/strength over all time points.
 
@@ -87,7 +87,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
     This entails that ..math::`D_{it}`, uses some of the previous time-points estimate.
     An exponential decay is used here.
 
-    .. math:: D_{it} = -e^\gamma D_{i(t-1)} + \sigma_j {A_ijt}
+    .. math:: D_{it} = -e^\gamma D_{i(t-1)} + \sum_j {A_ijt}
 
     where :math:`\gamma` is the deay parameter specified in the function.
     This, to my knowledge, was first introdueced by [Degree-2]_.
