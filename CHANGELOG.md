@@ -4,8 +4,10 @@
 
 ### 0.4.7 Improvements
 
--   Changing name argument names in network measures to 'pertime' and 'overtime' replacing 'time' and 'global' to be clearer.
+-   Changing argument names in network measures to 'pertime' and 'overtime' replacing 'time' and 'global' to be clearer.
 -   More detailed documentation to temporal_degree_centrality.
+-   More detailed documentation to temporal_closeness_centrality.
+-   Changing argument values for minimize in shortest_temporal_paths, it is now called: 'temporal_distance' instead of time.
 
 ### 0.4.7 Changes
 
