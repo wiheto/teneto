@@ -17,7 +17,8 @@ class TemporalNetwork:
         T : int
             number of time-points in network
         nettype : str
-            description of network. Can be: bu, bd, wu, wd where the letters stand for binary, weighted, undirected and directed. Default is weighted undirected
+            description of network. Can be: bu, bd, wu, wd where the letters stand for binary, weighted, undirected and directed.
+            Default is weighted and undirected.
         from_df : pandas df
             input data frame with i,j,t,[weight] columns
         from_array : array
@@ -150,7 +151,7 @@ class TemporalNetwork:
         self._calc_netshape()
         if not self.diagonal:
             self._drop_diagonal()
-        if nettype and self.sparse == True:
+        if nettype and self.sparse:
             if nettype[1] == 'u':
                 self._drop_duplicate_ij()
 
@@ -196,7 +197,7 @@ class TemporalNetwork:
         if len(array.shape) == 2:
             array = np.array(array, ndmin=3).transpose([1, 2, 0])
         teneto.utils.check_TemporalNetwork_input(array, 'array')
-        if np.sum([array == 0]) > np.prod(array.shape)*0.75 or forcesparse == True:
+        if np.sum([array == 0]) > np.prod(array.shape)*0.75 or forcesparse:
             uvals = np.unique(array)
             if len(uvals) == 2 and 1 in uvals and 0 in uvals:
                 i, j, t = np.where(array == 1)
@@ -285,7 +286,7 @@ class TemporalNetwork:
         """
         Drops self-contacts from the network dataframe.
         """
-        if self.sparse == True:
+        if self.sparse:
             self.network = self.network.where(
                 self.network['i'] != self.network['j']).dropna()
             self.network.reset_index(inplace=True, drop=True)
@@ -297,7 +298,7 @@ class TemporalNetwork:
         """
         if len(self.network) == 0:
             self.netshape = (0, 0)
-        elif self.sparse == False:
+        elif not self.sparse:
             N = int(self.network.shape[0])
             T = int(self.network.shape[-1])
             self.netshape = (N, T)
@@ -328,7 +329,7 @@ class TemporalNetwork:
         --------
             Updates TenetoBIDS.network dataframe with new edge
         """
-        if self.sparse == False:
+        if not self.sparse:
             raise ValueError('Add edge not compatible with dense network')
         if not isinstance(edgelist[0], list):
             edgelist = [edgelist]

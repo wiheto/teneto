@@ -3,12 +3,13 @@
 ## V0.4.7 (development branch)
 
 ### Improvements
--  Changing name argument names in network measures to 'pertime' and 'overtime' replacing 'time' and 'global' to be clearer. 
--  More detailed documentation to temporal_degree_centrality.
+
+-   Changing name argument names in network measures to 'pertime' and 'overtime' replacing 'time' and 'global' to be clearer.
+-   More detailed documentation to temporal_degree_centrality.
 
 ## Changes
 
--  Python 3.6 is now required.
+-   Python 3.6 is now required.
 
 ## V0.4.6
 
@@ -27,7 +28,6 @@
 -   Fixing case where, for array input, get_network_when with directed edges dropped duplicates.
 -   Fixed missing bracket in get_network_when (credit to: lcandeago #45)
 
-
 ## V0.4.5
 
 ### Enhancements
@@ -44,7 +44,7 @@
 
 ### Fixes
 
--   NaNs in allegiance, which fixes recruitment and integration. Also added squeeze to input. And bug in integration where for loop would generate error. 
+-   NaNs in allegiance, which fixes recruitment and integration. Also added squeeze to input. And bug in integration where for loop would generate error.
 
 -   Removed self from teneto history.
 
