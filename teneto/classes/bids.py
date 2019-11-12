@@ -1,6 +1,4 @@
-"""
-TenetoBIDS is teneto's integration with neuroimaging data organized with BIDS. 
-"""
+"""TenetoBIDS is teneto's integration with neuroimaging data organized with BIDS."""
 import itertools
 import teneto
 import os
@@ -13,7 +11,8 @@ import json
 import nilearn
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from scipy.interpolate import interp1d
-from ..utils.bidsutils import load_tabular_file, get_bids_tag, get_sidecar, confound_matching, process_exclusion_criteria, drop_bids_suffix, make_directories
+from ..utils.bidsutils import load_tabular_file, get_bids_tag, get_sidecar, confound_matching
+from ..utils.bidsutils import process_exclusion_criteria, drop_bids_suffix, make_directories
 import pandas as pd
 from .network import TemporalNetwork
 import sys
@@ -28,7 +27,9 @@ import sys
 
 
 class TenetoBIDS:
-
+    """
+    See init for input parameters.
+    """
     bids_derivatives_version = '<rc1.0'
 
     tenetoinfo = {
@@ -41,18 +42,17 @@ class TenetoBIDS:
         "BIDSVersion": bids_derivatives_version,
         "CodeURL": "https://github.com/wiheto/teneto",
         "HowToAcknowledge": "Cite Teneto's DOI (http://doi.org/10.5281/zenodo.2535994)",
-        "CustomBIDS": {
-                "suffix": {
-                    "tvcconn": "time-varying connectivity estimate",
-                    "roi": "time series of regions of interst",
-                    "conn": "functional connectivity estimate",
-                    "tnet": "temporal network estimate",
-                    }
-                }
-        },
+        "CustomBIDS": {"suffix": {"tvcconn": "time-varying connectivity estimate",
+                                  "roi": "time series of regions of interst",
+                                  "conn": "functional connectivity estimate",
+                                  "tnet": "temporal network estimate",
+                                  }
+                       }
+    },
 
-
-    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None, bids_tags=None, bids_suffix=None, bad_subjects=None, confound_pipeline=None, raw_data_exists=True, njobs=None, history=None):
+    def __init__(self, BIDS_dir, pipeline=None, pipeline_subdir=None, parcellation=None,
+                 bids_tags=None, bids_suffix=None, bad_subjects=None, confound_pipeline=None,
+                 raw_data_exists=True, njobs=None, history=None):
         """
         Parameters
         ----------
@@ -60,9 +60,10 @@ class TenetoBIDS:
         BIDS_dir : str
             string to BIDS directory
         pipeline : str
-            the directory that is in the BIDS_dir/derivatives/<pipeline>/
+            the directory that is in BIDS_dir/derivatives/<pipeline>/
         pipeline_subdir : str, optional
-            the directory that is in the BIDS_dir/derivatives/<pipeline>/sub-<subjectnr/[ses-<sesnr>]/func/<pipeline_subdir>
+            the directory that is in
+            BIDS_dir/derivatives/<pipeline>/sub-<subjectnr/[ses-<sesnr>]/func/<pipeline_subdir>
         parcellation : str, optional
             parcellation name
         space : str, optional
@@ -78,15 +79,17 @@ class TenetoBIDS:
         bad_subjects : list or str, optional
             Removes these subjects from the analysis
         confound_pipeline : str, optional
-            If the confounds file is in another derivatives directory than the pipeline directory, set it here.
+            If the confounds file is in another derivatives directory than pipeline, set it here.
         raw_data_exists : bool, optional
-            Default is True. If the unpreprocessed data is not present in BIDS_dir, set to False. Some BIDS funcitonality will be lost.
+            Default is True. If the unpreprocessed data is not present in BIDS_dir, set to False.
+            Some BIDS funcitonality will be lost.
         njobs : int, optional
             How many parallel jobs to run. Default: 1. The set value can be overruled in individual functions.
         """
         DeprecationWarning('From Teneto 0.5 and onwards TenetoBIDS is rewritten with many functions and file structure will changes\
         Everything will be made dramatically simplier to use.\
-        From 0.4.7 teneto.NewTenetoBIDS will be available which will be the new function. From Teneto 0.5 this class will be called TenetoBIDS')
+        From 0.4.7 teneto.NewTenetoBIDS will be available which will be the new function.\
+        From Teneto 0.5 this class will be called TenetoBIDS')
         if history is not None:
             self.history = history
         else:
@@ -115,7 +118,7 @@ class TenetoBIDS:
         else:
             self.bids_suffix = bids_suffix
 
-        if bad_subjects == None:
+        if bad_subjects is None:
             self.bad_subjects = None
         else:
             self.set_bad_subjects(bad_subjects)
@@ -143,9 +146,7 @@ class TenetoBIDS:
         self.fc_trialinfo_ = []
 
     def add_history(self, fname, fargs, init=0):
-        """
-        Adds a processing step to TenetoBIDS.history.
-        """
+        """Adds a processing step to TenetoBIDS.history."""
         if init == 1:
             self.history = []
         # Remove self from input arguments
@@ -155,7 +156,8 @@ class TenetoBIDS:
 
     def export_history(self, dirname):
         """
-        Exports TenetoBIDShistory.py, tenetoinfo.json, requirements.txt (modules currently imported) to dirname
+        Exports TenetoBIDShistory.py, tenetoinfo.json, requirements.txt
+        (the modules currently imported) to dirname.
 
         Parameters
         ---------
@@ -187,7 +189,8 @@ class TenetoBIDS:
         Parameters
         ----------
         params : dict.
-            See teneto.timeseries.derive_temporalnetwork for the structure of the param dictionary. Assumes dimord is time,node (output of other TenetoBIDS funcitons)
+            See teneto.timeseries.derive_temporalnetwork for the structure of the param dictionary.
+            Assumes dimord is time,node (output of other TenetoBIDS funcitons)
 
         update_pipeline : bo    ol
             If true, the object updates the selected files with those derived here.
@@ -236,14 +239,16 @@ class TenetoBIDS:
                 df = load_tabular_file(confound_files[i])
                 df = df.fillna(df.median())
                 fs, _ = drop_bids_suffix(f)
-                saved_name, saved_dir, _ = self._save_namepaths_bids_derivatives(fs, tag, 'tvc', 'tvcconn')
+                saved_name, saved_dir, _ = self._save_namepaths_bids_derivatives(
+                    fs, tag, 'tvc', 'tvcconn')
                 data = load_tabular_file(saved_dir + saved_name + '.tsv')
                 dfc = TemporalNetwork(from_df=data).df_to_array()
                 ind = np.triu_indices(dfc.shape[0], k=1)
                 dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
                 # If windowed, prune df so that it matches with dfc_df
                 if len(df) != len(dfc_df):
-                    df = df.iloc[int(np.round((params['windowsize']-1)/2)): int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                    df = df.iloc[int(np.round((params['windowsize']-1)/2))
+                                     : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                     df.reset_index(inplace=True, drop=True)
                 # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
                 dfc_df_z = (dfc_df - dfc_df.mean())
@@ -342,7 +347,6 @@ class TenetoBIDS:
         sidecar['tvc']['description'] = 'Time varying connectivity information.'
         with open(save_dir + save_name + '.json', 'w') as fs:
             json.dump(sidecar, fs)
-
 
     def set_bids_tags(self, indict=None):
         if not hasattr(self, 'bids_tags'):
@@ -558,7 +562,8 @@ class TenetoBIDS:
         Parameters
         ----------
         pipeline : string
-            can be \'pipeline\' (main analysis pipeline, self in tnet.set_pipeline) or \'confound\' (where confound files are, set in tnet.set_confonud_pipeline()),
+            can be \'pipeline\' (main analysis pipeline, self in tnet.set_pipeline) or \'confound\'
+            (where confound files are, set in tnet.set_confonud_pipeline()),
             \'functionalconnectivity\'
         quiet: int
             If 1, prints results. If 0, no results printed.
@@ -570,7 +575,9 @@ class TenetoBIDS:
         Returns
         -------
         found_files : list
-            The files which are currently selected with the current using the set pipeline, pipeline_subdir, space, parcellation, tasks, runs, subjects etc. There are the files that will generally be used if calling a make_ function.
+            The files which are currently selected with the current using the set pipeline,
+            pipeline_subdir, space, parcellation, tasks, runs, subjects etc.
+            There are the files that will generally be used if calling a make_ function.
         """
         # This could be mnade better
         file_dict = dict(self.bids_tags)
@@ -673,9 +680,13 @@ class TenetoBIDS:
             confound : str or list
                 string or list of confound name(s) from confound files
             exclusion_criteria  : str or list
-                for each confound, an exclusion_criteria should be expressed as a string. It starts with >,<,>= or <= then the numerical threshold. Ex. '>0.2' will entail every subject with the avg greater than 0.2 of confound will be rejected.
+                for each confound, an exclusion_criteria should be expressed as a string.
+                It starts with >,<,>= or <= then the numerical threshold.
+                Ex. '>0.2' will entail every subject with the avg greater than 0.2 of confound will be rejected.
             confound_stat : str or list
-                Can be median, mean, std. How the confound data is aggregated (so if there is a meaasure per time-point, this is averaged over all time points. If multiple confounds specified, this has to be a list.).
+                Can be median, mean, std. How the confound data is aggregated
+                (so if there is a meaasure per time-point, this is averaged over all time points.
+                If multiple confounds specified, this has to be a list.).
         Returns
         --------
             calls TenetoBIDS.set_bad_files with the files meeting the exclusion criteria.
