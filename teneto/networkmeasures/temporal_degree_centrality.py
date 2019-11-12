@@ -9,7 +9,9 @@ from ..utils import process_input
 def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, decay=0, ignorediagonal=True):
     """
 
-    Temporal degree of network. The sum of all connections each node has through time (either per timepoint or over the entire temporal sequence).
+    Temporal degree of network.
+    The sum of all connections each node has through time
+    (either per timepoint or over the entire temporal sequence).
 
     Parameters
     -----------
@@ -35,7 +37,8 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
         if True, diagonal is made to 0.
     communities : array (Nx1)
         Vector of community assignment.
-        If this is given and calc='pertime', then the strength within and between each communities is returned (technically not degree centrality).
+        If this is given and calc='pertime', then the strength within and between each communities is returned.
+        (Note, this is not technically degree centrality).
     decay : int
         if calc = 'pertime', then decay is possible where the centrality of
         the previous time point is carried over to the next time point but decays
@@ -101,7 +104,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
     else:
         fromax = 'i'
         toax = 'j'
-    if tnet.sparse == True and tnet.nettype[0] == 'b':
+    if tnet.sparse and tnet.nettype[0] == 'b':
         tnet.network['weight'] = 1
     # Diagonal is currently deleted.
     # if ignorediagonal:
@@ -109,7 +112,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
     # sum sum tnet
     if calc == 'pertime' and communities is None:
         # Return node,time
-        if tnet.sparse == True:
+        if tnet.sparse:
             tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
             df = tnet.network.groupby([fromax, 't']).sum().reset_index()
             tdeg[df[fromax], df['t']] = df['weight']
@@ -124,7 +127,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
             'Communities must be specified when calculating module degree z-score.')
     elif calc != 'pertime' and communities is None:
         # Return node
-        if tnet.sparse == True:
+        if tnet.sparse:
             tdeg = np.zeros([tnet.netshape[0]])
             # Strength if weighted
             df = tnet.network.groupby([fromax])['weight'].sum().reset_index()
@@ -138,7 +141,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
     elif calc == 'module_degree_zscore' and communities is not None:
         tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
         # Need to make this fully sparse
-        if tnet.sparse == True:
+        if tnet.sparse:
             network = tnet.df_to_array()
         else:
             network = tnet.network
@@ -154,7 +157,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, 
         tdeg[np.isnan(tdeg) == 1] = 0
     elif calc == 'pertime' and communities is not None:
         # neet to make this fully sparse
-        if tnet.sparse == True:
+        if tnet.sparse:
             network = tnet.df_to_array()
         else:
             network = tnet.network
