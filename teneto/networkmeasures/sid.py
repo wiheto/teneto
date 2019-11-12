@@ -80,7 +80,7 @@ def sid(tnet, communities, axis=0, calc='overtime', decay=0):
 
     tnet, netinfo = utils.process_input(tnet, ['C', 'G', 'TN'])
     D = temporal_degree_centrality(
-        tnet, calc='time', communities=communities, decay=decay)
+        tnet, calc='pertime', communities=communities, decay=decay)
 
     # Check network output (order of communitiesworks)
     network_ids = np.unique(communities)
