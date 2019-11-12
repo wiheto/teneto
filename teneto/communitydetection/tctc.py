@@ -1,3 +1,6 @@
+"""
+TCTC is a temporal community detection method on nodal time series using trajectories.
+"""
 import numpy as np
 import networkx as nx
 import pandas as pd
