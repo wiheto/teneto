@@ -1,6 +1,4 @@
-"""
-Calculates temporal degree centrality
-"""
+"""Calculates temporal degree centrality"""
 
 import numpy as np
 from ..utils import process_input
@@ -9,7 +7,6 @@ from ..utils import process_input
 def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
                                decay=0, ignorediagonal=True):
     r"""
-
     Temporal degree of network.
 
     The sum of all connections each node has through time
@@ -191,7 +188,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
                             np.sum(network[coms == s1, :, t][:, coms == s2], axis=1), axis=0)
         else:
             unique_communities = np.unique(communities)
-            tdeg_communities = [np.sum(np.sum(network[communities == s1, :, :][:, communities == s2, :],
+            tdeg_communities = [np.sum(np.sum(network[communities == s1][:, communities == s2],
                                               axis=1), axis=0)
                                 for s1 in unique_communities for s2 in unique_communities]
 
@@ -208,9 +205,9 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
     if decay > 0 and calc == 'pertime':
         # Reshape so that time is first dimensions
         tdeg = tdeg.transpose(
-            np.hstack([len(tdeg.shape) - 1, np.arange(len(tdeg.shape)-1)]))
+            np.hstack([len(tdeg.shape) - 1, np.arange(len(tdeg.shape) - 1)]))
         for n in range(1, tdeg.shape[0]):
-            tdeg[n] = np.exp(-decay) * tdeg[n-1] + tdeg[n]
+            tdeg[n] = np.exp( - decay) * tdeg[n-1] + tdeg[n]
         tdeg = tdeg.transpose(np.hstack([np.arange(1, len(tdeg.shape)), 0]))
     elif decay > 0:
         print('WARNING: decay cannot be applied unless calc=time, ignoring decay')
