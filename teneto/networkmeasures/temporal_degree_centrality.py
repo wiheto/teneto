@@ -73,7 +73,9 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
 
     .. math:: D_{it} = \sum_j A_{ijt}
 
-    i.e. :math:`D_{it}` is the sum of a node i's degree/strength at t.
+    where A is the multi-layer connectivity matrix of the temporal network. 
+    
+    This entails that :math:`D_{it}` is the sum of a node i's degree/strength at t.
     This has also been called the instantaneous degree centrality [Degree-2]_.
 
     When ``calc='overtime'``:
