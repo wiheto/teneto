@@ -8,13 +8,11 @@ def temporal_closeness_centrality(tnet=None, paths=None):
     r"""
     Returns temporal closeness centrality per node.
 
-    Temporal closeness centrlaity is one over the 
-    temporal path
+    Temporal closeness centrlaity is the sum of a node's
+    average temporal paths with all other nodes.
 
     Parameters
     -----------
-
-    Input should be *either* tnet or paths.
 
     tnet : array, dict, object
 
@@ -23,6 +21,11 @@ def temporal_closeness_centrality(tnet=None, paths=None):
     paths : pandas dataframe
 
         Output of TenetoBIDS.networkmeasure.shortest_temporal_paths
+
+    Note
+    ------
+
+    Only one input (tnet or paths) can be supplied to the function.
 
     Returns
     --------
