@@ -103,13 +103,13 @@ def test_tdeg_with_moduledegreezscore():
     if not C2.shape == (G.shape[0], G.shape[-1]):
         raise AssertionError()
     # Hode code correct asnwer for nodes.
-    if not C2[3, 1] == (0-np.mean([1, 1, 0]))/np.std([1, 1, 0]):
+    if not C2[3, 1] == (0 - np.mean([1, 1, 0])) / np.std([1, 1, 0]):
         raise AssertionError()
-    if not C2[0, 0] == (1-np.mean([1, 2, 1]))/np.std([1, 2, 1]):
+    if not C2[0, 0] == (1 - np.mean([1, 2, 1])) / np.std([1, 2, 1]):
         raise AssertionError()
-    if not C2[1, 0] == (2-np.mean([1, 2, 1]))/np.std([1, 2, 1]):
+    if not C2[1, 0] == (2 - np.mean([1, 2, 1])) / np.std([1, 2, 1]):
         raise AssertionError()
-    if not C2[4, 1] == (1-np.mean([1, 1, 0]))/np.std([1, 1, 0]):
+    if not C2[4, 1] == (1 - np.mean([1, 1, 0])) / np.std([1, 1, 0]):
         raise AssertionError()
 
 
