@@ -6,10 +6,10 @@ import numpy as np
 from ..utils import process_input
 
 
-def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay=0, ignorediagonal=True):
+def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None, decay=0, ignorediagonal=True):
     """
 
-    temporal degree of network. Sum of all connections each node has through time.
+    Temporal degree of network. The sum of all connections each node has through time (either per timepoint or over the entire temporal sequence).
 
     Parameters
     -----------
@@ -24,31 +24,72 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     calc : str
         Can be following alternatives:
 
-        'avg' : (returns temporal degree centrality (a 1xnode vector))
+        'overtime' : returns a 1 x node vector. Returns the degree/stregnth over all time points.
 
-        'time' : (returns a node x time matrix),
+        'pertime' : returns a node x time array. Returns the degree/strength per time point.
 
         'module_degree_zscore' : returns the Z-scored within community degree centrality
         (communities argument required). This is done for each time-point
-        i.e. 'time' returns static degree centrality per time-point.
-
+        i.e. 'pertime' returns static degree centrality per time-point.
     ignorediagonal: bool
-        if true, diagonal is made to 0.
+        if True, diagonal is made to 0.
     communities : array (Nx1)
         Vector of community assignment.
-        If this is given and calc='time', then the strength within and between each communities is returned (technically not degree centrality).
+        If this is given and calc='pertime', then the strength within and between each communities is returned (technically not degree centrality).
     decay : int
-        if calc = 'time', then decay is possible where the centrality of
+        if calc = 'pertime', then decay is possible where the centrality of
         the previous time point is carried over to the next time point but decays
         at a value of $e^decay$ such that $D_d(t+1) = e^{-decay}D_d(t) + D(t+1)$. If
-        decay is 0 then the final D will equal D when calc='avg', if decay = inf
-        then this will equal calc='time'.
+        decay is 0 then the final D will equal D when calc='overtime', if decay = inf
+        then this will equal calc='pertime'.
 
     Returns
     ---------
 
     D : array
-        temporal degree centrality (nodal measure). Array is 1D ('avg'), 2D ('time', 'module_degree_zscore') or 3D ('time' + communities (non-nodal/community measures))
+        temporal degree centrality (nodal measure). Array is 1D ('overtime'), 2D ('pertime', 'module_degree_zscore') or 3D ('pertime' + communities (non-nodal/community measures))
+
+
+    Notes
+    ------
+
+    When the network is weighted, this could also be called "temporal strength" or "temporal strength centrality". This is a simple extension of the static definition. 
+    At times this has been defined slightly differently. Here we followed the definitions in [degree-1]_ or [degree-2]_. There are however many authors prior to this that have used temporal degree centrality.
+
+    There are two basic versions of temporal degree centrality implemented: the average temporal degree centrality (``calc='overtime'``) and temporal degree centrality ``calc='pertime'``. 
+
+    When ``calc='pertime'``:
+
+    .. math:: D_{it} = \sigma_j {A_ijt}
+
+    i.e. :math:`D_{it}` is the sum of a node i's degree/strength at t. This has also been called the instantaneous degree centrality [degree-2]_.
+
+    When ``calc='overtime'``:
+
+    .. math:: D_{i} = \sigma_t\sigma_j {A_ijt}
+
+    i.e. :math:`D_{i}` is the sum of a node i's degree/strength over all time points.
+
+    There are some additional options which can modify the estimate.
+    One way is to add a decay term. This entails that ..math::`D_{it}`, uses some of the previous time-points estimate.  
+    An exponential decay is used here.
+
+    .. math:: D_{it} = e^\gamma D_{i(t-1)} + \sigma_j {A_ijt}
+
+    where :math:`\gamma` is the deay parameter specified in the function.
+    This, to my knowledge, was first introdueced by [Degree-2]_.
+
+    For mathematical definitions of these functions (used for Teneto) see
+
+    Examples
+    ----------
+
+
+    References
+    -----------
+
+    .. [Degree-1] Thompson, et al (2017). From static to temporal network theory: Applications to functional brain connectivity. Network Neuroscience, 1(2), 69-99. [`Link <https://www.mitpressjournals.org/doi/full/10.1162/netn_a_00011>`_]
+    .. [Degree-2] Masuda, N., & Lambiotte, R. (2016). A Guidance to Temporal Networks. [`Link to book's publisher <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_]
 
     """
 
@@ -66,7 +107,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     # if ignorediagonal:
     #     tnet = set_diagonal(tnet, 0)
     # sum sum tnet
-    if calc == 'time' and communities is None:
+    if calc == 'pertime' and communities is None:
         # Return node,time
         if tnet.sparse == True:
             tdeg = np.zeros([tnet.netshape[0], tnet.netshape[1]])
@@ -81,7 +122,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     elif calc == 'module_degree_zscore' and communities is None:
         raise ValueError(
             'Communities must be specified when calculating module degree z-score.')
-    elif calc != 'time' and communities is None:
+    elif calc != 'pertime' and communities is None:
         # Return node
         if tnet.sparse == True:
             tdeg = np.zeros([tnet.netshape[0]])
@@ -111,7 +152,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
                              :, C == c, t][C == c], axis=axis)
                 tdeg[C == c, t] = (k_i - np.mean(k_i)) / np.std(k_i)
         tdeg[np.isnan(tdeg) == 1] = 0
-    elif calc == 'time' and communities is not None:
+    elif calc == 'pertime' and communities is not None:
         # neet to make this fully sparse
         if tnet.sparse == True:
             network = tnet.df_to_array()
@@ -142,7 +183,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='avg', communities=None, decay
     else:
         raise ValueError("invalid calc argument")
 
-    if decay > 0 and calc == 'time':
+    if decay > 0 and calc == 'pertime':
         # Reshape so that time is first dimensions
         tdeg = tdeg.transpose(
             np.hstack([len(tdeg.shape)-1, np.arange(len(tdeg.shape)-1)]))
