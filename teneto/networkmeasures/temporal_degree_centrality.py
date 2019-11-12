@@ -92,12 +92,6 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
     where :math:`\gamma` is the deay parameter specified in the function.
     This, to my knowledge, was first introdueced by [Degree-2]_.
 
-    For mathematical definitions of these functions (used for Teneto) see
-
-    Examples
-    ----------
-
-
     References
     -----------
 
