@@ -31,14 +31,14 @@ def temporal_closeness_centrality(tnet=None, paths=None):
 
         temporal closness centrality (nodal measure)
 
-    Note
+    Notes
     -------
 
     Temporal closeness centrality is defined in [Close-1]_: 
 
     .. math C^T_{i} = {{1} \over {N-1}}\sum_j{1\over\tau_{ij}}
 
-    Where :math:`tau_{ij}` is the average temporal paths between node i and j.
+    Where :math:`\tau_{ij}` is the average temporal paths between node i and j.
 
     Note, there are multiple different types of temporal distance measures
     that can be used in temporal networks.
