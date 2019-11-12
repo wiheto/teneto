@@ -267,6 +267,6 @@ def test_networkmeasure():
     tnet = teneto.TenetoBIDS(bids_path, pipeline=pipeline, pipeline_subdir='tvc',
                              bids_suffix='tvcconn', bids_tags=tags,
                              raw_data_exists=False)
-    tnet.networkmeasures('volatility', {'calc': 'time'}, tag='time')
+    tnet.networkmeasures('volatility', {'calc': 'pertime'}, tag='time')
     tnet.load_data('temporalnetwork', measure='volatility', tag='time')
     vol = tnet.temporalnetwork_data_['volatility']
