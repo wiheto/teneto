@@ -1,28 +1,28 @@
-"""
-networkmeasures.temporal_closeness_centrality
-"""
+"""Calculates temporal closeness centrality"""
 
 import numpy as np
 from .shortest_temporal_path import shortest_temporal_path
 
 
 def temporal_closeness_centrality(tnet=None, paths=None):
-    '''
+    r"""
     Returns temporal closeness centrality per node.
+
+    Temporal closeness centrlaity is one over the 
+    temporal path
 
     Parameters
     -----------
 
     Input should be *either* tnet or paths.
 
-    data : array or dict
+    tnet : array, dict, object
 
-        Temporal network input (graphlet or contact). nettype: 'bu', 'bd'.
+        Temporal network input with nettype: 'bu', 'bd'.
 
     paths : pandas dataframe
 
         Output of TenetoBIDS.networkmeasure.shortest_temporal_paths
-
 
     Returns
     --------
@@ -31,8 +31,29 @@ def temporal_closeness_centrality(tnet=None, paths=None):
 
         temporal closness centrality (nodal measure)
 
-    '''
+    Note
+    -------
 
+    Temporal closeness centrality is defined in [Close-1]_: 
+
+    .. math C^T_{i} = {{1} \over {N-1}}\sum_j{1\over\tau_{ij}}
+
+    Where :math:`tau_{ij}` is the average temporal paths between node i and j.
+
+    Note, there are multiple different types of temporal distance measures
+    that can be used in temporal networks.
+    If a tmeporal network is used as input (i.e. not the paths), then teneto
+    uses :py:func:`.shortest_temporal_path` to calculates the shortest paths.
+    See :py:func:`.shortest_temporal_path` for more details.
+
+    .. [Close-1]
+
+        Pan, R. K., & Saramäki, J. (2011). 
+        Path lengths, correlations, and centrality in temporal networks. 
+        Physical Review E - Statistical, Nonlinear, and Soft Matter Physics, 84(1). 
+        [`Link https://doi.org/10.1103/PhysRevE.84.016105`_]
+
+    """
     if tnet is not None and paths is not None:
         raise ValueError('Only network or path input allowed.')
     if tnet is None and paths is None:
