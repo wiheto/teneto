@@ -85,9 +85,7 @@ def local_variation(data):
     .. [LV-1] Shinomoto et al (2003) Differences in spiking patterns among cortical neurons. Neural Computation 15.12 [`Link <https://www.mitpressjournals.org/doi/abs/10.1162/089976603322518759>`_]
     .. [LV-2] Followed eq., 4.34 in Masuda N & Lambiotte (2016) A guide to temporal networks. World Scientific. Series on Complex Networks. Vol 4 [`Link <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_]
 
-
     """
-
     ict = 0  # are ict present
     if isinstance(data, dict):
         # This could be done better
