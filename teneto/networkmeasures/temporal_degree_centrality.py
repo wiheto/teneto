@@ -101,9 +101,11 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
     References
     -----------
 
-    .. [Degree-1] Thompson, et al (2017). From static to temporal network theory: Applications to functional brain connectivity. Network Neuroscience, 1(2), 69-99. [`Link <https://www.mitpressjournals.org/doi/full/10.1162/netn_a_00011>`_]
+    .. [Degree-1] Thompson, et al (2017). From static to temporal network theory: Applications to functional brain connectivity.
+    Network Neuroscience, 1(2), 69-99. [`Link <https://www.mitpressjournals.org/doi/full/10.1162/netn_a_00011>`_]
     
-    .. [Degree-2] Masuda, N., & Lambiotte, R. (2016). A Guidance to Temporal Networks. [`Link to book's publisher <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_]
+    .. [Degree-2] Masuda, N., & Lambiotte, R. (2016). A Guidance to Temporal Networks.
+    [`Link to book's publisher <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_]
 
     """
 
@@ -203,7 +205,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
         tdeg = tdeg.transpose(
             np.hstack([len(tdeg.shape) - 1, np.arange(len(tdeg.shape) - 1)]))
         for n in range(1, tdeg.shape[0]):
-            tdeg[n] = np.exp( - decay) * tdeg[n-1] + tdeg[n]
+            tdeg[n] = np.exp(- decay) * tdeg[n-1] + tdeg[n]
         tdeg = tdeg.transpose(np.hstack([np.arange(1, len(tdeg.shape)), 0]))
     elif decay > 0:
         print('WARNING: decay cannot be applied unless calc=time, ignoring decay')
