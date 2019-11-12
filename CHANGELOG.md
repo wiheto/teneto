@@ -2,19 +2,19 @@
 
 ## V0.4.7 (development branch)
 
-### Improvements
+### 0.4.7 Improvements
 
 -   Changing name argument names in network measures to 'pertime' and 'overtime' replacing 'time' and 'global' to be clearer.
 -   More detailed documentation to temporal_degree_centrality.
 
-## Changes
+### 0.4.7 Changes
 
 -   Python 3.6 is now required.
 -   Scipy requirements updated.
 
 ## V0.4.6
 
-### Enhancements
+### 0.4.6 Enhancements
 
 -   Asarray flag in get_network_when returns dense version of network.
 -   Adding CustomBIDS to derivative description json file in TenetoBIDS.
@@ -24,14 +24,14 @@
 -   teneto.io added
 -   readthedocs.yaml added
 
-### Fixes
+### 0.4.6 Fixes
 
 -   Fixing case where, for array input, get_network_when with directed edges dropped duplicates.
 -   Fixed missing bracket in get_network_when (credit to: lcandeago #45)
 
 ## V0.4.5
 
-### Enhancements
+### 0.4.5 Enhancements
 
 -   Added teneto.TenetoWorkflows (name may change to just workflows)
 
@@ -43,7 +43,7 @@
 
 -   save_tenetobids_snapshot to export current teneto settings. save_to_pickle (and corresponding load function) have been removed as they are not secure.
 
-### Fixes
+### 0.4.5 Fixes
 
 -   NaNs in allegiance, which fixes recruitment and integration. Also added squeeze to input. And bug in integration where for loop would generate error.
 
@@ -51,7 +51,7 @@
 
 -   Some minor TenetoBIDS fixes
 
-### Changes
+### 0.4.5 Changes
 
 -   Removing unused description_string function from bidsutils
 -   Renaming of dummybids data
