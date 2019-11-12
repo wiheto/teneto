@@ -95,15 +95,18 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
     References
     -----------
 
-    .. [Degree-1] 
-    
-        Thompson, et al (2017). From static to temporal network theory: Applications to functional brain connectivity.
-        Network Neuroscience, 1(2), 69-99. [`Link <https://www.mitpressjournals.org/doi/full/10.1162/netn_a_00011>`_]
-    
-    .. [Degree-2] 
-    
+    .. [Degree-1]
+
+        Thompson, et al (2017). From static to temporal network theory:
+        Applications to functional brain connectivity.
+        Network Neuroscience, 1(2), 69-99.
+        [`Link <https://www.mitpressjournals.org/doi/full/10.1162/netn_a_00011>`_]
+
+    .. [Degree-2]
+
         Masuda, N., & Lambiotte, R. (2016). A Guidance to Temporal Networks.
-        [`Link to book's publisher <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_]
+        [`Link to book's publisher
+        <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_]
 
     """
 
