@@ -7,7 +7,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/wiheto/teneto/badge.svg?branch=master)](https://coveralls.io/github/wiheto/teneto?branch=master)
 [![DOI](https://zenodo.org/badge/61498436.svg)](https://zenodo.org/badge/latestdoi/61498436)
 
-**Te**mporal **ne**twork **to**ols. Version 0.4.6
+**Te**mporal **ne**twork **to**ols. Version 0.4.7
 
 ## What is the package
 
@@ -39,7 +39,7 @@ This package is under active development. And a lot of changes will still be mad
 
 ## Contributers
 
-For a list of contributers to teneto, see:  [teneto.readthedocs.io](https://teneto.readthedocs.io/en/latest/contribute.html)
+For a list of contributors to teneto, see:  [teneto.readthedocs.io](https://teneto.readthedocs.io/en/latest/contribute.html)
 
 ## Cite
 
