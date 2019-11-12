@@ -6,7 +6,7 @@ import numpy as np
 from .shortest_temporal_path import shortest_temporal_path
 
 
-def temporal_efficiency(tnet=None, paths=None, calc='global'):
+def temporal_efficiency(tnet=None, paths=None, calc='overtime'):
     r"""
     Returns temporal efficiency estimate. BU networks only.
 
@@ -23,7 +23,7 @@ def temporal_efficiency(tnet=None, paths=None, calc='global'):
         Output of TenetoBIDS.networkmeasure.shortest_temporal_paths
 
     calc : str
-        Options: 'global' (default) - measure averages over time and nodes;
+        Options: 'overtime' (default) - measure averages over time and nodes;
         'node' or 'node_from' average over nodes (i) and time. Giving average efficiency for i to j;
         'node_to' measure average over nodes j and time;
          Giving average efficiency using paths to j from  i;
@@ -50,7 +50,7 @@ def temporal_efficiency(tnet=None, paths=None, calc='global'):
             paths['t_start'].values] = paths['temporal-distance']
 
     # Calculate efficiency which is 1 over the mean path.
-    if calc == 'global':
+    if calc == 'overtime':
         eff = 1 / np.nanmean(pathmat)
     elif calc == 'node' or calc == 'node_from':
         eff = 1 / np.nanmean(np.nanmean(pathmat, axis=2), axis=1)

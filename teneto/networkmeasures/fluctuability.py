@@ -5,7 +5,7 @@ import numpy as np
 from ..utils import process_input
 
 
-def fluctuability(netin, calc='global'):
+def fluctuability(netin, calc='overtime'):
     r"""
     Fluctuability of temporal networks. This is the variation of the network's edges over time. [fluct-1]_
     This is the unique number of edges through time divided by the overall number of edges.
@@ -18,7 +18,7 @@ def fluctuability(netin, calc='global'):
         Temporal network input (graphlet or contact) (nettype: 'bd', 'bu', 'wu', 'wd')
 
     calc : str
-        Version of fluctuabiility to calcualte. 'global'
+        Version of fluctuabiility to calcualte. 'overtime'
 
     Returns
     -------

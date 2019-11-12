@@ -2,7 +2,7 @@ import numpy as np
 from ..utils import process_input
 
 
-def topological_overlap(tnet, calc='time'):
+def topological_overlap(tnet, calc='pertime'):
     r"""
     Topological overlap quantifies the persistency of edges through time. If two consequtive time-points have similar edges, this becomes high (max 1). If there is high change, this becomes 0.
 
@@ -15,22 +15,22 @@ def topological_overlap(tnet, calc='time'):
     calc: str
         which version of topological overlap to calculate:
         'node' - calculates for each node, averaging over time.
-        'time' - (default) calculates for each node per time points.
-        'global' - (default) calculates for each node per time points.
+        'pertime' - (default) calculates for each node per time points.
+        'overtime' - calculates for each node per time points.
 
 
     Returns
     -------
     topo_overlap : array
-        if calc = 'time', array is (node,time) in size.
+        if calc = 'pertime', array is (node,time) in size.
         if calc = 'node', array is (node) in size.
-        if calc = 'global', array is (1) in size. The final time point returns as nan.
+        if calc = 'overtime', array is (1) in size. The final time point returns as nan.
 
     Notes
     ------
     When edges persist over time, the topological overlap increases. It can be calculated as a global valu, per node, per node-time.
 
-    When calc='time', then the topological overlap is:
+    When calc='pertime', then the topological overlap is:
 
     .. math:: TopoOverlap_{i,t} =  {\sum_j G_{i,j,t} G_{i,j,t+1} \over \sqrt{\sum_j G_{i,j,t} \sum_j G_{i,j,t+1}}}
 
@@ -40,7 +40,7 @@ def topological_overlap(tnet, calc='time'):
 
     where T is the number of time-points. This is called the *average topological overlap*.
 
-    When calc='global', the *temporal-correlation coefficient* is calculated
+    When calc='overtime', the *temporal-correlation coefficient* is calculated
 
     .. math:: TempCorrCoeff = {1 \over N} \sum_i AvgTopoOverlap_i
 
@@ -98,7 +98,7 @@ def topological_overlap(tnet, calc='time'):
 
     To calculate the temporal correlation coefficient,
 
-    >>> temp_corr_coeff = teneto.networkmeasures.topological_overlap(G, calc='global')
+    >>> temp_corr_coeff = teneto.networkmeasures.topological_overlap(G, calc='overtime')
 
     This produces one value reflecting all of G
 
@@ -123,7 +123,7 @@ def topological_overlap(tnet, calc='time'):
     topo_overlap = numerator / denominator
     topo_overlap[np.isnan(topo_overlap)] = 0
 
-    if calc == 'time':
+    if calc == 'pertime':
         # Add missing timepoint as nan to end of time series
         topo_overlap = np.hstack(
             [topo_overlap, np.zeros([topo_overlap.shape[0], 1])*np.nan])
@@ -131,7 +131,7 @@ def topological_overlap(tnet, calc='time'):
         topo_overlap = np.mean(topo_overlap, axis=1)
         if calc == 'node':
             pass
-        elif calc == 'global':
+        elif calc == 'overtime':
             topo_overlap = np.mean(topo_overlap)
 
     return topo_overlap

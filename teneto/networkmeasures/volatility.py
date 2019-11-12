@@ -2,7 +2,7 @@ import numpy as np
 from ..utils import process_input, check_distance_funciton_input, getDistanceFunction
 
 
-def volatility(tnet, distance_func_name='default', calc='global', communities=None, event_displacement=None):
+def volatility(tnet, distance_func_name='default', calc='overtime', communities=None, event_displacement=None):
     r"""
     Volatility of temporal networks.
 
@@ -19,10 +19,10 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
 
     calc : str
         Version of volaitility to caclulate. Possibilities include:
-        'global' - (default): the average distance of all nodes for each consecutive time point).
+        'overtime' - (default): the average distance of all nodes for each consecutive time point).
         'edge' - average distance between consecutive time points for each edge). Takes considerably longer
         'node' - (i.e. returns the average per node output when calculating volatility per 'edge').
-        'time' - returns volatility per time point
+        'pertime' - returns volatility per time point
         'communities' - returns volatility per communitieswork id (see communities). Also is returned per time-point and this may be changed in the future (with additional options)
         'event_displacement' - calculates the volatility from a specified point. Returns time-series.
 
@@ -75,7 +75,7 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
 
     We can calculate the volatility per time instead
 
-    >>> vol_time = tnet.calc_networkmeasure('volatility', calc='time', distance_func_name='hamming')
+    >>> vol_time = tnet.calc_networkmeasure('volatility', calc='pertime', distance_func_name='hamming')
     >>> len(vol_time)
     9
     >>> vol_time[0]
@@ -137,10 +137,10 @@ def volatility(tnet, distance_func_name='default', calc='global', communities=No
     # Get chosen distance metric fucntion
     distance_func = getDistanceFunction(distance_func_name)
 
-    if calc == 'global':
+    if calc == 'overtime':
         vol = np.mean([distance_func(tnet[ind[0], ind[1], t], tnet[ind[0], ind[1], t + 1])
                        for t in range(0, tnet.shape[-1] - 1)])
-    elif calc == 'time':
+    elif calc == 'pertime':
         vol = [distance_func(tnet[ind[0], ind[1], t], tnet[ind[0], ind[1], t + 1])
                for t in range(0, tnet.shape[-1] - 1)]
     elif calc == 'event_displacement':

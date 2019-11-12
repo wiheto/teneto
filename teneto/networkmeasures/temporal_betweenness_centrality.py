@@ -6,7 +6,7 @@ import numpy as np
 from .shortest_temporal_path import shortest_temporal_path
 
 
-def temporal_betweenness_centrality(tnet=None, paths=None, calc='time'):
+def temporal_betweenness_centrality(tnet=None, paths=None, calc='pertime'):
     '''
     Returns temporal betweenness centrality per node.
 
@@ -21,7 +21,7 @@ def temporal_betweenness_centrality(tnet=None, paths=None, calc='time'):
 
     calc : str
 
-        either 'global' or 'time'
+        either 'overtime' or 'pertime'
 
     paths : pandas dataframe
 
@@ -35,9 +35,9 @@ def temporal_betweenness_centrality(tnet=None, paths=None, calc='time'):
 
         normalized temporal betweenness centrality.
 
-            If calc = 'time', returns (node,time)
+            If calc = 'pertime', returns (node,time)
 
-            If calc = 'global', returns (node)
+            If calc = 'overtime', returns (node)
 
     '''
 
@@ -66,7 +66,7 @@ def temporal_betweenness_centrality(tnet=None, paths=None, calc='time'):
     # Normalise bet
     bet = (1/((bet.shape[0]-1)*(bet.shape[0]-2))) * bet
 
-    if calc == 'global':
+    if calc == 'overtime':
         bet = np.mean(bet, axis=1)
 
     return bet

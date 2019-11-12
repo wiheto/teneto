@@ -1,8 +1,14 @@
 # Changelog
 
+## V0.4.7 (rc1)
+
+### Improvements
+-  Changing name argument names in network measures to 'pertime' and 'overtime' replacing 'time' and 'global' to be clearer. 
+-  More docuemntaiton.
+
 ## V0.4.6
 
-### Enhacnements 
+### Enhancements
 
 -   Asarray flag in get_network_when returns dense version of network.
 -   Adding CustomBIDS to derivative description json file in TenetoBIDS.
