@@ -28,7 +28,7 @@ def test_topooverlap():
     # check size
     if not topoover.shape[0] == G.shape[0] and topoover.shape[1] == G.shape[-1]:
         raise AssertionError()
-    topoover_global = teneto.networkmeasures.topological_overlap(G, 'global')
+    topoover_global = teneto.networkmeasures.topological_overlap(G, 'overtime')
     # Global = average of topoover default
     if not np.nanmean(topoover) == topoover_global:
         raise AssertionError()

@@ -168,7 +168,7 @@ def test_bet():
     # CHeck output is correct length
     bet_time = teneto.networkmeasures.temporal_betweenness_centrality(G)
     bet_global = teneto.networkmeasures.temporal_betweenness_centrality(
-        G, calc='global')
+        G, calc='overtime')
     if not (np.mean(bet_time, axis=1) == bet_global).all():
         raise AssertionError()
     sp = teneto.networkmeasures.shortest_temporal_path(G)

@@ -16,10 +16,10 @@ def test_networkmeasures_tdc():
     # Should directional also works
     C2 = teneto.networkmeasures.temporal_degree_centrality(G, axis=1)
     C3 = teneto.networkmeasures.temporal_degree_centrality(
-        G, axis=1, calc='time')
+        G, axis=1, calc='pertime')
     # With decay
     C4 = teneto.networkmeasures.temporal_degree_centrality(
-        G, axis=1, calc='time', decay=0.5)
+        G, axis=1, calc='pertime', decay=0.5)
     # Incorrectly specified decay and warning will be raised
     C5 = teneto.networkmeasures.temporal_degree_centrality(
         G, axis=1, decay=0.5)
@@ -76,7 +76,7 @@ def test_tdeg_with_communities():
     C = np.array([[0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1], [
                  0, 0, 0, 0, 1, 1], [0, 0, 0, 1, 1, 1]]).transpose()
     C1 = teneto.networkmeasures.temporal_degree_centrality(
-        G, calc='time', communities=C)
+        G, calc='pertime', communities=C)
     # SHape should be communities,communities,time
     if not (len(np.unique(C)), len(np.unique(C)), G.shape[-1]) == C1.shape:
         raise AssertionError()
