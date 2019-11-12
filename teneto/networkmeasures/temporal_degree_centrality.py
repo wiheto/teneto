@@ -67,14 +67,14 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
 
     There are two basic versions of temporal degree centrality implemented:
     the average temporal degree centrality (``calc='overtime'``)
-    and temporal degree centrality ``calc='pertime'``.
+    and temporal degree centrality (``calc='pertime'``).
 
     When ``calc='pertime'``:
 
     .. math:: D_{it} = \sigma_j {A_ijt}
 
     i.e. :math:`D_{it}` is the sum of a node i's degree/strength at t.
-    This has also been called the instantaneous degree centrality [degree-2]_.
+    This has also been called the instantaneous degree centrality [Degree-2]_.
 
     When ``calc='overtime'``:
 
@@ -102,6 +102,7 @@ def temporal_degree_centrality(tnet, axis=0, calc='overtime', communities=None,
     -----------
 
     .. [Degree-1] Thompson, et al (2017). From static to temporal network theory: Applications to functional brain connectivity. Network Neuroscience, 1(2), 69-99. [`Link <https://www.mitpressjournals.org/doi/full/10.1162/netn_a_00011>`_]
+    
     .. [Degree-2] Masuda, N., & Lambiotte, R. (2016). A Guidance to Temporal Networks. [`Link to book's publisher <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_]
 
     """
