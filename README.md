@@ -3,7 +3,7 @@
 [![Documentation Status](https://readthedocs.org/projects/teneto/badge/?version=latest)](http://teneto.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/teneto.svg)](https://badge.fury.io/py/teneto)
 [![Build Status](https://travis-ci.org/wiheto/teneto.svg?branch=master)](https://travis-ci.org/wiheto/teneto)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5e492e68a0c841b6a7118b91f0ad2716)](https://www.codacy.com/app/wiheto/teneto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wiheto/teneto&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5e492e68a0c841b6a7118b91f0ad2716)](https://www.codacy.com/app/wiheto/teneto?utm_source=github.com&utm_medium=referral&utm_content=wiheto/teneto&utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/github/wiheto/teneto/badge.svg?branch=master)](https://coveralls.io/github/wiheto/teneto?branch=master)
 [![DOI](https://zenodo.org/badge/61498436.svg)](https://zenodo.org/badge/latestdoi/61498436)
 
@@ -11,7 +11,7 @@
 
 ## What is the package
 
-Package includes various tools for analyzing temporal network data. Temporal network measures, temporal network generation, derivation of time-varying/dynamic connectivities, plotting functions. 
+Package includes various tools for analyzing temporal network data. Temporal network measures, temporal network generation, derivation of time-varying/dynamic connectivities, plotting functions.
 
 Some extra focus is placed on neuroimaging data (e.g. compatible with BIDS - _NB: currently not compliant with latest release candidate of BIDS Derivatives_).
 
@@ -25,9 +25,9 @@ to upgrade teneto:
 
 `pip install teneto -U`
 
-Requires: Python 3.5 or python 3.6. 
+Requires: Python 3.6+
 
-Installing teneto via pip installs all python package requirements as well. 
+Installing teneto via pip installs all python package requirements as well.
 
 ## Documentation
 
