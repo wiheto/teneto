@@ -1,18 +1,19 @@
 # Changelog
 
-## V0.4.7 (development branch)
+## V0.5.0.a-dev (development branch)
 
-### 0.4.7 Improvements
+### 0.5.0 Improvements
 
 -   Changing argument names in network measures to 'pertime' and 'overtime' replacing 'time' and 'global' to be clearer.
 -   More detailed documentation to temporal_degree_centrality.
 -   More detailed documentation to temporal_closeness_centrality.
 -   Changing argument values for minimize in shortest_temporal_paths, it is now called: 'temporal_distance' instead of time.
 
-### 0.4.7 Changes
+### 0.5.0 Changes
 
 -   Python 3.6 is now required.
 -   Scipy requirements updated.
+-   Tougher coding standards implemented through prospector
 
 ## V0.4.6
 

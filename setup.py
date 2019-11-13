@@ -3,9 +3,14 @@ General setup for module
 """
 
 from setuptools import setup, find_packages
+import re
+
+version = "teneto/_version.py"
+verstrline = open(version, "rt").read()
+version = verstrline.split('"')[1]
 
 setup(name='teneto',
-      version='0.4.6',
+      version=version,
       python_requires='>3.5',
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],

@@ -21,10 +21,15 @@ project = 'teneto'
 copyright = '2018, William Hedley Thompson'
 author = 'William Hedley Thompson'
 
+version = "../teneto/_version.py"
+verstrline = open(version, "rt").read()
+version = verstrline.split('"')[1].split('-')[0]
+release = verstrline.split('"')[1]
+
 # The short X.Y version
-version = '0.4.6'
+version = version
 # The full version, including alpha/beta/rc tags
-release = '0.4.6'
+release = release
 
 
 # -- General configuration ---------------------------------------------------
