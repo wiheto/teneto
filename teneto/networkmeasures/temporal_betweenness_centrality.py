@@ -51,8 +51,13 @@ def temporal_betweenness_centrality(tnet=None, paths=None, calc='pertime'):
 
     .. math::
 
-        B_it = {1 \over (N-1)(N-2)} \sum_{j = 1; j \neq i}
+        B_{it} = {1 \over (N-1)(N-2)} \sum_{j = 1; j \neq i}
         \sum_{k = 1; k \neq i,j} {\sigma^i_{jkt} \over \sigma_{jk}}
+
+    If there is a shortest temporal path from j to k, starting at t that
+    goes through node i, then :math:`\sigma^i_{jkt}` is 1, otherwise 0.
+    :math:`\sigma_{jk}` is the total number of paths that exist from j to k.
+    The remaining part of the equation normalizes by the number of nodes.
 
     If a temporal network is used as input (i.e. not the paths), then teneto
     uses :py:func:`.shortest_temporal_path` to calculates the shortest paths.
@@ -63,7 +68,13 @@ def temporal_betweenness_centrality(tnet=None, paths=None, calc='pertime'):
     References
     ---------
 
-    .. [Bet-1] Tang
+    .. [Bet-1]
+
+        Tang, J., Musolesi, M., Mascolo, C., Latora, V., & Nicosia, V. (2010).
+        Analysing Information Flows and Key Mediators through Temporal Centrality
+        Metrics Categories and Subject Descriptors.
+        Proceedings of the 3rd Workshop on Social Network Systems.
+        [`Link https://doi.org/10.1145/1852658.1852661`_]
 
     """
     if tnet is not None and paths is not None:
