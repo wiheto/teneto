@@ -57,16 +57,16 @@ def test_define_tnet_unweighted():
     tnet_edgelist = teneto.TemporalNetwork(from_edgelist=edgelist)
     if not tnet_edgelist.network.shape == (2, 3):
         raise AssertionError()
-    G = np.zeros([3, 3, 3])
-    G[[0, 0], [1, 2], [2, 1]] = 1
-    tnet_array = teneto.TemporalNetwork(from_array=G)
+    array = np.zeros([3, 3, 3])
+    array[[0, 0], [1, 2], [2, 1]] = 1
+    tnet_array = teneto.TemporalNetwork(from_array=array)
     if not all(tnet_array.network == tnet_edgelist.network):
         raise AssertionError()
     tnet_df = teneto.TemporalNetwork(from_df=tnet_array.network)
     if not all(tnet_array.network == tnet_df.network):
         raise AssertionError()
-    C = teneto.utils.graphlet2contact(G)
-    tnet_dict = teneto.TemporalNetwork(from_dict=C)
+    contact = teneto.utils.graphlet2contact(array)
+    tnet_dict = teneto.TemporalNetwork(from_dict=contact)
     if not all(tnet_dict.network == tnet_edgelist.network):
         raise AssertionError()
     tnet_edgelist.add_edge([[0, 3, 1]])
@@ -93,13 +93,13 @@ def test_define_tnet_weighted():
     tnet_edgelist = teneto.TemporalNetwork(from_edgelist=edgelist)
     if not tnet_edgelist.network.shape == (2, 4):
         raise AssertionError()
-    G = np.zeros([3, 3, 3])
-    G[[0, 0], [1, 2], [2, 1]] = 0.5
-    tnet_array = teneto.TemporalNetwork(from_array=G)
+    array = np.zeros([3, 3, 3])
+    array[[0, 0], [1, 2], [2, 1]] = 0.5
+    tnet_array = teneto.TemporalNetwork(from_array=array)
     if not all(tnet_array.network == tnet_edgelist.network):
         raise AssertionError()
-    C = teneto.utils.graphlet2contact(G)
-    tnet_dict = teneto.TemporalNetwork(from_dict=C)
+    contact = teneto.utils.graphlet2contact(array)
+    tnet_dict = teneto.TemporalNetwork(from_dict=contact)
     if not all(tnet_dict.network == tnet_edgelist.network):
         raise AssertionError()
     tnet_edgelist.add_edge([[0, 3, 1, 0.8]])
@@ -113,21 +113,21 @@ def test_define_tnet_weighted():
 
 
 def test_tnet_functions():
-    G = np.zeros([3, 3, 3])
-    G[[0, 0], [1, 2], [2, 1]] = 1
-    G = G + G.transpose([1, 0, 2])
-    tnet = teneto.TemporalNetwork(from_array=G)
-    G = teneto.utils.set_diagonal(G, 0)
-    D = tnet.calc_networkmeasure('temporal_degree_centrality')
-    if not all(G.sum(axis=-1).sum(axis=-1) == D):
+    array = np.zeros([3, 3, 3])
+    array[[0, 0], [1, 2], [2, 1]] = 1
+    array = array + array.transpose([1, 0, 2])
+    tnet = teneto.TemporalNetwork(from_array=array)
+    array = teneto.utils.set_diagonal(array, 0)
+    degree = tnet.calc_networkmeasure('temporal_degree_centrality')
+    if not all(array.sum(axis=-1).sum(axis=-1) == degree):
         raise AssertionError()
-    G = np.zeros([3, 3, 3])
-    G[[0, 0], [1, 2], [2, 1]] = 0.5
-    G = G + G.transpose([1, 0, 2])
-    G = teneto.utils.set_diagonal(G, 0)
-    tnet = teneto.TemporalNetwork(from_array=G)
-    D = tnet.calc_networkmeasure('temporal_degree_centrality')
-    if not all(G.sum(axis=-1).sum(axis=-1) == D):
+    array = np.zeros([3, 3, 3])
+    array[[0, 0], [1, 2], [2, 1]] = 0.5
+    array = array + array.transpose([1, 0, 2])
+    array = teneto.utils.set_diagonal(array, 0)
+    tnet = teneto.TemporalNetwork(from_array=array)
+    degree = tnet.calc_networkmeasure('temporal_degree_centrality')
+    if not all(array.sum(axis=-1).sum(axis=-1) == degree):
         raise AssertionError()
 
 
@@ -145,9 +145,9 @@ def test_plot():
 
 
 def test_metadata():
-    tnet = teneto.TemporalNetwork(nodelabels=['A', 'B', 'C'], timelabels=[
+    tnet = teneto.TemporalNetwork(nodelabels=['A', 'B', 'contact'], timelabels=[
                                   0, 1, 2], desc='test meta data', starttime=0, timeunit='au')
-    if not tnet.nodelabels == ['A', 'B', 'C']:
+    if not tnet.nodelabels == ['A', 'B', 'contact']:
         raise AssertionError()
     if not tnet.timelabels == [0, 1, 2]:
         raise AssertionError()
