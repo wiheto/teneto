@@ -49,7 +49,7 @@ def temporal_betweenness_centrality(tnet=None, paths=None, calc='pertime'):
     paths and calculates betweennesss from it.
 
     Teneto returns a normalized betweenness centrality value,
-    defined as [Bet-1]_: 
+    defined as [Bet-1]_:
 
     .. math:: B_it = {1 \over (N-1)(N-2)} \sum_{j = 1; j \neq i} \sum_{k = 1; k \neq i,j} \sigma^i_{jkt} / \sigma_{jk}
 
@@ -87,12 +87,13 @@ def temporal_betweenness_centrality(tnet=None, paths=None, calc='pertime'):
                 row[1]['path includes'])).astype(int).tolist()
             nodes_in_path.remove(row[1]['from'])
             nodes_in_path.remove(row[1]['to'])
-            sigmajk = len(paths[(paths['from']==row[1]['from']) and (paths['to']==row[1]['to'])])
+            sigmajk = len(
+                paths[(paths['from'] == row[1]['from']) and (paths['to'] == row[1]['to'])])
             if len(nodes_in_path) > 0:
                 bet[nodes_in_path, row[1]['t_start']] += 1 / sigmajk
 
     # Normalise bet
-    bet = (1/((bet.shape[0]-1)*(bet.shape[0]-2))) * bet
+    bet = (1 / ((bet.shape[0] - 1) * (bet.shape[0] - 2))) * bet
 
     if calc == 'overtime':
         bet = np.mean(bet, axis=1)
