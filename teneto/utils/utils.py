@@ -528,7 +528,7 @@ def check_input(netin, raiseIfU=1, conMat=0):
     return inputis
 
 
-def getDistanceFunction(requested_metric):
+def get_distance_function(requested_metric):
     """
 
     This function returns a specified distance function.

@@ -186,7 +186,7 @@ def test_graphlet2contactfail():
 def test_utils_fails():
     # When unknown distance function is specified
     with pytest.raises(ValueError):
-        teneto.utils.getDistanceFunction('blabla')
+        teneto.utils.get_distance_function('blabla')
 
 
 def test_process_input():

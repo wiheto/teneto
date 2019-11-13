@@ -1,5 +1,5 @@
 import numpy as np
-from ..utils import process_input, check_distance_funciton_input, getDistanceFunction
+from ..utils import process_input, check_distance_funciton_input, get_distance_function
 
 
 def volatility(tnet, distance_func_name='default', calc='overtime', communities=None, event_displacement=None):
@@ -135,7 +135,7 @@ def volatility(tnet, distance_func_name='default', calc='overtime', communities=
                 'Communitiy assignments must be positive integers')
 
     # Get chosen distance metric fucntion
-    distance_func = getDistanceFunction(distance_func_name)
+    distance_func = get_distance_function(distance_func_name)
 
     if calc == 'overtime':
         vol = np.mean([distance_func(tnet[ind[0], ind[1], t], tnet[ind[0], ind[1], t + 1])

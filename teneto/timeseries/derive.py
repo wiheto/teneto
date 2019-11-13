@@ -7,7 +7,7 @@ derive: different methods to derive dynamic functional connectivity
 
 import numpy as np
 from statsmodels.stats.weightstats import DescrStatsW
-from ..utils import set_diagonal, getDistanceFunction
+from ..utils import set_diagonal, get_distance_function
 from .postprocess import postpro_pipeline
 from .report import gen_report
 import scipy.stats as sps
@@ -71,7 +71,7 @@ def derive_temporalnetwork(data, params):
     W[t,t] is excluded from the scaling and then set to 1.
 
     params['distance']: str
-        Distance metric (e.g. 'euclidean'). See teneto.utils.getDistanceFunction for more info
+        Distance metric (e.g. 'euclidean'). See teneto.utils.get_distance_function for more info
 
     When method == "slidingwindow"
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -290,7 +290,7 @@ def _weightfun_spatial_distance(data, params, report):
     """
     Creates the weights for the spatial distance method. See func: teneto.timeseries.derive_temporalnetwork.
     """
-    distance = getDistanceFunction(params['distance'])
+    distance = get_distance_function(params['distance'])
     weights = np.array([distance(data[n, :], data[t, :]) for n in np.arange(
         0, data.shape[0]) for t in np.arange(0, data.shape[0])])
     weights = np.reshape(weights, [data.shape[0], data.shape[0]])
