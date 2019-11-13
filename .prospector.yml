@@ -2,6 +2,9 @@ strictness: high
 test-warnings: true
 doc-warnings: true
 
+ignore-paths:
+  - docs
+  
 ignore-patterns:
   - __init__.py$
 
