@@ -14,7 +14,7 @@ def test_workflow_temporalnetwork():
     dmag = teneto.networkmeasures.temporal_degree_centrality(data_mag)
     twf = TenetoWorkflow()
     twf.add_node('network_create', 'TemporalNetwork',
-                 params={'from_array': G})
+                 params={'from_array': data})
     twf.add_node('binarize_percent', 'binarize', params={
                  'threshold_type': 'percent', 'threshold_level': 0.05})
     twf.add_node('degree_th-percent', 'calc_networkmeasure',
