@@ -51,7 +51,7 @@ def temporal_betweenness_centrality(tnet=None, paths=None, calc='pertime'):
     Teneto returns a normalized betweenness centrality value,
     defined as [Bet-1]_:
 
-    .. math:: B_it = {1 \over (N-1)(N-2)} \sum_{j = 1; j \neq i} \sum_{k = 1; k \neq i,j} \sigma^i_{jkt} / \sigma_{jk}
+    .. math:: B_it = {1 \over (N-1)(N-2)} \sum_{j = 1; j \neq i} \sum_{k = 1; k \neq i,j} {\sigma^i_{jkt} \over \sigma_{jk}}
 
     If a temporal network is used as input (i.e. not the paths), then teneto
     uses :py:func:`.shortest_temporal_path` to calculates the shortest paths.
