@@ -45,7 +45,7 @@ def temporal_closeness_centrality(tnet=None, paths=None):
 
     Note, there are multiple different types of temporal distance measures
     that can be used in temporal networks.
-    If a tmeporal network is used as input (i.e. not the paths), then teneto
+    If a temporal network is used as input (i.e. not the paths), then teneto
     uses :py:func:`.shortest_temporal_path` to calculates the shortest paths.
     See :py:func:`.shortest_temporal_path` for more details.
 
