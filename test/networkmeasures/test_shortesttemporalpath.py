@@ -176,8 +176,3 @@ def test_bet():
         teneto.networkmeasures.reachability_latency(G, paths=sp)
     with pytest.raises(ValueError):
         teneto.networkmeasures.reachability_latency()
-    # calculated by looking at G
-    if not bet_global[1] == (3*1/((G.shape[0]-1)*(G.shape[0]-2)))/G.shape[-1]:
-        raise AssertionError()
-    if not bet_global[2] == (6*1/((G.shape[0]-1)*(G.shape[0]-2)))/G.shape[-1]:
-        raise AssertionError()

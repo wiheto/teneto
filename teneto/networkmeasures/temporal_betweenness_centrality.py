@@ -96,8 +96,9 @@ def temporal_betweenness_centrality(tnet=None, paths=None, calc='pertime'):
                 row[1]['path includes'])).astype(int).tolist()
             nodes_in_path.remove(row[1]['from'])
             nodes_in_path.remove(row[1]['to'])
-            sigmajk = len(
-                paths[(paths['from'] == row[1]['from']) & (paths['to'] == row[1]['to'])])
+            sigmajk = paths[(paths['from'] == row[1]['from']) & (paths['to'] == row[1]['to'])]
+            sigmajk = sigmajk.dropna(subset=['temporal-distance'])
+            sigmajk = len(sigmajk)
             if len(nodes_in_path) > 0:
                 bet[nodes_in_path, row[1]['t_start']] += 1 / sigmajk
 
