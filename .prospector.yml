@@ -3,10 +3,10 @@ test-warnings: true
 doc-warnings: true
 
 ignore-paths:
-  - docs
-  
+  - test
+
 ignore-patterns:
-  - __init__.py$
+  - teneto/*(__init__.py)$
 
 mccabe:
   run: false
