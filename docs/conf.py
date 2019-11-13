@@ -21,7 +21,9 @@ project = 'teneto'
 copyright = '2018, William Hedley Thompson'
 author = 'William Hedley Thompson'
 
-print(os.listdir)
+print(os.listdir())
+print('----')
+print(os.listdir())
 version = "../teneto/_version.py"
 verstrline = open(version, "rt").read()
 version = verstrline.split('"')[1].split('-')[0]
