@@ -3,7 +3,6 @@ General setup for module
 """
 
 from setuptools import setup, find_packages
-import re
 
 version = "teneto/_version.py"
 verstrline = open(version, "rt").read()

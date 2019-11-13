@@ -1,12 +1,6 @@
-strictness: high
+strictness: medium
 test-warnings: true
 doc-warnings: true
-
-ignore-paths:
-  - test
-
-ignore-patterns:
-  - teneto/*(__init__.py)$
 
 mccabe:
   run: false
