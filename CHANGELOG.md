@@ -8,12 +8,19 @@
 -   More detailed documentation to temporal_degree_centrality.
 -   More detailed documentation to temporal_closeness_centrality.
 -   Changing argument values for minimize in shortest_temporal_paths, it is now called: 'temporal_distance' instead of time.
+-   Single instance of version specified in teneto/_version.py.
 
 ### 0.5.0 Changes
 
 -   Python 3.6 is now required.
 -   Scipy requirements updated.
 -   Tougher coding standards implemented through prospector
+-   Renaming getDistanceFunction to get_distance_function.
+
+### 0.5.0 Fixes
+
+-   Betweenness centrality now normalizes across time with sigma_jk.
+-   Fix error in #53.
 
 ## V0.4.6
 
