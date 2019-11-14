@@ -9,7 +9,6 @@ import collections
 import itertools
 import scipy.spatial.distance as distance
 from ..trajectory import rdp
-from .. import __path__ as tenetopath
 from ..classes import TemporalNetwork
 import pandas as pd
 import operator
@@ -18,7 +17,11 @@ import operator
 def graphlet2contact(tnet, params=None):
     """
 
-    Converts graphlet (snapshot) representation of temporal network and converts it to contact representation representation of network. Contact representation are more efficient for memory storing. Also includes metadata which can made it easier for plotting. A contact representation contains all non-zero edges.
+    Converts array representation to contact representation.
+    
+    Contact representation are more efficient for memory storing.
+    Also includes metadata which can made it easier for plotting.
+    A contact representation contains all non-zero edges.
 
     Parameters
     ----------
@@ -42,10 +45,11 @@ def graphlet2contact(tnet, params=None):
             'bu': binary, undirected.
 
         *diagonal* : int, default = 0.
-            What should the diagonal be. (note: does could be expanded to take vector of unique diagonal values in the future, but not implemented now)
+            What should the diagonal be.
 
         *timetype* : str, default='discrete'
-            Time units can be The params file becomes the foundation of 'C'. Any other information in params, will added to C.
+            Time units can be The params file becomes the foundation of 'C'.
+            Any other information in params, will added to C.
 
         *nodelabels* : list
             Set nod labels.
@@ -63,9 +67,8 @@ def graphlet2contact(tnet, params=None):
         Includes 'contacts', 'values' (if nettype[0]='w'),'nettype','netshape', 'Fs', 'dimord' and 'timeunit', 'timetype'.
 
     """
-
     # Create config dictionary if missing
-    if params == None:
+    if params is None:
         params = {}
     # Check that temporal network is vald input.
     if tnet.shape[0] != tnet.shape[1]:
@@ -94,7 +97,7 @@ def graphlet2contact(tnet, params=None):
         params['nettype'] = gen_nettype(tnet, 1)
     if params['nettype'] not in {'bd', 'bu', 'wd', 'wu', 'auto'}:
         raise ValueError(
-            '\'nettype\' (in params) must be a string \'wd\',\'bd\',\'wu\',\'bu\'). w: weighted network. b: binary network. u: undirected network. d: directed network')
+            '\'nettype\' (in params) must be a string \'wd\',\'bd\',\'wu\',\'bu\').')
     if 'Fs' not in params.keys():
         params['Fs'] = 1
         #print('Warning, no sampling rate set. Assuming 1.')
@@ -142,7 +145,9 @@ def graphlet2contact(tnet, params=None):
 def contact2graphlet(C):
     """
 
-    Converts contact representation to graphlet (snaptshot) representation. Graphlet representation discards all meta information in the contact representation.
+    Converts contact representation to array representation.
+    
+    Graphlet representation discards all meta information in contacts.
 
     Parameters
     ----------
@@ -162,7 +167,6 @@ def contact2graphlet(C):
     Returning elements of tnet will be float, even if binary graph.
 
     """
-
     # Check that contact sequence is vald input.
     if 'dimord' not in C.keys():
         raise ValueError('\'dimord\' must be present in C.')
@@ -173,7 +177,7 @@ def contact2graphlet(C):
             'C must include parameter \'nettype\' (wd,bd,wu,bu). w: weighted network. b: binary network. u: undirected network. d: directed network')
     if C['nettype'] not in {'bd', 'bu', 'wd', 'wu'}:
         raise ValueError(
-            '\'nettype\' in (C) must be a string \'wd\',\'bd\',\'wu\',\'bu\'). w: weighted network. b: binary network. u: undirected network. d: directed network')
+            '\'nettype\' in (C) must be a string \'wd\',\'bd\',\'wu\',\'bu\').')
     if 'netshape' not in C.keys():
         raise ValueError(
             'C must include netshape expressing size of target network (tuple)')
@@ -224,7 +228,9 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
     axis : str, default='time'
-        Specify which dimension thresholding is applied against. Can be 'time' (takes top % for each edge time-series) or 'graphlet' (takes top % for each graphlet)
+        Specify which dimension thresholding is applied against.
+        Can be 'time' (takes top % for each edge time-series) or 'graphlet'
+        (takes top % for each graphlet)
 
     Returns
     -------
@@ -336,6 +342,7 @@ def binarize_rdp(netin, level, sign='pos', axis='time'):
 
 def binarize_magnitude(netin, level, sign='pos'):
     """
+    Make binary network based on magnitude thresholding.
 
     Parameters
     ----------
@@ -440,14 +447,13 @@ def set_diagonal(tnet, val=0):
         Graphlet representation with new diagonal
 
     """
-
     for t in range(0, tnet.shape[2]):
         np.fill_diagonal(tnet[:, :, t], val)
     return tnet
 
 
 def gen_nettype(tnet, printWarning=0, weightonly=False):
-    """
+    r"""
 
     Attempts to identify what nettype input graphlet tnet is. Diagonal is ignored.
 
@@ -462,13 +468,12 @@ def gen_nettype(tnet, printWarning=0, weightonly=False):
     nettype : str
         \'wu\', \'bu\', \'wd\', or \'bd\'
     """
-
     if np.array_equal(tnet, tnet.astype(bool)):
         nettype = 'b'
     else:
         nettype = 'w'
 
-    if weightonly == False:
+    if not weightonly:
         if np.allclose(tnet.transpose(1, 0, 2), tnet):
             direction = 'u'
         else:
@@ -501,7 +506,6 @@ def check_input(netin, raiseIfU=1, conMat=0):
         String indicating input type. 'G','C', 'M' or 'U' (unknown). M is special case only allowed when conMat=1 for a 2D connectivity matrix.
 
     """
-
     inputis = 'U'
     if isinstance(netin, np.ndarray):
         netShape = netin.shape
@@ -530,9 +534,7 @@ def check_input(netin, raiseIfU=1, conMat=0):
 
 def get_distance_function(requested_metric):
     """
-
     This function returns a specified distance function.
-
 
     Paramters
     ---------
@@ -567,7 +569,6 @@ def get_distance_function(requested_metric):
         'sokalsneath': distance.sokalsneath,
         'yule': distance.yule,
     }
-
     if requested_metric in distance_options:
         return distance_options[requested_metric]
     else:
@@ -613,13 +614,13 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
         inputtype = 'TN'
     # Convert TN to tnet representation
     if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
-        if netIn.sparse == True:
+        if netIn.sparse:
             tnet = netIn.df_to_array()
         else:
             tnet = netIn.network
         netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
     elif inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
-        if netIn.sparse == False and forcesparse == True:
+        if not netIn.sparse and forcesparse:
             TN = TemporalNetwork(from_array=netIn.network, forcesparse=True)
         else:
             TN = netIn
@@ -784,7 +785,6 @@ def check_distance_funciton_input(distance_func_name, netinfo):
     distance_func_name : str
         distance function name.
     """
-
     if distance_func_name == 'default' and netinfo['nettype'][0] == 'b':
         print('Default distance funciton specified. As network is binary, using Hamming')
         distance_func_name = 'hamming'
@@ -831,7 +831,6 @@ def get_dimord(measure, calc=None, community=None):
         Dimension order. So "node,node,time" would define the dimensions of the network measure.
 
     """
-
     if not calc:
         calc = ''
     else:
@@ -877,7 +876,7 @@ def get_dimord(measure, calc=None, community=None):
 
 
 def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=False, asarray=False, netshape=None, nettype=None):
-    """
+    r"""
     Returns subset of dataframe that matches index
 
     Parameters
@@ -904,7 +903,6 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     df : pandas dataframe
         Unless asarray are set to true.
     """
-
     if isinstance(tnet, pd.DataFrame):
         network = tnet
         hdf5 = False
@@ -953,7 +951,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         elif ij is not None:
             isinstr = 'i in ' + str(ij) + l['or'] + 'j in ' + str(ij)
         df = pd.read_hdf(network, where=isinstr)
-    elif sparse == False:
+    elif not sparse:
         if logic == 'or':
             raise ValueError(
                 'OR logic not implemented with array/dense format yet!')
@@ -989,8 +987,8 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
             df = network[l[logic]((network['i'].isin(i)), l[logic]((
                 network['j'].isin(j)), (network['t'].isin(t))))]
         elif ij is not None and t is not None:
-            df = network[((network['i'].isin(ij)) | l[logic]((
-                network['j'].isin(ij))), (network['t'].isin(t)))]
+            df = network[l[logic](((network['i'].isin(ij)) | ((
+                network['j'].isin(ij)))), (network['t'].isin(t)))]
         elif i is not None and j is not None:
             df = network[l[logic]((network['i'].isin(i)),
                                   (network['j'].isin(j)))]
