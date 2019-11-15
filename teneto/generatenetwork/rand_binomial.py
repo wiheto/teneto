@@ -1,6 +1,4 @@
-"""
-generatenetwork.rand_binomial
-"""
+"""generatenetwork random binomial network"""
 
 import numpy as np
 from ..utils import graphlet2contact
@@ -8,7 +6,6 @@ from ..utils import graphlet2contact
 
 def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero', netinfo=None, randomseed=None):
     """
-
     Creates a random binary network following a binomial distribution.
 
     Parameters
@@ -54,7 +51,8 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
 
     The idea of this function is to randomly determine if an edge is present.
 
-    Option 2 of the "prob" parameter can be used to create a small autocorrelaiton or make sure that, once an edge has been present, it never disapears. [rb-1]_
+    Option 2 of the "prob" parameter can be used to create a small autocorrelaiton
+    or make sure that, once an edge has been present, it never disapears. [rb-1]_
 
     Examples
     --------
@@ -63,15 +61,21 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
     >>> import numpy as np
     >>> import matplotlib.pyplot as plt
 
-    To make the networks a little more complex, the probabailities of rand_binomial can be set so differently for edges that have previously been active.
+    To make the networks a little more complex,
+    the probabailities of rand_binomial can be set so differently for edges
+    that have previously been active.
     Instead of passing a single integer to p, you can pass a list of 2 values.
-    The first value is the probabililty for edges that, at t-1=0 will be active at t (is sometimes called the birth-rate).
-    The second (optional) value is the probabaility of edges that, at t-1=1 will be active at t (sometimes called the death-rate).
-    The latter value helps create an autocorrelation. Without it, connections will have no autocorrelation.
+    The first value is the probabililty for edges that,
+    at t-1=0 will be active at t (is sometimes called the birth-rate).
+    The second (optional) value is the probabaility of edges that,
+    at t-1=1 will be active at t (sometimes called the death-rate).
+    The latter value helps create an autocorrelation.
+    Without it, connections will have no autocorrelation.
 
     **Example with just birthrate**
 
-    Below we create a network with 5 nodes and 10 time-points. Edges have a 25% chance to appear.
+    Below we create a network with 5 nodes and 10 time-points.
+    Edges have a 25% chance to appear.
 
     >>> np.random.seed(2017) # For reproduceability
     >>> N = 5 # Number of nodes
@@ -103,7 +107,8 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
 
     **Example with birthrate and deathrate**
 
-    Below we create a network with 5 nodes and 10 time-points. Edges have a 25% chance to appear and have a 75% chance to remain.
+    Below we create a network with 5 nodes and 10 time-points.
+    Edges have a 25% chance to appear and have a 75% chance to remain.
 
     >>> np.random.seed(2017) # For reproduceability
     >>> N = 5 # Number of nodes
@@ -138,10 +143,13 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
     References
     ---------
 
-    .. [rb-1] Clementi et al (2008) Flooding Time in edge-Markovian Dynamic Graphs *PODC* This function was written without reference to this paper. But this paper discusses a lot of properties of these types of graphs.
+    .. [rb-1] 
+    
+        Clementi et al (2008) Flooding Time in edge-Markovian Dynamic Graphs *PODC*
+        This function was written without reference to this paper.
+        But this paper discusses a lot of properties of these types of graphs.
 
     """
-
     size = np.atleast_1d(size)
     prob = np.atleast_1d(prob)
     if len(size) == 2 or (len(size) == 3 and size[0] == size[1]):
