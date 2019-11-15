@@ -19,3 +19,7 @@ from . import communitydetection
 from .classes import TenetoBIDS, TemporalNetwork, TenetoWorkflow
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering
+__all__ = ['networkmeasures', 'plot', 'generatenetwork',
+           'timeseries', 'misc', 'io', 'trajectory',
+           'communitymeasures', 'communitydetection',
+           'TenetoBIDS', 'TemporalNetwork', 'TenetoWorkflow']
