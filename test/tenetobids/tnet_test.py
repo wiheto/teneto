@@ -35,7 +35,7 @@ def test_make_fc_and_tvc():
     tnet.load_data('parcellation')
     r = tnet.make_functional_connectivity(returngroup=True)[0, 1]
     fc_files = tnet.get_selected_files(pipeline='functionalconnectivity')
-    if not '_conn.tsv' in fc_files[0]:
+    if '_conn.tsv' not in fc_files[0]:
         raise AssertionError()
     if not len(fc_files) == 1:
         raise AssertionError()
@@ -122,9 +122,9 @@ def test_tnet_derive_with_removeconfounds():
     # Set gthe confound pipeline in fmriprep
     tnet.set_confound_pipeline('fmriprep')
     alt = tnet.get_confound_alternatives()
-    if not 'confound1' in alt:
+    if 'confound1' not in alt:
         raise AssertionError()
-    if not 'confound2' in alt:
+    if 'confound2' not in alt:
         raise AssertionError()
     # Set the confounds
     tnet.set_confounds('confound1')
@@ -133,7 +133,7 @@ def test_tnet_derive_with_removeconfounds():
     f = tnet.get_selected_files()[0]
     f = f.replace('.tsv', '.json')
     with open(f) as fs:
-        sidecar = json.load(fs)
+        _ = json.load(fs)
 
     # Removing below tests due to errors caused by concurrent images.
     #tnet.derive_temporalnetwork({'method': 'jackknife'})
@@ -194,12 +194,16 @@ def test_tnet_checksidecar():
     tnet.load_data('parcellation')
     tnet.set_confound_pipeline('fmriprep')
     tnet.set_exclusion_timepoint('confound1', '<=0', replace_with='nan')
-    with open(teneto.__path__[0] + '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__ + '/sub-001/func/parcellation/sub-001_task-a_run-01_desc-preproc_roi.json') as fs:
+    sidecarpath = teneto.__path__[0]
+    sidecarpath += '/data/testdata/dummybids/derivatives/teneto_' + teneto.__version__
+    sidecarpath += '/sub-001/func/parcellation/'
+    sidecarpath += 'sub-001_task-a_run-01_desc-preproc_roi.json'
+    with open(sidecarpath) as fs:
         sidecar = json.load(fs)
     # Check both steps are in sidecar
-    if not 'parcellation' in sidecar.keys():
+    if 'parcellation' not in sidecar.keys():
         raise AssertionError()
-    if not 'scrubbed_timepoints' in sidecar.keys():
+    if 'scrubbed_timepoints' not in sidecar.keys():
         raise AssertionError()
 
 
@@ -269,4 +273,4 @@ def test_networkmeasure():
                              raw_data_exists=False)
     tnet.networkmeasures('volatility', {'calc': 'pertime'}, tag='time')
     tnet.load_data('temporalnetwork', measure='volatility', tag='time')
-    vol = tnet.temporalnetwork_data_['volatility']
+    _ = tnet.temporalnetwork_data_['volatility']
