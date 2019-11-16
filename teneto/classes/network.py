@@ -1,6 +1,4 @@
-"""
-The TemporalNetwork class in teneto is a way of representing network objects.  
-"""
+"""The TemporalNetwork class in teneto is a way of representing network objects."""
 
 import pandas as pd
 import numpy as np
@@ -13,7 +11,7 @@ class TemporalNetwork:
     """
     TemporalNetwork Class. See __init__ for input variables.
     """
-    
+
     def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False,
                  timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None, hdf5=False, hdf5path=None, forcesparse=False):
         """

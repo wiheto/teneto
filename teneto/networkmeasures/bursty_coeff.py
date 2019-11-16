@@ -1,14 +1,13 @@
-"""
-networkmeasures.bursty_coeff
-"""
+"""Bursty Coeff"""
 
 import numpy as np
 from .intercontacttimes import intercontacttimes
 from ..utils import binarize
 import itertools
 
+
 def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_type=None, threshold_level=None, threshold_params=None):
-    r"""
+    u"""
     Calculates the bursty coefficient.[1][2]
 
     Parameters
@@ -19,7 +18,8 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
         A weighted network can be applied if you specify threshold_type and threshold_value which will make it binary.
 
     calc : str
-        Caclulate the bursty coeff over what. Options include 'edge': calculate B on all ICTs between node i and j. (Default); 'node': caclulate B on all ICTs connected to node i.;
+        Caclulate the bursty coeff over what. Options include 'edge': calculate B on all ICTs between node i and j.
+        (Default); 'node': caclulate B on all ICTs connected to node i.;
         'communities': calculate B for each communities (argument communities then required);
         'meanEdgePerNode': first calculate the ICTs between node i and j, then take the mean over all j.
 
@@ -51,9 +51,12 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
 
     .. math:: B = {{\sigma_{ICT} - \mu_{ICT}} \over {\sigma_{ICT} + \mu_{ICT}}}
 
-    Where :math:`\sigma_{ICT}` and :math:`\mu_{ICT}` are the standard deviation and mean of the inter-contact times respectively (see teneto.networkmeasures.intercontacttimes)
+    Where :math:`\sigma_{ICT}` and :math:`\mu_{ICT}` are the standard deviation and
+    mean of the inter-contact times respectively (see teneto.networkmeasures.intercontacttimes)
 
-    When B > 0, indicates bursty intercontact times. When B < 0, indicates periodic/tonic intercontact times. When B = 0, indicates random.
+    When B > 0, indicates bursty intercontact times.
+    When B < 0, indicates periodic/tonic intercontact times.
+    When B = 0, indicates random.
 
 
     Examples
@@ -64,7 +67,8 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
     >>> import teneto
     >>> import numpy as np
 
-    Now create 2 temporal network of 2 nodes and 60 time points. The first has periodict edges, repeating every other time-point:
+    Now create 2 temporal network of 2 nodes and 60 time points.
+    The first has periodict edges, repeating every other time-point:
 
     >>> G_periodic = np.zeros([2, 2, 60])
     >>> ts_periodic = np.arange(0, 60, 2)
@@ -122,11 +126,18 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
     References
     ----------
 
-    .. [1] Goh, KI & Barabasi, AL (2008) Burstiness and Memory in Complex Systems. EPL (Europhysics Letters), 81: 4 [`Link <https://arxiv.org/pdf/physics/0610233.pdf>`_]
-    .. [2] Holme, P & Saramäki J (2012) Temporal networks. Physics Reports. 519: 3. [`Link <https://arxiv.org/pdf/1108.1780.pdf>`_] (Discrete formulation used here)
+    .. [1]
+
+        Goh, KI & Barabasi, AL (2008)
+        Burstiness and Memory in Complex Systems. EPL (Europhysics Letters),
+        81: 4 [`Link <https://arxiv.org/pdf/physics/0610233.pdf>`_]
+
+    .. [2]
+        Holme, P & Saramäki J (2012) Temporal networks.
+        Physics Reports. 519: 3. [`Link <https://arxiv.org/pdf/1108.1780.pdf>`_]
+        (Discrete formulation used here)
 
     """
-
     if threshold_type is not None:
         if threshold_params is None:
             threshold_params = {}
@@ -174,7 +185,8 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
         for i, s1 in enumerate(unique_communities):
             for j, s2 in enumerate(unique_communities):
                 if i == j:
-                    ind = list(zip(*itertools.combinations(np.where(communities==s1)[0],2)))
+                    ind = list(
+                        zip(*itertools.combinations(np.where(communities == s1)[0], 2)))
                     ict[i, j] = np.concatenate(
                         data['intercontacttimes'][ind[0], ind[1]])
                 else:

@@ -1,6 +1,4 @@
-"""
-networkmeasures.local_variation
-"""
+"""Networkmeasure: local_variation"""
 
 import numpy as np
 from .intercontacttimes import intercontacttimes
@@ -14,7 +12,8 @@ def local_variation(data):
     ----------
 
     data : array, dict
-        This is either (1) temporal network input (graphlet or contact) with nettype: 'bu', 'bd'. (2) dictionary of ICTs (output of *intercontacttimes*).
+        This is either (1) temporal network input (graphlet or contact) with nettype: 'bu', 'bd'.
+        (2) dictionary of ICTs (output of *intercontacttimes*).
 
 
     Returns
@@ -32,7 +31,8 @@ def local_variation(data):
 
     .. math:: LV = {3 \over {n-1}}\sum_{i=1}^{n-1}{{{\iota_i - \iota_{i+1}} \over {\iota_i + \iota_{i+1}}}^2}
 
-    Where :math:`\iota` are inter-contact times and i is the index of the inter-contact time (not a node index). n is the number of events, making n-1 the number of inter-contact times.
+    Where :math:`\iota` are inter-contact times and i is the index of the inter-contact time (not a node index).
+    n is the number of events, making n-1 the number of inter-contact times.
 
     The possible range is: :math:`0 \geq LV \gt 3`.
 
@@ -82,8 +82,19 @@ def local_variation(data):
     References
     ----------
 
-    .. [LV-1] Shinomoto et al (2003) Differences in spiking patterns among cortical neurons. Neural Computation 15.12 [`Link <https://www.mitpressjournals.org/doi/abs/10.1162/089976603322518759>`_]
-    .. [LV-2] Followed eq., 4.34 in Masuda N & Lambiotte (2016) A guide to temporal networks. World Scientific. Series on Complex Networks. Vol 4 [`Link <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_]
+    .. [LV-1]
+
+        Shinomoto et al (2003)
+        Differences in spiking patterns among cortical neurons.
+        Neural Computation 15.12
+        [`Link <https://www.mitpressjournals.org/doi/abs/10.1162/089976603322518759>`_]
+
+    .. [LV-2]
+
+        Followed eq., 4.34 in Masuda N & Lambiotte (2016)
+        A guide to temporal networks. World Scientific.
+        Series on Complex Networks. Vol 4
+        [`Link <https://www.worldscientific.com/doi/abs/10.1142/9781786341150_0001>`_]
 
     """
     ict = 0  # are ict present
