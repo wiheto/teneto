@@ -3,7 +3,7 @@ import bids
 import numpy as np
 import inspect
 import json
-from ..neuroimagingtools import load_tabular_file, get_bids_tag, get_sidecar, confound_matching, drop_bids_suffix
+from ..neuroimagingtools import load_tabular_file, get_sidecar
 import pandas as pd
 from .network import TemporalNetwork
 from teneto import __path__ as tenetopath
@@ -11,7 +11,6 @@ from teneto import __version__ as tenetoversion
 import teneto
 
 class TenetoBIDS:
-
     """Class for analysing data in BIDS.
 
     TenetoBIDS allows for an analysis to be performed across a dataset.
@@ -58,7 +57,7 @@ class TenetoBIDS:
         self.overwrite = overwrite
 
         with open(tenetopath[0] + '/config/tenetobids/tenetobids_description.json') as f:
-            tenetobids_description = json.load(f)
+            self.tenetobids_description = json.load(f)
         self.tenetobids_description['PipelineDescription']['Version'] = tenetoversion
 
         with open(tenetopath[0] + '/config/tenetobids/tenetobids_structure.json') as f:
