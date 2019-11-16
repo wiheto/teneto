@@ -16,6 +16,8 @@
 -   Scipy requirements updated.
 -   Tougher coding standards implemented through prospector
 -   Renaming getDistanceFunction to get_distance_function.
+-   Created `teneto.neuroimagingtools` to contains neuroimaging specific functions.
+-   fmriutils and bidsutils have moved to neuroimagingtools.
 
 ### 0.5.0 Fixes
 

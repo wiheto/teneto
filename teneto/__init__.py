@@ -16,10 +16,12 @@ from . import io
 from . import trajectory
 from . import communitymeasures
 from . import communitydetection
+from . import neuroimagingtools
 from .classes import TenetoBIDS, TemporalNetwork, TenetoWorkflow
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering
 __all__ = ['networkmeasures', 'plot', 'generatenetwork',
            'timeseries', 'misc', 'io', 'trajectory',
            'communitymeasures', 'communitydetection',
+           'neuroimagingtools',
            'TenetoBIDS', 'TemporalNetwork', 'TenetoWorkflow']

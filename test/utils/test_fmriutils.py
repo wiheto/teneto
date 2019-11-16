@@ -1,5 +1,5 @@
 import teneto
-from teneto.utils import make_parcellation
+from teneto.neuroimagingtools import make_parcellation
 import pandas as pd
 import pytest
 

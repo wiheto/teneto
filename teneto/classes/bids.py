@@ -11,8 +11,9 @@ import json
 import nilearn
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from scipy.interpolate import interp1d
-from ..utils.bidsutils import load_tabular_file, get_bids_tag, get_sidecar, confound_matching
-from ..utils.bidsutils import process_exclusion_criteria, drop_bids_suffix, make_directories
+from ..utils.neuroimagingtools import load_tabular_file, get_bids_tag, \
+    get_sidecar, confound_matching, process_exclusion_criteria, \
+    drop_bids_suffix, make_directories
 import pandas as pd
 from .network import TemporalNetwork
 import sys
@@ -247,8 +248,7 @@ class TenetoBIDS:
                 dfc_df = pd.DataFrame(dfc[ind[0], ind[1], :].transpose())
                 # If windowed, prune df so that it matches with dfc_df
                 if len(df) != len(dfc_df):
-                    df = df.iloc[int(np.round((params['windowsize']-1)/2))
-                                     : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
+                    df = df.iloc[int(np.round((params['windowsize']-1)/2))                                 : int(np.round((params['windowsize']-1)/2)+len(dfc_df))]
                     df.reset_index(inplace=True, drop=True)
                 # NOW CORRELATE DF WITH DFC BUT ALONG INDEX NOT DF.
                 dfc_df_z = (dfc_df - dfc_df.mean())
