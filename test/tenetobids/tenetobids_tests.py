@@ -1,6 +1,7 @@
 from teneto import TenetoBIDS
+from teneto import __path__ as tenetopath
 
-datdir = '/home/william/work/teneto/teneto/data/testdata/dummybids/'
+datdir = tenetopath[0] + '/data/testdata/dummybids/'
 tnet = TenetoBIDS(datdir, selected_pipeline='fmriprep', bids_filters={
                      'subject': '001', 'run': 1, 'task': 'a'}, overwrite=True)
 tnet.run('make_parcellation', {'atlas': 'Schaefer2018',
