@@ -10,6 +10,7 @@
 -   Changing argument values for minimize in shortest_temporal_paths, it is now called: 'temporal_distance' instead of time.
 -   Single instance of version specified in teneto/_version.py.
 -   Output format can be specified in binarize,
+-   TenetoBIDS rewritten. Compatible now with pybids. Easier to use.
 
 ### 0.5.0 Changes
 
