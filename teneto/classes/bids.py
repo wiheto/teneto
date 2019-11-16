@@ -1,19 +1,12 @@
-import itertools
 import teneto
 import os
-import re
 import bids
 import numpy as np
 import inspect
-import matplotlib.pyplot as plt
 import json
-import nilearn
-from concurrent.futures import ProcessPoolExecutor, as_completed
-from scipy.interpolate import interp1d
 from teneto.neuroimagingtools import load_tabular_file, get_bids_tag, get_sidecar, confound_matching, process_exclusion_criteria, drop_bids_suffix, make_directories
 import pandas as pd
-from teneto import TemporalNetwork
-import sys
+from . import TemporalNetwork
 
 
 class TenetoBIDS:
