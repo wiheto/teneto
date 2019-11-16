@@ -9,48 +9,52 @@ import matplotlib.pyplot as plt
 
 class TemporalNetwork:
     """
-    TemporalNetwork Class. See __init__ for input variables.
+    A class for temporal networks. 
+
+    This class allows to call different teneto functions within the class and store the network representation.
+
+    Parameters
+    ============
+
+    N : int
+        number of nodes in network
+    T : int
+        number of time-points in network
+    nettype : str
+        description of network. Can be: bu, bd, wu, wd where the letters stand for binary, weighted, undirected and directed.
+        Default is weighted and undirected.
+    from_df : pandas df
+        input data frame with i,j,t,[weight] columns
+    from_array : array
+        input data from an array with dimesnions node,node,time
+    from_dict : dict
+        input data is a contact sequence dictionary.
+    from_edgelist : list
+        input data is a list of lists where each item in main list consists of [i,j,t,[weight]].
+    timetype : str
+        discrete or continuous
+    diagonal : bool
+        if the diagonal should be included in the edge list.
+    timeunit : str
+        string (used in plots)
+    desc : str
+        string to describe network.
+    startime : int
+        integer represents time of first index.
+    nodelabels : list
+        list of labels for naming the nodes
+    timelabels : list
+        list of labels for time-points
+    hdf5 : bool
+        if true, pandas dataframe is stored and queried as a h5 file.
+    hdf5path : str
+        Where the h5 files is saved if hdf5 is True. If left unset, the default is ./teneto_temporalnetwork.h5
+    forcesparse : bool
+        If importing array, and over 25% edges are present, a dense matrix is created. Can force it to be sparse by making this true.
     """
 
     def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False,
                  timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None, hdf5=False, hdf5path=None, forcesparse=False):
-        """
-        N : int
-            number of nodes in network
-        T : int
-            number of time-points in network
-        nettype : str
-            description of network. Can be: bu, bd, wu, wd where the letters stand for binary, weighted, undirected and directed.
-            Default is weighted and undirected.
-        from_df : pandas df
-            input data frame with i,j,t,[weight] columns
-        from_array : array
-            input data from an array with dimesnions node,node,time
-        from_dict : dict
-            input data is a contact sequence dictionary.
-        from_edgelist : list
-            input data is a list of lists where each item in main list consists of [i,j,t,[weight]].
-        timetype : str
-            discrete or continuous
-        diagonal : bool
-            if the diagonal should be included in the edge list.
-        timeunit : str
-            string (used in plots)
-        desc : str
-            string to describe network.
-        startime : int
-            integer represents time of first index.
-        nodelabels : list
-            list of labels for naming the nodes
-        timelabels : list
-            list of labels for time-points
-        hdf5 : bool
-            if true, pandas dataframe is stored and queried as a h5 file.
-        hdf5path : str
-            Where the h5 files is saved if hdf5 is True. If left unset, the default is ./teneto_temporalnetwork.h5
-        forcesparse : bool
-            If importing array, and over 25% edges are present, a dense matrix is created. Can force it to be sparse by making this true.
-        """
         # Check inputs
         if nettype:
             if nettype not in ['bu', 'bd', 'wu', 'wd']:
@@ -163,8 +167,7 @@ class TemporalNetwork:
             self.hdf5_setup(hdf5path)
 
     def _set_nettype(self):
-        """
-        """
+        """Helper function that sets the network type"""
         # Only run if not manually set and network values exist
         if not hasattr(self, 'nettype') and len(self.network) > 0:
             # Then check if weighted
@@ -186,7 +189,7 @@ class TemporalNetwork:
             self.nettype = wb + ud
 
     def network_from_array(self, array, forcesparse=False):
-        """impo
+        """
         Defines a network from an array.
 
         Parameters
@@ -220,8 +223,7 @@ class TemporalNetwork:
         self.netshape = (self.N, self.T)
 
     def _update_network(self):
-        """
-        """
+        """Helper function that updates the network info"""
         self._calc_netshape()
         self._set_nettype()
         if self.nettype:
@@ -231,7 +233,7 @@ class TemporalNetwork:
         self.network['j'] = self.network['j'].astype(int)
 
     def network_from_df(self, df):
-        """
+        r"""
         Defines a network from an array.
 
         Parameters
@@ -251,7 +253,8 @@ class TemporalNetwork:
         Parameters
         ----------
         edgelist : list of lists.
-            A list of lists which are 3 or 4 in length. For binary networks each sublist should be [i, j ,t] where i and j are node indicies and t is the temporal index.
+            A list of lists which are 3 or 4 in length.
+            For binary networks each sublist should be [i, j ,t] where i and j are node indicies and t is the temporal index.
             For weighted networks each sublist should be [i, j, t, weight].
         """
         teneto.utils.check_TemporalNetwork_input(edgelist, 'edgelist')
@@ -279,16 +282,12 @@ class TemporalNetwork:
             self.timeunit = contact['timeunit']
 
     def _drop_duplicate_ij(self):
-        """
-        Drops duplicate entries from the network dataframe.
-        """
+        """Drops duplicate entries from the network dataframe."""
         self.network = teneto.utils.df_drop_ij_duplicates(self.network)
 
 
     def _drop_diagonal(self):
-        """
-        Drops self-contacts from the network dataframe.
-        """
+        """Drops self-contacts from the network dataframe."""
         if self.sparse:
             self.network = self.network.where(
                 self.network['i'] != self.network['j']).dropna()
@@ -487,6 +486,8 @@ class TemporalNetwork:
 
     def binarize(self, threshold_type, threshold_level, **kwargs):
         """
+        Binarizes the network.
+
         Parameters
         ----------
 
@@ -507,7 +508,7 @@ class TemporalNetwork:
 
         """
         gbin = teneto.utils.binarize(self.network, threshold_type, threshold_level, **kwargs)
-        if self.sparse == True:
+        if self.sparse True:
             gbin = teneto.utils.process_input(gbin, 'G', outputformat='TN', forcesparse=True)
             self.network = gbin.network
         else:
