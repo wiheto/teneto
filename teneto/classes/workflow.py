@@ -12,7 +12,7 @@ class TenetoWorkflow():
 
     def __init__(self, remove_nonterminal_output=True):
         """
-        Initialize TenetoWorkflow. 
+        Initialize TenetoWorkflow.
 
         Parameters:
         -----------
@@ -38,7 +38,7 @@ class TenetoWorkflow():
         nodename : str
             Name of the node
         func : str
-            The function that is to be called. 
+            The function that is to be called.
             The alternatives here are 'TemporalNetwork' or 'TenetoBIDS',
             or any of the functions that can be called within these classes.
         depends_on : str
@@ -116,7 +116,8 @@ class TenetoWorkflow():
             remove_candidate_steps = teneto.utils.get_network_when(
                 self.graph, i=not_run, j=candidate_steps, logic='and')['j'].tolist()
             remove_candidate_steps = list(set(remove_candidate_steps))
-            _ = [candidate_steps.remove(step) for step in remove_candidate_steps]
+            _ = [candidate_steps.remove(step)
+                 for step in remove_candidate_steps]
             for step in candidate_steps:
                 run.append(step)
                 not_run.remove(step)
@@ -134,7 +135,6 @@ class TenetoWorkflow():
 
     def run(self):
         """Runs the entire graph."""
-        Only 
         self.output_ = {}
         self.calc_runorder()
         # Can add multiprocess here over levels
@@ -166,7 +166,8 @@ class TenetoWorkflow():
 
     def delete_output_from_level(self, level):
         """Delete the output found after calling TenetoWorkflow.run()."""
-        output_todelete = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist()
+        output_todelete = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist(
+        )
         for node in output_todelete:
             self.output_.pop(node)
 
