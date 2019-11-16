@@ -41,13 +41,6 @@ class TenetoBIDS:
         If False, will not overwrite existing directories
     """
 
-    with open(tenetopath[0] + '/config/tenetobids/tenetobids_description.json') as f:
-        tenetobids_description = json.load(f)
-    tenetobids_description['PipelineDescription']['Version'] = tenetoversion
-
-    with open(tenetopath[0] + '/config/tenetobids/tenetobids_structure.json') as f:
-        tenetobids_structure = json.load(f)
-
     def __init__(self, bids_dir, selected_pipeline, bids_filters=None, bidsvalidator=False,
                  update_pipeline=True, history=None, overwrite=False, layout=None):
         if layout is None:
@@ -63,6 +56,13 @@ class TenetoBIDS:
         if history is not None:
             self.history = {}
         self.overwrite = overwrite
+
+        with open(tenetopath[0] + '/config/tenetobids/tenetobids_description.json') as f:
+            tenetobids_description = json.load(f)
+        self.tenetobids_description['PipelineDescription']['Version'] = tenetoversion
+
+        with open(tenetopath[0] + '/config/tenetobids/tenetobids_structure.json') as f:
+            self.tenetobids_structure = json.load(f)
 
     # def set_selected_pipeline(self, selected_pipeline):
     #    bids.
