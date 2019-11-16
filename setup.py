@@ -1,6 +1,4 @@
-"""
-General setup for module
-"""
+"""General setup for module"""
 
 from setuptools import setup, find_packages
 
@@ -35,5 +33,7 @@ setup(name='teneto',
           'console_scripts': ['teneto = teneto.__main__:main'
                               ]
       },
-      long_description='Temporal network tools. A package for deriving, analysing and plotting temporal network representations. Additional tools for temporal network analysis with neuroimaging contexts.'
+      long_description='Temporal network tools. \
+        A package for deriving, analysing and plotting temporal network representations. \
+        Additional tools for temporal network analysis with neuroimaging contexts.'
       )

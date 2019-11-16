@@ -1,4 +1,4 @@
-# Main function to draw a slice_graph
+"""Function to draw a circle_plot"""
 import numpy as np
 import math
 from .slice_plot import make_bezier
@@ -7,7 +7,7 @@ import matplotlib.cm as cm
 
 
 def circle_plot(netIn, ax, nodelabels=None, linestyle='k-', nodesize=1000, cmap='Set2'):
-    r'''
+    r"""
 
     Function draws "circle plot" and exports axis handles
 
@@ -55,7 +55,7 @@ def circle_plot(netIn, ax, nodelabels=None, linestyle='k-', nodesize=1000, cmap=
         teneto.plot.circle_plot(G, ax)
         fig.show()
 
-    '''
+    """
     # Get input type (C or G)
     inputType = check_input(netIn, conMat=1)
     if nodelabels is None:

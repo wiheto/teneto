@@ -1,6 +1,4 @@
-"""
-Import functions from derive module
-"""
+"""Import functions from time series module"""
 
 from .derive import derive_temporalnetwork
 from .postprocess import postpro_pipeline

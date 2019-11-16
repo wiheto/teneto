@@ -1,6 +1,4 @@
-"""
-Many helper functions for Teneto
-"""
+"""Many helper functions for Teneto"""
 
 from .bidsutils import make_directories, drop_bids_suffix, \
     get_bids_tag, load_tabular_file, \

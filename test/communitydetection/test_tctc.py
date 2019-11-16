@@ -87,7 +87,7 @@ def test_kappa():
             rt += list(np.arange(d['start'], d['end']))
     rt = np.unique(rt)
     rt2 = []
-    for i, d in df2.iterrows():
+    for _, d in df2.iterrows():
         if set(d['community']).issuperset([0, 1]):
             rt2 += list(np.arange(d['start'], d['end']))
     rt2 = np.unique(rt2)

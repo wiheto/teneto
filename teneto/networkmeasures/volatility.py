@@ -6,7 +6,8 @@ def volatility(tnet, distance_func_name='default', calc='overtime', communities=
     r"""
     Volatility of temporal networks.
 
-    Volatility is the average distance between consecutive time points of graphlets (difference is caclualted either globally or per edge).
+    Volatility is the average distance between consecutive time points
+    (difference is caclualted either globally or per edge).
 
     Parameters
     ----------
@@ -41,9 +42,13 @@ def volatility(tnet, distance_func_name='default', calc='overtime', communities=
 
     Where D is some distance function (e.g. Hamming distance for binary matrices).
 
-    V can be calculated for the entire network (global), but can also be calculated for individual edges, nodes or given a community vector.
+    V can be calculated for the entire network (global),
+    but can also be calculated for individual edges, nodes or given a community vector.
 
-    Index of communities are returned "as is" with a shape of [max(communities)+1,max(communities)+1]. So if the indexes used are [1,2,3,5], V.shape==(6,6). The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns). If this behaviour is unwanted, call clean_communitiesdexes first. This will probably change.
+    Index of communities are returned "as is" with a shape of [max(communities)+1,max(communities)+1].
+    So if the indexes used are [1,2,3,5], V.shape==(6,6).
+    The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns).
+    If this behaviour is unwanted, call clean_communitiesdexes first.
 
     Examples
     --------
@@ -99,7 +104,8 @@ def volatility(tnet, distance_func_name='default', calc='overtime', communities=
     array([[nan, 0.5],
            [0.5, 0. ]])
 
-    And we see that, at time-point 0, there is some volatility between community 0 and 1 but no volatility within community 1. The reason for nan appearing is due to there only being 1 node in community 0.
+    And we see that, at time-point 0, there is some volatility between community 0 and 1 but no volatility within community 1.
+    The reason for nan appearing is due to there only being 1 node in community 0.
 
 
     Output
@@ -108,7 +114,6 @@ def volatility(tnet, distance_func_name='default', calc='overtime', communities=
     vol : array
 
     """
-
     # Get input (C or G)
     tnet, netinfo = process_input(tnet, ['C', 'G', 'TN'])
 
@@ -165,7 +170,8 @@ def volatility(tnet, distance_func_name='default', calc='overtime', communities=
             for net2 in net_id:
                 if net1 != net2:
                     vol[net1, net2, :] = [distance_func(tnet[communities == net1][:, communities == net2, t].flatten(),
-                                                        tnet[communities == net1][:, communities == net2, t + 1].flatten()) for t in range(0, tnet.shape[-1] - 1)]
+                                                        tnet[communities == net1][:, communities == net2, t + 1].flatten())
+                                                        for t in range(0, tnet.shape[-1] - 1)]
                 else:
                     nettmp = tnet[communities ==
                                   net1][:, communities == net2, :]
