@@ -16,7 +16,7 @@ from teneto import TemporalNetwork
 import sys
 
 
-class NewTenetoBIDS:
+class TenetoBIDS:
     """Class for analysing data in BIDS.
 
     TenetoBIDS allows for an analysis to be performed across a dataset.
@@ -31,14 +31,14 @@ class NewTenetoBIDS:
     selected_pipeline : str or dict
         the directory that is in the bids_dir/derivatives/<selected_pipeline>/.
         This fine will be used as the input to any teneto function (first argument).
-        If multiple inputs are required for a function, then you can specify: 
-            {'netin': 'tvc', 
+        If multiple inputs are required for a function, then you can specify:
+            {'netin': 'tvc',
             'communities': 'coms'}
         With this, the input for netin with be from bids_dir/derivatives/[teneto-]tvc/,
         and the input for communities will be from bids_dir/derivatives/[teneto-]coms/.
-        The keys in this dictionary must match the names of the teneto funciton inputs. 
+        The keys in this dictionary must match the names of the teneto funciton inputs.
 
-    bids_filters : dict 
+    bids_filters : dict
     history : bool
     update_pipeline : bool
         If true, the output_pipeline becomes the new selected_pipeline
@@ -77,9 +77,9 @@ class NewTenetoBIDS:
 
     def create_output_pipeline(self, runc_func, output_pipeline_name, overwrite=None):
         """
-        Parameters 
+        Parameters
         ----------
-        output_pipeline : str 
+        output_pipeline : str
             name of output pipeline
         overwrite : bool
 
@@ -87,7 +87,7 @@ class NewTenetoBIDS:
         Returns
         -------
         Creates the output pipeline directory in:
-            bids_dir/teneto-[output_pipeline]/ 
+            bids_dir/teneto-[output_pipeline]/
 
         """
         if overwrite is not None:
@@ -116,20 +116,20 @@ class NewTenetoBIDS:
         ---------------
         run_func : str
             str should correspond to a teneto function. So to run the funciton teneto.timeseries.derive_temporalnetwork
-            the input should be: 'timeseries.derive_temporalnetwork'            
+            the input should be: 'timeseries.derive_temporalnetwork'
         input_params : dict
             keyword and value pairing of arguments.
             The input data to each function will be located automatically and should not be included.
-            For any other input that needs to be loaded loaded within the teneto_bidsstructure (communities, events, confounds), 
-            you can pass the value "bids" if they can be found within the current selected_pipeline. 
-            If they are found within a different selected_pipeline, type "bids_[selected_pipeline]". 
+            For any other input that needs to be loaded loaded within the teneto_bidsstructure (communities, events, confounds),
+            you can pass the value "bids" if they can be found within the current selected_pipeline.
+            If they are found within a different selected_pipeline, type "bids_[selected_pipeline]".
         output_desc : str
             If none, no desc is used (removed any previous file)
-            If 'keep', then desc is preserved. 
+            If 'keep', then desc is preserved.
             If any other str, desc is set to that string
         output_pipeline_name : str
             If set, then the data is saved in teneto_[functionname]_[output_pipeline_name]. If run_func is
-            teneto.timeseries.derive_temporalnetwork and output_pipeline_name is jackknife 
+            teneto.timeseries.derive_temporalnetwork and output_pipeline_name is jackknife
             then then the pipeline the data is saved in is
             teneto-generatetemporalnetwork_jackknife
         update_pipeline : bool
@@ -168,18 +168,18 @@ class NewTenetoBIDS:
                     'Expecting one unspecified input argument. Enter all required input arguments in input_params except for the data files.')
         for f in input_files:
             gf = bf = 0
-            if get_confounds == 1: 
+            if get_confounds == 1:
                 input_params['confounds'] = self.get_confounds(f)
             data, sidecar = self._load_file(f)
             if data is not None:
                 result = func(data, **input_params)
                 f_entities = f.get_entities()
-                if output_desc is None and 'desc' in f_entities: 
+                if output_desc is None and 'desc' in f_entities:
                     f_entities.pop('desc')
                 elif output_desc == 'keep':
-                    pass 
+                    pass
                 elif output_desc is not None:
-                    f_entities['desc'] = output_desc 
+                    f_entities['desc'] = output_desc
                 f_entities.update(
                     self.tenetobids_structure[run_func.split('.')[-1]]['output'])
                 output_pattern = '/sub-{subject}/[ses-{ses}/]func/sub-{subject}[_ses-{ses}][_run-{run}]_task-{task}[_desc-{desc}]_{suffix}.{extension}'
@@ -218,11 +218,11 @@ class NewTenetoBIDS:
                 sidecar['TenetoFunction'] = {}
                 sidecar['TenetoFunction']['Name'] = run_func
                 # For aux_input more is needed here too.
-                if get_confounds == 1: 
+                if get_confounds == 1:
                     input_params['confounds'] = 'Loaded automatically via TenetoBIDS'
-                elif 'confounds' in input_params: 
+                elif 'confounds' in input_params:
                     input_params['confounds'] = 'Passed as argument'
-                    
+
                 sidecar['TenetoFunction']['Parameters'] = input_params
                 # Save sidecar
                 with open(save_path + save_name.replace('.tsv', '.json'), 'w') as f:
@@ -259,9 +259,9 @@ class NewTenetoBIDS:
         funcs = self.tenetobids_structure.keys()
         return ', '.join(funcs)
 
-    def get_confounds(self, bidsfile, confound_filters=None): 
+    def get_confounds(self, bidsfile, confound_filters=None):
         """Tries to automatically get the confounds file of an input file, and loads it
-        
+
         Paramters
         ==========
         bidsfile : BIDSDataFile or BIDSImageFile
@@ -270,49 +270,49 @@ class NewTenetoBIDS:
         if confound_filters is None:
             confound_filters = {}
         # Get the entities of the filename
-        file_entities = bidsfile.get_entities() 
+        file_entities = bidsfile.get_entities()
         # Ensure that the extension and suffix are correct
         file_entities['suffix'] = 'regressors'
         file_entities['extension'] = 'tsv'
         if 'desc' in file_entities:
             file_entities.pop('desc')
         confoundsfile = self.BIDSLayout.get(**file_entities)
-        if len(confoundsfile) == 0: 
+        if len(confoundsfile) == 0:
             raise ValueError('Non confounds found')
-        elif len(confoundsfile) > 1: 
+        elif len(confoundsfile) > 1:
             raise ValueError('More than one confounds file found')
         # Load the confounds file
-        confounds = load_tabular_file(confoundsfile[0].dirname + '/' + confoundsfile[0].filename)
+        confounds = load_tabular_file(
+            confoundsfile[0].dirname + '/' + confoundsfile[0].filename)
         return confounds
 
     def load_data(self, bids_filters=None):
-        """Returns data, default is the input data. 
+        """Returns data, default is the input data.
 
-        bids_filters : dict 
+        bids_filters : dict
             default is None. If set, load data will load all files found by the bids_filters.
             Otherwise, tnet.get_selected_files is loaded.
             Note, this can select files outside of input pipeline.
         """
         if bids_filters is None:
             files = self.get_selected_files()
-        else: 
+        else:
             files = tnet.BIDSLayout.get(**bids_filters)
         data = {}
         for f in files:
-            if f.filename in data: 
+            if f.filename in data:
                 raise ValueError('Same name appears twice in selected files')
             data[f.filename], _ = self._load_file(f)
         return data
 
-
-    def _load_file(self, bidsfile): 
+    def _load_file(self, bidsfile):
         """Aux function to load the data and sidecar from a BIDSFile
 
         Paramters
         ==========
         bidsfile : BIDSDataFile or BIDSImageFile
             The BIDS file that the confound file is gong to be matched.
- 
+
         """
         # Get sidecar and see if file has been rejected at a previous step
         # (note sidecar could be called in input_files, but this will require loading sidecar twice)
@@ -322,22 +322,8 @@ class NewTenetoBIDS:
                 data = bidsfile.get_image()
             elif hasattr(bidsfile, 'get_df'):
                 # This can be changed if/when pybids is updated. Assumes index_col=0 in tsv file
-                data = load_tabular_file(bidsfile.dirname + '/' + bidsfile.filename)
-        else: 
+                data = load_tabular_file(
+                    bidsfile.dirname + '/' + bidsfile.filename)
+        else:
             data = None
         return data, sidecar
-
-import teneto
-import bids
-
-datdir = '/home/william/work/teneto/teneto/data/testdata/dummybids/'
-tnet = NewTenetoBIDS(datdir, selected_pipeline='fmriprep', bids_filters={
-                     'subject': '001', 'run': 1, 'task': 'a'}, overwrite=True)
-tnet.run('make_parcellation', {'atlas': 'Schaefer2018',
-                               'atlas_desc': '100Parcels7Networks',
-                               'parc_params': {'detrend': True}})
-tnet.run('remove_confounds', {'confound_selection': ['confound1']})
-tnet.run('derive_temporalnetwork', {'params': {
-         'method': 'jackknife', 'postpro': 'standardize'}})
-tnet.run('binarize', {'threshold_type': 'percent', 'threshold_level': 0.1})
-tnet.run('volatility', {})
