@@ -38,7 +38,6 @@ class TenetoBIDS:
     overwrite : bool
         If False, will not overwrite existing directories
     """
-
     with open(teneto.__path__[0] + '/config/tenetobids/tenetobids_description.json') as f:
         tenetobids_description = json.load(f)
     tenetobids_description['PipelineDescription']['Version'] = teneto.__version__
@@ -69,7 +68,8 @@ class TenetoBIDS:
         self.BIDSLayout = bids.BIDSLayout(self.bids_dir, derivatives=True)
 
     def create_output_pipeline(self, runc_func, output_pipeline_name, overwrite=None):
-        """
+        """Creates the directories of the saved file.
+
         Parameters
         ----------
         output_pipeline : str
@@ -91,7 +91,7 @@ class TenetoBIDS:
         if output_pipeline_name is not None:
             output_pipeline += '_' + output_pipeline_name
         output_pipeline_path = self.bids_dir + '/derivatives/' + output_pipeline
-        if os.path.exists(output_pipeline_path) and self.overwrite == False:
+        if os.path.exists(output_pipeline_path) and not self.overwrite:
             raise ValueError(
                 'output_pipeline already exists and overwrite is set to False.')
         os.makedirs(output_pipeline_path, exist_ok=self.overwrite)
@@ -104,7 +104,8 @@ class TenetoBIDS:
         return output_pipeline
 
     def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filters=None, update_pipeline=True, overwrite=None):
-        """
+        """Runs a runction on the selected files.
+
         Parameters
         ---------------
         run_func : str
@@ -163,7 +164,7 @@ class TenetoBIDS:
             gf = bf = 0
             if get_confounds == 1:
                 input_params['confounds'] = self.get_confounds(f)
-            data, sidecar = self._load_file(f)
+            data, sidecar = self.load_file(f)
             if data is not None:
                 result = func(data, **input_params)
                 f_entities = f.get_entities()
@@ -176,7 +177,7 @@ class TenetoBIDS:
                 f_entities.update(
                     self.tenetobids_structure[run_func.split('.')[-1]]['output'])
                 output_pattern = '/sub-{subject}/[ses-{ses}/]func/sub-{subject}[_ses-{ses}][_run-{run}]_task-{task}[_desc-{desc}]_{suffix}.{extension}'
-                save_name = tnet.BIDSLayout.build_path(
+                save_name = self.BIDSLayout.build_path(
                     f_entities, path_patterns=output_pattern, validate=False)
                 save_path = self.bids_dir + '/derivatives/' + output_pipeline
                 os.makedirs(
@@ -184,7 +185,7 @@ class TenetoBIDS:
                 # Save file
                 # Probably should check the output type in tenetobidsstructure
                 # Table needs column header
-                if type(result) is np.ndarray:
+                if isinstance(result, np.ndarray):
                     if len(result.shape) == 3:
                         # THIS CAN BE MADE TO A DENSE HDF5
                         result = teneto.TemporalNetwork(
@@ -196,13 +197,13 @@ class TenetoBIDS:
                     else:
                         raise ValueError(
                             'Output was array with more than 3 dimensions (unexpected)')
-                elif type(result) is list:
+                elif isinstance(result, list):
                     result = pd.DataFrame(result)
-                elif type(result) is int:
+                elif isinstance(result, int):
                     result = pd.Series(result)
                 elif isinstance(result, float):
                     result = pd.Series(result)
-                if type(result) is pd.DataFrame or isinstance(result, pd.Series):
+                if isinstance(result, pd.DataFrame) or isinstance(result, pd.Series):
                     result.to_csv(save_path + save_name, sep='\t', header=True)
                 else:
                     raise ValueError('Unexpected output type')
@@ -290,15 +291,15 @@ class TenetoBIDS:
         if bids_filters is None:
             files = self.get_selected_files()
         else:
-            files = tnet.BIDSLayout.get(**bids_filters)
+            files = self.BIDSLayout.get(**bids_filters)
         data = {}
         for f in files:
             if f.filename in data:
                 raise ValueError('Same name appears twice in selected files')
-            data[f.filename], _ = self._load_file(f)
+            data[f.filename], _ = self.load_file(f)
         return data
 
-    def _load_file(self, bidsfile):
+    def load_file(self, bidsfile):
         """Aux function to load the data and sidecar from a BIDSFile
 
         Paramters
