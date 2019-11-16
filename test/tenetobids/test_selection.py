@@ -50,22 +50,22 @@ def test_get_pipeline_alternatives():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',
                              pipeline='teneto-tests', bids_tags={'task': 'a'}, raw_data_exists=False)
     pipeline = tnet.get_pipeline_alternatives()
-    if not 'fmriprep' in pipeline:
+    if 'fmriprep' not in pipeline:
         raise AssertionError()
-    if not 'teneto-tests' in pipeline:
+    if 'teneto-tests' not in pipeline:
         raise AssertionError()
 
 def test_get_pipeline_subdir_alternatives():
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/',
                              pipeline='teneto-tests', bids_tags={'task': 'a'}, raw_data_exists=True)
     subdir = tnet.get_pipeline_subdir_alternatives()
-    if not 'parcellation' in subdir:
+    if 'parcellation' not in subdir:
         raise AssertionError()
-    if not 'tvc' in subdir:
+    if 'tvc' not in subdir:
         raise AssertionError()
     tnet = teneto.TenetoBIDS(teneto.__path__[0] + '/data/testdata/dummybids/', bids_tags={'task': 'a'}, raw_data_exists=True)
     subdir = tnet.get_pipeline_subdir_alternatives()
-    if not subdir is None:
+    if subdir is not None:
         raise AssertionError()
 
 def test_set_bad_subjects():
@@ -77,7 +77,7 @@ def test_set_bad_subjects():
     tnet.set_bad_subjects('001', reason='last', oops=True)
     if not len(tnet.bad_files) == 0:
         raise AssertionError()
-    if not '001' in tnet.bids_tags['sub']:
+    if '001' not in tnet.bids_tags['sub']:
         raise AssertionError()
     if not len(tnet.bids_tags['sub']) == 2:
         raise AssertionError()
