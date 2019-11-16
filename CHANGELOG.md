@@ -9,6 +9,7 @@
 -   More detailed documentation to temporal_closeness_centrality.
 -   Changing argument values for minimize in shortest_temporal_paths, it is now called: 'temporal_distance' instead of time.
 -   Single instance of version specified in teneto/_version.py.
+-   Output format can be specified in binarize,
 
 ### 0.5.0 Changes
 
@@ -23,6 +24,8 @@
 
 -   Betweenness centrality now normalizes across time with sigma_jk.
 -   Fix error in #53.
+-   Binarize can accept dataframe in sparse.
+-   Remove_confounds can deal with dataframes.
 
 ## V0.4.6
 

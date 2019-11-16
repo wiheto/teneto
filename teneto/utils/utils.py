@@ -18,7 +18,7 @@ def graphlet2contact(tnet, params=None):
     """
 
     Converts array representation to contact representation.
-    
+
     Contact representation are more efficient for memory storing.
     Also includes metadata which can made it easier for plotting.
     A contact representation contains all non-zero edges.
@@ -127,7 +127,8 @@ def graphlet2contact(tnet, params=None):
                          for i in sortTime])
     # Get each of the values if weighted matrix
     if nt[0] == 'w':
-        values = list(tnet[edg[0][sortTime], edg[1][sortTime], edg[2][sortTime]])
+        values = list(tnet[edg[0][sortTime], edg[1]
+                           [sortTime], edg[2][sortTime]])
 
     # build output dictionary
     C = params
@@ -146,7 +147,7 @@ def contact2graphlet(C):
     """
 
     Converts contact representation to array representation.
-    
+
     Graphlet representation discards all meta information in contacts.
 
     Parameters
@@ -239,7 +240,7 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
         Binarized network
 
     """
-    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TN'])
     # Set diagonal to 0
     netin = set_diagonal(netin, 0)
     if axis == 'graphlet' and netinfo['nettype'][-1] == 'u':
@@ -305,7 +306,7 @@ def binarize_rdp(netin, level, sign='pos', axis='time'):
     netout : array or dict (dependning on input)
         Binarized network
     """
-    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TN'])
     trajectory = rdp(netin, level)
 
     contacts = []
@@ -362,7 +363,7 @@ def binarize_magnitude(netin, level, sign='pos'):
     netout : array or dict (depending on input)
         Binarized network
     """
-    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TN'])
     # Predefine
     netout = np.zeros(netinfo['netshape'])
 
@@ -385,7 +386,7 @@ def binarize_magnitude(netin, level, sign='pos'):
     return netout
 
 
-def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
+def binarize(netin, threshold_type, threshold_level, outputformat='auto', sign='pos', axis='time'):
     """
     Binarizes a network, returning the network. General wrapper function for different binarization functions.
 
@@ -404,6 +405,9 @@ def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
         If 'percent', it is the percentage to keep (e.g. 0.1, means keep 10% of signal).
         If 'magnitude', it is the amplitude of signal to keep.
 
+    outputformat : str
+        specify what format you want the output in: G, C, TN, or DF. If 'auto', input form is returned.
+
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
 
@@ -417,6 +421,8 @@ def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
         Binarized network
 
     """
+    if outputformat == 'auto':
+        outputformat = check_input(netin)
     if threshold_type == 'percent':
         netout = binarize_percent(netin, threshold_level, sign, axis)
     elif threshold_type == 'magnitude':
@@ -425,6 +431,7 @@ def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
         netout = binarize_rdp(netin, threshold_level, sign, axis)
     else:
         raise ValueError('Unknown value to parameter: threshold_type.')
+    netout = process_input(netout, ['G'], outputformat=outputformat)
     return netout
 
 
@@ -599,7 +606,7 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
 
     tnet : array
         Graphlet representation.
-    netInfo : dict
+    netinfo : dict
         Metainformation about network.
 
     OR
@@ -608,17 +615,24 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
         object of TemporalNetwork class
 
     """
+    if outputformat == 'DF':
+        outputformat = 'TN'
+        return_df = True
+        forcesparse = True
+    else:
+        return_df = False
     inputtype = check_input(netIn)
     if inputtype == 'DF':
         netIn = TemporalNetwork(from_df=netIn)
         inputtype = 'TN'
     # Convert TN to tnet representation
-    if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
+    if inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'G':
         if netIn.sparse:
             tnet = netIn.df_to_array()
         else:
             tnet = netIn.network
-        netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
+        netinfo = {'nettype': netIn.nettype, 'netshape': [
+            netIn.netshape[0], netIn.netshape[0], netIn.netshape[1]]}
     elif inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
         if not netIn.sparse and forcesparse:
             TN = TemporalNetwork(from_array=netIn.network, forcesparse=True)
@@ -626,17 +640,17 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
             TN = netIn
     elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'G':
         tnet = contact2graphlet(netIn)
-        netInfo = dict(netIn)
-        netInfo.pop('contacts')
+        netinfo = dict(netIn)
+        netinfo.pop('contacts')
     elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'TN':
         TN = TemporalNetwork(from_dict=netIn)
     elif inputtype == 'G' and 'G' in allowedformats and outputformat == 'TN':
         TN = TemporalNetwork(from_array=netIn, forcesparse=forcesparse)
     # Get network type if not set yet
     elif inputtype == 'G' and 'G' in allowedformats:
-        netInfo = {}
-        netInfo['netshape'] = netIn.shape
-        netInfo['nettype'] = gen_nettype(netIn)
+        netinfo = {}
+        netinfo['netshape'] = netIn.shape
+        netinfo['nettype'] = gen_nettype(netIn)
         tnet = netIn
     elif inputtype == 'C' and outputformat == 'C':
         pass
@@ -647,15 +661,18 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
         TN.network['j'] = TN.network['j'].astype(int)
         TN.network['t'] = TN.network['t'].astype(int)
     if outputformat == 'C' or outputformat == 'G':
-        netInfo['inputtype'] = inputtype
+        netinfo['inputtype'] = inputtype
     if inputtype != 'C' and outputformat == 'C':
-        C = graphlet2contact(tnet, netInfo)
+        C = graphlet2contact(tnet, netinfo)
     if outputformat == 'G':
-        return tnet, netInfo
+        return tnet, netinfo
     elif outputformat == 'C':
         return C
     elif outputformat == 'TN':
-        return TN
+        if return_df:
+            return TN.network
+        else:
+            return TN
 
 
 def clean_community_indexes(communityID):

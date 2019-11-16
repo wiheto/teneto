@@ -30,9 +30,12 @@ def remove_confounds(timeseries, confounds, confound_selection=None, clean_param
     """
 
     index = None
-    if timeseries is pd.DataFrame:
+    if isinstance(timeseries, pd.DataFrame):
         index = timeseries.index
         timeseries = timeseries.values
+
+    if clean_params is None:
+        clean_params = {}
 
     if isinstance(confounds, str):
         confounds = load_tabular_file(confounds)
@@ -43,17 +46,20 @@ def remove_confounds(timeseries, confounds, confound_selection=None, clean_param
                                  ' is not in confounds dataframe')
         confounds = confounds[confound_selection]
 
-    # nilearn works with time,node data
-    timeseries = timeseries.transpose()
-
     warningtxt = ''
     if confounds.isnull().any().any():
         # Not sure what is the best way to deal with this.
         warningtxt = 'Some confounds contain n/a.\n Setting these values to median of confound.'
         print('WARNING: ' + warningtxt)
         confounds = confounds.fillna(confounds.median())
+
+    if isinstance(confounds, pd.DataFrame):
+        confounds = confounds.values
+
+    # nilearn works with time,node data
+    timeseries = timeseries.transpose()
     cleaned_timeseries = nilearn.signal.clean(
-        timeseries, confounds=confounds.values, **clean_params)
+        timeseries, confounds=confounds, **clean_params)
     cleaned_timeseries = cleaned_timeseries.transpose()
     cleaned_timeseries = pd.DataFrame(cleaned_timeseries)
     if index is not None:
