@@ -1,6 +1,6 @@
 
 import nilearn
-from teneto.utils import load_tabular_file
+from ..neuroimagingtools import load_tabular_file
 import pandas as pd
 
 
