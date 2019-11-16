@@ -191,7 +191,7 @@ def derive_temporalnetwork(data, params):
             weights, report = _weightfun_sliding_window(
                 data.shape[0], params, report)
             relation = 'weight'
-        elif params['method'] tsw_alternatives:
+        elif params['method'] in tsw_alternatives:
             weights, report = _weightfun_tapered_sliding_window(
                 data.shape[0], params, report)
             relation = 'weight'
@@ -251,15 +251,13 @@ def derive_temporalnetwork(data, params):
             R, params['postpro'], report)
         R = set_diagonal(R, 1)
 
-    if params['report'] == 'yes' or params['report'] == True:
+    if params['report'] == 'yes' or params['report']:
         gen_report(report, params['report_path'], params['report_filename'])
     return R
 
 
 def _weightfun_jackknife(T, report):
-    """
-    Creates the weights for the jackknife method. See func: teneto.timeseries.derive_temporalnetwork.
-    """
+    """Creates the weights for the jackknife method. See func: teneto.timeseries.derive_temporalnetwork."""
 
     weights = np.ones([T, T])
     np.fill_diagonal(weights, 0)
@@ -269,9 +267,7 @@ def _weightfun_jackknife(T, report):
 
 
 def _weightfun_sliding_window(T, params, report):
-    """
-    Creates the weights for the sliding window method. See func: teneto.timeseries.derive_temporalnetwork.
-    """
+    """Creates the weights for the sliding window method. See func: teneto.timeseries.derive_temporalnetwork."""
     weightat0 = np.zeros(T)
     weightat0[0:params['windowsize']] = np.ones(params['windowsize'])
     weights = np.array([np.roll(weightat0, i)
