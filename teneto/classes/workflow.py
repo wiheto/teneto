@@ -1,6 +1,4 @@
-"""
-TenetoWorkflows are a way of predefining and saving an analysis pipeline using TemporalNetworks or TenetoBIDS.
-"""
+"""TenetoWorkflows are a way of predefining and saving an analysis pipeline using TemporalNetworks or TenetoBIDS."""
 
 import teneto
 import numpy as np
@@ -14,11 +12,13 @@ class TenetoWorkflow():
 
     def __init__(self, remove_nonterminal_output=True):
         """
+        Initialize TenetoWorkflow. 
 
         Parameters:
         -----------
         remove_nonterminal_output : bool
-            When running, should the nonterminal output be removed when no longer needed (good for RAM).
+            When running, should the nonterminal output be removed when no longer
+            needed (good for RAM).
         """
         self.graph = pd.DataFrame(columns={'i', 'j'})
         self.nodes = {}
@@ -38,9 +38,12 @@ class TenetoWorkflow():
         nodename : str
             Name of the node
         func : str
-            The function that is to be called. The alternatives here are 'TemporalNetwork' or 'TenetoBIDS', or any of the functions that can be called within these classes.
+            The function that is to be called. 
+            The alternatives here are 'TemporalNetwork' or 'TenetoBIDS',
+            or any of the functions that can be called within these classes.
         depends_on : str
-            which step the node depends on. If empty, is considered to preceed the previous step. If 'isroot' is specified, it is considered an input variable.
+            which step the node depends on. If empty, is considered to preceed
+            the previous step. If 'isroot' is specified, it is considered an input variable.
         params : dict
             Parameters that are passed into func.
 
@@ -59,7 +62,8 @@ class TenetoWorkflow():
             raise ValueError('isroot cannot be nodename')
         if nodename in self.nodes:
             raise ValueError(
-                nodename + ' is already part of workflow graph. Each node must have unique nodename.')
+                nodename + ' is already part of workflow graph. \
+                Each node must have unique nodename.')
         if isinstance(depends_on, str):
             depends_on = [depends_on]
         if 'isroot' in depends_on:
@@ -72,7 +76,8 @@ class TenetoWorkflow():
             depends_on[0] = self.graph.iloc[-1]['j']
         if len(depends_on) > 1:
             raise ValueError(
-                'At present, only one dependent per step (multiple steps can share the same depndent).')
+                'At present, only one dependent per step (multiple steps can \
+                share the same depndent).')
             # Needs to add weights to depends_on if multiple inputs to indicate what is primary input
         for step in depends_on:
             self.graph = self.graph.append(
@@ -97,9 +102,7 @@ class TenetoWorkflow():
         # Could add checks to see if network is broken
 
     def calc_runorder(self):
-        """
-        Calculate the run order of the different nodes on the graph.
-        """
+        """Calculate the run order of the different nodes on the graph."""
         not_run = self.graph['i'].tolist() + self.graph['j'].tolist()
         not_run = list(set(not_run))
         not_run.remove('isroot')
@@ -130,9 +133,8 @@ class TenetoWorkflow():
         self.runorder = pd.DataFrame(data={'node': run, 'level': run_level})
 
     def run(self):
-        """
-        Runs the entire graph.
-        """
+        """Runs the entire graph."""
+        Only 
         self.output_ = {}
         self.calc_runorder()
         # Can add multiprocess here over levels
@@ -163,9 +165,7 @@ class TenetoWorkflow():
             self.delete_output_from_level(level)
 
     def delete_output_from_level(self, level):
-        """
-        Delete the output found after calling TenetoWorkflow.run().
-        """
+        """Delete the output found after calling TenetoWorkflow.run()."""
         output_todelete = self.dependencyuntil[self.dependencyuntil['level'] == level]['node'].tolist()
         for node in output_todelete:
             self.output_.pop(node)
