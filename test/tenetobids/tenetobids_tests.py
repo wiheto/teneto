@@ -1,8 +1,7 @@
-import teneto
-import bids
+from teneto import TenetoBIDS
 
 datdir = '/home/william/work/teneto/teneto/data/testdata/dummybids/'
-tnet = NewTenetoBIDS(datdir, selected_pipeline='fmriprep', bids_filters={
+tnet = TenetoBIDS(datdir, selected_pipeline='fmriprep', bids_filters={
                      'subject': '001', 'run': 1, 'task': 'a'}, overwrite=True)
 tnet.run('make_parcellation', {'atlas': 'Schaefer2018',
                                'atlas_desc': '100Parcels7Networks',
