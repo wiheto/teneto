@@ -1,8 +1,10 @@
 import numpy as np
 
 def allegiance(community):
-    """
-    Computes the allegiance matrix with values representing the probability that
+    u"""
+    Computes allience of communities. 
+    
+    The allegiance matrix with values representing the probability that
     nodes i and j were assigned to the same community by time-varying clustering methods.
 
     parameters
