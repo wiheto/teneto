@@ -1,13 +1,13 @@
-import teneto
 import os
 import bids
 import numpy as np
 import inspect
 import json
-from ..neuroimagingtools import load_tabular_file, get_bids_tag, get_sidecar, confound_matching, process_exclusion_criteria, drop_bids_suffix, make_directories
+from ..neuroimagingtools import load_tabular_file, get_bids_tag, get_sidecar, confound_matching, drop_bids_suffix
 import pandas as pd
 from .network import TemporalNetwork
-
+from teneto import __path__ as tenetopath
+from teneto import __version__ as tenetoversion
 
 class TenetoBIDS:
     """Class for analysing data in BIDS.
@@ -38,11 +38,11 @@ class TenetoBIDS:
     overwrite : bool
         If False, will not overwrite existing directories
     """
-    with open(teneto.__path__[0] + '/config/tenetobids/tenetobids_description.json') as f:
+    with open(tenetopath[0] + '/config/tenetobids/tenetobids_description.json') as f:
         tenetobids_description = json.load(f)
-    tenetobids_description['PipelineDescription']['Version'] = teneto.__version__
+    tenetobids_description['PipelineDescription']['Version'] = tenetoversion
 
-    with open(teneto.__path__[0] + '/config/tenetobids/tenetobids_structure.json') as f:
+    with open(tenetopath[0] + '/config/tenetobids/tenetobids_structure.json') as f:
         tenetobids_structure = json.load(f)
 
     def __init__(self, bids_dir, selected_pipeline, bids_filters=None, bidsvalidator=False,
@@ -188,7 +188,7 @@ class TenetoBIDS:
                 if isinstance(result, np.ndarray):
                     if len(result.shape) == 3:
                         # THIS CAN BE MADE TO A DENSE HDF5
-                        result = teneto.TemporalNetwork(
+                        result = TemporalNetwork(
                             from_array=result, forcesparse=True).network
                     elif len(result.shape) == 2:
                         result = pd.DataFrame(result)
