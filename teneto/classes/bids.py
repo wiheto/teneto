@@ -13,7 +13,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from scipy.interpolate import interp1d
 from ..neuroimagingtools import load_tabular_file, get_bids_tag, \
     get_sidecar, confound_matching, process_exclusion_criteria, \
-    drop_bids_suffix, make_directories
+    drop_bids_suffix, make_directories, make_parcellation
 import pandas as pd
 from .network import TemporalNetwork
 import sys
@@ -965,7 +965,7 @@ class TenetoBIDS:
         fsave, _ = drop_bids_suffix(f)
         save_name, save_dir, _ = self._save_namepaths_bids_derivatives(
             fsave, tag, 'parcellation', 'roi')
-        roi = teneto.utils.make_parcellation(
+        roi = make_parcellation(
             f, atlas, template=template, atlas_desc=atlas_desc, resolution=resolution, parc_params=parc_params, return_meta=return_meta)
         # Make data node,time
         roi = roi.transpose()
