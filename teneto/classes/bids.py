@@ -11,7 +11,8 @@ from teneto import __version__ as tenetoversion
 import teneto
 
 class TenetoBIDS:
-    """Class for analysing data in BIDS.
+    """
+    Class for analysing data in BIDS.
 
     TenetoBIDS allows for an analysis to be performed across a dataset.
     All different functions from Teneto can be applied to all files in a dataset organized in BIDS.
