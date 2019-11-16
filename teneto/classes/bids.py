@@ -6,7 +6,7 @@ import inspect
 import json
 from ..neuroimagingtools import load_tabular_file, get_bids_tag, get_sidecar, confound_matching, process_exclusion_criteria, drop_bids_suffix, make_directories
 import pandas as pd
-from . import TemporalNetwork
+from .network import TemporalNetwork
 
 
 class TenetoBIDS:
