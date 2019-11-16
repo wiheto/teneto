@@ -432,6 +432,8 @@ def binarize(netin, threshold_type, threshold_level, outputformat='auto', sign='
     else:
         raise ValueError('Unknown value to parameter: threshold_type.')
     netout = process_input(netout, ['G'], outputformat=outputformat)
+    if outputformat == 'G': 
+        netout = netout[0]
     return netout
 
 
@@ -615,6 +617,7 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
         object of TemporalNetwork class
 
     """
+    netinfo = {}
     if outputformat == 'DF':
         outputformat = 'TN'
         return_df = True
@@ -626,7 +629,7 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
         netIn = TemporalNetwork(from_df=netIn)
         inputtype = 'TN'
     # Convert TN to tnet representation
-    if inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'G':
+    if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
         if netIn.sparse:
             tnet = netIn.df_to_array()
         else:
@@ -663,11 +666,11 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
     if outputformat == 'C' or outputformat == 'G':
         netinfo['inputtype'] = inputtype
     if inputtype != 'C' and outputformat == 'C':
-        C = graphlet2contact(tnet, netinfo)
+        return graphlet2contact(tnet, netinfo)
     if outputformat == 'G':
         return tnet, netinfo
     elif outputformat == 'C':
-        return C
+        return netIn
     elif outputformat == 'TN':
         if return_df:
             return TN.network
