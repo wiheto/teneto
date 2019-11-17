@@ -41,7 +41,7 @@ class TenetoBIDS:
     exist_ok : bool
         If False, will raise an error if the output directory already exist_ok.
         If True, will not raise an error.
-        This can lead to files being overwritten, if desc is not set.      
+        This can lead to files being overwritten, if desc is not set.
     """
 
     def __init__(self, bids_dir, selected_pipeline, bids_filters=None, bidsvalidator=False,
@@ -83,7 +83,7 @@ class TenetoBIDS:
         exist_ok : bool
             If False, will raise error if pipeline already exist_ok.
             If True, will not raise an error.
-            This can lead to files being overwritten, if desc is not set. 
+            This can lead to files being overwritten, if desc is not set.
             If None, will use the exist_ok set during init.
 
         Returns
@@ -317,7 +317,7 @@ class TenetoBIDS:
 
         bids_filters : dict
             default is None. If set, load data will load all files found by the bids_filters.
-            Any preset BIDS filter is used as well, but will get overwritten by this input. 
+            Any preset BIDS filter is used as well, but will get overwritten by this input.
         """
         if bids_filters is None:
             files = self.get_selected_files()
