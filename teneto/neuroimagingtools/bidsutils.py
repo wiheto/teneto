@@ -150,7 +150,7 @@ def exclude_runs(sidecar, confounds, confound_name, exclusion_criteria, confound
     relfuncs = {'median': np.nanmedian,
                 'mean': np.nanmean,
                 'std': np.std}
-    if relex(relfuncs[confound_stat](confounds[confound_name]), crit):
+    if relex(relfuncs[confound_stat][confounds[confound_name]], crit):
         found_bad_subject = True
     # If file is confound.
     if found_bad_subject:
