@@ -282,9 +282,9 @@ def censor_timepoints(timeseries, sidecar, confounds, confound_name, exclusion_c
     bad_timepoints = list(ci[relex(ci, crit)].index)
     bad_timepoints = list(map(str, bad_timepoints))
     timeseries[bad_timepoints] = np.nan
-    if replace_with == 'cubicspline':
+    if replace_with == 'cubicspline' and len(bad_timepoints) > 0:
         good_timepoints = sorted(
-            list(map(int, set(timeseries.columns).difference(bad_timepoints))))
+            np.array(list(map(int, set(timeseries.columns).difference(bad_timepoints)))))
         bad_timepoints = np.array(list(map(int, bad_timepoints)))
         timeseries = timeseries.values
         bt_interp = bad_timepoints[bad_timepoints > np.min(good_timepoints)]
