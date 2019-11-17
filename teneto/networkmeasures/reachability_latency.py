@@ -15,7 +15,8 @@ def reachability_latency(tnet=None, paths=None, rratio=1, calc='global'):
 
     data : array or dict
 
-        Can either be a network (graphlet or contact), binary unidrected only. Alternative can be a paths dictionary (output of teneto.networkmeasure.shortest_temporal_path)
+        Can either be a network (graphlet or contact), binary unidrected only.
+        Alternative can be a paths dictionary (output of teneto.networkmeasure.shortest_temporal_path)
 
     rratio: float (default: 1)
         reachability ratio that the latency is calculated in relation to.
@@ -38,10 +39,7 @@ def reachability_latency(tnet=None, paths=None, rratio=1, calc='global'):
     ------
     Reachability latency calculates the time it takes for the paths.
 
-
-
     """
-
     if tnet is not None and paths is not None:
         raise ValueError('Only network or path input allowed.')
     if tnet is None and paths is None:
