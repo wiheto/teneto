@@ -5,7 +5,9 @@ import pandas as pd
 
 
 def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=False):
-    r'''
+    r"""
+    Calculates the temporal participation coefficient
+
     Temporal participation coefficient is a measure of diversity of connections across communities for individual nodes.
 
     Parameters
@@ -31,19 +33,24 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
 
     .. math:: P_i = 1 - \sum_s^{N_M}({{k_{is}}\over{k_i}})^2
 
-    Where s is the index of each community (:math:`N_M`). :math:`k_i` is total degree of node. And :math:`k_{is}` is degree of connections within community.[part-1]_
+    Where s is the index of each community (:math:`N_M`).
+    :math:`k_i` is total degree of node.
+    And :math:`k_{is}` is degree of connections within community.[part-1]_
 
     This "temporal" version only loops through temporal snapshots and calculates :math:`P_i` for each t.
 
-    If directed, function sums axis=1, so tnet may need to be transposed before hand depending on what type of directed part_coef you are interested in.
+    If directed, function sums axis=1,
+    so tnet may need to be transposed before hand depending on what type of directed part_coef you are interested in.
 
 
     References
     ----------
 
-    .. [part-1] Guimera et al (2005) Functional cartography of complex metabolic networks. Nature. 433: 7028, p895-900. [`Link <http://doi.org/10.1038/nature03288>`_]
-    '''
-
+    .. [part-1] 
+    
+        Guimera et al (2005) Functional cartography of complex metabolic networks.
+        Nature. 433: 7028, p895-900. [`Link <http://doi.org/10.1038/nature03288>`_]
+    """
     if communities is None:
         if isinstance(tnet, dict):
             if 'communities' in tnet.keys():
@@ -58,13 +65,13 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
 
     if tnet.nettype[0] == 'w':
         # TODO add contingency when hdf5 data has negative edges
-        if tnet.hdf5 == False and tnet.sparse==True:
+        if not tnet.hdf5 and tnet.sparse:
             if sum(tnet.network['weight'] < 0) > 0 and not removeneg:
                 print(
                     'TENETO WARNING: negative edges exist when calculating participation coefficient.')
             else:
                 tnet.network['weight'][tnet.network['weight'] < 0] = 0
-        if tnet.hdf5 == False and tnet.sparse==False:
+        if not tnet.hdf5 and not tnet.sparse:
             if np.sum(tnet.network< 0) > 0 and not removeneg:
                 print(
                     'TENETO WARNING: negative edges exist when calculating participation coefficient.')
@@ -154,7 +161,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
                     for c in np.unique(C[j_at_t]):
                         ci = np.where(C == c)[0].tolist()
                         k_is = tnet.get_network_when(i=i, j=ci, t=t)
-                        if tnet.nettype[1] == 'u' and tnet.sparse == True:
+                        if tnet.nettype[1] == 'u' and tnet.sparse:
                             k_is2 = tnet.get_network_when(j=i, i=ci, t=t)
                             k_is = pd.concat([k_is, k_is2])
                         if tnet.nettype[0] == 'b':
