@@ -11,6 +11,7 @@
 -   Single instance of version specified in teneto/_version.py.
 -   Output format can be specified in binarize,
 -   TenetoBIDS rewritten. Compatible now with pybids. Easier to use.
+-   censor_timepoints and exclude_runs now in bidsutils as functions (and streamlined) instead of in TenetoBIDS.
 
 ### 0.5.0 Changes
 

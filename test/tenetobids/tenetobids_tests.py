@@ -8,11 +8,19 @@ tnet.run('make_parcellation', {'atlas': 'Schaefer2018',
                                'atlas_desc': '100Parcels7Networks',
                                'parc_params': {'detrend': True}})
 tnet.run('remove_confounds', {'confound_selection': ['confound1']})
+confound_params = {'confound_name': 'confound1',
+                   'exclusion_criteria': '<-0.99'}
+tnet.run('exclude_runs', confound_params)
+censor_params = {'confound_name': 'confound1',
+                   'exclusion_criteria': '<-0.99',
+                   'replace_with': 'cubicspline',
+                   'tol': 0.25}
+tnet.run('censor_timepoints', censor_params)
 tnet.run('derive_temporalnetwork', {'params': {
          'method': 'jackknife', 'postpro': 'standardize'}})
 tnet.run('binarize', {'threshold_type': 'percent', 'threshold_level': 0.1})
 tnet.run('volatility', {})
 vol = tnet.load_data()
 # Hard code truth 
-if np.round(np.squeeze(vol['sub-001_run-1_task-a_vol.tsv'].values),5) != 0.10527:
+if np.round(np.squeeze(vol['sub-001_run-1_task-a_vol.tsv'].values),5) != 0.10373:
     raise AssertionError()

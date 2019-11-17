@@ -10,6 +10,7 @@ from teneto import __path__ as tenetopath
 from teneto import __version__ as tenetoversion
 import teneto
 
+
 class TenetoBIDS:
     """
     Class for analysing data in BIDS.
@@ -101,7 +102,7 @@ class TenetoBIDS:
         output_pipeline_path = self.bids_dir + '/derivatives/' + output_pipeline
         if os.path.exists(output_pipeline_path) and not self.exist_ok:
             raise ValueError(
-                'output_pipeline already exist_ok and could exist_ok is set to False.')
+                'Output_pipeline already exists. Set exist_ok to True if this is desired behaviour.')
         os.makedirs(output_pipeline_path, exist_ok=self.exist_ok)
         # Initiate with dataset_description
         datainfo = self.tenetobids_description.copy()
@@ -139,17 +140,22 @@ class TenetoBIDS:
         """
         if exist_ok is not None:
             self.exist_ok = exist_ok
-        output_pipeline = self.create_output_pipeline(
-            run_func, output_pipeline_name, self.exist_ok)
+
+        func = teneto
+        for f in self.tenetobids_structure[run_func]['module'].split('.'):
+            func = getattr(func, f)
+        functype = self.tenetobids_structure[run_func]['functype']
+        func = getattr(func, run_func)
+
+        # Only set up an output pipeline if the functype is ondata
+        if functype == 'on_data':
+            output_pipeline = self.create_output_pipeline(
+                run_func, output_pipeline_name, self.exist_ok)
 
         input_files = self.get_selected_files(run_func.split('.')[-1])
         if not input_files:
             raise ValueError('No input files')
 
-        func = teneto
-        for f in self.tenetobids_structure[run_func]['module'].split('.'):
-            func = getattr(func, f)
-        func = getattr(func, run_func)
         # Check number of required arguments for the folder
         sig = inspect.signature(func)
         funcparams = sig.parameters.items()
@@ -161,73 +167,88 @@ class TenetoBIDS:
                 if p_name in input_params:
                     input_args += 1
         get_confounds = 0
-        if required_args - input_args != 1:
-            if 'confounds' not in input_params and 'confounds' in dict(funcparams) and required_args == 2:
+        matched_input_arguments_defecit = 1
+        if 'sidecar' in dict(funcparams) and functype == 'on_data':
+            matched_input_arguments_defecit += 1
+        if required_args - input_args != matched_input_arguments_defecit:
+            if 'confounds' not in input_params and 'confounds' in dict(funcparams) and required_args - input_args == matched_input_arguments_defecit + 1:
                 # Get confounds automatically
                 get_confounds = 1
             else:
                 raise ValueError(
                     'Expecting one unspecified input argument. Enter all required input arguments in input_params except for the data files.')
+        gf = bf = 0
         for f in input_files:
-            gf = bf = 0
+            f_entities = f.get_entities()
             if get_confounds == 1:
                 input_params['confounds'] = self.get_confounds(f)
             data, sidecar = self.load_file(f)
+            if 'sidecar' in dict(funcparams):
+                input_params['sidecar'] = sidecar
             if data is not None:
-                result = func(data, **input_params)
-                f_entities = f.get_entities()
-                if output_desc is None and 'desc' in f_entities:
-                    f_entities.pop('desc')
-                elif output_desc == 'keep':
-                    pass
-                elif output_desc is not None:
-                    f_entities['desc'] = output_desc
-                f_entities.update(
-                    self.tenetobids_structure[run_func.split('.')[-1]]['output'])
-                output_pattern = '/sub-{subject}/[ses-{ses}/]func/sub-{subject}[_ses-{ses}][_run-{run}]_task-{task}[_desc-{desc}]_{suffix}.{extension}'
-                save_name = self.BIDSLayout.build_path(
-                    f_entities, path_patterns=output_pattern, validate=False)
-                save_path = self.bids_dir + '/derivatives/' + output_pipeline
-                # Exist ok here has to be true, otherwise multiple runs causes an error
-                # Any exist_ok is caught in create pipeline.
-                os.makedirs(
-                    '/'.join((save_path + save_name).split('/')[:-1]), exist_ok=True)
-                # Save file
-                # Probably should check the output type in tenetobidsstructure
-                # Table needs column header
-                if isinstance(result, np.ndarray):
-                    if len(result.shape) == 3:
-                        # THIS CAN BE MADE TO A DENSE HDF5
-                        result = TemporalNetwork(
-                            from_array=result, forcesparse=True).network
-                    elif len(result.shape) == 2:
+                if functype == 'on_data':
+                    result = func(data, **input_params)
+                    # if sidecar is in input_params, then sidecar is also returned
+                    if 'sidecar' in dict(funcparams):
+                        result, sidecar = result
+                        # if output_desc is None, then keep desc
+                    if output_desc is None and 'desc' in f_entities:
+                        f_entities.pop('desc')
+                    elif output_desc == 'keep':
+                        pass
+                    elif output_desc is not None:
+                        f_entities['desc'] = output_desc
+                    f_entities.update(
+                        self.tenetobids_structure[run_func.split('.')[-1]]['output'])
+                    output_pattern = '/sub-{subject}/[ses-{ses}/]func/sub-{subject}[_ses-{ses}][_run-{run}]_task-{task}[_desc-{desc}]_{suffix}.{extension}'
+                    save_name = self.BIDSLayout.build_path(
+                        f_entities, path_patterns=output_pattern, validate=False)
+                    save_path = self.bids_dir + '/derivatives/' + output_pipeline
+                    # Exist ok here has to be true, otherwise multiple runs causes an error
+                    # Any exist_ok is caught in create pipeline.
+                    os.makedirs(
+                        '/'.join((save_path + save_name).split('/')[:-1]), exist_ok=True)
+                    # Save file
+                    # Probably should check the output type in tenetobidsstructure
+                    # Table needs column header
+                    if isinstance(result, np.ndarray):
+                        if len(result.shape) == 3:
+                            # THIS CAN BE MADE TO A DENSE HDF5
+                            result = TemporalNetwork(
+                                from_array=result, forcesparse=True).network
+                        elif len(result.shape) == 2:
+                            result = pd.DataFrame(result)
+                        elif len(result.shape) == 1:
+                            result = pd.Series(result)
+                        else:
+                            raise ValueError(
+                                'Output was array with more than 3 dimensions (unexpected)')
+                    elif isinstance(result, list):
                         result = pd.DataFrame(result)
-                    elif len(result.shape) == 1:
+                    elif isinstance(result, int) or isinstance(result, float):
                         result = pd.Series(result)
+                    if isinstance(result, pd.DataFrame) or isinstance(result, pd.Series):
+                        result.to_csv(save_path + save_name,
+                                      sep='\t', header=True)
                     else:
-                        raise ValueError(
-                            'Output was array with more than 3 dimensions (unexpected)')
-                elif isinstance(result, list):
-                    result = pd.DataFrame(result)
-                elif isinstance(result, int):
-                    result = pd.Series(result)
-                elif isinstance(result, float):
-                    result = pd.Series(result)
-                if isinstance(result, pd.DataFrame) or isinstance(result, pd.Series):
-                    result.to_csv(save_path + save_name, sep='\t', header=True)
-                else:
-                    raise ValueError('Unexpected output type')
-                # add information to sidecar
-                sidecar['DerivativeSource'] = f.path
-                sidecar['TenetoFunction'] = {}
-                sidecar['TenetoFunction']['Name'] = run_func
-                # For aux_input more is needed here too.
-                if get_confounds == 1:
-                    input_params['confounds'] = 'Loaded automatically via TenetoBIDS'
-                elif 'confounds' in input_params:
-                    input_params['confounds'] = 'Passed as argument'
-
-                sidecar['TenetoFunction']['Parameters'] = input_params
+                        raise ValueError('Unexpected output type')
+                    # add information to sidecar
+                    sidecar['DerivativeSource'] = f.path
+                    sidecar['TenetoFunction'] = {}
+                    sidecar['TenetoFunction']['Name'] = run_func
+                    # For aux_input more is needed here too.
+                    if get_confounds == 1:
+                        input_params['confounds'] = 'Loaded automatically via TenetoBIDS'
+                    elif 'confounds' in input_params:
+                        input_params['confounds'] = 'Passed as argument'
+                    if 'sidecar' in input_params:
+                        input_params['sidecar'] = 'Loaded automatically via TenetoBIDS'
+                    sidecar['TenetoFunction']['Parameters'] = input_params
+                elif functype == 'on_sidecar':
+                    sidecar = func(**input_params)
+                    update_pipeline = False
+                    save_path = f.dirname + '/'
+                    save_name = f.filename
                 # Save sidecar
                 with open(save_path + save_name.replace('.tsv', '.json'), 'w') as f:
                     json.dump(sidecar, f)
@@ -236,7 +257,8 @@ class TenetoBIDS:
                 bf += 1
 
         report = '## ' + run_func + '\n'
-        report += str(gf) + ' files were included (' + str(bf) + ' excluded)'
+        report += str(gf) + ' files were included (' + \
+            str(bf) + ' excluded from run)'
         self.report = report
 
         if update_pipeline:
@@ -254,7 +276,7 @@ class TenetoBIDS:
         else:
             # input can only be these files
             filters = {'extension': ['tsv', 'nii', 'nii.gz']}
-        # Add predefined filters to te check
+        # Add predefined filters to the check
         filters.update(self.bids_filters)
         return self.BIDSLayout.get(scope=self.selected_pipeline, **filters)
 
@@ -287,7 +309,7 @@ class TenetoBIDS:
             raise ValueError('More than one confounds file found')
         # Load the confounds file
         confounds = load_tabular_file(
-            confoundsfile[0].dirname + '/' + confoundsfile[0].filename)
+            confoundsfile[0].dirname + '/' + confoundsfile[0].filename, index_col=False)
         return confounds
 
     def load_data(self, bids_filters=None):
@@ -295,13 +317,14 @@ class TenetoBIDS:
 
         bids_filters : dict
             default is None. If set, load data will load all files found by the bids_filters.
-            Otherwise, tnet.get_selected_files is loaded.
-            Note, this can select files outside of input pipeline.
+            Any preset BIDS filter is used as well, but will get overwritten by this input. 
         """
         if bids_filters is None:
             files = self.get_selected_files()
         else:
-            files = self.BIDSLayout.get(**bids_filters)
+            filters = dict(self.bids_filters)
+            filters.update(bids_filters)
+            files = self.BIDSLayout.get(**filters)
         data = {}
         for f in files:
             if f.filename in data:

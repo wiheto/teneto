@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 import json
+from scipy.interpolate import interp1d
 
 
 def make_directories(path):
@@ -174,28 +175,144 @@ def process_exclusion_criteria(exclusion_criteria):
 
     Returns
     -------
-        relfun : list
-            list of numpy functions for the exclusion criteria
-        threshold : list
-            list of floats for threshold for each relfun
+        relfun : func
+            numpy functions for the exclusion criteria
+        threshold : float
+            floats for threshold for each relfun
 
 
     """
-    relfun = []
-    threshold = []
-    for ec in exclusion_criteria:
-        if ec[0:2] == '>=':
-            relfun.append(np.greater_equal)
-            threshold.append(float(ec[2:]))
-        elif ec[0:2] == '<=':
-            relfun.append(np.less_equal)
-            threshold.append(float(ec[2:]))
-        elif ec[0] == '>':
-            relfun.append(np.greater)
-            threshold.append(float(ec[1:]))
-        elif ec[0] == '<':
-            relfun.append(np.less)
-            threshold.append(float(ec[1:]))
-        else:
-            raise ValueError('exclusion crieria must being with >,<,>= or <=')
+    if exclusion_criteria[0:2] == '>=':
+        relfun = np.greater_equal
+        threshold = float(exclusion_criteria[2:])
+    elif exclusion_criteria[0:2] == '<=':
+        relfun = np.less_equal
+        threshold = float(exclusion_criteria[2:])
+    elif exclusion_criteria[0] == '>':
+        relfun = np.greater
+        threshold = float(exclusion_criteria[1:])
+    elif exclusion_criteria[0] == '<':
+        relfun = np.less
+        threshold = float(exclusion_criteria[1:])
+    else:
+        raise ValueError('exclusion crieria must being with >,<,>= or <=')
     return relfun, threshold
+
+
+def exclude_runs(sidecar, confounds, confound_name, exclusion_criteria, confound_stat='mean'):
+    """
+    Excludes subjects given a certain exclusion criteria.
+
+    Parameters
+    ----------
+        confounds : dataframe
+            dataframe of confounds
+        confound_name : str
+            Confound name from confound files that is to be used
+        exclusion_criteria  : str
+            An exclusion_criteria should be expressed as a string.
+            It starts with >,<,>= or <= then the numerical threshold.
+            Eg. '>0.2' will entail every subject with the avg greater than 0.2 of confound will be rejected.
+        confound_stat : str or list
+            Can be median, mean, std.
+            How the confound data is aggregated (so if there is a meaasure per time-point, this is averaged over all time points.
+            If multiple confounds specified, this has to be a list.).
+    Returns
+    --------
+        calls TenetoBIDS.set_bad_files with the files meeting the exclusion criteria.
+    """
+    # Checks could be made regarding confound number
+    if confound_name not in confounds: 
+        raise ValueError('Confound_name not found')
+    relex, crit = process_exclusion_criteria(exclusion_criteria)
+    found_bad_subject = False
+    if confound_stat == 'median':
+        if relex(np.nanmedian(confounds[confound_name]), crit):
+            found_bad_subject = True
+    elif confound_stat == 'mean':
+        if relex(np.nanmean(confounds[confound_name]), crit):
+            found_bad_subject = True
+    elif confound_stat == 'std':
+        if relex(np.nanstd(confounds[confound_name]), crit):
+            found_bad_subject = True
+    # If file is confound.
+    if found_bad_subject:
+        sidecar['BadFile'] = True
+        sidecar['file_exclusion'] = {}
+        sidecar['file_exclusion']['confound'] = confound_name
+        sidecar['file_exclusion']['threshold'] = exclusion_criteria
+        sidecar['file_exclusion']['stat'] = confound_stat
+    return sidecar
+
+
+def censor_timepoints(timeseries, sidecar, confounds, confound_name, exclusion_criteria, replace_with, tol=1):
+    """
+    Excludes subjects given a certain exclusion criteria.
+    
+    Does not work on nifti files, only tsv. Assumes data is node,time.
+    Assumes the time-point column names are integers.
+
+    Parameters
+    ----------
+        timeseries : dataframe
+            dataframe of time series
+        sidecar : dict
+            json sidecar in dict format
+        confounds : dataframe
+            dataframe of confounds
+        confound_name : str
+            string of confound name from confound files.
+        exclusion_criteria  : str or list
+            for each confound, an exclusion_criteria should be expressed as a string.
+            It starts with >,<,>= or <= then the numerical threshold.
+            Ex. '>0.2' will entail every subject with the avg greater than 0.2 of confound will be rejected.
+        replace_with : str
+            Can be 'nan' (bad values become nans) or 'cubicspline' (bad values are interpolated).
+            If bad value occurs at 0 or -1 index, then these values are kept and no interpolation occurs.
+        tol : float
+            Tolerance of exlcuded time-points allowed before being set a BadFile in sidecar.
+            If 0.25, then 25% of time-points can be marked censored/replaced before being a BadFile. 
+
+    Returns
+    ------
+        Loads the TenetoBIDS.selected_files and replaces any instances of confound meeting the exclusion_criteria with replace_with.
+    """
+    relex, crit = process_exclusion_criteria(exclusion_criteria)
+    ci = confounds[confound_name]
+    bad_timepoints = list(ci[relex(ci, crit)].index)
+    bad_timepoints = list(map(str, bad_timepoints))
+    timeseries[bad_timepoints] = np.nan
+    if replace_with == 'cubicspline': 
+        good_timepoints = sorted(list(map(int, set(timeseries.columns).difference(bad_timepoints))))
+        bad_timepoints = np.array(list(map(int, bad_timepoints)))
+        timeseries = timeseries.values
+        bt_interp = bad_timepoints[bad_timepoints > np.min(good_timepoints)]
+        for n in range(timeseries.shape[0]):
+            interp = interp1d(
+                good_timepoints, timeseries[n, good_timepoints], kind='cubic')
+            timeseries[n, bt_interp] = interp(bt_interp)
+        timeseries = pd.DataFrame(timeseries)
+        bad_timepoints = list(map(str, bad_timepoints))
+
+
+    if len(bad_timepoints) / timeseries.shape[1] > tol:
+        sidecar['BadFile'] = True
+        sidecar['file_exclusion'] = {}
+        sidecar['file_exclusion']['confound'] = confound_name
+        sidecar['file_exclusion']['threshold'] = exclusion_criteria
+        sidecar['file_exclusion']['tolerance_level'] = float(tol)
+        sidecar['file_exclusion']['reason'] = 'Time-points exceded tolerance level'
+
+    # update sidecar
+    sidecar['censored_timepoints'] = {}
+    sidecar['censored_timepoints']['description'] = 'Censors timepoints where the confounds met exclusion crtiera a certain time-points.\
+        Censored time-points are replaced with replacement value (nans or cubic spline).'
+    sidecar['censored_timepoints'][confound_name] = {}
+    sidecar['censored_timepoints'][confound_name]['threshold'] = exclusion_criteria
+    sidecar['censored_timepoints'][confound_name]['replacement'] = replace_with
+    sidecar['censored_timepoints'][confound_name]['badpoint_number'] = len(bad_timepoints)
+    sidecar['censored_timepoints'][confound_name]['badpoints'] = ','.join(bad_timepoints)
+    sidecar['censored_timepoints'][confound_name]['badpoint_ratio'] = float(len(bad_timepoints) / timeseries.shape[1])
+    sidecar['censored_timepoints'][confound_name]['file_exclusion_when_badpoint_ratio'] = float(tol)
+
+    return timeseries, sidecar
