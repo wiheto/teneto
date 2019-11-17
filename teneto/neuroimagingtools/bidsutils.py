@@ -51,31 +51,6 @@ def drop_bids_suffix(fname):
     return dirnames + fname_head, fileformat
 
 
-def get_bids_tag(filename, tag):
-    """
-    """
-    outdict = {}
-    filename, _ = drop_bids_suffix(filename)
-    if isinstance(tag, str):
-        if tag == 'all':
-            for t in filename.split('_'):
-                tag = t.split('-')
-                if len(tag) == 2:
-                    outdict[tag[0]] = tag[1]
-            tag = 'all'
-        else:
-            tag = [tag]
-    if isinstance(tag, list):
-        if '/' in filename:
-            filename = filename.split('/')[-1]
-        for t in tag:
-            if t in filename:
-                outdict[t] = filename.split(t + '-')[1].split('_')[0]
-    if 'run' in outdict:
-        outdict['run'] = str(int(outdict['run']))
-    return outdict
-
-
 def load_tabular_file(fname, return_meta=False, header=True, index_col=True):
     """
     Given a file name loads as a pandas data frame
@@ -134,34 +109,6 @@ def get_sidecar(fname, allowedfileformats='default'):
     if 'BadFile' not in sidecar:
         sidecar['BadFile'] = False
     return sidecar
-
-
-def confound_matching(files, confound_files):
-    """
-    """
-    files_out = []
-    confounds_out = []
-    files_taglist = []
-    confound_files_taglist = []
-    for f in files:
-        tags = get_bids_tag(f, ['sub', 'ses', 'run', 'task'])
-        files_taglist.append(tags.values())
-    for f in confound_files:
-        tags = get_bids_tag(f, ['sub', 'ses', 'run', 'task'])
-        confound_files_taglist.append(tags.values())
-
-    for i, t in enumerate(files_taglist):
-        j = [j for j, ct in enumerate(
-            confound_files_taglist) if list(t) == list(ct)]
-        if len(j) > 1:
-            raise ValueError(
-                'File/confound matching error (more than one confound file identified)')
-        if len(j) == 0:
-            raise ValueError(
-                'File/confound matching error (no confound file found)')
-        files_out.append(files[i])
-        confounds_out.append(confound_files[j[0]])
-    return files_out, confounds_out
 
 
 def process_exclusion_criteria(exclusion_criteria):
