@@ -222,7 +222,7 @@ def exclude_runs(sidecar, confounds, confound_name, exclusion_criteria, confound
         calls TenetoBIDS.set_bad_files with the files meeting the exclusion criteria.
     """
     # Checks could be made regarding confound number
-    if confound_name not in confounds: 
+    if confound_name not in confounds:
         raise ValueError('Confound_name not found')
     relex, crit = process_exclusion_criteria(exclusion_criteria)
     found_bad_subject = False
@@ -248,7 +248,7 @@ def exclude_runs(sidecar, confounds, confound_name, exclusion_criteria, confound
 def censor_timepoints(timeseries, sidecar, confounds, confound_name, exclusion_criteria, replace_with, tol=1):
     """
     Excludes subjects given a certain exclusion criteria.
-    
+
     Does not work on nifti files, only tsv. Assumes data is node,time.
     Assumes the time-point column names are integers.
 
@@ -271,7 +271,7 @@ def censor_timepoints(timeseries, sidecar, confounds, confound_name, exclusion_c
             If bad value occurs at 0 or -1 index, then these values are kept and no interpolation occurs.
         tol : float
             Tolerance of exlcuded time-points allowed before being set a BadFile in sidecar.
-            If 0.25, then 25% of time-points can be marked censored/replaced before being a BadFile. 
+            If 0.25, then 25% of time-points can be marked censored/replaced before being a BadFile.
 
     Returns
     ------
@@ -282,8 +282,9 @@ def censor_timepoints(timeseries, sidecar, confounds, confound_name, exclusion_c
     bad_timepoints = list(ci[relex(ci, crit)].index)
     bad_timepoints = list(map(str, bad_timepoints))
     timeseries[bad_timepoints] = np.nan
-    if replace_with == 'cubicspline': 
-        good_timepoints = sorted(list(map(int, set(timeseries.columns).difference(bad_timepoints))))
+    if replace_with == 'cubicspline':
+        good_timepoints = sorted(
+            list(map(int, set(timeseries.columns).difference(bad_timepoints))))
         bad_timepoints = np.array(list(map(int, bad_timepoints)))
         timeseries = timeseries.values
         bt_interp = bad_timepoints[bad_timepoints > np.min(good_timepoints)]
@@ -293,7 +294,6 @@ def censor_timepoints(timeseries, sidecar, confounds, confound_name, exclusion_c
             timeseries[n, bt_interp] = interp(bt_interp)
         timeseries = pd.DataFrame(timeseries)
         bad_timepoints = list(map(str, bad_timepoints))
-
 
     if len(bad_timepoints) / timeseries.shape[1] > tol:
         sidecar['BadFile'] = True
@@ -310,9 +310,13 @@ def censor_timepoints(timeseries, sidecar, confounds, confound_name, exclusion_c
     sidecar['censored_timepoints'][confound_name] = {}
     sidecar['censored_timepoints'][confound_name]['threshold'] = exclusion_criteria
     sidecar['censored_timepoints'][confound_name]['replacement'] = replace_with
-    sidecar['censored_timepoints'][confound_name]['badpoint_number'] = len(bad_timepoints)
-    sidecar['censored_timepoints'][confound_name]['badpoints'] = ','.join(bad_timepoints)
-    sidecar['censored_timepoints'][confound_name]['badpoint_ratio'] = float(len(bad_timepoints) / timeseries.shape[1])
-    sidecar['censored_timepoints'][confound_name]['file_exclusion_when_badpoint_ratio'] = float(tol)
+    sidecar['censored_timepoints'][confound_name]['badpoint_number'] = len(
+        bad_timepoints)
+    sidecar['censored_timepoints'][confound_name]['badpoints'] = ','.join(
+        bad_timepoints)
+    sidecar['censored_timepoints'][confound_name]['badpoint_ratio'] = float(
+        len(bad_timepoints) / timeseries.shape[1])
+    sidecar['censored_timepoints'][confound_name]['file_exclusion_when_badpoint_ratio'] = float(
+        tol)
 
     return timeseries, sidecar
