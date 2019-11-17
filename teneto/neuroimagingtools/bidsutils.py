@@ -286,13 +286,14 @@ def censor_timepoints(timeseries, sidecar, confounds, confound_name, exclusion_c
         good_timepoints = sorted(
             np.array(list(map(int, set(timeseries.columns).difference(bad_timepoints)))))
         bad_timepoints = np.array(list(map(int, bad_timepoints)))
+        ts_index = timeseries.index
         timeseries = timeseries.values
         bt_interp = bad_timepoints[bad_timepoints > np.min(good_timepoints)]
         for n in range(timeseries.shape[0]):
             interp = interp1d(
                 good_timepoints, timeseries[n, good_timepoints], kind='cubic')
             timeseries[n, bt_interp] = interp(bt_interp)
-        timeseries = pd.DataFrame(timeseries)
+        timeseries = pd.DataFrame(timeseries, index=ts_index)
         bad_timepoints = list(map(str, bad_timepoints))
 
     if len(bad_timepoints) / timeseries.shape[1] > tol:
