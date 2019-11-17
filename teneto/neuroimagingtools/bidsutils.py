@@ -51,7 +51,7 @@ def drop_bids_suffix(fname):
     return dirnames + fname_head, fileformat
 
 
-def load_tabular_file(fname, return_meta=False, header=True, index_col=True):
+def load_tabular_file(fname, header=True, index_col=True):
     """
     Given a file name loads as a pandas data frame
 
@@ -59,8 +59,6 @@ def load_tabular_file(fname, return_meta=False, header=True, index_col=True):
     ----------
     fname : str
         file name and path. Must be tsv.
-    return_meta :
-
     header : bool (default True)
         if there is a header in the tsv file, true will use first row in file.
     index_col : bool (default None)
@@ -83,13 +81,7 @@ def load_tabular_file(fname, return_meta=False, header=True, index_col=True):
         header = None
 
     df = pd.read_csv(fname, header=header, index_col=index_col, sep='\t')
-
-    if return_meta:
-        json_fname = fname.replace('tsv', 'json')
-        meta = pd.read_json(json_fname)
-        return df, meta
-    else:
-        return df
+    return df
 
 
 def get_sidecar(fname, allowedfileformats='default'):
