@@ -1,4 +1,4 @@
-"""Export temporalnetwork to other software""" 
+"""Export temporalnetwork to other software"""
 
 import networkx as nx
 from ..utils import process_input, create_supraadjacency_matrix
@@ -13,7 +13,7 @@ def to_networkx(tnet, export_type='supra', t=None, ):
     tnet :  array, dict, tnetobject
         Temporal network
     export_type : str
-        either: supra or snapshot. 
+        either: supra or snapshot.
         This either export a networkx objects for the entire supraadjacency matrix
         (all timepoints) or one object per snapshot in a list.
     t : int
