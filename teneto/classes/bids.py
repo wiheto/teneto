@@ -37,12 +37,14 @@ class TenetoBIDS:
     history : bool
     update_pipeline : bool
         If true, the output_pipeline becomes the new selected_pipeline
-    overwrite : bool
-        If False, will not overwrite existing directories
+    exist_ok : bool
+        If False, will raise an error if the output directory already exist_ok.
+        If True, will not raise an error.
+        This can lead to files being overwritten, if desc is not set.      
     """
 
     def __init__(self, bids_dir, selected_pipeline, bids_filters=None, bidsvalidator=False,
-                 update_pipeline=True, history=None, overwrite=False, layout=None):
+                 update_pipeline=True, history=None, exist_ok=False, layout=None):
         if layout is None:
             self.BIDSLayout = bids.BIDSLayout(bids_dir, derivatives=True)
         else:
@@ -55,7 +57,7 @@ class TenetoBIDS:
             self.bids_filters = bids_filters
         if history is not None:
             self.history = {}
-        self.overwrite = overwrite
+        self.exist_ok = exist_ok
 
         with open(tenetopath[0] + '/config/tenetobids/tenetobids_description.json') as f:
             self.tenetobids_description = json.load(f)
@@ -70,15 +72,18 @@ class TenetoBIDS:
     def update_bids_layout(self):
         self.BIDSLayout = bids.BIDSLayout(self.bids_dir, derivatives=True)
 
-    def create_output_pipeline(self, runc_func, output_pipeline_name, overwrite=None):
+    def create_output_pipeline(self, runc_func, output_pipeline_name, exist_ok=None):
         """Creates the directories of the saved file.
 
         Parameters
         ----------
         output_pipeline : str
             name of output pipeline
-        overwrite : bool
-
+        exist_ok : bool
+            If False, will raise error if pipeline already exist_ok.
+            If True, will not raise an error.
+            This can lead to files being overwritten, if desc is not set. 
+            If None, will use the exist_ok set during init.
 
         Returns
         -------
@@ -86,18 +91,18 @@ class TenetoBIDS:
             bids_dir/teneto-[output_pipeline]/
 
         """
-        if overwrite is not None:
-            self.overwrite = overwrite
+        if exist_ok is not None:
+            self.exist_ok = exist_ok
         output_pipeline = 'teneto-'
         output_pipeline += runc_func.split('.')[-1]
         output_pipeline = output_pipeline.replace('_', '-')
         if output_pipeline_name is not None:
             output_pipeline += '_' + output_pipeline_name
         output_pipeline_path = self.bids_dir + '/derivatives/' + output_pipeline
-        if os.path.exists(output_pipeline_path) and not self.overwrite:
+        if os.path.exists(output_pipeline_path) and not self.exist_ok:
             raise ValueError(
-                'output_pipeline already exists and overwrite is set to False.')
-        os.makedirs(output_pipeline_path, exist_ok=self.overwrite)
+                'output_pipeline already exist_ok and could exist_ok is set to False.')
+        os.makedirs(output_pipeline_path, exist_ok=self.exist_ok)
         # Initiate with dataset_description
         datainfo = self.tenetobids_description.copy()
         datainfo['PipelineDescription']['Name'] = output_pipeline
@@ -106,7 +111,7 @@ class TenetoBIDS:
         self.update_bids_layout()
         return output_pipeline
 
-    def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filters=None, update_pipeline=True, overwrite=None):
+    def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filters=None, update_pipeline=True, exist_ok=None):
         """Runs a runction on the selected files.
 
         Parameters
@@ -130,12 +135,12 @@ class TenetoBIDS:
             then then the pipeline the data is saved in is
             teneto-generatetemporalnetwork_jackknife
         update_pipeline : bool
-        overwrite : bool
+        exist_ok : bool
         """
-        if overwrite is not None:
-            self.overwrite = overwrite
+        if exist_ok is not None:
+            self.exist_ok = exist_ok
         output_pipeline = self.create_output_pipeline(
-            run_func, output_pipeline_name, self.overwrite)
+            run_func, output_pipeline_name, self.exist_ok)
 
         input_files = self.get_selected_files(run_func.split('.')[-1])
         if not input_files:
@@ -183,8 +188,10 @@ class TenetoBIDS:
                 save_name = self.BIDSLayout.build_path(
                     f_entities, path_patterns=output_pattern, validate=False)
                 save_path = self.bids_dir + '/derivatives/' + output_pipeline
+                # Exist ok here has to be true, otherwise multiple runs causes an error
+                # Any exist_ok is caught in create pipeline.
                 os.makedirs(
-                    '/'.join((save_path + save_name).split('/')[:-1]), exist_ok=self.overwrite)
+                    '/'.join((save_path + save_name).split('/')[:-1]), exist_ok=True)
                 # Save file
                 # Probably should check the output type in tenetobidsstructure
                 # Table needs column header
