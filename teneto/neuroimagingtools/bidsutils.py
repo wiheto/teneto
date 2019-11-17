@@ -116,7 +116,7 @@ def process_exclusion_criteria(exclusion_criteria):
                '>': np.greater,
                '<': np.less}
     relfun = exfuncs[exclusion_criteria[:splitat]]
-    threshold = exclusion_criteria[splitat:]
+    threshold = float(exclusion_criteria[splitat:])
     return relfun, threshold
 
 
