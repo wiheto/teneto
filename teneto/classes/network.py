@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 class TemporalNetwork:
     """
-    A class for temporal networks. 
+    A class for temporal networks.
 
     This class allows to call different teneto functions within the class and store the network representation.
 
@@ -285,7 +285,6 @@ class TemporalNetwork:
         """Drops duplicate entries from the network dataframe."""
         self.network = teneto.utils.df_drop_ij_duplicates(self.network)
 
-
     def _drop_diagonal(self):
         """Drops self-contacts from the network dataframe."""
         if self.sparse:
@@ -507,9 +506,11 @@ class TemporalNetwork:
         Updates tnet.network to be binarized
 
         """
-        gbin = teneto.utils.binarize(self.network, threshold_type, threshold_level, **kwargs)
-        if self.sparse True:
-            gbin = teneto.utils.process_input(gbin, 'G', outputformat='TN', forcesparse=True)
+        gbin = teneto.utils.binarize(
+            self.network, threshold_type, threshold_level, **kwargs)
+        if self.sparse:
+            gbin = teneto.utils.process_input(
+                gbin, 'G', outputformat='TN', forcesparse=True)
             self.network = gbin.network
         else:
             self.network = gbin
