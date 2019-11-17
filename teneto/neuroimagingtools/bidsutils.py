@@ -121,20 +121,16 @@ def process_exclusion_criteria(exclusion_criteria):
 
 
     """
-    if exclusion_criteria[0:2] == '>=':
-        relfun = np.greater_equal
-        threshold = float(exclusion_criteria[2:])
-    elif exclusion_criteria[0:2] == '<=':
-        relfun = np.less_equal
-        threshold = float(exclusion_criteria[2:])
-    elif exclusion_criteria[0] == '>':
-        relfun = np.greater
-        threshold = float(exclusion_criteria[1:])
-    elif exclusion_criteria[0] == '<':
-        relfun = np.less
-        threshold = float(exclusion_criteria[1:])
+    if exclusion_criteria[1] == '=':
+        splitat = 2
     else:
-        raise ValueError('exclusion crieria must being with >,<,>= or <=')
+        splitat = 1
+    exfuncs = {'>=': np.greater_equal,
+               '<=': np.less_equal,
+               '>': np.greater,
+               '<': np.less}
+    relfun = exfuncs[exclusion_criteria[:splitat]]
+    threshold = exclusion_criteria[splitat:]
     return relfun, threshold
 
 
