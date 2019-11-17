@@ -165,15 +165,11 @@ def exclude_runs(sidecar, confounds, confound_name, exclusion_criteria, confound
         raise ValueError('Confound_name not found')
     relex, crit = process_exclusion_criteria(exclusion_criteria)
     found_bad_subject = False
-    if confound_stat == 'median':
-        if relex(np.nanmedian(confounds[confound_name]), crit):
-            found_bad_subject = True
-    elif confound_stat == 'mean':
-        if relex(np.nanmean(confounds[confound_name]), crit):
-            found_bad_subject = True
-    elif confound_stat == 'std':
-        if relex(np.nanstd(confounds[confound_name]), crit):
-            found_bad_subject = True
+    relfuncs = {'median': np.nanmedian,
+                'mean': np.nanmean,
+                'std': np.std}
+    if relex(relfuncs[confound_stat](confounds[confound_name]), crit):
+        found_bad_subject = True
     # If file is confound.
     if found_bad_subject:
         sidecar['BadFile'] = True
