@@ -1,6 +1,4 @@
-"""
-networkmeasures: intercontacttimes
-"""
+"""Calculates intercontacttimes"""
 
 import numpy as np
 from ..utils import process_input
@@ -69,7 +67,6 @@ def intercontacttimes(tnet):
     array([2, 2, 4])
 
     """
-
     # Process input
     tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
 

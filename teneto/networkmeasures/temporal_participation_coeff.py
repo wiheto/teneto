@@ -46,8 +46,8 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
     References
     ----------
 
-    .. [part-1] 
-    
+    .. [part-1]
+
         Guimera et al (2005) Functional cartography of complex metabolic networks.
         Nature. 433: 7028, p895-900. [`Link <http://doi.org/10.1038/nature03288>`_]
     """
@@ -114,7 +114,7 @@ def temporal_participation_coeff(tnet, communities=None, decay=None, removeneg=F
                 for c in np.unique(C[j_at_t]):
                     ci = np.where(C == c)[0].tolist()
                     k_is = tnet.get_network_when(i=i, j=ci, t=t)
-                    if tnet.nettype[1] == 'u' and tnet.sparse == True:
+                    if tnet.nettype[1] == 'u' and tnet.sparse:
                         k_is2 = tnet.get_network_when(j=i, i=ci, t=t)
                         k_is = pd.concat([k_is, k_is2])
                     if len(k_is) > 0:
