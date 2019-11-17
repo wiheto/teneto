@@ -4,20 +4,6 @@ import os
 import json
 from scipy.interpolate import interp1d
 
-
-def make_directories(path):
-    """
-    """
-    # Updated function to this and will eventuall merge remove function if this does not raise error when in parallel
-    os.makedirs(path, exist_ok=True)
-    # # Error can occur with os.makedirs when parallel so here a try/error is added to fix that.
-    # if not os.path.exists(path):
-    #     try:
-    #         os.makedirs(path, exist_ok=True)
-    #     except:
-    #         time.sleep(5)
-
-
 def drop_bids_suffix(fname):
     """
     Given a filename sub-01_run-01_preproc.nii.gz, it will return ['sub-01_run-01', '.nii.gz']
