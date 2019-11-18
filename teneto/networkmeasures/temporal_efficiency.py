@@ -1,5 +1,4 @@
-"""
-Networkmeasures: Temporal Efficiency
+"""Calculates Temporal Efficiency
 """
 
 import numpy as np
@@ -35,7 +34,6 @@ def temporal_efficiency(tnet=None, paths=None, calc='overtime'):
         Global temporal efficiency
 
     """
-
     if tnet is not None and paths is not None:
         raise ValueError('Only network or path input allowed.')
     if tnet is None and paths is None:

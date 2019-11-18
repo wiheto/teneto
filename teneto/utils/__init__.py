@@ -18,4 +18,4 @@ __all__ = ['graphlet2contact', 'contact2graphlet',
            'df_to_array', 'check_distance_funciton_input',
            'create_traj_ranges', 'get_dimord', 'get_network_when',
            'create_supraadjacency_matrix', 'check_TemporalNetwork_input',
-           'df_drop_ij_duplicates']
+           'df_drop_ij_duplicates', 'tnet_to_nx']
