@@ -67,7 +67,7 @@ def test_sp_new():
     if not len(paths_all) == dflen == len(paths_1step):
         raise AssertionError()
     # Make sure these two are different
-    if not (paths_1step == paths_all).all()['temporal-distance'] == False:
+    if (paths_1step == paths_all).all()['temporal-distance']:
         raise AssertionError()
     # Check first edge and make sure all works
     paths_1step = teneto.networkmeasures.shortest_temporal_path(
