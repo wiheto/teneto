@@ -5,7 +5,7 @@ from .shortest_temporal_path import shortest_temporal_path
 
 
 def temporal_closeness_centrality(tnet=None, paths=None):
-    u"""
+    r"""
     Returns temporal closeness centrality per node.
 
     Temporal closeness centrlaity is the sum of a node's

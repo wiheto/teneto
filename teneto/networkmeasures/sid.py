@@ -74,10 +74,12 @@ def sid(tnet, communities, axis=0, calc='overtime', decay=0):
     References
     -----------
 
-    .. [sid-1] Fransson et al (2018) Brain network segregation and integration during an epoch-related working memory fMRI experiment. Neuroimage. 178. [`Link <https://www.sciencedirect.com/science/article/pii/S1053811918304476>`_]
+    .. [sid-1] 
+    
+        Fransson et al (2018) Brain network segregation and integration during an epoch-related working memory fMRI experiment.
+        Neuroimage. 178. [`Link <https://www.sciencedirect.com/science/article/pii/S1053811918304476>`_]
 
     """
-
     tnet, netinfo = utils.process_input(tnet, ['C', 'G', 'TN'])
     D = temporal_degree_centrality(
         tnet, calc='pertime', communities=communities, decay=decay)

@@ -71,9 +71,7 @@ def load_tabular_file(fname, header=True, index_col=True):
 
 
 def get_sidecar(fname, allowedfileformats='default'):
-    """
-    Loads sidecar or creates one
-    """
+    """Loads sidecar or creates one"""
     if allowedfileformats == 'default':
         allowedfileformats = ['.tsv', '.nii.gz']
     for f in allowedfileformats:
@@ -90,7 +88,7 @@ def get_sidecar(fname, allowedfileformats='default'):
 
 
 def process_exclusion_criteria(exclusion_criteria):
-    """
+    r"""
     Parses an exclusion critera string to get the function and threshold.
 
     Parameters

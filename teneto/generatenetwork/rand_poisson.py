@@ -1,6 +1,4 @@
-"""
-generatenetwork.rand_poisson
-"""
+"""Generatenetwork a random poisson network"""
 
 import numpy as np
 from ..utils import graphlet2contact, set_diagonal
@@ -40,7 +38,6 @@ def rand_poisson(nnodes, ncontacts, lam=1, nettype='bu', netinfo=None, netrep='g
             Random network with intervals between active edges being Poisson distributed.
 
     """
-
     if isinstance(ncontacts, list):
         if len(ncontacts) != nnodes:
             raise ValueError(
