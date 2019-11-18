@@ -21,7 +21,7 @@ tnet.run('derive_temporalnetwork', {'params': {
 tnet.run('binarize', {'threshold_type': 'percent', 'threshold_level': 0.1})
 tnet.run('volatility', {})
 vol = tnet.load_data()
-# Hard code truth 
+# Hard code truth
 if np.round(np.squeeze(vol['sub-001_run-1_task-a_vol.tsv'].values),5) != 0.10373:
     raise AssertionError()
 

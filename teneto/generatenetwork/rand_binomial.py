@@ -143,8 +143,8 @@ def rand_binomial(size, prob, netrep='graphlet', nettype='bu', initialize='zero'
     References
     ---------
 
-    .. [rb-1] 
-    
+    .. [rb-1]
+
         Clementi et al (2008) Flooding Time in edge-Markovian Dynamic Graphs *PODC*
         This function was written without reference to this paper.
         But this paper discusses a lot of properties of these types of graphs.

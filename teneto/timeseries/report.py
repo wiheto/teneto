@@ -1,6 +1,4 @@
-"""
-derive.report
-"""
+"""Create report about derive"""
 
 import os
 import matplotlib.pyplot as plt
@@ -8,9 +6,7 @@ import numpy as np
 
 
 def gen_report(report, sdir='./', report_name='report.html'):
-    """
-    Generates report of derivation and postprocess steps in teneto.derive
-    """
+    """Generates report of derivation and postprocess steps in teneto.timeseries"""
 
     # Create report directory
     if not os.path.exists(sdir):

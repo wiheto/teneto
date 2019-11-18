@@ -1,6 +1,4 @@
-"""
-File contains functions for postprocessing derivation of connectivity estimates
-"""
+"""File contains functions for postprocessing derivation of connectivity estimates"""
 
 import numpy as np
 import scipy as sp
@@ -100,8 +98,9 @@ def postpro_standardize(data, report=None):
 
 def postpro_pipeline(data, pipeline, report=None):
     """
+    Function to call multiple postprocessing steps.
 
-    PARAMETERS
+    Parameters
     -----------
 
     data : array
@@ -117,7 +116,7 @@ def postpro_pipeline(data, pipeline, report=None):
     report : bool
         If true, appended to report.
 
-    OUTPUT
+    Returns
     -------
 
     postpro_data : array

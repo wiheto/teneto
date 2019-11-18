@@ -1,8 +1,4 @@
-"""
-
-Utiltity functions
-
-"""
+"""General utility functions"""
 
 import numpy as np
 import collections
@@ -432,7 +428,7 @@ def binarize(netin, threshold_type, threshold_level, outputformat='auto', sign='
     else:
         raise ValueError('Unknown value to parameter: threshold_type.')
     netout = process_input(netout, ['G'], outputformat=outputformat)
-    if outputformat == 'G': 
+    if outputformat == 'G':
         netout = netout[0]
     return netout
 
@@ -557,7 +553,6 @@ def get_distance_function(requested_metric):
     requested_metric : distance function
 
     """
-
     distance_options = {
         'braycurtis': distance.braycurtis,
         'canberra': distance.canberra,

@@ -16,7 +16,8 @@ def volatility(tnet, distance_func_name='default', calc='overtime', communities=
         temporal network input (graphlet or contact). Nettype: 'bu','bd','wu','wd'
 
     D : str
-        Distance function. Following options available: 'default', 'hamming', 'euclidean'. (Default implies hamming for binary networks, euclidean for weighted).
+        Distance function. Following options available: 'default', 'hamming', 'euclidean'.
+        (Default implies hamming for binary networks, euclidean for weighted).
 
     calc : str
         Version of volaitility to caclulate. Possibilities include:
@@ -24,7 +25,8 @@ def volatility(tnet, distance_func_name='default', calc='overtime', communities=
         'edge' - average distance between consecutive time points for each edge). Takes considerably longer
         'node' - (i.e. returns the average per node output when calculating volatility per 'edge').
         'pertime' - returns volatility per time point
-        'communities' - returns volatility per communitieswork id (see communities). Also is returned per time-point and this may be changed in the future (with additional options)
+        'communities' - returns volatility per communitieswork id (see communities).
+        Also is returned per time-point and this may be changed in the future (with additional options)
         'event_displacement' - calculates the volatility from a specified point. Returns time-series.
 
     communities : array
