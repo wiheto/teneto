@@ -21,6 +21,7 @@
 -   Renaming getDistanceFunction to get_distance_function.
 -   Created `teneto.neuroimagingtools` to contains neuroimaging specific functions.
 -   fmriutils and bidsutils have moved to neuroimagingtools.
+-   Changed distance_func_name to distance_func in volatility.
 
 ### 0.5.0 Fixes
 
