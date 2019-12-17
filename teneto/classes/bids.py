@@ -34,7 +34,7 @@ class TenetoBIDS:
         and the input for communities will be from bids_dir/derivatives/[teneto-]coms/.
         The keys in this dictionary must match the names of the teneto funciton inputs.
 
-    bids_filters : dict
+    bids_filter : dict
     history : bool
     update_pipeline : bool
         If true, the output_pipeline becomes the new selected_pipeline
@@ -44,7 +44,7 @@ class TenetoBIDS:
         This can lead to files being overwritten, if desc is not set.
     """
 
-    def __init__(self, bids_dir, selected_pipeline, bids_filters=None, bidsvalidator=False,
+    def __init__(self, bids_dir, selected_pipeline, bids_filter=None, bidsvalidator=False,
                  update_pipeline=True, history=None, exist_ok=False, layout=None):
         if layout is None:
             self.BIDSLayout = bids.BIDSLayout(bids_dir, derivatives=True)
@@ -52,10 +52,10 @@ class TenetoBIDS:
             self.BIDSLayout = layout
         self.bids_dir = bids_dir
         self.selected_pipeline = selected_pipeline
-        if bids_filters is None:
-            self.bids_filters = {}
+        if bids_filter is None:
+            self.bids_filter = {}
         else:
-            self.bids_filters = bids_filters
+            self.bids_filter = bids_filter
         if history is not None:
             self.history = {}
         self.exist_ok = exist_ok
@@ -112,7 +112,7 @@ class TenetoBIDS:
         self.update_bids_layout()
         return output_pipeline
 
-    def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filters=None, update_pipeline=True, exist_ok=None):
+    def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filter=None, update_pipeline=True, exist_ok=None):
         """Runs a runction on the selected files.
 
         Parameters
@@ -277,13 +277,49 @@ class TenetoBIDS:
             # input can only be these files
             filters = {'extension': ['tsv', 'nii', 'nii.gz']}
         # Add predefined filters to the check
-        filters.update(self.bids_filters)
-        return self.BIDSLayout.get(scope=self.selected_pipeline, **filters)
+        filters.update(self.bids_filter)
+        files = self.BIDSLayout.get(scope=self.selected_pipeline, **filters)
+        return files
 
-    def get_run_options(self):
-        """Returns the different function names that can be called using TenetoBIDS.run()"""
+    def get_run_options(self, for_selected=True):
+        """Returns the different function names that can be called using TenetoBIDS.run()
+        
+        Parameters
+        ===========
+        for_selected : bool
+            If True, only return run options for the selected files.
+            If False, returns all options. 
+        
+        Returns
+        ========
+        options : str
+            a list of options that can be run.
+        """
         funcs = self.tenetobids_structure.keys()
+        if for_selected:
+            funcs_filter = []
+            files = self.get_selected_files()
+            suffix = [f.get_entities()['suffix'] for f in files]
+            suffix = list(np.unique(suffix))
+            for t in list(funcs):
+                s = self.tenetobids_structure[t]['input']['suffix']
+                if isinstance(s, str): 
+                    s = [s]
+                for su in suffix:
+                    if su in s:
+                        funcs_filter.append(t)
+            funcs = list(set(funcs_filter))
         return ', '.join(funcs)
+
+    def update_bids_filter(self, filter_addons):
+        """Updates TenetoBIDS.bids_filter
+
+        Parameters
+        ==========
+        filter_addons : dict
+            dictionary that updates TenetoBIDS.bids_filter
+        """ 
+        self.bids_filter.update(filter_addons)
 
     def get_confounds(self, bidsfile, confound_filters=None):
         """Tries to automatically get the confounds file of an input file, and loads it
@@ -312,18 +348,18 @@ class TenetoBIDS:
             confoundsfile[0].dirname + '/' + confoundsfile[0].filename, index_col=False)
         return confounds
 
-    def load_data(self, bids_filters=None):
+    def load_data(self, bids_filter=None):
         """Returns data, default is the input data.
 
-        bids_filters : dict
-            default is None. If set, load data will load all files found by the bids_filters.
+        bids_filter : dict
+            default is None. If set, load data will load all files found by the bids_filter.
             Any preset BIDS filter is used as well, but will get overwritten by this input.
         """
-        if bids_filters is None:
+        if bids_filter is None:
             files = self.get_selected_files()
         else:
-            filters = dict(self.bids_filters)
-            filters.update(bids_filters)
+            filters = dict(self.bids_filter)
+            filters.update(bids_filter)
             files = self.BIDSLayout.get(**filters)
         data = {}
         for f in files:
