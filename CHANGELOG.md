@@ -22,6 +22,7 @@
 -   Created `teneto.neuroimagingtools` to contains neuroimaging specific functions.
 -   fmriutils and bidsutils have moved to neuroimagingtools.
 -   Changed distance_func_name to distance_func in volatility.
+-   Instantaneous phase synchrony is now between 0 and 1, fixing potential wrapping issue.
 
 ### 0.5.0 Fixes
 
