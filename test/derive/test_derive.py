@@ -71,11 +71,11 @@ def test_ip():
     X = np.array(X)
     ips1 = teneto.timeseries.derive_temporalnetwork(X, {
         'method': 'ips'})
-    if ips1[0, 1, 0] != np.pi:
+    if ips1[0, 1, 0] != 0:
         raise AssertionError()
     X = [np.sin(np.arange(0, 10)), np.sin(np.arange(0, 10))]
     X = np.array(X)
     ips2 = teneto.timeseries.derive_temporalnetwork(X, {
         'method': 'ips'})
-    if ips2[0, 1, 0] != 0:
+    if ips2[0, 1, 0] != 1:
         raise AssertionError()
