@@ -1,13 +1,14 @@
+nilearn==0.4.0
+pandas>=0.21
+pybids==0.9.5
+#python-igraph>=0.7.1
+#louvain >= 0.6.1
+statsmodels>=0.8.0
 m2r>=0.2.1
 nbsphinx>=0.4.2
 sphinx-automodapi>=0.9
-nilearn==0.4.0
-matplotlib==2.2.0
-scikit-learn==0.19.1
-pybids==0.9.5
-statsmodels>=0.8.0
 networkx>=2.0
 python-louvain>=0.13
-tables>=3.4.4
-scikit-optimize>=0.5.2
+matplotlib==2.2.0
+scikit-learn>=0.19.1
 templateflow>=0.4.1rc5
