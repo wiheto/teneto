@@ -345,8 +345,7 @@ def _instantaneous_phasesync(data, params, report):
     ips = np.zeros([data.shape[1], data.shape[1], data.shape[0]])
     for n in range(data.shape[1]):
         for m in range(data.shape[1]):
-            ips[n, m, :] = np.remainder(
-                np.abs(instantaneous_phase[n, :] - instantaneous_phase[m, :]), 2*np.pi)
+            ips[n, m, :] = np.sin(np.abs(instantaneous_phase[n] - instantaneous_phase[m])/2)
 
     report = {}
     report['method'] = 'instantaneousphasesync'
