@@ -1,2 +1,3 @@
 include teneto/config/tenetobids/*
-recursive-include teneto/data/testdata/*
+include teneto/data/testdata/dummybids/*
+graft teneto/data/testdata/dummybids/*

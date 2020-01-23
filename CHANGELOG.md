@@ -30,6 +30,7 @@
 -   Fix error in #53.
 -   Binarize can accept dataframe in sparse.
 -   Remove_confounds can deal with dataframes.
+-   Fixing inclusion of testdata/dummybids when installing with pip.
 
 ## V0.4.6
 

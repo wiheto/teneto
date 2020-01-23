@@ -7,5 +7,5 @@ Tutorial
     tutorial/networkrepresentation
     tutorial/networkmeasures
     tutorial/workflow
-    tutorial/TenetoBIDS
+    tutorial/tenetobids
     tutorial/tctc
