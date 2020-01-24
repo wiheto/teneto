@@ -3,9 +3,7 @@ from .utils import get_network_when
 
 
 def tnet_to_nx(df, t=None):
-    """
-    Creates undirected networkx object
-    """
+    """Creates undirected networkx object"""
     if t is not None:
         df = get_network_when(df, t=t)
     if 'weight' in df.columns:

@@ -1,9 +1,12 @@
 import numpy as np
 
+
 def allegiance(community):
-    """
-    Computes the allegiance matrix with values representing the probability that
-    nodes i and j were assigned to the same community by time-varying clustering methods.
+    u"""
+    Computes allience of communities.
+
+    The allegiance matrix with values representing the probability that
+    nodes i and j were assigned to the same community by time-varying clustering methods.[alleg-1]_
 
     parameters
     ----------
@@ -17,7 +20,11 @@ def allegiance(community):
 
     Reference:
     ----------
-    Bassett, et al. (2013) “Robust detection of dynamic community structure in networks”, Chaos, 23, 1
+
+    .. [alleg-1]:
+
+        Bassett, et al. (2013)
+        “Robust detection of dynamic community structure in networks”, Chaos, 23, 1
 
     """
     N = community.shape[0]

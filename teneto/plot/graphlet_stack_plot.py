@@ -1,3 +1,4 @@
+"""Plots graphlet stack plot"""
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import ndimage
@@ -6,8 +7,10 @@ from ..utils import contact2graphlet, check_input
 plt.rcParams['axes.facecolor'] = 'white'
 
 
-def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth=2, bordercolor=None, Fs=1, timeunit='', t0=1, sharpen='yes', vminmax='minmax'):
-    r'''
+def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k',
+                        borderwidth=2, bordercolor=None, Fs=1, timeunit='', t0=1,
+                        sharpen='yes', vminmax='minmax'):
+    r"""
     Returns matplotlib axis handle for graphlet_stack_plot. This is a row of transformed connectivity matrices to look like a 3D stack.
 
     Parameters
@@ -21,9 +24,11 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     cmap : str
         Colormap (matplotlib) of graphlets
     Fs : int
-        Sampling rate. Same as contact-representation (if netin is contact, and input is unset, contact dictionary is used)
+        Sampling rate. Same as contact-representation (if netin is contact,
+        and input is unset, contact dictionary is used)
     timeunit : str
-        Unit of time for xlabel. Same as contact-representation (if netin is contact, and input is unset, contact dictionary is used)
+        Unit of time for xlabel. Same as contact-representation (if netin is contact,
+        and input is unset, contact dictionary is used)
     t0 : int
         What should the first time point be called. Should be integer. Default 1.
     gridcolor : str
@@ -31,9 +36,12 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     borderwidth : int
         Scales the size of border.
     bordorcolor :
-        color of the border (at the moment it must be in RGB values between 0 and 1 -> this will be changed sometime in the future). Default: black.
+        color of the border (at the moment it must be in RGB values between 0 and 1
+        -> this will be changed sometime in the future). Default: black.
     vminmax : str
-         'maxabs', 'minmax' (default), or list/array with length of 2. Specifies the min and max colormap value of graphlets. Maxabs entails [-max(abs(G)),max(abs(G))], minmax entails [min(G), max(G)].
+         'maxabs', 'minmax' (default), or list/array with length of 2.
+         Specifies the min and max colormap value of graphlets.
+         Maxabs entails [-max(abs(G)),max(abs(G))], minmax entails [min(G), max(G)].
 
     Returns
     --------
@@ -61,7 +69,8 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     >>> # Probability of edge activation
     >>> birth_rate = 0.2
     >>> death_rate = .9
-    >>> # Add node names into the network and say time units are years, go 1 year per graphlet and startyear is 2007
+    >>> # Add node names into the network and say time units are years, go 1 year per
+    graphlet and startyear is 2007
     >>> cfg={}
     >>> cfg['Fs'] = 1
     >>> cfg['timeunit'] = 'Years'
@@ -98,8 +107,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
         ax = teneto.plot.graphlet_stack_plot(C,ax,q=10,cmap=cmap)
         fig.show()
 
-    '''
-
+    """
     # Get input type (C, G, TO)
     inputType = check_input(netin)
 
@@ -120,7 +128,7 @@ def graphlet_stack_plot(netin, ax, q=10, cmap='Reds', gridcolor='k', borderwidth
     if timeunit != '':
         timeunit = ' (' + timeunit + ')'
 
-    if bordercolor == None:
+    if bordercolor is None:
         bordercolor = [0, 0, 0]
 
     if not isinstance(borderwidth, int):

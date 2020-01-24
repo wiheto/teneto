@@ -33,7 +33,7 @@ def shortest_path_from_pairseq(pairseq, source):
         return None
 
 
-def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, minimise='time'):
+def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, minimise='temporal_distance'):
     """
     Shortest temporal path
 
@@ -57,7 +57,8 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
         List of starting time-point indicies to restrict anlaysis. Default is all timepoints.
 
     minimise : str
-        Can be "time", returns the path that has the smallest temporal distance. It is possible there can be a path that is a smaller
+        Can be "temporal_distance", returns the path that has the smallest temporal distance.
+        It is possible there can be a path that is a smaller
         topological distance (this option currently not available).
 
     Returns
@@ -206,7 +207,7 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                         new_nodes = new_nodes.flatten()
                         ij = np.hstack([ij, new_nodes])
                         ij = np.unique(ij)
-                        if minimise == 'time' and target in ij:
+                        if minimise == 'temporal_distance' and target in ij:
                             stop = 1
                         elif minimise == 'topology' and t == tnet.netshape[1] and target in ij:
                             stop = 1

@@ -1,0 +1,6 @@
+strictness: medium
+test-warnings: true
+doc-warnings: true
+
+mccabe:
+  run: false

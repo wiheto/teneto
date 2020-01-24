@@ -13,7 +13,7 @@ def test_volatility():
     # global volatility
     v_global = teneto.networkmeasures.volatility(G)
     # v volatility per time point
-    v_time = teneto.networkmeasures.volatility(G, calc='time')
+    v_time = teneto.networkmeasures.volatility(G, calc='pertime')
     v_tr = np.array([2/6, 4/6])
     if not v_global == np.mean(v_tr):
         raise AssertionError()

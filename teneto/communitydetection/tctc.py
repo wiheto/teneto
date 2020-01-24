@@ -1,3 +1,4 @@
+"""TCTC is a temporal community detection method on nodal time series using trajectories."""
 import numpy as np
 import networkx as nx
 import pandas as pd
@@ -116,7 +117,9 @@ def partition_inference(tctc_mat, comp, tau, sigma, kappa):
     return communityinfo
 
 
-def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False, rule='flock', noise=None, raw_signal='amplitude', output='array', tempdir=None, njobs=1, largestonly=False):
+def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False,
+         rule='flock', noise=None, raw_signal='amplitude', output='array',
+         tempdir=None, njobs=1, largestonly=False):
     r"""
     Runs TCTC community detection
 
@@ -177,7 +180,8 @@ def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False, rule='flock', n
 
         elif raw_signal == 'phase':
             params = {'method': 'ips', 'dimord': 'time,node'}
-            d = derive_temporalnetwork(data, params)
+            # Correct for inversion
+            d = 1 - derive_temporalnetwork(data, params)
 
         # Shape of datin (with any addiitonal 0s or noise added to nodes)
         dat_shape = [int(d.shape[-1]), int(d.shape[0])]
@@ -187,7 +191,8 @@ def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False, rule='flock', n
 
         t1 = 1
         t2 = 2
-        # The next two rules have to be run iteratively until it converges. i.e. when applying the sigma and tau parameters, if nothing more is pruned, then this is complete
+        # The next two rules have to be run iteratively until it converges.
+        # i.e. when applying the sigma and tau parameters, if nothing more is pruned, then this is complete
         # There may be a case where running it in this order could through some value that is unwanted due to the skipping mechanic.
         # Doing it in the other order does create possible bad values.
         while t1 != t2:
@@ -207,7 +212,8 @@ def tctc(data, tau, epsilon, sigma, kappa=0, largedataset=False, rule='flock', n
                     #        cliques.append(j.result()[0])
 
                 elif rule == 'convoy':
-                    cliques = [list(map(list, filter(lambda x: (len(x) >= sigma) and (len(set(x).intersection(np.arange(N_data, N+1))) == 0), nx.connected_components(
+                    cliques = [list(map(list, filter(lambda x: (len(x) >= sigma) and
+                                                     (len(set(x).intersection(np.arange(N_data, N+1))) == 0), nx.connected_components(
                         nx.Graph(tctc_mat[:, :, t]))))) for t in range(tctc_mat.shape[-1])]
 
                 # Reset the trajectory matrix (since info is now in "cliques").

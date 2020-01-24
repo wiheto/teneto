@@ -1,0 +1,232 @@
+{
+    "make_parcellation": {
+        "input": {
+            "extension": ["nii", "nii.gz"],
+            "suffix": "bold"
+        },
+        "output":
+            {"extension": "tsv",
+            "suffix": "timeseries"},
+        "module":
+            "neuroimagingtools",
+        "functype":
+            "on_data"
+    },
+    "remove_confounds": {
+        "input": {
+            "extension": ["tsv"],
+            "suffix": "timeseries"
+        },
+        "output":
+            {"extension": "tsv",
+            "suffix": "timeseries"},
+        "module":
+            "timeseries",
+        "functype":
+            "on_data"
+    },
+    "censor_timepoints": {
+        "input":
+            {"extension": "tsv",
+            "suffix": "timeseries"},
+        "output":
+                {"extension": "tsv",
+                "suffix": "timeseries"},
+        "module":
+            "neuroimagingtools",
+        "functype":
+            "on_data"
+    },
+    "exclude_runs": {
+        "input":
+            {"extension": ["tsv", ".nii.gz", ".nii"],
+            "suffix": ["timeseries", "bold"]},
+        "output":
+            {"extension": ["tsv", ".nii.gz", ".nii"],
+            "suffix": ["timeseries", "bold"]},
+        "module":
+            "neuroimagingtools",
+        "functype":
+            "on_sidecar"
+    },
+    "derive_temporalnetwork": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "timeseries"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "temporalconnectivity"},
+        "module":
+            "timeseries",
+        "functype":
+            "on_data"
+    },
+    "bursty_coeff": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "burst"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "fluctuability": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "fluct"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "intercontacttimes": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "ict"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "local_variation": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "locvar"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "reachability_latency": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "fluct"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "shortest_temporal_path": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "tpath"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "sid": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "sid"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "temporal_betweenness_centrality": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "bet"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "temporal_cloesnesss_centrality": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "closeness"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "temporal_degree_centrality": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "deg"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "temporal_efficiency": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "eff"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "temporal_participation_coeff": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "part"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "volatility": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "vol"},
+        "module":
+            "networkmeasures",
+        "functype":
+            "on_data"
+    },
+    "binarize": {
+        "input":
+            {"extension": ["tsv"],
+            "suffix": "temporalconnectivity"},
+        "output":
+            {"extension": "tsv",
+            "suffix": "temporalconnectivity"},
+        "module":
+            "utils",
+        "functype":
+            "on_data"
+    }
+}

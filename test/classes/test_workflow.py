@@ -5,16 +5,16 @@ import teneto
 import pytest
 
 def test_workflow_temporalnetwork():
-    G = np.random.normal(0, 1, [3, 3, 5])
-    Gth = teneto.utils.binarize(
-        G, threshold_type='percent', threshold_level=0.05)
-    Gmag = teneto.utils.binarize(
-        G, threshold_type='magnitude', threshold_level=0)
-    Dth = teneto.networkmeasures.temporal_degree_centrality(Gth)
-    Dmag = teneto.networkmeasures.temporal_degree_centrality(Gmag)
+    data = np.random.normal(0, 1, [3, 3, 5])
+    data_th = teneto.utils.binarize(
+        data, threshold_type='percent', threshold_level=0.05)
+    data_mag = teneto.utils.binarize(
+        data, threshold_type='magnitude', threshold_level=0)
+    dth = teneto.networkmeasures.temporal_degree_centrality(data_th)
+    dmag = teneto.networkmeasures.temporal_degree_centrality(data_mag)
     twf = TenetoWorkflow()
     twf.add_node('network_create', 'TemporalNetwork',
-                 params={'from_array': G})
+                 params={'from_array': data})
     twf.add_node('binarize_percent', 'binarize', params={
                  'threshold_type': 'percent', 'threshold_level': 0.05})
     twf.add_node('degree_th-percent', 'calc_networkmeasure',
@@ -25,9 +25,9 @@ def test_workflow_temporalnetwork():
                  params={'networkmeasure': 'temporal_degree_centrality'})
     twf.run()
     twf.make_workflow_figure()
-    if not all(Dth == twf.output_['degree_th-percent']):
+    if not all(dth == twf.output_['degree_th-percent']):
         raise AssertionError()
-    if not all(Dmag == twf.output_['degree_th-magnitude']):
+    if not all(dmag == twf.output_['degree_th-magnitude']):
         raise AssertionError()
 
 def test_workflow_incorrect_input():

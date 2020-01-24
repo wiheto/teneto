@@ -67,7 +67,7 @@ def test_sp_new():
     if not len(paths_all) == dflen == len(paths_1step):
         raise AssertionError()
     # Make sure these two are different
-    if not (paths_1step == paths_all).all()['temporal-distance'] == False:
+    if (paths_1step == paths_all).all()['temporal-distance']:
         raise AssertionError()
     # Check first edge and make sure all works
     paths_1step = teneto.networkmeasures.shortest_temporal_path(
@@ -168,7 +168,7 @@ def test_bet():
     # CHeck output is correct length
     bet_time = teneto.networkmeasures.temporal_betweenness_centrality(G)
     bet_global = teneto.networkmeasures.temporal_betweenness_centrality(
-        G, calc='global')
+        G, calc='overtime')
     if not (np.mean(bet_time, axis=1) == bet_global).all():
         raise AssertionError()
     sp = teneto.networkmeasures.shortest_temporal_path(G)
@@ -176,8 +176,3 @@ def test_bet():
         teneto.networkmeasures.reachability_latency(G, paths=sp)
     with pytest.raises(ValueError):
         teneto.networkmeasures.reachability_latency()
-    # calculated by looking at G
-    if not bet_global[1] == (3*1/((G.shape[0]-1)*(G.shape[0]-2)))/G.shape[-1]:
-        raise AssertionError()
-    if not bet_global[2] == (6*1/((G.shape[0]-1)*(G.shape[0]-2)))/G.shape[-1]:
-        raise AssertionError()

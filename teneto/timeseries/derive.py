@@ -1,13 +1,9 @@
-"""
-
-derive: different methods to derive dynamic functional connectivity
-
-"""
+"""derive: different methods to derive time-varying functional connectivity"""
 
 
 import numpy as np
 from statsmodels.stats.weightstats import DescrStatsW
-from ..utils import set_diagonal, getDistanceFunction
+from ..utils import set_diagonal, get_distance_function
 from .postprocess import postpro_pipeline
 from .report import gen_report
 import scipy.stats as sps
@@ -16,7 +12,9 @@ from scipy.signal import hilbert
 
 def derive_temporalnetwork(data, params):
     """
-    Derives connectivity from the data. A lot of data is inherently built with edges
+    Derives connectivity from the data.
+
+    A lot of data is inherently built with edges
      (e.g. communication between two individuals).
     However other networks are derived from the covariance of time series
      (e.g. brain networks between two regions).
@@ -31,7 +29,9 @@ def derive_temporalnetwork(data, params):
     ----------
 
     data : array
-        Time series data to perform connectivity derivation on. (Default dimensions are: (time as rows, nodes as columns). Change params{'dimord'} if you want it the other way (see below).
+        Time series data to perform connectivity derivation on.
+        (Default dimensions are: (time as rows, nodes as columns).
+        Change params{'dimord'} if you want it the other way (see below).
 
     params : dict
         Parameters for each method (see below).
@@ -41,7 +41,8 @@ def derive_temporalnetwork(data, params):
 
     method : str
         method: "distance","slidingwindow", "taperedslidingwindow",
-     "jackknife", "multiplytemporalderivative". Alternatively, method can be a weight matrix of size time x time.
+     "jackknife", "multiplytemporalderivative".
+     Alternatively, method can be a weight matrix of size time x time.
 
     **Different methods have method specific paramaters (see below)**
 
@@ -53,13 +54,18 @@ def derive_temporalnetwork(data, params):
      and any combination seperated by a + (e,g, "fisher+boxcox").
       See postpro_pipeline for more information.
     dimord : str
-        Dimension order: 'node,time' (default) or 'time,node'. People like to represent their data differently and this is an easy way to be sure that you are inputing the data in the correct way.
+        Dimension order: 'node,time' (default) or 'time,node'.
+        People like to represent their data differently and this is an easy way
+        to be sure that you are inputing the data in the correct way.
     analysis_id : str or int
-        add to identify specfic analysis. Generated report will be placed in './report/' + analysis_id + '/derivation_report.html
+        add to identify specfic analysis.
+        Generated report will be placed in './report/' + analysis_id + '/derivation_report.html
     report : bool
-        False by default. If true, A report is saved in ./report/[analysis_id]/derivation_report.html if "yes"
+        False by default.
+        If true, A report is saved in ./report/[analysis_id]/derivation_report.html if "yes"
     report_path : str
-        String where the report is saved. Default is ./report/[analysis_id]/derivation_report.html
+        String where the report is saved.
+        Default is ./report/[analysis_id]/derivation_report.html
 
     Methods specific parameters
     ===========================
@@ -71,7 +77,7 @@ def derive_temporalnetwork(data, params):
     W[t,t] is excluded from the scaling and then set to 1.
 
     params['distance']: str
-        Distance metric (e.g. 'euclidean'). See teneto.utils.getDistanceFunction for more info
+        Distance metric (e.g. 'euclidean'). See teneto.utils.get_distance_function for more info
 
     When method == "slidingwindow"
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,7 +161,7 @@ def derive_temporalnetwork(data, params):
     if 'postpro' not in params.keys():
         params['postpro'] = 'no'
 
-    if params['report'] == 'yes' or params['report'] == True:
+    if params['report'] == 'yes' or params['report']:
 
         if 'analysis_id' not in params.keys():
             params['analysis_id'] = ''
@@ -169,25 +175,33 @@ def derive_temporalnetwork(data, params):
     if params['dimord'] == 'node,time':
         data = data.transpose()
 
+    sw_alternatives = ['sliding window', 'slidingwindow']
+    tsw_alternatives = ['tapered sliding window', 'taperedslidingwindow']
+    sd_alternatives = ['distance', "spatial distance",
+                       "node distance", "nodedistance", "spatialdistance"]
+    mtd_alternatives = ['mtd', 'multiply temporal derivative',
+                        'multiplytemporalderivative', 'temporal derivative', "temporalderivative"]
+    ip_alternatives = ['instantaneousphasesync', 'ips']
+    jc_alternatives = ['jackknife', 'jackknifecorrelation', 'jc']
     if isinstance(params['method'], str):
-        if params['method'] == 'jackknife':
+        if params['method'] in jc_alternatives:
             weights, report = _weightfun_jackknife(data.shape[0], report)
             relation = 'weight'
-        elif params['method'] == 'sliding window' or params['method'] == 'slidingwindow':
+        elif params['method'] in sw_alternatives:
             weights, report = _weightfun_sliding_window(
                 data.shape[0], params, report)
             relation = 'weight'
-        elif params['method'] == 'tapered sliding window' or params['method'] == 'taperedslidingwindow':
+        elif params['method'] in tsw_alternatives:
             weights, report = _weightfun_tapered_sliding_window(
                 data.shape[0], params, report)
             relation = 'weight'
-        elif params['method'] == 'distance' or params['method'] == "spatial distance" or params['method'] == "node distance" or params['method'] == "nodedistance" or params['method'] == "spatialdistance":
+        elif params['method'] in sd_alternatives:
             weights, report = _weightfun_spatial_distance(data, params, report)
             relation = 'weight'
-        elif params['method'] == 'mtd' or params['method'] == 'multiply temporal derivative' or params['method'] == 'multiplytemporalderivative' or params['method'] == 'temporal derivative' or params['method'] == "temporalderivative":
+        elif params['method'] in mtd_alternatives:
             R, report = _temporal_derivative(data, params, report)
             relation = 'coupling'
-        elif params['method'] == 'instantaneousphasesync' or params['method'] == 'ips':
+        elif params['method'] in ip_alternatives:
             R, report = _instantaneous_phasesync(data, params, report)
             relation = 'coupling'
         else:
@@ -237,15 +251,13 @@ def derive_temporalnetwork(data, params):
             R, params['postpro'], report)
         R = set_diagonal(R, 1)
 
-    if params['report'] == 'yes' or params['report'] == True:
+    if params['report'] == 'yes' or params['report']:
         gen_report(report, params['report_path'], params['report_filename'])
     return R
 
 
 def _weightfun_jackknife(T, report):
-    """
-    Creates the weights for the jackknife method. See func: teneto.timeseries.derive_temporalnetwork.
-    """
+    """Creates the weights for the jackknife method. See func: teneto.timeseries.derive_temporalnetwork."""
 
     weights = np.ones([T, T])
     np.fill_diagonal(weights, 0)
@@ -255,9 +267,7 @@ def _weightfun_jackknife(T, report):
 
 
 def _weightfun_sliding_window(T, params, report):
-    """
-    Creates the weights for the sliding window method. See func: teneto.timeseries.derive_temporalnetwork.
-    """
+    """Creates the weights for the sliding window method. See func: teneto.timeseries.derive_temporalnetwork."""
     weightat0 = np.zeros(T)
     weightat0[0:params['windowsize']] = np.ones(params['windowsize'])
     weights = np.array([np.roll(weightat0, i)
@@ -269,11 +279,10 @@ def _weightfun_sliding_window(T, params, report):
 
 
 def _weightfun_tapered_sliding_window(T, params, report):
-    """
-    Creates the weights for the tapered method. See func: teneto.timeseries.derive_temporalnetwork.
-    """
+    """Creates the weights for the tapered method. See func: teneto.timeseries.derive_temporalnetwork."""
     x = np.arange(-(params['windowsize'] - 1) / 2, (params['windowsize']) / 2)
-    taper = getattr(sps, params['distribution']).pdf(x, **params['distribution_params'])
+    taper = getattr(sps, params['distribution']).pdf(
+        x, **params['distribution_params'])
 
     weightat0 = np.zeros(T)
     weightat0[0:params['windowsize']] = taper
@@ -287,10 +296,8 @@ def _weightfun_tapered_sliding_window(T, params, report):
 
 
 def _weightfun_spatial_distance(data, params, report):
-    """
-    Creates the weights for the spatial distance method. See func: teneto.timeseries.derive_temporalnetwork.
-    """
-    distance = getDistanceFunction(params['distance'])
+    """Creates the weights for the spatial distance method. See func: teneto.timeseries.derive_temporalnetwork."""
+    distance = get_distance_function(params['distance'])
     weights = np.array([distance(data[n, :], data[t, :]) for n in np.arange(
         0, data.shape[0]) for t in np.arange(0, data.shape[0])])
     weights = np.reshape(weights, [data.shape[0], data.shape[0]])
@@ -303,9 +310,7 @@ def _weightfun_spatial_distance(data, params, report):
 
 
 def _temporal_derivative(data, params, report):
-    """
-    Performs mtd method. See func: teneto.timeseries.derive_temporalnetwork.
-    """
+    """Performs mtd method. See func: teneto.timeseries.derive_temporalnetwork."""
     # Data should be timexnode
     report = {}
 
@@ -334,16 +339,13 @@ def _temporal_derivative(data, params, report):
 
 
 def _instantaneous_phasesync(data, params, report):
-    """
-    Derivce instantaneous phase synchrony. See func: teneto.timeseries.derive_temporalnetwork.
-    """
+    """Derivce instantaneous phase synchrony. See func: teneto.timeseries.derive_temporalnetwork."""
     analytic_signal = hilbert(data.transpose())
     instantaneous_phase = np.angle(analytic_signal)
     ips = np.zeros([data.shape[1], data.shape[1], data.shape[0]])
     for n in range(data.shape[1]):
         for m in range(data.shape[1]):
-            ips[n, m, :] = np.remainder(
-                np.abs(instantaneous_phase[n, :] - instantaneous_phase[m, :]), 2*np.pi)
+            ips[n, m, :] = 1 - np.sin(np.abs(instantaneous_phase[n] - instantaneous_phase[m])/2)
 
     report = {}
     report['method'] = 'instantaneousphasesync'

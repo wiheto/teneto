@@ -1,13 +1,17 @@
-# Main function to draw a slice_graph
+"""Draw a slice_graph"""
 import numpy as np
 from ..utils import check_input, graphlet2contact
 
 
-def slice_plot(netin, ax, nodelabels=None, timelabels=None, communities=None, plotedgeweights=False, edgeweightscalar=1, timeunit='', linestyle='k-', cmap=None, nodesize=100, nodekwargs=None, edgekwargs=None):
-    r'''
+def slice_plot(netin, ax, nodelabels=None, timelabels=None,
+               communities=None, plotedgeweights=False, edgeweightscalar=1,
+               timeunit='', linestyle='k-', cmap=None, nodesize=100,
+               nodekwargs=None, edgekwargs=None):
+    r"""
+    Fuction draws "slice graph".
 
-    Fuction draws "slice graph" and exports axis handles
-
+    A slice plot plots all the nodes per time point as a column
+    with Bezier curvers connecting connected nodes.
 
     Parameters
     ----------
@@ -98,8 +102,7 @@ def slice_plot(netin, ax, nodelabels=None, timelabels=None, communities=None, pl
         plt.tight_layout()
         fig.show()
 
-
-    '''
+    """
     # Get input type (C or G)
     inputType = check_input(netin)
     # Convert C representation to G
@@ -155,7 +158,7 @@ def slice_plot(netin, ax, nodelabels=None, timelabels=None, communities=None, pl
     # plt.plot(points)
     # Draw Bezier vectors around egde positions
     for ei, edge in enumerate(edgelist):
-        if plotedgeweights == True and netin['nettype'][0] == 'w':
+        if plotedgeweights and netin['nettype'][0] == 'w':
             edgekwargs['linewidth'] = netin['values'][ei] * edgeweightscalar
         bvx, bvy = bezier_points(
             (posx[edge[0]], posy[edge[0]]), (posx[edge[1]], posy[edge[1]]), nodeNum, 20)

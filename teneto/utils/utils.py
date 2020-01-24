@@ -1,28 +1,27 @@
-"""
-
-Utiltity functions
-
-"""
+"""General utility functions"""
 
 import numpy as np
 import collections
 import itertools
 import scipy.spatial.distance as distance
 from ..trajectory import rdp
-from .. import __path__ as tenetopath
 from ..classes import TemporalNetwork
 import pandas as pd
 import operator
 
 
-def graphlet2contact(G, params=None):
+def graphlet2contact(tnet, params=None):
     """
 
-    Converts graphlet (snapshot) representation of temporal network and converts it to contact representation representation of network. Contact representation are more efficient for memory storing. Also includes metadata which can made it easier for plotting. A contact representation contains all non-zero edges.
+    Converts array representation to contact representation.
+
+    Contact representation are more efficient for memory storing.
+    Also includes metadata which can made it easier for plotting.
+    A contact representation contains all non-zero edges.
 
     Parameters
     ----------
-    G : array_like
+    tnet : array_like
         Temporal network.
     params : dict, optional
         Dictionary of parameters for contact representation.
@@ -42,10 +41,11 @@ def graphlet2contact(G, params=None):
             'bu': binary, undirected.
 
         *diagonal* : int, default = 0.
-            What should the diagonal be. (note: does could be expanded to take vector of unique diagonal values in the future, but not implemented now)
+            What should the diagonal be.
 
         *timetype* : str, default='discrete'
-            Time units can be The params file becomes the foundation of 'C'. Any other information in params, will added to C.
+            Time units can be The params file becomes the foundation of 'C'.
+            Any other information in params, will added to C.
 
         *nodelabels* : list
             Set nod labels.
@@ -63,23 +63,22 @@ def graphlet2contact(G, params=None):
         Includes 'contacts', 'values' (if nettype[0]='w'),'nettype','netshape', 'Fs', 'dimord' and 'timeunit', 'timetype'.
 
     """
-
     # Create config dictionary if missing
-    if params == None:
+    if params is None:
         params = {}
     # Check that temporal network is vald input.
-    if G.shape[0] != G.shape[1]:
+    if tnet.shape[0] != tnet.shape[1]:
         raise ValueError(
-            'Input G (node x node x time), requires Rows and Columns to be the same size.')
-    if len(G.shape) == 2:
-        G = np.atleast_3d(G)
-    if len(G.shape) != 3:
+            'Input tnet (node x node x time), requires Rows and Columns to be the same size.')
+    if len(tnet.shape) == 2:
+        tnet = np.atleast_3d(tnet)
+    if len(tnet.shape) != 3:
         raise ValueError(
-            'Input G must be three dimensions (node x node x time)')
+            'Input tnet must be three dimensions (node x node x time)')
     # Check number of nodes is correct, if specfied
     if 'nodelabels' in params.keys():
         if params['nodelabels']:
-            if len(params['nodelabels']) != G.shape[0]:
+            if len(params['nodelabels']) != tnet.shape[0]:
                 raise ValueError(
                     'Specified list of node names has to be equal in length to number of nodes')
     if 't0' in params.keys():
@@ -91,10 +90,10 @@ def graphlet2contact(G, params=None):
     # Check that all inputs in params are correct.
 
     if 'nettype' not in params.keys() or params['nettype'] == 'auto':
-        params['nettype'] = gen_nettype(G, 1)
+        params['nettype'] = gen_nettype(tnet, 1)
     if params['nettype'] not in {'bd', 'bu', 'wd', 'wu', 'auto'}:
         raise ValueError(
-            '\'nettype\' (in params) must be a string \'wd\',\'bd\',\'wu\',\'bu\'). w: weighted network. b: binary network. u: undirected network. d: directed network')
+            '\'nettype\' (in params) must be a string \'wd\',\'bd\',\'wu\',\'bu\').')
     if 'Fs' not in params.keys():
         params['Fs'] = 1
         #print('Warning, no sampling rate set. Assuming 1.')
@@ -112,24 +111,25 @@ def graphlet2contact(G, params=None):
     nt = params['nettype']
 
     # Set diagonal to 0 to make contacts 0.
-    G = set_diagonal(G, 0)
+    tnet = set_diagonal(tnet, 0)
 
     # Very convoluted way to get all the indexes into a tuple, ordered by time
     if nt[1] == 'u':
-        G = [np.triu(G[:, :, t], k=1) for t in range(0, G.shape[2])]
-        G = np.transpose(G, [1, 2, 0])
-    edg = np.where(np.abs(G) > 0)
+        tnet = [np.triu(tnet[:, :, t], k=1) for t in range(0, tnet.shape[2])]
+        tnet = np.transpose(tnet, [1, 2, 0])
+    edg = np.where(np.abs(tnet) > 0)
     sortTime = np.argsort(edg[2])
     contacts = np.array([tuple([edg[0][i], edg[1][i], edg[2][i]])
                          for i in sortTime])
     # Get each of the values if weighted matrix
     if nt[0] == 'w':
-        values = list(G[edg[0][sortTime], edg[1][sortTime], edg[2][sortTime]])
+        values = list(tnet[edg[0][sortTime], edg[1]
+                           [sortTime], edg[2][sortTime]])
 
     # build output dictionary
     C = params
     C['contacts'] = contacts
-    C['netshape'] = G.shape
+    C['netshape'] = tnet.shape
     C['dimord'] = 'node,node,time'
     # Obviously this needs to change
     C['timetype'] = 'discrete'
@@ -142,7 +142,9 @@ def graphlet2contact(G, params=None):
 def contact2graphlet(C):
     """
 
-    Converts contact representation to graphlet (snaptshot) representation. Graphlet representation discards all meta information in the contact representation.
+    Converts contact representation to array representation.
+
+    Graphlet representation discards all meta information in contacts.
 
     Parameters
     ----------
@@ -153,16 +155,15 @@ def contact2graphlet(C):
     Returns
     -------
 
-    G : array
+    tnet : array
         Graphlet representation of temporal network.
 
     Note
     ----
 
-    Returning elements of G will be float, even if binary graph.
+    Returning elements of tnet will be float, even if binary graph.
 
     """
-
     # Check that contact sequence is vald input.
     if 'dimord' not in C.keys():
         raise ValueError('\'dimord\' must be present in C.')
@@ -173,7 +174,7 @@ def contact2graphlet(C):
             'C must include parameter \'nettype\' (wd,bd,wu,bu). w: weighted network. b: binary network. u: undirected network. d: directed network')
     if C['nettype'] not in {'bd', 'bu', 'wd', 'wu'}:
         raise ValueError(
-            '\'nettype\' in (C) must be a string \'wd\',\'bd\',\'wu\',\'bu\'). w: weighted network. b: binary network. u: undirected network. d: directed network')
+            '\'nettype\' in (C) must be a string \'wd\',\'bd\',\'wu\',\'bu\').')
     if 'netshape' not in C.keys():
         raise ValueError(
             'C must include netshape expressing size of target network (tuple)')
@@ -191,23 +192,23 @@ def contact2graphlet(C):
     nt = C['nettype']
 
     # Preallocate
-    G = np.zeros(C['netshape'])
+    tnet = np.zeros(C['netshape'])
 
     # Convert indexes of C to numpy friend idx list
     idx = np.array(list(map(list, C['contacts'])))
     if nt[0] == 'b':
-        G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
+        tnet[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
         if nt[1] == 'u':
-            G[idx[:, 1], idx[:, 0], idx[:, 2]] = 1
+            tnet[idx[:, 1], idx[:, 0], idx[:, 2]] = 1
     elif nt[0] == 'w':
-        G[idx[:, 0], idx[:, 1], idx[:, 2]] = C['values']
+        tnet[idx[:, 0], idx[:, 1], idx[:, 2]] = C['values']
         if nt[1] == 'u':
-            G[idx[:, 1], idx[:, 0], idx[:, 2]] = C['values']
+            tnet[idx[:, 1], idx[:, 0], idx[:, 2]] = C['values']
     # If diagonal is not 0, fill it to whatever it is set to
     if C['diagonal'] != 0:
-        G = set_diagonal(G, C['diagonal'])
+        tnet = set_diagonal(tnet, C['diagonal'])
 
-    return G
+    return tnet
 
 
 def binarize_percent(netin, level, sign='pos', axis='time'):
@@ -224,7 +225,9 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
     axis : str, default='time'
-        Specify which dimension thresholding is applied against. Can be 'time' (takes top % for each edge time-series) or 'graphlet' (takes top % for each graphlet)
+        Specify which dimension thresholding is applied against.
+        Can be 'time' (takes top % for each edge time-series) or 'graphlet'
+        (takes top % for each graphlet)
 
     Returns
     -------
@@ -233,7 +236,7 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
         Binarized network
 
     """
-    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TN'])
     # Set diagonal to 0
     netin = set_diagonal(netin, 0)
     if axis == 'graphlet' and netinfo['nettype'][-1] == 'u':
@@ -299,7 +302,7 @@ def binarize_rdp(netin, level, sign='pos', axis='time'):
     netout : array or dict (dependning on input)
         Binarized network
     """
-    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TN'])
     trajectory = rdp(netin, level)
 
     contacts = []
@@ -336,6 +339,7 @@ def binarize_rdp(netin, level, sign='pos', axis='time'):
 
 def binarize_magnitude(netin, level, sign='pos'):
     """
+    Make binary network based on magnitude thresholding.
 
     Parameters
     ----------
@@ -355,7 +359,7 @@ def binarize_magnitude(netin, level, sign='pos'):
     netout : array or dict (depending on input)
         Binarized network
     """
-    netin, netinfo = process_input(netin, ['C', 'G', 'TO'])
+    netin, netinfo = process_input(netin, ['C', 'G', 'TN'])
     # Predefine
     netout = np.zeros(netinfo['netshape'])
 
@@ -378,7 +382,7 @@ def binarize_magnitude(netin, level, sign='pos'):
     return netout
 
 
-def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
+def binarize(netin, threshold_type, threshold_level, outputformat='auto', sign='pos', axis='time'):
     """
     Binarizes a network, returning the network. General wrapper function for different binarization functions.
 
@@ -397,6 +401,9 @@ def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
         If 'percent', it is the percentage to keep (e.g. 0.1, means keep 10% of signal).
         If 'magnitude', it is the amplitude of signal to keep.
 
+    outputformat : str
+        specify what format you want the output in: G, C, TN, or DF. If 'auto', input form is returned.
+
     sign : str, default='pos'
         States the sign of the thresholding. Can be 'pos', 'neg' or 'both'. If "neg", only negative values are thresholded and vice versa.
 
@@ -410,6 +417,8 @@ def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
         Binarized network
 
     """
+    if outputformat == 'auto':
+        outputformat = check_input(netin)
     if threshold_type == 'percent':
         netout = binarize_percent(netin, threshold_level, sign, axis)
     elif threshold_type == 'magnitude':
@@ -418,10 +427,13 @@ def binarize(netin, threshold_type, threshold_level, sign='pos', axis='time'):
         netout = binarize_rdp(netin, threshold_level, sign, axis)
     else:
         raise ValueError('Unknown value to parameter: threshold_type.')
+    netout = process_input(netout, ['G'], outputformat=outputformat)
+    if outputformat == 'G':
+        netout = netout[0]
     return netout
 
 
-def set_diagonal(G, val=0):
+def set_diagonal(tnet, val=0):
     """
 
     Generally diagonal is set to 0. This function helps set the diagonal across time.
@@ -429,32 +441,31 @@ def set_diagonal(G, val=0):
     Parameters
     ----------
 
-    G : array
+    tnet : array
         temporal network (graphlet)
     val : value to set diagonal to (default 0).
 
     Returns
     -------
 
-    G : array
+    tnet : array
         Graphlet representation with new diagonal
 
     """
+    for t in range(0, tnet.shape[2]):
+        np.fill_diagonal(tnet[:, :, t], val)
+    return tnet
 
-    for t in range(0, G.shape[2]):
-        np.fill_diagonal(G[:, :, t], val)
-    return G
 
+def gen_nettype(tnet, printWarning=0, weightonly=False):
+    r"""
 
-def gen_nettype(G, printWarning=0, weightonly=False):
-    """
-
-    Attempts to identify what nettype input graphlet G is. Diagonal is ignored.
+    Attempts to identify what nettype input graphlet tnet is. Diagonal is ignored.
 
     Paramters
     ---------
 
-    G : array
+    tnet : array
         temporal network (graphlet)
 
     Returns
@@ -462,14 +473,13 @@ def gen_nettype(G, printWarning=0, weightonly=False):
     nettype : str
         \'wu\', \'bu\', \'wd\', or \'bd\'
     """
-
-    if np.array_equal(G, G.astype(bool)):
+    if np.array_equal(tnet, tnet.astype(bool)):
         nettype = 'b'
     else:
         nettype = 'w'
 
-    if weightonly == False:
-        if np.allclose(G.transpose(1, 0, 2), G):
+    if not weightonly:
+        if np.allclose(tnet.transpose(1, 0, 2), tnet):
             direction = 'u'
         else:
             direction = 'd'
@@ -482,7 +492,7 @@ def gen_nettype(G, printWarning=0, weightonly=False):
 def check_input(netin, raiseIfU=1, conMat=0):
     """
 
-    This function checks that netin input is either graphlet (G) or contact (C).
+    This function checks that netin input is either graphlet (tnet) or contact (C).
 
     Parameters
     ----------
@@ -490,7 +500,7 @@ def check_input(netin, raiseIfU=1, conMat=0):
     netin : array or dict
         temporal network, (graphlet or contact).
     raiseIfU : int, default=1.
-        Options 1 or 0. Error is raised if not found to be G or C
+        Options 1 or 0. Error is raised if not found to be tnet or C
     conMat : int, default=0.
         Options 1 or 0. If 1, input is allowed to be a 2 dimensional connectivity matrix. Allows output to be 'M'
 
@@ -501,7 +511,6 @@ def check_input(netin, raiseIfU=1, conMat=0):
         String indicating input type. 'G','C', 'M' or 'U' (unknown). M is special case only allowed when conMat=1 for a 2D connectivity matrix.
 
     """
-
     inputis = 'U'
     if isinstance(netin, np.ndarray):
         netShape = netin.shape
@@ -528,11 +537,9 @@ def check_input(netin, raiseIfU=1, conMat=0):
     return inputis
 
 
-def getDistanceFunction(requested_metric):
+def get_distance_function(requested_metric):
     """
-
     This function returns a specified distance function.
-
 
     Paramters
     ---------
@@ -546,7 +553,6 @@ def getDistanceFunction(requested_metric):
     requested_metric : distance function
 
     """
-
     distance_options = {
         'braycurtis': distance.braycurtis,
         'canberra': distance.canberra,
@@ -567,7 +573,6 @@ def getDistanceFunction(requested_metric):
         'sokalsneath': distance.sokalsneath,
         'yule': distance.yule,
     }
-
     if requested_metric in distance_options:
         return distance_options[requested_metric]
     else:
@@ -596,9 +601,9 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
 
     OR
 
-    G : array
+    tnet : array
         Graphlet representation.
-    netInfo : dict
+    netinfo : dict
         Metainformation about network.
 
     OR
@@ -607,36 +612,44 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
         object of TemporalNetwork class
 
     """
+    netinfo = {}
+    if outputformat == 'DF':
+        outputformat = 'TN'
+        return_df = True
+        forcesparse = True
+    else:
+        return_df = False
     inputtype = check_input(netIn)
     if inputtype == 'DF':
         netIn = TemporalNetwork(from_df=netIn)
         inputtype = 'TN'
-    # Convert TN to G representation
+    # Convert TN to tnet representation
     if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
-        if netIn.sparse == True:
-            G = netIn.df_to_array()
+        if netIn.sparse:
+            tnet = netIn.df_to_array()
         else:
-            G = netIn.network
-        netInfo = {'nettype': netIn.nettype, 'netshape': netIn.netshape}
+            tnet = netIn.network
+        netinfo = {'nettype': netIn.nettype, 'netshape': [
+            netIn.netshape[0], netIn.netshape[0], netIn.netshape[1]]}
     elif inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
-        if netIn.sparse == False and forcesparse == True:
+        if not netIn.sparse and forcesparse:
             TN = TemporalNetwork(from_array=netIn.network, forcesparse=True)
         else:
             TN = netIn
     elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'G':
-        G = contact2graphlet(netIn)
-        netInfo = dict(netIn)
-        netInfo.pop('contacts')
+        tnet = contact2graphlet(netIn)
+        netinfo = dict(netIn)
+        netinfo.pop('contacts')
     elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'TN':
         TN = TemporalNetwork(from_dict=netIn)
     elif inputtype == 'G' and 'G' in allowedformats and outputformat == 'TN':
         TN = TemporalNetwork(from_array=netIn, forcesparse=forcesparse)
     # Get network type if not set yet
     elif inputtype == 'G' and 'G' in allowedformats:
-        netInfo = {}
-        netInfo['netshape'] = netIn.shape
-        netInfo['nettype'] = gen_nettype(netIn)
-        G = netIn
+        netinfo = {}
+        netinfo['netshape'] = netIn.shape
+        netinfo['nettype'] = gen_nettype(netIn)
+        tnet = netIn
     elif inputtype == 'C' and outputformat == 'C':
         pass
     else:
@@ -646,15 +659,18 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
         TN.network['j'] = TN.network['j'].astype(int)
         TN.network['t'] = TN.network['t'].astype(int)
     if outputformat == 'C' or outputformat == 'G':
-        netInfo['inputtype'] = inputtype
+        netinfo['inputtype'] = inputtype
     if inputtype != 'C' and outputformat == 'C':
-        C = graphlet2contact(G, netInfo)
+        return graphlet2contact(tnet, netinfo)
     if outputformat == 'G':
-        return G, netInfo
+        return tnet, netinfo
     elif outputformat == 'C':
-        return C
+        return netIn
     elif outputformat == 'TN':
-        return TN
+        if return_df:
+            return TN.network
+        else:
+            return TN
 
 
 def clean_community_indexes(communityID):
@@ -743,26 +759,26 @@ def df_to_array(df, netshape, nettype):
 
     Returns:
     --------
-        G : array
+        tnet : array
             (node,node,time) array for the network
     """
     if len(df) > 0:
         idx = np.array(list(map(list, df.values)))
-        G = np.zeros([netshape[0], netshape[0], netshape[1]])
+        tnet = np.zeros([netshape[0], netshape[0], netshape[1]])
         if idx.shape[1] == 3:
             if nettype[-1] == 'u':
                 idx = np.vstack([idx, idx[:, [1, 0, 2]]])
             idx = idx.astype(int)
-            G[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
+            tnet[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
         elif idx.shape[1] == 4:
             if nettype[-1] == 'u':
                 idx = np.vstack([idx, idx[:, [1, 0, 2, 3]]])
             weights = idx[:, 3]
             idx = np.array(idx[:, :3], dtype=int)
-            G[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
+            tnet[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
     else:
-        G = np.zeros([netshape[0], netshape[0], netshape[1]])
-    return G
+        tnet = np.zeros([netshape[0], netshape[0], netshape[1]])
+    return tnet
 
 
 def check_distance_funciton_input(distance_func_name, netinfo):
@@ -784,7 +800,6 @@ def check_distance_funciton_input(distance_func_name, netinfo):
     distance_func_name : str
         distance function name.
     """
-
     if distance_func_name == 'default' and netinfo['nettype'][0] == 'b':
         print('Default distance funciton specified. As network is binary, using Hamming')
         distance_func_name = 'hamming'
@@ -831,7 +846,6 @@ def get_dimord(measure, calc=None, community=None):
         Dimension order. So "node,node,time" would define the dimensions of the network measure.
 
     """
-
     if not calc:
         calc = ''
     else:
@@ -877,7 +891,7 @@ def get_dimord(measure, calc=None, community=None):
 
 
 def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=False, asarray=False, netshape=None, nettype=None):
-    """
+    r"""
     Returns subset of dataframe that matches index
 
     Parameters
@@ -904,7 +918,6 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
     df : pandas dataframe
         Unless asarray are set to true.
     """
-
     if isinstance(tnet, pd.DataFrame):
         network = tnet
         hdf5 = False
@@ -953,7 +966,7 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
         elif ij is not None:
             isinstr = 'i in ' + str(ij) + l['or'] + 'j in ' + str(ij)
         df = pd.read_hdf(network, where=isinstr)
-    elif sparse == False:
+    elif not sparse:
         if logic == 'or':
             raise ValueError(
                 'OR logic not implemented with array/dense format yet!')

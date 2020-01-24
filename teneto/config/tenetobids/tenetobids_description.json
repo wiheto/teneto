@@ -1,0 +1,18 @@
+{
+    "Name": "TenetoBIDS",
+    "PipelineDescription": {
+                "Name": "teneto",
+                "Version": "0",
+                "CodeURL": "https://github.com/wiheto/teneto/"
+            },
+    "BIDSVersion": "1.2",
+    "HowToAcknowledge": "Cite Teneto's DOI (http://doi.org/10.5281/zenodo.2535994)",
+    "CustomBIDS": {
+            "suffix": {
+                "tvcconn": "time-varying connectivity estimate",
+                "roi": "time series of regions of interest",
+                "conn": "functional connectivity estimate",
+                "tnet": "temporal network estimate"
+                }
+            }
+}

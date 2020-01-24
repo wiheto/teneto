@@ -8,7 +8,9 @@ from teneto.classes import TemporalNetwork
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
-def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativeedge='ignore', randomseed=None, consensus_threshold=0.5, temporal_consensus=True, njobs=1):
+def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100,
+                     negativeedge='ignore', randomseed=None, consensus_threshold=0.5,
+                     temporal_consensus=True, njobs=1):
     r"""
     Louvain clustering for a temporal network.
 
@@ -41,7 +43,6 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
     References
     ----------
     """
-
     tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
     # Divide resolution by the number of timepoints
     #resolution = resolution / tnet.T
@@ -54,20 +55,22 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
     i = 0
     while True:
         print(i)
-        i+=1
+        i += 1
         comtmp = []
         if njobs > 1:
             with ProcessPoolExecutor(max_workers=njobs) as executor:
-                job = {executor.submit(_run_louvain, nxsupra, resolution, tnet.N, tnet.T) for n in range(n_iter)}
+                job = {executor.submit(
+                    _run_louvain, nxsupra, resolution, tnet.N, tnet.T) for n in range(n_iter)}
                 for j in as_completed(job):
                     comtmp.append(j.result())
             comtmp = np.stack(comtmp)
-        else: 
-            comtmp = np.array([_run_louvain(nxsupra, resolution, tnet.N, tnet.T) for n in range(n_iter)])
+        else:
+            comtmp = np.array(
+                [_run_louvain(nxsupra, resolution, tnet.N, tnet.T) for n in range(n_iter)])
         comtmp = np.stack(comtmp)
         comtmp = comtmp.transpose()
         comtmp = np.reshape(comtmp, [tnet.N, tnet.T, n_iter], order='F')
-        #if n_iter == 1:
+        # if n_iter == 1:
         #    break
         nxsupra_old = nxsupra
         nxsupra = make_consensus_matrix(comtmp, consensus_threshold)
@@ -77,20 +80,24 @@ def temporal_louvain(tnet, resolution=1, intersliceweight=1, n_iter=100, negativ
         if (nx.to_numpy_array(nxsupra, nodelist=np.arange(tnet.N*tnet.T)) == nx.to_numpy_array(nxsupra_old, nodelist=np.arange(tnet.N*tnet.T))).all():
             break
     communities = comtmp[:, :, 0]
-    if temporal_consensus == True:
+    if temporal_consensus:
         communities = make_temporal_consensus(communities)
     return communities
 
 
 def _run_louvain(nxsupra, resolution, N, T):
     comtmp = np.zeros([N*T])
-    com = community.best_partition(nxsupra, resolution=resolution, random_state=None)
+    com = community.best_partition(
+        nxsupra, resolution=resolution, random_state=None)
     comtmp[np.array(list(com.keys()), dtype=int)] = list(com.values())
     return comtmp
 
+
 def make_consensus_matrix(com_membership, th=0.5):
     r"""
-    Makes the consensus matrix
+    Makes the consensus matrix.
+
+    From multiple iterations, finds a consensus partition.
 .
     Parameters
     ----------
@@ -107,7 +114,6 @@ def make_consensus_matrix(com_membership, th=0.5):
     D : array
         consensus matrix
     """
-
     com_membership = np.array(com_membership)
     D = []
     for i in range(com_membership.shape[0]):
@@ -116,7 +122,7 @@ def make_consensus_matrix(com_membership, th=0.5):
                          == 0, axis=-1) / com_membership.shape[-1]
             twhere = np.where(con > th)[0]
             D += list(zip(*[np.repeat(i, len(twhere)).tolist(), np.repeat(j,
-                        len(twhere)).tolist(), twhere.tolist(), con[twhere].tolist()]))
+                                                                          len(twhere)).tolist(), twhere.tolist(), con[twhere].tolist()]))
     if len(D) > 0:
         D = pd.DataFrame(D, columns=['i', 'j', 't', 'weight'])
         D = TemporalNetwork(from_df=D)
@@ -130,7 +136,7 @@ def make_consensus_matrix(com_membership, th=0.5):
 
 def make_temporal_consensus(com_membership):
     r"""
-    Matches community labels accross time-points
+    Matches community labels accross time-points.
 
     Jaccard matching is in a greedy fashiong. Matching the largest community at t with the community at t-1.
 
@@ -147,7 +153,6 @@ def make_temporal_consensus(com_membership):
         temporal consensus matrix using Jaccard distance
 
     """
-
     com_membership = np.array(com_membership)
     # make first indicies be between 0 and 1.
     com_membership[:, 0] = clean_community_indexes(com_membership[:, 0])

@@ -1,8 +1,40 @@
 # Changelog
 
+## V0.5.0
+
+### 0.5.0 Improvements
+
+-   Changing argument names in network measures to 'pertime' and 'overtime' replacing 'time' and 'global' to be clearer.
+-   More detailed documentation to temporal_degree_centrality.
+-   More detailed documentation to temporal_closeness_centrality.
+-   Changing argument values for minimize in shortest_temporal_paths, it is now called: 'temporal_distance' instead of time.
+-   Single instance of version specified in teneto/_version.py.
+-   Output format can be specified in binarize,
+-   TenetoBIDS rewritten. Compatible now with pybids. Easier to use.
+-   censor_timepoints and exclude_runs now in bidsutils as functions (and streamlined) instead of in TenetoBIDS.
+
+### 0.5.0 Changes
+
+-   Python 3.6 is now required.
+-   Scipy requirements updated.
+-   Tougher coding standards implemented through prospector
+-   Renaming getDistanceFunction to get_distance_function.
+-   Created `teneto.neuroimagingtools` to contains neuroimaging specific functions.
+-   fmriutils and bidsutils have moved to neuroimagingtools.
+-   Changed distance_func_name to distance_func in volatility.
+-   Instantaneous phase synchrony is now between 0 and 1, fixing potential wrapping issue.
+
+### 0.5.0 Fixes
+
+-   Betweenness centrality now normalizes across time with sigma_jk.
+-   Fix error in #53.
+-   Binarize can accept dataframe in sparse.
+-   Remove_confounds can deal with dataframes.
+-   Fixing inclusion of testdata/dummybids when installing with pip.
+
 ## V0.4.6
 
-### Enhacnements 
+### 0.4.6 Enhancements
 
 -   Asarray flag in get_network_when returns dense version of network.
 -   Adding CustomBIDS to derivative description json file in TenetoBIDS.
@@ -12,15 +44,14 @@
 -   teneto.io added
 -   readthedocs.yaml added
 
-### Fixes
+### 0.4.6 Fixes
 
 -   Fixing case where, for array input, get_network_when with directed edges dropped duplicates.
 -   Fixed missing bracket in get_network_when (credit to: lcandeago #45)
 
-
 ## V0.4.5
 
-### Enhancements
+### 0.4.5 Enhancements
 
 -   Added teneto.TenetoWorkflows (name may change to just workflows)
 
@@ -32,15 +63,15 @@
 
 -   save_tenetobids_snapshot to export current teneto settings. save_to_pickle (and corresponding load function) have been removed as they are not secure.
 
-### Fixes
+### 0.4.5 Fixes
 
--   NaNs in allegiance, which fixes recruitment and integration. Also added squeeze to input. And bug in integration where for loop would generate error. 
+-   NaNs in allegiance, which fixes recruitment and integration. Also added squeeze to input. And bug in integration where for loop would generate error.
 
 -   Removed self from teneto history.
 
 -   Some minor TenetoBIDS fixes
 
-### Changes
+### 0.4.5 Changes
 
 -   Removing unused description_string function from bidsutils
 -   Renaming of dummybids data

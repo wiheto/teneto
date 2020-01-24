@@ -1,10 +1,14 @@
 import numpy as np
 from .allegiance import allegiance
 
+
 def recruitment(temporalcommunities, staticcommunities):
     """
-    Calculates recruitment coefficient for each node. Recruitment coefficient is the average probability of nodes from the
-      same static communities being in the same temporal communities at other time-points or during different tasks.
+    Calculates recruitment in relation to static communities.
+
+    Calculates recruitment coefficient for each node.
+    Recruitment coefficient is the average probability of nodes from the
+    same static communities being in the same temporal communities at other time-points or during different tasks.
 
     Parameters:
     ------------
@@ -21,13 +25,18 @@ def recruitment(temporalcommunities, staticcommunities):
     References:
     -----------
 
-    Danielle S. Bassett, Muzhi Yang, Nicholas F. Wymbs, Scott T. Grafton.
-    Learning-Induced Autonomy of Sensorimotor Systems. Nat Neurosci. 2015 May;18(5):744-51.
+    .. [recruit-1]
 
-    Marcelo Mattar, Michael W. Cole, Sharon Thompson-Schill, Danielle S. Bassett. A Functional
-    Cartography of Cognitive Systems. PLoS Comput Biol. 2015 Dec 2;11(12):e1004533.
+        Danielle S. Bassett, Muzhi Yang, Nicholas F. Wymbs, Scott T. Grafton.
+        Learning-Induced Autonomy of Sensorimotor Systems.
+        Nat Neurosci. 2015 May;18(5):744-51.
+
+    .. [recruit-2]
+
+        Marcelo Mattar, Michael W. Cole, Sharon Thompson-Schill, Danielle S. Bassett. A Functional
+        Cartography of Cognitive Systems.
+        PLoS Comput Biol. 2015 Dec 2;11(12):e1004533.
     """
-
     # make sure the static and temporal communities have the same number of nodes
     staticcommunities = np.squeeze(staticcommunities)
     if staticcommunities.shape[0] != temporalcommunities.shape[0]:
