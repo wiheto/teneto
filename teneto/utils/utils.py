@@ -1002,8 +1002,8 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
             df = network[l[logic]((network['i'].isin(i)), l[logic]((
                 network['j'].isin(j)), (network['t'].isin(t))))]
         elif ij is not None and t is not None:
-            df = network[l[logic](((network['i'].isin(ij)) | ((
-                network['j'].isin(ij)))), (network['t'].isin(t)))]
+            df = network[((network['i'].isin(ij)) | l[logic]((
+                network['j'].isin(ij)), (network['t'].isin(t))))]
         elif i is not None and j is not None:
             df = network[l[logic]((network['i'].isin(i)),
                                   (network['j'].isin(j)))]
