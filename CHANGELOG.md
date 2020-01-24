@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.5.0.a-dev (development branch)
+## V0.5.0
 
 ### 0.5.0 Improvements
 
