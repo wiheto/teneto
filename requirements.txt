@@ -4,7 +4,7 @@ templateflow>=0.4.1rc5
 scikit-learn>=0.20.3
 nilearn>=0.6.1
 #seaborn==0.8.1
-matplotlib==2.2.0
+matplotlib>=3.1.0
 pandas>=0.21
 pybids==0.9.5
 #python-igraph>=0.7.1
