@@ -2,6 +2,8 @@
 
 ## V0.5.0
 
+Post-release: updated requirements. On clean installs using pip install teneto, an outdated version of scipy was being installed.
+
 ### 0.5.0 Improvements
 
 -   Changing argument names in network measures to 'pertime' and 'overtime' replacing 'time' and 'global' to be clearer.

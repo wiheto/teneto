@@ -263,6 +263,11 @@ class TenetoBIDS:
 
         if update_pipeline:
             self.selected_pipeline = output_pipeline
+            # Create new bids_filter dictionary that only contains sub/ses/run/task as other tags are dropped.  
+            bids_filter_keys = list(self.bids_filter.keys())
+            self.bids_filter = {}
+            bids_filters_allowed = ['subject', 'ses', 'run', 'task']
+            [self.update_bids_filter(f) for f in bids_filters_allowed if f in bids_filter_keys]   
         self.update_bids_layout()
 
     def get_selected_files(self, output=None):
