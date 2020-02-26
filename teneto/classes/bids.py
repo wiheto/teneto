@@ -263,11 +263,11 @@ class TenetoBIDS:
 
         if update_pipeline:
             self.selected_pipeline = output_pipeline
-            # Create new bids_filter dictionary that only contains sub/ses/run/task as other tags are dropped.  
+            # Create new bids_filter dictionary that only contains sub/ses/run/task as other tags are dropped.
             bids_filter = dict(self.bids_filter)
             self.bids_filter = {}
             bids_filters_allowed = ['subject', 'ses', 'run', 'task']
-            [self.update_bids_filter({'f': bids_filter[f]}) for f in bids_filters_allowed if f in bids_filter.keys()]   
+            [self.update_bids_filter({'f': bids_filter[f]}) for f in bids_filters_allowed if f in bids_filter.keys()]
         self.update_bids_layout()
 
     def get_selected_files(self, output=None):
@@ -288,13 +288,13 @@ class TenetoBIDS:
 
     def get_run_options(self, for_selected=True):
         """Returns the different function names that can be called using TenetoBIDS.run()
-        
+
         Parameters
         ===========
         for_selected : bool
             If True, only return run options for the selected files.
-            If False, returns all options. 
-        
+            If False, returns all options.
+
         Returns
         ========
         options : str
@@ -308,7 +308,7 @@ class TenetoBIDS:
             suffix = list(np.unique(suffix))
             for t in list(funcs):
                 s = self.tenetobids_structure[t]['input']['suffix']
-                if isinstance(s, str): 
+                if isinstance(s, str):
                     s = [s]
                 for su in suffix:
                     if su in s:
@@ -323,7 +323,7 @@ class TenetoBIDS:
         ==========
         filter_addons : dict
             dictionary that updates TenetoBIDS.bids_filter
-        """ 
+        """
         self.bids_filter.update(filter_addons)
 
     def get_confounds(self, bidsfile, confound_filters=None):
