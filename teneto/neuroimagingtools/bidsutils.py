@@ -180,7 +180,7 @@ def censor_timepoints(timeseries, sidecar, confounds, confound_name, exclusion_c
         exclusion_criteria  : str or list
             for each confound, an exclusion_criteria should be expressed as a string.
             It starts with >,<,>= or <= then the numerical threshold.
-            Ex. '>0.2' will entail every subject with the avg greater than 0.2 of confound will be rejected.
+            Ex. '>0.2' will entail every time point greater than 0.2 of confound will be rejected.
         replace_with : str
             Can be 'nan' (bad values become nans) or 'cubicspline' (bad values are interpolated).
             If bad value occurs at 0 or -1 index, then these values are kept and no interpolation occurs.

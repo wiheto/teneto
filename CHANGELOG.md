@@ -7,6 +7,7 @@
 ### 0.5.1 Improvements
 
 - Better what is temporal network tutorial
+- censor_timepoints docuemntation is clearer.
 
 ### 0.5.1 Changes
 
