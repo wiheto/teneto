@@ -1,8 +1,22 @@
 # Changelog
 
-## V0.5.0
+## V0.5.1 (develop)
 
-Post-release: updated requirements. On clean installs using pip install teneto, an outdated version of scipy was being installed.
+## Version 0.5.1
+
+### 0.5.1 Improvements
+
+- Better what is temporal network tutorial
+
+### 0.5.1 Changes
+
+### 0.5.1 Fixes
+
+- Updated requirements and fixed outdated version of scipy being installed on clean install using pip. 
+- Fixed header bug in documentation
+- Fixed that TenetoBIDS bids_filter dicts only contain sub,ses,task and run after calling tnet.run().
+
+## Version 0.5
 
 ### 0.5.0 Improvements
 
