@@ -1,4 +1,4 @@
-
+"""Functions to calculate the shortest temporal path."""
 import numpy as np
 from teneto.utils import process_input
 import itertools
@@ -113,7 +113,8 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
         plt.tight_layout()
         fig.show()
 
-    Here we can visualize what the shortest paths are. Let us start by starting at
+    Here we can visualize what the shortest paths are.
+    Let us start by starting at
     node 0 we want to find the path to node 3, starting at time 0. To do this we write:
 
     >>> sp = teneto.networkmeasures.shortest_temporal_path(G, i=0, j=3, it=0)
@@ -129,7 +130,8 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
 
     Here we see that the shortest path takes 3 steps (topological distance of 3) at 2 time points.
 
-    It starts by going from node 0 to 1 at t=0, then 1 to 2 and 2 to 3 at t=1. We can see all the nodes
+    It starts by going from node 0 to 1 at t=0, then 1 to 2 and 2 to 3 at t=1.
+    We can see all the nodes
     that were travelled in the "path includes" list.
 
     In the above example, it was possible to traverse multiple edges at a single time-point.
@@ -146,7 +148,8 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
     0    [[0, 3]]
     Name: path includes, dtype: object
 
-    Here we see that the path is now only one edge, 0 to 3 at t=2. The quicker path is no longer possible.
+    Here we see that the path is now only one edge, 0 to 3 at t=2.
+    The quicker path is no longer possible.
 
     """
 
@@ -188,6 +191,7 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                 pass
             else:
                 for tstart in time_points:
+                    print(time_points)
                     # Part 1 starts here
                     ij = [source]
                     t = tstart
@@ -198,6 +202,8 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                     while stop == 0:
                         # Only select i if directed, ij if undirected.
                         if tnet.nettype[1] == 'u':
+                            print(ij)
+                            print(t)
                             network = tnet.get_network_when(ij=list(ij), t=t)
                         elif tnet.nettype[1] == 'd':
                             network = tnet.get_network_when(i=list(ij), t=t)
@@ -226,12 +232,15 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                             else:
                                 t += 1
                                 step = 1
+                            if t not in time_points:
+                                stop = 1
+
                         lenij = len(ij)
                     # correct t for return
                     t += 1
-                    # Path 2 starts here
+                    # part 2 starts here
                     path = np.nan
-                    pl = np.nan
+                    path_length = np.nan
                     for n in itertools.product(*reversed(pairs)):
                         a = np.array(n).flatten()
                         if source not in a or target not in a:
@@ -241,11 +250,11 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                             if pathtmp:
                                 if not isinstance(path, list):
                                     path = pathtmp
-                                    pl = len(path)
-                                elif len(pathtmp) < pl:
+                                    path_length = len(path)
+                                elif len(pathtmp) < path_length:
                                     path = pathtmp
-                                    pl = len(path)
-                                elif len(pathtmp) == pl:
+                                    path_length = len(path)
+                                elif len(pathtmp) == path_length:
                                     if isinstance(path[0][0], list):
                                         if pathtmp in path:
                                             pass
@@ -257,10 +266,10 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                                         else:
                                             path = [path, pathtmp]
                         # elif sourcei < 2 and target in a[:2]:
-                        #    pl = 2
+                        #    path_length = 2
 
-                    paths.append([source, target, tstart, t-tstart, pl, path])
+                    paths.append([source, target, tstart, t-tstart, path_length, path])
 
     paths = pd.DataFrame(data=paths, columns=[
-                         'from', 'to', 't_start', 'temporal-distance', 'topological-distance', 'path includes'])
+        'from', 'to', 't_start', 'temporal-distance', 'topological-distance', 'path includes'])
     return paths
