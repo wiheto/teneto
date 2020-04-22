@@ -90,7 +90,7 @@ def graphlet2contact(tnet, params=None):
     # Check that all inputs in params are correct.
 
     if 'nettype' not in params.keys() or params['nettype'] == 'auto':
-        params['nettype'] = gen_nettype(tnet, 1)
+        params['nettype'] = gen_nettype(tnet)
     if params['nettype'] not in {'bd', 'bu', 'wd', 'wu', 'auto'}:
         raise ValueError('\'nettype\' (in params) must be a string \'wd\',\'bd\',\'wu\',\'bu\').')
     if 'Fs' not in params.keys():
