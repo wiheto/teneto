@@ -14,7 +14,7 @@ def remove_confounds(timeseries, confounds, confound_selection=None, clean_param
         input timeseries with dimensions: (node,time)
     confounds : array or dataframe
         List of confounds. Expected format is (confound, time).
-        If using TenetoBIDS, then the input_params can be bids or bids_<pipeline_name>
+        If using TenetoBIDS, this does not need to be specified.
     confound_selection : list
         List of confounds. If None, all confoudns are removed
     clean_params : dict

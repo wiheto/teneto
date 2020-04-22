@@ -489,7 +489,7 @@ def gen_nettype(tnet, printWarning=0, weightonly=False):
     return nettype
 
 
-def check_input(netin, raiseIfU=1, conMat=0):
+def check_input(netin, rasie_if_undirected=1, conMat=0):
     """
 
     This function checks that netin input is either graphlet (tnet) or contact (C).
@@ -499,7 +499,7 @@ def check_input(netin, raiseIfU=1, conMat=0):
 
     netin : array or dict
         temporal network, (graphlet or contact).
-    raiseIfU : int, default=1.
+    rasie_if_undirected : int, default=1.
         Options 1 or 0. Error is raised if not found to be tnet or C
     conMat : int, default=0.
         Options 1 or 0. If 1, input is allowed to be a 2 dimensional connectivity matrix. Allows output to be 'M'
@@ -530,7 +530,7 @@ def check_input(netin, raiseIfU=1, conMat=0):
         elif isinstance(netin, pd.DataFrame):
             inputis = 'DF'
 
-    if raiseIfU == 1 and inputis == 'U':
+    if rasie_if_undirected == 1 and inputis == 'U':
         raise ValueError(
             'Input cannot be identified as graphlet or contact representation')
 
