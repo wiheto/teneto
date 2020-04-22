@@ -1,6 +1,6 @@
 # Changelog
 
-## V0.5.1 (develop)
+## V0.5.1
 
 ## Version 0.5.1
 
@@ -11,12 +11,15 @@
 
 ### 0.5.1 Changes
 
+- Changing raiseIfU variable to rasie_if_undirected in check_input
+
 ### 0.5.1 Fixes
 
 - Updated requirements and fixed outdated version of scipy being installed on clean install using pip. 
 - Fixed header bug in documentation
 - Fixed that TenetoBIDS bids_filter dicts only contain sub,ses,task and run after calling tnet.run().
 - Updated remove_confounds documentation to fit with new TenetoBIDS
+- Allows param dicts in TenetoBIDS functions to be numpyarray by converting input to JSON (fixes #62)
 
 ## Version 0.5
 
