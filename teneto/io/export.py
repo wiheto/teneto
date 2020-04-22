@@ -1,4 +1,4 @@
-"""Export temporalnetwork to other software"""
+"""Export temporalnetwork to other software."""
 
 import networkx as nx
 from ..utils import process_input, create_supraadjacency_matrix

@@ -1,5 +1,5 @@
 """
-networkmeasures.reachability_latency
+Reachability latency.
 """
 
 import numpy as np

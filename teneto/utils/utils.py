@@ -457,7 +457,7 @@ def set_diagonal(tnet, val=0):
     return tnet
 
 
-def gen_nettype(tnet, printWarning=0, weightonly=False):
+def gen_nettype(tnet, weightonly=False):
     r"""
 
     Attempts to identify what nettype input graphlet tnet is. Diagonal is ignored.

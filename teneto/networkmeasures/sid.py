@@ -7,7 +7,6 @@ from .temporal_degree_centrality import temporal_degree_centrality
 
 def sid(tnet, communities, axis=0, calc='overtime', decay=0):
     r"""
-
     Segregation integration difference (SID). An estimation of each community or global difference of within versus between community strength.[sid-1]_
 
     Parameters
