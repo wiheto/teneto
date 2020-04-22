@@ -249,6 +249,10 @@ class TenetoBIDS:
                     update_pipeline = False
                     save_path = f.dirname + '/'
                     save_name = f.filename
+                # Loop through sidecar content and make any nparray input to list
+                for n in sidecar.keys():
+                    if type(sidecar[n]) == np.ndarray:
+                        sidecar[n] = sidecar[n].tolist()
                 # Save sidecar
                 with open(save_path + save_name.replace('.tsv', '.json'), 'w') as f:
                     json.dump(sidecar, f)
