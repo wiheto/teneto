@@ -1,4 +1,4 @@
-"""General setup for module"""
+"""General setup for module."""
 
 from setuptools import setup, find_packages
 
