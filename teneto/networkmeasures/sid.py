@@ -1,4 +1,4 @@
-
+"""Claculates the segregation-integration difference."""
 
 import teneto.utils as utils
 import numpy as np
