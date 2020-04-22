@@ -7,7 +7,7 @@
 ### 0.5.1 Improvements
 
 - Better what is temporal network tutorial
-- censor_timepoints docuemntation is clearer.
+- censor_timepoints documentation is clearer.
 
 ### 0.5.1 Changes
 
@@ -16,6 +16,7 @@
 - Updated requirements and fixed outdated version of scipy being installed on clean install using pip. 
 - Fixed header bug in documentation
 - Fixed that TenetoBIDS bids_filter dicts only contain sub,ses,task and run after calling tnet.run().
+- Updated remove_confounds documentation to fit with new TenetoBIDS
 
 ## Version 0.5
 
