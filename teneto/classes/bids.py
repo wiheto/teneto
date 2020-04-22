@@ -1,3 +1,4 @@
+"""TenetoBIDS is a class which can be used to use Teneto functions with data organized with BIDS (neuroimaging data)."""
 import os
 import bids
 import numpy as np
