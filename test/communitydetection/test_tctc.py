@@ -82,7 +82,7 @@ def test_kappa():
     if r != 1 or r2 != 2:
         raise AssertionError()
     rt = []
-    for i, d in df1.iterrows():
+    for _, d in df1.iterrows():
         if set(d['community']).issuperset([0, 1]):
             rt += list(np.arange(d['start'], d['end']))
     rt = np.unique(rt)

@@ -1,6 +1,5 @@
 import networkx as nx
 from ..classes import TemporalNetwork
-from ..utils import get_network_when
 import numpy as np
 
 
