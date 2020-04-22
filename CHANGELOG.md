@@ -1,6 +1,10 @@
 # Changelog
 
-## V0.5.1
+## Version 0.5.2
+
+### 0.5.2 Fixes
+
+Fixes the issues when shortest paths were trying to be derived on non existent time points (raised in #60)
 
 ## Version 0.5.1
 
