@@ -53,8 +53,12 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
     j : list
         List of node indicies to restrict analysis. There are nodes the paths end on.  Default is all nodes.
 
-    it : list
-        List of starting time-point indicies to restrict anlaysis. Default is all timepoints.
+    it : None, int, list
+        Time points for parts. 
+        Either None (default) which takes all time points,
+        an integer to indicate which time point to start at,
+        or a list of time-points that is included in analysis
+        (including end time-point).  
 
     minimise : str
         Can be "temporal_distance", returns the path that has the smallest temporal distance.
@@ -191,7 +195,6 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                 pass
             else:
                 for tstart in time_points:
-                    print(time_points)
                     # Part 1 starts here
                     ij = [source]
                     t = tstart
@@ -202,8 +205,6 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                     while stop == 0:
                         # Only select i if directed, ij if undirected.
                         if tnet.nettype[1] == 'u':
-                            print(ij)
-                            print(t)
                             network = tnet.get_network_when(ij=list(ij), t=t)
                         elif tnet.nettype[1] == 'd':
                             network = tnet.get_network_when(i=list(ij), t=t)
@@ -232,39 +233,42 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                             else:
                                 t += 1
                                 step = 1
-                            if t not in time_points:
+                            if t == tnet.netshape[1]:
+                                t = np.nan
+                                ij = [target]
                                 stop = 1
-
                         lenij = len(ij)
                     # correct t for return
-                    t += 1
-                    # part 2 starts here
-                    path = np.nan
-                    path_length = np.nan
-                    for n in itertools.product(*reversed(pairs)):
-                        a = np.array(n).flatten()
-                        if source not in a or target not in a:
-                            pass
-                        else:
-                            pathtmp = shortest_path_from_pairseq(a, source)
-                            if pathtmp:
-                                if not isinstance(path, list):
-                                    path = pathtmp
-                                    path_length = len(path)
-                                elif len(pathtmp) < path_length:
-                                    path = pathtmp
-                                    path_length = len(path)
-                                elif len(pathtmp) == path_length:
-                                    if isinstance(path[0][0], list):
-                                        if pathtmp in path:
-                                            pass
+                    # Only run if one pair is added.
+                    if pairs:
+                        t += 1
+                        # part 2 starts here
+                        path = np.nan
+                        path_length = np.nan
+                        for n in itertools.product(*reversed(pairs)):
+                            a = np.array(n).flatten()
+                            if source not in a or target not in a:
+                                pass
+                            else:
+                                pathtmp = shortest_path_from_pairseq(a, source)
+                                if pathtmp:
+                                    if not isinstance(path, list):
+                                        path = pathtmp
+                                        path_length = len(path)
+                                    elif len(pathtmp) < path_length:
+                                        path = pathtmp
+                                        path_length = len(path)
+                                    elif len(pathtmp) == path_length:
+                                        if isinstance(path[0][0], list):
+                                            if pathtmp in path:
+                                                pass
+                                            else:
+                                                path.append(pathtmp)
                                         else:
-                                            path.append(pathtmp)
-                                    else:
-                                        if path == pathtmp:
-                                            pass
-                                        else:
-                                            path = [path, pathtmp]
+                                            if path == pathtmp:
+                                                pass
+                                            else:
+                                                path = [path, pathtmp]
                         # elif sourcei < 2 and target in a[:2]:
                         #    path_length = 2
 
