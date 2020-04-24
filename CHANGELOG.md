@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.5.2
+## Version 0.5.2 (development)
 
 ### 0.5.2 Improvements
 
