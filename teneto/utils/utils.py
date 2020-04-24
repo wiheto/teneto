@@ -170,7 +170,8 @@ def contact2graphlet(C):
         raise ValueError('\'dimord\' must be string \'node,node,time\'.')
     if 'nettype' not in C.keys():
         raise ValueError(
-            'C must include parameter \'nettype\' (wd,bd,wu,bu). w: weighted network. b: binary network. u: undirected network. d: directed network')
+            'C must include parameter \'nettype\' (wd,bd,wu,bu). \
+            w: weighted network. b: binary network. u: undirected network. d: directed network')
     if C['nettype'] not in {'bd', 'bu', 'wd', 'wu'}:
         raise ValueError(
             '\'nettype\' in (C) must be a string \'wd\',\'bd\',\'wu\',\'bu\').')
@@ -578,14 +579,14 @@ def get_distance_function(requested_metric):
         raise ValueError('Distance function cannot be found.')
 
 
-def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
+def process_input(netin, allowedformats, outputformat='G', forcesparse=False):
     """
     Takes input network and checks what the input is.
 
     Parameters
     ----------
 
-    netIn : array, dict, or TemporalNetwork
+    netin : array, dict, or TemporalNetwork
         Network (graphlet, contact or object)
     allowedformats : list or str
         Which format of network objects that are allowed. Options: 'C', 'TN', 'G'.
@@ -618,45 +619,45 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
         forcesparse = True
     else:
         return_df = False
-    inputtype = check_input(netIn)
+    inputtype = check_input(netin)
     if inputtype == 'DF':
-        netIn = TemporalNetwork(from_df=netIn)
+        netin = TemporalNetwork(from_df=netin)
         inputtype = 'TN'
     # Convert TN to tnet representation
     if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
-        if netIn.sparse:
-            tnet = netIn.df_to_array()
+        if netin.sparse:
+            tnet = netin.df_to_array()
         else:
-            tnet = netIn.network
-        netinfo = {'nettype': netIn.nettype, 'netshape': [
-            netIn.netshape[0], netIn.netshape[0], netIn.netshape[1]]}
+            tnet = netin.network
+        netinfo = {'nettype': netin.nettype, 'netshape': [
+            netin.netshape[0], netin.netshape[0], netin.netshape[1]]}
     elif inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
-        if not netIn.sparse and forcesparse:
-            TN = TemporalNetwork(from_array=netIn.network, forcesparse=True)
+        if not netin.sparse and forcesparse:
+            tnet = TemporalNetwork(from_array=netin.network, forcesparse=True)
         else:
-            TN = netIn
+            tnet = netin
     elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'G':
-        tnet = contact2graphlet(netIn)
-        netinfo = dict(netIn)
+        tnet = contact2graphlet(netin)
+        netinfo = dict(netin)
         netinfo.pop('contacts')
     elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'TN':
-        TN = TemporalNetwork(from_dict=netIn)
+        tnet = TemporalNetwork(from_dict=netin)
     elif inputtype == 'G' and 'G' in allowedformats and outputformat == 'TN':
-        TN = TemporalNetwork(from_array=netIn, forcesparse=forcesparse)
+        tnet = TemporalNetwork(from_array=netin, forcesparse=forcesparse)
     # Get network type if not set yet
     elif inputtype == 'G' and 'G' in allowedformats:
         netinfo = {}
-        netinfo['netshape'] = netIn.shape
-        netinfo['nettype'] = gen_nettype(netIn)
-        tnet = netIn
+        netinfo['netshape'] = netin.shape
+        netinfo['nettype'] = gen_nettype(netin)
+        tnet = netin
     elif inputtype == 'C' and outputformat == 'C':
         pass
     else:
         raise ValueError('Input invalid.')
-    if outputformat == 'TN' and isinstance(TN.network, pd.DataFrame):
-        TN.network['i'] = TN.network['i'].astype(int)
-        TN.network['j'] = TN.network['j'].astype(int)
-        TN.network['t'] = TN.network['t'].astype(int)
+    if outputformat == 'TN' and isinstance(tnet.network, pd.DataFrame):
+        tnet.network['i'] = tnet.network['i'].astype(int)
+        tnet.network['j'] = tnet.network['j'].astype(int)
+        tnet.network['t'] = tnet.network['t'].astype(int)
     if outputformat == 'C' or outputformat == 'G':
         netinfo['inputtype'] = inputtype
     if inputtype != 'C' and outputformat == 'C':
@@ -664,12 +665,12 @@ def process_input(netIn, allowedformats, outputformat='G', forcesparse=False):
     if outputformat == 'G':
         return tnet, netinfo
     elif outputformat == 'C':
-        return netIn
+        return netin
     elif outputformat == 'TN':
         if return_df:
-            return TN.network
+            return tnet.network
         else:
-            return TN
+            return tnet
 
 
 def clean_community_indexes(communityID):
@@ -743,6 +744,17 @@ def multiple_contacts_get_values(C):
     C_out['values'] = new_values
     return C_out
 
+def is_jsonable(x):
+    """
+    Check if a dict is jsonable.
+
+    Credit: https://stackoverflow.com/a/53112659
+    """
+    try:
+        json.dumps(x)
+        return True
+    except (TypeError, OverflowError):
+        return False
 
 def df_to_array(df, netshape, nettype):
     """
@@ -761,13 +773,17 @@ def df_to_array(df, netshape, nettype):
         tnet : array
             (node,node,time) array for the network
     """
-    if len(df) > 0:
+    if df.shape[0] > 0:
+
         idx = np.array(list(map(list, df.values)))
         tnet = np.zeros([netshape[0], netshape[0], netshape[1]])
+
         if idx.shape[1] == 3:
             if nettype[-1] == 'u':
                 idx = np.vstack([idx, idx[:, [1, 0, 2]]])
             idx = idx.astype(int)
+            print(idx)
+            print(idx.shape)
             tnet[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
         elif idx.shape[1] == 4:
             if nettype[-1] == 'u':
@@ -782,7 +798,8 @@ def df_to_array(df, netshape, nettype):
 
 def check_distance_funciton_input(distance_func_name, netinfo):
     """
-    Funciton checks distance_func_name, if it is specified as 'default'. Then given the type of the network selects a default distance function.
+    Function checks distance_func_name, if it is specified as 'default'.
+    Then given the type of the network selects a default distance function.
 
     Parameters
     ----------

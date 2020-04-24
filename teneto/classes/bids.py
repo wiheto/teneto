@@ -1,15 +1,16 @@
 """TenetoBIDS is a class which can be used to use Teneto functions with data organized with BIDS (neuroimaging data)."""
 import os
-import bids
-import numpy as np
 import inspect
 import json
-from ..neuroimagingtools import load_tabular_file, get_sidecar
+import numpy as np
 import pandas as pd
-from .network import TemporalNetwork
+import bids
+import teneto
 from teneto import __path__ as tenetopath
 from teneto import __version__ as tenetoversion
-import teneto
+from ..neuroimagingtools import load_tabular_file, get_sidecar
+from ..utils import is_jsonable
+from .network import TemporalNetwork
 
 
 class TenetoBIDS:
@@ -251,9 +252,13 @@ class TenetoBIDS:
                     save_path = f.dirname + '/'
                     save_name = f.filename
                 # Loop through sidecar content and make any nparray input to list
-                for n in sidecar.keys():
-                    if isinstance(sidecar[n], np.ndarray):
-                        sidecar[n] = sidecar[n].tolist()
+                for key, value in sidecar.items():
+                    if not is_jsonable(value):
+                        if isinstance(sidecar[key], np.ndarray):
+                            sidecar[key] = sidecar[key].tolist()
+                        else: 
+                            print('WARNING: Dropping ' + str(key) + ' from sidecar.')
+                            sidecar.pop(key)
                 # Save sidecar
                 with open(save_path + save_name.replace('.tsv', '.json'), 'w') as f:
                     json.dump(sidecar, f)
