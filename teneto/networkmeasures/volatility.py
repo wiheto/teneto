@@ -75,7 +75,7 @@ def volatility(tnet, distance_func='default', calc='overtime', communities=None,
     Calculate the volatility
 
     >>> tnet.calc_networkmeasure('volatility', distance_func='hamming')
-    0.5555555555555555
+    0.5555555555555556
 
     If we change the probabilities to instead be certain edges disapeared the time-point after the appeared:
 
@@ -182,7 +182,7 @@ def volatility(tnet, distance_func='default', calc='overtime', communities=None,
                     for tind in range(0, tnet.shape[-1] - 1):
                         com1 = tnet[communities == net1][:, communities == net2, tind].flatten()
                         com2 = tnet[communities == net1][:, communities == net2, tind + 1].flatten()
-                        vol[net1, net2, :] = distance_func(com1, com2)
+                        vol[net1, net2, tind] = distance_func(com1, com2)
                 else:
                     nettmp = tnet[communities == net1][:, communities == net2, :]
                     triu = np.triu_indices(nettmp.shape[0], k=1)
