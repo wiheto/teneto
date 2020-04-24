@@ -36,7 +36,7 @@ def volatility(tnet, distance_func='default', calc='overtime', communities=None,
         Array of indicies for community (eiter (node) or (node,time) dimensions).
 
     event_displacement : int
-        if calc = event_displacement specify the temporal index. 
+        if calc = event_displacement specify the temporal index.
         All other time-points are calculated in relation to this time point.
 
     Notes
@@ -102,7 +102,7 @@ def volatility(tnet, distance_func='default', calc='overtime', communities=None,
 
     Here we see the volatility for each node was the same.
 
-    It is also possible to pass a community vector. 
+    It is also possible to pass a community vector.
     The function will return volatility both within and between each community.
     So the following has two communities:
 
@@ -179,12 +179,12 @@ def volatility(tnet, distance_func='default', calc='overtime', communities=None,
         for net1 in net_id:
             for net2 in net_id:
                 if net1 != net2:
-                    vol[net1, net2, :] = [distance_func(tnet[communities == net1][:, communities == net2, t].flatten(),
-                                                        tnet[communities == net1][:, communities == net2, t + 1].flatten())
-                                                        for t in range(0, tnet.shape[-1] - 1)]
+                    for tind in range(0, tnet.shape[-1] - 1):
+                        com1 = tnet[communities == net1][:, communities == net2, tind].flatten()
+                        com2 = tnet[communities == net1][:, communities == net2, tind + 1].flatten()
+                        vol[net1, net2, :] = distance_func(com1, com2)
                 else:
-                    nettmp = tnet[communities ==
-                                  net1][:, communities == net2, :]
+                    nettmp = tnet[communities == net1][:, communities == net2, :]
                     triu = np.triu_indices(nettmp.shape[0], k=1)
                     nettmp = nettmp[triu[0], triu[1], :]
                     vol[net1, net2, :] = [distance_func(nettmp[:, t].flatten(
