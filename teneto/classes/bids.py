@@ -9,7 +9,6 @@ import teneto
 from teneto import __path__ as tenetopath
 from teneto import __version__ as tenetoversion
 from ..neuroimagingtools import load_tabular_file, get_sidecar
-from ..utils import is_jsonable
 from .network import TemporalNetwork
 
 
@@ -253,7 +252,7 @@ class TenetoBIDS:
                     save_name = f.filename
                 # Loop through sidecar content and make any nparray input to list
                 for key, value in sidecar.items():
-                    if not is_jsonable(value):
+                    if not teneto.utils.is_jsonable(value):
                         if isinstance(sidecar[key], np.ndarray):
                             sidecar[key] = sidecar[key].tolist()
                         else:
