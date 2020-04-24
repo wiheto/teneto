@@ -754,7 +754,7 @@ def is_jsonable(x):
         return False
 
 
-def df_to_array(df, netshape, nettype):
+def df_to_array(df, netshape, nettype, start_at='min'):
     """
     Returns a numpy array (snapshot representation) from thedataframe contact list
 
@@ -765,23 +765,35 @@ def df_to_array(df, netshape, nettype):
             network shape, format: (node, time)
         nettype : str
             'wu', 'wd', 'bu', 'bd'
+        start_at : str
+            'min' or 'zero'. 
+            If min, the 0th time-point in the array is starttime.
+            If zero, the 0th time-point in the array is 0. 
 
     Returns:
     --------
         tnet : array
             (node,node,time) array for the network
     """
+    # Check input if dataframe
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError('Input must be dataframe')
+    # Fix the time indicies
+    if start_at == 'zero':
+        tlen = df['t'].max() + 1
+        idx_toffset = 0
+    elif start_at == 'min':
+        tlen = netshape[1]
+        idx_toffset = df['t'].min()
+
     if df.shape[0] > 0:
-
         idx = np.array(list(map(list, df.values)))
-        tnet = np.zeros([netshape[0], netshape[0], netshape[1]])
-
+        tnet = np.zeros([netshape[0], netshape[0], tlen])
+        idx[:, 2] = idx[:, 2] - idx_toffset
         if idx.shape[1] == 3:
             if nettype[-1] == 'u':
                 idx = np.vstack([idx, idx[:, [1, 0, 2]]])
             idx = idx.astype(int)
-            print(idx)
-            print(idx.shape)
             tnet[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
         elif idx.shape[1] == 4:
             if nettype[-1] == 'u':
@@ -790,7 +802,7 @@ def df_to_array(df, netshape, nettype):
             idx = np.array(idx[:, :3], dtype=int)
             tnet[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
     else:
-        tnet = np.zeros([netshape[0], netshape[0], netshape[1]])
+        tnet = np.zeros([netshape[0], netshape[0], tlen])
     return tnet
 
 
