@@ -793,7 +793,7 @@ def df_to_array(df, netshape, nettype, start_at='min'):
     if df.shape[0] > 0:
         # Get indices and values
         idx = np.array(list(map(list, df.values)))
-        tnet = np.zeros([netshape[0], netshape[0], tlen])
+        tnet = np.zeros([netshape[0], netshape[0], int(tlen)])
         idx[:, 2] = idx[:, 2] - idx_toffset
         # Checkif binary or weighted.
         # idx.shape[1] == 3, implies binary
@@ -811,7 +811,7 @@ def df_to_array(df, netshape, nettype, start_at='min'):
             idx = np.array(idx[:, :3], dtype=int)
             tnet[idx[:, 0], idx[:, 1], idx[:, 2]] = weights
     else:
-        tnet = np.zeros([netshape[0], netshape[0], tlen])
+        tnet = np.zeros([netshape[0], netshape[0], int(tlen)])
     return tnet
 
 
