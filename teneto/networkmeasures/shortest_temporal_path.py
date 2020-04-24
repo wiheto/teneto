@@ -271,8 +271,7 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                                                 path = [path, pathtmp]
                         # elif sourcei < 2 and target in a[:2]:
                         #    path_length = 2
-
-                    paths.append([source, target, tstart, t-tstart, path_length, path])
+                        paths.append([source, target, tstart, t-tstart, path_length, path])
 
     paths = pd.DataFrame(data=paths, columns=[
         'from', 'to', 't_start', 'temporal-distance', 'topological-distance', 'path includes'])
