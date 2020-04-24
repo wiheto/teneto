@@ -2,9 +2,19 @@
 
 ## Version 0.5.2
 
+### 0.5.2 Improvements
+
+Improved sidecar checking 
+
+Added is_jsonable to utils.
+
 ### 0.5.2 Fixes
 
 Fixes the issues when shortest paths were trying to be derived on non existent time points (raised in #60)
+
+### 0.5.2 Changes
+
+Removing wrong cased variables (e.g. netIN and TN from utils)
 
 ## Version 0.5.1
 

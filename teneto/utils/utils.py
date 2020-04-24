@@ -1,13 +1,13 @@
-"""General utility functions"""
+"""General utility functions."""
 
-import numpy as np
 import collections
 import itertools
+import operator
+import numpy as np
+import pandas as pd
 import scipy.spatial.distance as distance
 from ..trajectory import rdp
 from ..classes import TemporalNetwork
-import pandas as pd
-import operator
 
 
 def graphlet2contact(tnet, params=None):

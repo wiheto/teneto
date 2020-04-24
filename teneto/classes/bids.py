@@ -256,7 +256,7 @@ class TenetoBIDS:
                     if not is_jsonable(value):
                         if isinstance(sidecar[key], np.ndarray):
                             sidecar[key] = sidecar[key].tolist()
-                        else: 
+                        else:
                             print('WARNING: Dropping ' + str(key) + ' from sidecar.')
                             sidecar.pop(key)
                 # Save sidecar
