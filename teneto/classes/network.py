@@ -296,25 +296,28 @@ class TemporalNetwork:
 
     def _calc_netshape(self):
         """
+        Resets TemporalNetwork.netshape, TemporalNetwork.N and TemporalNetwork.T.
+        N is the number of nodes.
+        T is the number of time points.
         """
         if len(self.network) == 0:
             self.netshape = (0, 0)
         elif not self.sparse:
-            N = int(self.network.shape[0])
-            T = int(self.network.shape[-1])
-            self.netshape = (N, T)
+            n_nodes = int(self.network.shape[0])
+            n_timepoints = int(self.network.shape[-1])
+            self.netshape = (n_nodes, n_timepoints)
         else:
-            N = self.network[['i', 'j']].max(axis=1).max()+1
-            T = self.network['t'].max()+1
-            if self.N > N:
-                N = self.N
+            n_nodes = self.network[['i', 'j']].max(axis=1).max()+1
+            n_timepoints = self.network['t'].max() - self.network['t'].min() + 1
+            if self.N > n_nodes:
+                n_nodes = self.N
             else:
-                self.N = int(N)
-            if self.T > T:
-                T = self.T
+                self.N = int(n_nodes)
+            if self.T > n_timepoints:
+                n_timepoints = self.T
             else:
-                self.T = int(T)
-            self.netshape = (int(N), int(T))
+                self.T = int(n_timepoints)
+            self.netshape = (int(n_nodes), int(n_timepoints))
 
     def add_edge(self, edgelist):
         """
@@ -448,8 +451,8 @@ class TemporalNetwork:
         availabletypes = [f for f in dir(
             teneto.plot) if not f.startswith('__')]
         if plottype not in availabletypes:
-            raise ValueError(
-                'Unknown network measure. Available plotting functions are: ' + ', '.join(availabletypes))
+            plotalt = ', '.join(availabletypes)
+            raise ValueError('Unknown network measure. Available plotting functions are: ' + plotalt)
         funs = inspect.getmembers(teneto.plot)
         funs = {m[0]: m[1] for m in funs if not m[0].startswith('__')}
         if ij is None:
