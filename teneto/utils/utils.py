@@ -744,6 +744,7 @@ def multiple_contacts_get_values(C):
     C_out['values'] = new_values
     return C_out
 
+
 def is_jsonable(x):
     """
     Check if a dict is jsonable.
@@ -755,6 +756,7 @@ def is_jsonable(x):
         return True
     except (TypeError, OverflowError):
         return False
+
 
 def df_to_array(df, netshape, nettype):
     """
