@@ -22,18 +22,22 @@ def volatility(tnet, distance_func='default', calc='overtime', communities=None,
     calc : str
         Version of volaitility to caclulate. Possibilities include:
         'overtime' - (default): the average distance of all nodes for each consecutive time point).
-        'edge' - average distance between consecutive time points for each edge). Takes considerably longer
+        'edge' - average distance between consecutive time points for each edge).
+        Takes considerably longer
         'node' - (i.e. returns the average per node output when calculating volatility per 'edge').
         'pertime' - returns volatility per time point
         'communities' - returns volatility per communitieswork id (see communities).
-        Also is returned per time-point and this may be changed in the future (with additional options)
-        'event_displacement' - calculates the volatility from a specified point. Returns time-series.
+        Also is returned per time-point and this may be changed in the future
+        (additional options are then required)
+        'event_displacement' - calculates the volatility from a specified point.
+        Returns time-series.
 
     communities : array
         Array of indicies for community (eiter (node) or (node,time) dimensions).
 
     event_displacement : int
-        if calc = event_displacement specify the temporal index where all other time-points are calculated in relation too.
+        if calc = event_displacement specify the temporal index. 
+        All other time-points are calculated in relation to this time point.
 
     Notes
     -----
@@ -47,9 +51,11 @@ def volatility(tnet, distance_func='default', calc='overtime', communities=None,
     V can be calculated for the entire network (global),
     but can also be calculated for individual edges, nodes or given a community vector.
 
-    Index of communities are returned "as is" with a shape of [max(communities)+1,max(communities)+1].
+    Index of communities are returned "as is" with a shape of:
+    (max(communities)+1, max(communities)+1).
     So if the indexes used are [1,2,3,5], V.shape==(6,6).
-    The returning V[1,2] will correspond indexes 1 and 2. And missing index (e.g. here 0 and 4 will be NANs in rows and columns).
+    The returning V[1,2] will correspond indexes 1 and 2.
+    And missing index (e.g. here 0 and 4 will be NANs in rows and columns).
     If this behaviour is unwanted, call clean_communitiesdexes first.
 
     Examples
@@ -96,7 +102,8 @@ def volatility(tnet, distance_func='default', calc='overtime', communities=None,
 
     Here we see the volatility for each node was the same.
 
-    It is also possible to pass a community vector and the function will return volatility both within and between each community.
+    It is also possible to pass a community vector. 
+    The function will return volatility both within and between each community.
     So the following has two communities:
 
     >>> vol_com = tnet.calc_networkmeasure('volatility', calc='communities', communities=[0,1,1], distance_func='hamming')
@@ -106,7 +113,8 @@ def volatility(tnet, distance_func='default', calc='overtime', communities=None,
     array([[nan, 0.5],
            [0.5, 0. ]])
 
-    And we see that, at time-point 0, there is some volatility between community 0 and 1 but no volatility within community 1.
+    And we see that, at time-point 0, there is some volatility between community 0 and 1.
+    Further, there is no volatility within community 1.
     The reason for nan appearing is due to there only being 1 node in community 0.
 
 
