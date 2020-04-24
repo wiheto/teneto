@@ -1,5 +1,4 @@
 """General utility functions."""
-
 import collections
 import itertools
 import operator
@@ -137,7 +136,6 @@ def graphlet2contact(tnet, params=None):
 
     return C
 
-
 def contact2graphlet(C):
     """
 
@@ -210,7 +208,6 @@ def contact2graphlet(C):
 
     return tnet
 
-
 def binarize_percent(netin, level, sign='pos', axis='time'):
     """
     Binarizes a network proprtionally. When axis='time' (only one available at the moment) then the top values for each edge time series are considered.
@@ -279,7 +276,6 @@ def binarize_percent(netin, level, sign='pos', axis='time'):
         netout['diagonal'] = 0
 
     return netout
-
 
 # To do: set diagonal to 0.
 def binarize_rdp(netin, level, sign='pos', axis='time'):
@@ -743,7 +739,6 @@ def multiple_contacts_get_values(C):
     C_out['contacts'] = new_contacts
     C_out['values'] = new_values
     return C_out
-
 
 def is_jsonable(x):
     """
