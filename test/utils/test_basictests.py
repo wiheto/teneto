@@ -198,7 +198,7 @@ def test_process_input():
         raise AssertionError()
     C = teneto.utils.process_input(G, 'G', 'C')
     tnet3 = teneto.utils.process_input(C, 'C', 'TN')
-    if not np.all(tnet2.network ==  tnet3.df_to_array()):
+    if not np.all(tnet2.network == tnet3.df_to_array()):
         raise AssertionError()
     C2 = teneto.utils.process_input(tnet, 'TN', 'C')
     G2, _ = teneto.utils.process_input(tnet, 'TN', 'G')
