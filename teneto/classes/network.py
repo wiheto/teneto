@@ -481,10 +481,22 @@ class TemporalNetwork:
         """
         return teneto.utils.get_network_when(self, **kwargs)
 
-    def df_to_array(self):
+    def df_to_array(self, start_at='auto'):
         """
+        Turns datafram to array.
+        See teneto.utils.df_to_array for more information.
+
+        Parameters
+        ==========
+        start_at : str
+            'min' or 'zero'.
+            If auto, the 0th time-point is tnet.starttime.
+            If min, the 0th time-point in the array is the minimum time-point found.
+            If zero, the 0th time-point in the array is 0.
         """
-        return teneto.utils.df_to_array(self.network, self.netshape, self.nettype)
+        if start_at == 'auto':
+            start_at = int(self.starttime)
+        return teneto.utils.df_to_array(self.network, self.netshape, self.nettype, start_at=start_at)
 
     def binarize(self, threshold_type, threshold_level, **kwargs):
         """

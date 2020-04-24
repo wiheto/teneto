@@ -4,13 +4,17 @@
 
 ### 0.5.2 Improvements
 
-Improved sidecar checking 
+Improved sidecar checking.
 
 Added is_jsonable to utils.
 
 ### 0.5.2 Fixes
 
 Fixes the issues when shortest paths were trying to be derived on non existent time points (raised in #60)
+
+Fixing problem with df_to_array when time indices do not start at 0.
+
+Fixing problem with dataframe netshape when starttime !=0 (#61)
 
 ### 0.5.2 Changes
 

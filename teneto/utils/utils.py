@@ -766,9 +766,10 @@ def df_to_array(df, netshape, nettype, start_at='min'):
         nettype : str
             'wu', 'wd', 'bu', 'bd'
         start_at : str
-            'min' or 'zero'. 
-            If min, the 0th time-point in the array is starttime.
-            If zero, the 0th time-point in the array is 0. 
+            'min' or 'zero' or int.
+            If min, the 0th time-point in the array is min t value.
+            If zero, the 0th time-point in the array is 0.
+            If int, the 0th time-point in array starts at int in df.
 
     Returns:
     --------
@@ -779,22 +780,30 @@ def df_to_array(df, netshape, nettype, start_at='min'):
     if not isinstance(df, pd.DataFrame):
         raise ValueError('Input must be dataframe')
     # Fix the time indicies
-    if start_at == 'zero':
+    if isinstance(start_at, int): 
+        tlen = df['t'].max() + 1 - start_at
+        idx_toffset = start_at
+    elif start_at == 'zero':
         tlen = df['t'].max() + 1
         idx_toffset = 0
     elif start_at == 'min':
         tlen = netshape[1]
         idx_toffset = df['t'].min()
-
+    # Check if df is non-empty
     if df.shape[0] > 0:
+        # Get indices and values
         idx = np.array(list(map(list, df.values)))
         tnet = np.zeros([netshape[0], netshape[0], tlen])
         idx[:, 2] = idx[:, 2] - idx_toffset
+        # Checkif binary or weighted.
+        # idx.shape[1] == 3, implies binary
         if idx.shape[1] == 3:
+            # if undirected, copy the indices from j to i.
             if nettype[-1] == 'u':
                 idx = np.vstack([idx, idx[:, [1, 0, 2]]])
             idx = idx.astype(int)
             tnet[idx[:, 0], idx[:, 1], idx[:, 2]] = 1
+        # idx.shape[1] == 4, implies weighted
         elif idx.shape[1] == 4:
             if nettype[-1] == 'u':
                 idx = np.vstack([idx, idx[:, [1, 0, 2, 3]]])
