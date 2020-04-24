@@ -240,38 +240,37 @@ def shortest_temporal_path(tnet, steps_per_t='all', i=None, j=None, it=None, min
                         lenij = len(ij)
                     # correct t for return
                     # Only run if one pair is added.
-                    if pairs:
-                        t += 1
-                        # part 2 starts here
-                        path = np.nan
-                        path_length = np.nan
-                        for n in itertools.product(*reversed(pairs)):
-                            a = np.array(n).flatten()
-                            if source not in a or target not in a:
-                                pass
-                            else:
-                                pathtmp = shortest_path_from_pairseq(a, source)
-                                if pathtmp:
-                                    if not isinstance(path, list):
-                                        path = pathtmp
-                                        path_length = len(path)
-                                    elif len(pathtmp) < path_length:
-                                        path = pathtmp
-                                        path_length = len(path)
-                                    elif len(pathtmp) == path_length:
-                                        if isinstance(path[0][0], list):
-                                            if pathtmp in path:
-                                                pass
-                                            else:
-                                                path.append(pathtmp)
+                    t += 1
+                    # part 2 starts here
+                    path = np.nan
+                    path_length = np.nan
+                    for n in itertools.product(*reversed(pairs)):
+                        a = np.array(n).flatten()
+                        if source not in a or target not in a:
+                            pass
+                        else:
+                            pathtmp = shortest_path_from_pairseq(a, source)
+                            if pathtmp:
+                                if not isinstance(path, list):
+                                    path = pathtmp
+                                    path_length = len(path)
+                                elif len(pathtmp) < path_length:
+                                    path = pathtmp
+                                    path_length = len(path)
+                                elif len(pathtmp) == path_length:
+                                    if isinstance(path[0][0], list):
+                                        if pathtmp in path:
+                                            pass
                                         else:
-                                            if path == pathtmp:
-                                                pass
-                                            else:
-                                                path = [path, pathtmp]
-                        # elif sourcei < 2 and target in a[:2]:
-                        #    path_length = 2
-                        paths.append([source, target, tstart, t-tstart, path_length, path])
+                                            path.append(pathtmp)
+                                    else:
+                                        if path == pathtmp:
+                                            pass
+                                        else:
+                                            path = [path, pathtmp]
+                    # elif sourcei < 2 and target in a[:2]:
+                    #    path_length = 2
+                    paths.append([source, target, tstart, t-tstart, path_length, path])
 
     paths = pd.DataFrame(data=paths, columns=[
         'from', 'to', 't_start', 'temporal-distance', 'topological-distance', 'path includes'])
