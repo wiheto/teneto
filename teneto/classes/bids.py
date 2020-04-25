@@ -245,6 +245,7 @@ class TenetoBIDS:
                     if 'sidecar' in input_params:
                         input_params['sidecar'] = 'Loaded automatically via TenetoBIDS'
                     # Loop through input params content and make any nparray input to list for sidecar
+                    sidecar['TenetoFunction']['Parameters'] = {}
                     for key, value in input_params.items():
                         if not teneto.utils.is_jsonable(value):
                             if isinstance(input_params[key], np.ndarray):
