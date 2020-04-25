@@ -252,7 +252,7 @@ class TenetoBIDS:
                             else:
                                 print('Warning: Dropping input (' + key + ') from sidecar (not JSONable).')
                         else:
-                            sidecar['TenetoFunction']['Parameters'][key] = input_params[key].tolist()
+                            sidecar['TenetoFunction']['Parameters'][key] = input_params[key]
                 elif functype == 'on_sidecar':
                     sidecar = func(**input_params)
                     update_pipeline = False
