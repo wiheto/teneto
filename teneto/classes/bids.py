@@ -244,20 +244,20 @@ class TenetoBIDS:
                         input_params['confounds'] = 'Passed as argument'
                     if 'sidecar' in input_params:
                         input_params['sidecar'] = 'Loaded automatically via TenetoBIDS'
-                    sidecar['TenetoFunction']['Parameters'] = input_params
+                    # Loop through input params content and make any nparray input to list for sidecar
+                    for key, value in input_params.items():
+                        if not teneto.utils.is_jsonable(value):
+                            if isinstance(input_params[key], np.ndarray):
+                                sidecar['TenetoFunction']['Parameters'][key] = input_params[key].tolist()
+                            else:
+                                print('Warning: Dropping input (' + key + ') from sidecar (not JSONable).')
+                        else:
+                            sidecar['TenetoFunction']['Parameters'][key] = input_params[key].tolist()
                 elif functype == 'on_sidecar':
                     sidecar = func(**input_params)
                     update_pipeline = False
                     save_path = f.dirname + '/'
                     save_name = f.filename
-                # Loop through sidecar content and make any nparray input to list
-                for key, value in sidecar.items():
-                    if not teneto.utils.is_jsonable(value):
-                        if isinstance(sidecar[key], np.ndarray):
-                            sidecar[key] = sidecar[key].tolist()
-                        else:
-                            print('WARNING: Dropping ' + str(key) + ' from sidecar.')
-                            sidecar.pop(key)
                 # Save sidecar
                 with open(save_path + save_name.replace('.tsv', '.json'), 'w') as f:
                     json.dump(sidecar, f)
