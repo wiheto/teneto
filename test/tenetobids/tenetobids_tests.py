@@ -1,9 +1,17 @@
+""" TenetoBIDS tests. Will error if files cannot be run. """
+import numpy as np
 from teneto import TenetoBIDS
 from teneto import __path__ as tenetopath
-import numpy as np
+
+# Path of dummy data
 datdir = tenetopath[0] + '/data/testdata/dummybids/'
 tnet = TenetoBIDS(datdir, selected_pipeline='fmriprep', bids_filter={
                      'subject': '001', 'run': 1, 'task': 'a'}, exist_ok=True)
+tnetoptions = tnet.get_run_options()
+# hardcode truth.
+if tnetoptions != 'exclude_runs, make_parcellation':
+    raise AssertionError()
+
 tnet.run('make_parcellation', {'atlas': 'Schaefer2018',
                                'atlas_desc': '100Parcels7Networks',
                                'parc_params': {'detrend': True}})
@@ -22,7 +30,7 @@ tnet.run('binarize', {'threshold_type': 'percent', 'threshold_level': 0.1})
 tnet.run('volatility', {})
 vol = tnet.load_data()
 # Hard code truth
-if np.round(np.squeeze(vol['sub-001_run-1_task-a_vol.tsv'].values),5) != 0.10373:
+if np.round(np.squeeze(vol['sub-001_run-1_task-a_vol.tsv'].values), 5) != 0.10373:
     raise AssertionError()
 
 datdir = tenetopath[0] + '/data/testdata/dummybids/'
