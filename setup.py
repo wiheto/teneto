@@ -2,12 +2,12 @@
 
 from setuptools import setup, find_packages
 
-version = "teneto/_version.py"
-verstrline = open(version, "rt").read()
-version = verstrline.split('"')[1]
+VERSION = "teneto/_version.py"
+VERSION = open(VERSION, "rt").read()
+VERSION = VERSION.split('"')[1]
 
 setup(name='teneto',
-      version=version,
+      version=VERSION,
       python_requires='>3.5',
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],
@@ -30,10 +30,8 @@ setup(name='teneto',
       package_data={'': ['./teneto/data']},
       include_package_data=True,
       entry_points={
-          'console_scripts': ['teneto = teneto.__main__:main'
-                              ]
+          'console_scripts': ['teneto = teneto.__main__:main']
       },
       long_description='Temporal network tools. \
         A package for deriving, analysing and plotting temporal network representations. \
-        Additional tools for temporal network analysis with neuroimaging contexts.'
-      )
+        Additional tools for temporal network analysis with neuroimaging contexts.')
