@@ -9,7 +9,6 @@ tnet = TenetoBIDS(datdir, selected_pipeline='fmriprep', bids_filter={
                      'subject': '001', 'run': 1, 'task': 'a'}, exist_ok=True)
 tnetoptions = tnet.get_run_options()
 # hardcode truth.
-print(tnetoptions)
 if tnetoptions != 'exclude_runs, make_parcellation':
     raise AssertionError()
 
