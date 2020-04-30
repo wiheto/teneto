@@ -323,7 +323,7 @@ class TenetoBIDS:
                 for su in suffix:
                     if su in s:
                         funcs_filter.append(t)
-            funcs = list(set(funcs_filter))
+            funcs = sorted(list(set(funcs_filter)))
         return ', '.join(funcs)
 
     def update_bids_filter(self, filter_addons):
