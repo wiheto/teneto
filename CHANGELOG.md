@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.5.2 (development)
+## Version 0.5.2 (In development)
 
 ### 0.5.2 Improvements
 
@@ -15,6 +15,8 @@ Fixes the issues when shortest paths were trying to be derived on non existent t
 Fixing problem with df_to_array when time indices do not start at 0.
 
 Fixing problem with dataframe netshape when starttime !=0 (#61)
+
+coveralls resynced with travis (pip install python-coveralls replaced with pip install coveralls)
 
 ### 0.5.2 Changes
 
