@@ -1,0 +1,3 @@
+[console_scripts]
+teneto = teneto.__main__:main
+

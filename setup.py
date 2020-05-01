@@ -4,7 +4,9 @@ from setuptools import setup, find_packages
 
 version = "teneto/_version.py"
 verstrline = open(version, "rt").read()
-version = verstrline.split('"')[1]
+# version = verstrline.split('"')[1]
+version = verstrline.split("=")[-1].strip().replace('"',"") # Removing the end quote
+
 
 setup(name='teneto',
       version=version,
@@ -12,21 +14,22 @@ setup(name='teneto',
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],
       install_requires=[
-          'nilearn>=0.6.0',
-          'pybids>=0.9',
+          # 'nilearn>=0.6.0',
+          # 'pybids>=0.9',
           'statsmodels>=0.8.0',
           'networkx>=2.0',
           'python-louvain>=0.13',
           'pandas>=0.21',
           'scipy>=1.4.1',
           'numpy>=1.16.1',
-          'templateflow>=0.4.1'],
+          # 'templateflow>=0.4.1',
+          ],
       description='Temporal network tools',
       packages=find_packages(),
       author='William Hedley Thompson',
       author_email='hedley@startmail.com',
       url='https://www.github.com/wiheto/teneto',
-      download_url='https://github.com/wiheto/teneto/archive/0.3.3.tar.gz',
+      download_url='https://github.com/wiheto/teneto/archive/{}.tar.gz'.format(version),
       package_data={'': ['./teneto/data']},
       include_package_data=True,
       entry_points={

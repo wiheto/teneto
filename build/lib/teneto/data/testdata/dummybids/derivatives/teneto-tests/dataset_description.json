@@ -1,0 +1,7 @@
+{"Name": "teneto dummy output",
+ "BIDSVersion": "1.0.0",
+ "PipelineDescription": {
+     "Name": "teneto-tests",
+     "Version": "x,x,x"
+ }
+}
