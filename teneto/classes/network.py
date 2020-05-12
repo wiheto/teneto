@@ -464,8 +464,8 @@ class TemporalNetwork:
             t = np.arange(self.netshape[1]).tolist()
         if not ax:
             _, ax = plt.subplots(1)
-        data_plot = utils.get_network_when(self, ij=ij, t=t)
-        data_plot = utils.df_to_array(
+        data_plot = get_network_when(self, ij=ij, t=t)
+        data_plot = df_to_array(
             data_plot, self.netshape, self.nettype)
         ax = funs[plottype](data_plot, ax=ax, **plotparams)
         return ax
