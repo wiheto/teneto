@@ -3,7 +3,7 @@ import os
 import inspect
 import json
 import bids
-import importlibs
+import importlib
 import sys
 import numpy as np
 import pandas as pd
