@@ -9,6 +9,7 @@ import teneto
 import numpy as np
 import pandas as pd
 import scipy.spatial.distance as distance
+from ..trajectory import rdp
 #from ..classes import teneto.TemporalNetwork
 #from ..trajectory import rdp
 
