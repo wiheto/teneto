@@ -536,33 +536,33 @@ class TemporalNetwork:
         self.nettype = 'b' + self.nettype[1]
 
 
-def _check_input(self, datain, datatype):
-    """
-    """
-    if datatype == 'edgelist':
-        if not isinstance(datain, list):
-            raise ValueError('edgelist should be list')
-        if all([len(e) == 3 for e in datain]) or all([len(e) == 4 for e in datain]):
-            pass
+    def _check_input(self, datain, datatype):
+        """
+        """
+        if datatype == 'edgelist':
+            if not isinstance(datain, list):
+                raise ValueError('edgelist should be list')
+            if all([len(e) == 3 for e in datain]) or all([len(e) == 4 for e in datain]):
+                pass
+            else:
+                raise ValueError(
+                    'Each member in edgelist should all be a list of length 3 (i,j,t) or 4 (i,j,t,w)')
+        elif datatype == 'array':
+            if not isinstance(datain, np.ndarray):
+                raise ValueError('Array should be numpy array')
+            if len(datain.shape) == 2 or len(datain.shape) == 3:
+                pass
+            else:
+                raise ValueError('Input array must be 2 or 3 dimensional')
+        elif datatype == 'dict':
+            if not isinstance(datain, dict):
+                raise ValueError('Contact should be dictionary')
+            if 'contacts' not in datain:
+                raise ValueError('Key \'contacts\' should be in dictionary')
+        elif datatype == 'df':
+            if not isinstance(datain, pd.DataFrame):
+                raise ValueError('Input should be Pandas Dataframe')
+            if ('i' and 'j' and 't') not in datain:
+                raise ValueError('Columns must be \'i\' \'j\' and \'t\'')
         else:
-            raise ValueError(
-                'Each member in edgelist should all be a list of length 3 (i,j,t) or 4 (i,j,t,w)')
-    elif datatype == 'array':
-        if not isinstance(datain, np.ndarray):
-            raise ValueError('Array should be numpy array')
-        if len(datain.shape) == 2 or len(datain.shape) == 3:
-            pass
-        else:
-            raise ValueError('Input array must be 2 or 3 dimensional')
-    elif datatype == 'dict':
-        if not isinstance(datain, dict):
-            raise ValueError('Contact should be dictionary')
-        if 'contacts' not in datain:
-            raise ValueError('Key \'contacts\' should be in dictionary')
-    elif datatype == 'df':
-        if not isinstance(datain, pd.DataFrame):
-            raise ValueError('Input should be Pandas Dataframe')
-        if ('i' and 'j' and 't') not in datain:
-            raise ValueError('Columns must be \'i\' \'j\' and \'t\'')
-    else:
-        raise ValueError('Unknown datatype')
+            raise ValueError('Unknown datatype')
