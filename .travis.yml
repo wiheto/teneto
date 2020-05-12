@@ -2,12 +2,14 @@ language: python
 dist: xenial
 python:
   - "3.6"
-  - "3.6-dev"  # 3.6 development branch
+  - "3.8-dev"  # 3.6 development branch
+  - "3.7"
+  - "3.8"
 # command to install dependencies
 install:
   - pip install -r requirements.txt
   - python setup.py install
-  - pip install python-coveralls
+  - pip install coveralls
   - pip install pytest
   - pip install pytest-cov
   - sudo apt-get -y install python3-pyqt5

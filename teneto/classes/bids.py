@@ -1,17 +1,17 @@
-"""TenetoBIDS is a class which can be used to use Teneto functions with data organized with BIDS (neuroimaging data)."""
+"""TenetoBIDS is a class to use Teneto functions with data organized with BIDS (neuroimaging data)."""
 import os
-import bids
-import numpy as np
 import inspect
 import json
-from ..neuroimagingtools import load_tabular_file, get_sidecar
+import bids
+import importlib
+import numpy as np
 import pandas as pd
+from .. import __path__ as tenetopath
+from .. import __version__ as tenetoversion
+from ..neuroimagingtools import load_tabular_file, get_sidecar
 from .network import TemporalNetwork
-from teneto import __path__ as tenetopath
-from teneto import __version__ as tenetoversion
-import teneto
 
-
+# @check_neuro_packages(bids)
 class TenetoBIDS:
     """
     Class for analysing data in BIDS.
@@ -141,7 +141,9 @@ class TenetoBIDS:
         """
         if exist_ok is not None:
             self.exist_ok = exist_ok
-
+        # Import teneto if it has not been already
+        if 'teneto' not in globals():
+            teneto = importlib.import_module('teneto')
         func = teneto
         for f in self.tenetobids_structure[run_func]['module'].split('.'):
             func = getattr(func, f)
@@ -244,16 +246,21 @@ class TenetoBIDS:
                         input_params['confounds'] = 'Passed as argument'
                     if 'sidecar' in input_params:
                         input_params['sidecar'] = 'Loaded automatically via TenetoBIDS'
-                    sidecar['TenetoFunction']['Parameters'] = input_params
+                    # Loop through input params content and make any nparray input to list for sidecar
+                    sidecar['TenetoFunction']['Parameters'] = {}
+                    for key, value in input_params.items():
+                        if not teneto.utils.is_jsonable(value):
+                            if isinstance(input_params[key], np.ndarray):
+                                sidecar['TenetoFunction']['Parameters'][key] = input_params[key].tolist()
+                            else:
+                                print('Warning: Dropping input (' + key + ') from sidecar (not JSONable).')
+                        else:
+                            sidecar['TenetoFunction']['Parameters'][key] = input_params[key]
                 elif functype == 'on_sidecar':
                     sidecar = func(**input_params)
                     update_pipeline = False
                     save_path = f.dirname + '/'
                     save_name = f.filename
-                # Loop through sidecar content and make any nparray input to list
-                for n in sidecar.keys():
-                    if isinstance(sidecar[n], np.ndarray):
-                        sidecar[n] = sidecar[n].tolist()
                 # Save sidecar
                 with open(save_path + save_name.replace('.tsv', '.json'), 'w') as f:
                     json.dump(sidecar, f)
@@ -318,7 +325,7 @@ class TenetoBIDS:
                 for su in suffix:
                     if su in s:
                         funcs_filter.append(t)
-            funcs = list(set(funcs_filter))
+            funcs = sorted(list(set(funcs_filter)))
         return ', '.join(funcs)
 
     def update_bids_filter(self, filter_addons):

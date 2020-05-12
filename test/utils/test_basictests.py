@@ -1,4 +1,4 @@
-
+"""Tests basic utility functions."""
 import teneto
 import numpy as np
 import pytest
@@ -22,13 +22,10 @@ def test_graphletconversion():
     if not G.all() == G2.all():
         raise AssertionError()
 
-
-
 def test_createtraj():
-    traj = teneto.utils.create_traj_ranges(0, 12, 4)
+    traj = teneto.trajectory.create_traj_ranges(0, 12, 4)
     if not (traj == np.array([0, 4, 8, 12], dtype=float)).all():
         raise AssertionError()
-
 
 def test_binarize():
     G = np.zeros([3, 3, 2])
@@ -198,7 +195,10 @@ def test_process_input():
         raise AssertionError()
     C = teneto.utils.process_input(G, 'G', 'C')
     tnet3 = teneto.utils.process_input(C, 'C', 'TN')
-    if not np.all(tnet2.network ==  tnet3.df_to_array()):
+    # Note TN>G>C>TN will fail if first time-point is all 0s.
+    # This is because G>C changes starttime to 1.
+    # Thus, must set start_at to zero in function below to not get error.
+    if not np.all(tnet2.network == tnet3.df_to_array(start_at='zero')):
         raise AssertionError()
     C2 = teneto.utils.process_input(tnet, 'TN', 'C')
     G2, _ = teneto.utils.process_input(tnet, 'TN', 'G')

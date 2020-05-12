@@ -6,8 +6,8 @@
 __author__ = "WHT (wiheto @ github)"
 #
 from ._version import __version__
+from .classes import TenetoBIDS, TemporalNetwork, TenetoWorkflow
 from . import networkmeasures
-from . import utils
 from . import plot
 from . import generatenetwork
 from . import timeseries
@@ -17,7 +17,7 @@ from . import trajectory
 from . import communitymeasures
 from . import communitydetection
 from . import neuroimagingtools
-from .classes import TenetoBIDS, TemporalNetwork, TenetoWorkflow
+from . import utils
 #del misc.teneto
 #del communitydetection.static.modularity_based_clustering
 __all__ = ['__version__', 'utils', 'networkmeasures', 'plot', 'generatenetwork',
