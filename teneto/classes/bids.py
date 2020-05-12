@@ -4,7 +4,6 @@ import inspect
 import json
 import bids
 import importlib
-import sys
 import numpy as np
 import pandas as pd
 from .. import __path__ as tenetopath
@@ -143,7 +142,7 @@ class TenetoBIDS:
         if exist_ok is not None:
             self.exist_ok = exist_ok
         # Import teneto if it has not been already
-        if 'teneto' not in sys.modules:
+        if 'teneto' not in globals():
             teneto = importlib.import_module('teneto')
         func = teneto
         for f in self.tenetobids_structure[run_func]['module'].split('.'):
