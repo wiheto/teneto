@@ -23,7 +23,7 @@ def test_graphletconversion():
         raise AssertionError()
 
 def test_createtraj():
-    traj = teneto.utils.create_traj_ranges(0, 12, 4)
+    traj = teneto.trajectory.create_traj_ranges(0, 12, 4)
     if not (traj == np.array([0, 4, 8, 12], dtype=float)).all():
         raise AssertionError()
 
