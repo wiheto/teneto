@@ -57,7 +57,7 @@ def circle_plot(netIn, ax, nodelabels=None, linestyle='k-', nodesize=1000, cmap=
 
     """
     # Get input type (C or G)
-    inputType = check_input(netIn, conMat=1)
+    inputType = check_input(netIn, conmat=1)
     if nodelabels is None:
         nodelabels = []
     # Convert C representation to G
