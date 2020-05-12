@@ -1,7 +1,10 @@
+"""
+General utils functions for fMRI analyses. 
+"""
 import templateflow.api as tf
-from .bidsutils import load_tabular_file
-from nilearn.input_data import NiftiLabelsMasker
 import pandas as pd
+from nilearn.input_data import NiftiLabelsMasker
+from .bidsutils import load_tabular_file
 
 
 def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=2, parc_params=None, return_meta=False):

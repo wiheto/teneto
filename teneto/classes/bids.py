@@ -1,17 +1,15 @@
-"""TenetoBIDS is a class which can be used to use Teneto functions with data organized with BIDS (neuroimaging data)."""
+"""TenetoBIDS is a class to use Teneto functions with data organized with BIDS (neuroimaging data)."""
 import os
 import inspect
 import json
 import numpy as np
 import pandas as pd
-import bids
-import teneto
-from teneto import __path__ as tenetopath
-from teneto import __version__ as tenetoversion
+from .. import __path__ as tenetopath
+from .. import __version__ as tenetoversion
 from ..neuroimagingtools import load_tabular_file, get_sidecar
 from .network import TemporalNetwork
 
-
+# @check_neuro_packages(bids)
 class TenetoBIDS:
     """
     Class for analysing data in BIDS.

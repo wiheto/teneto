@@ -3,11 +3,15 @@ import collections
 import itertools
 import operator
 import json
+import importlib
+import functools
+import teneto
 import numpy as np
 import pandas as pd
 import scipy.spatial.distance as distance
-from ..trajectory import rdp
-from ..classes import TemporalNetwork
+#from ..classes import teneto.TemporalNetwork
+#from ..trajectory import rdp
+
 
 
 def graphlet2contact(tnet, params=None):
@@ -485,55 +489,6 @@ def gen_nettype(tnet, weightonly=False):
 
     return nettype
 
-
-def check_input(netin, rasie_if_undirected=1, conMat=0):
-    """
-
-    This function checks that netin input is either graphlet (tnet) or contact (C).
-
-    Parameters
-    ----------
-
-    netin : array or dict
-        temporal network, (graphlet or contact).
-    rasie_if_undirected : int, default=1.
-        Options 1 or 0. Error is raised if not found to be tnet or C
-    conMat : int, default=0.
-        Options 1 or 0. If 1, input is allowed to be a 2 dimensional connectivity matrix. Allows output to be 'M'
-
-    Returns
-    -------
-
-    inputtype : str
-        String indicating input type. 'G','C', 'M' or 'U' (unknown). M is special case only allowed when conMat=1 for a 2D connectivity matrix.
-
-    """
-    inputis = 'U'
-    if isinstance(netin, np.ndarray):
-        netShape = netin.shape
-        if len(netShape) == 3 and netShape[0] == netShape[1]:
-            inputis = 'G'
-        elif netShape[0] == netShape[1] and conMat == 1:
-            inputis = 'M'
-
-    elif isinstance(netin, dict):
-        if 'nettype' in netin and 'contacts' in netin and 'dimord' in netin and 'timetype' in netin:
-            if netin['nettype'] in {'bd', 'bu', 'wd', 'wu'} and netin['timetype'] == 'discrete' and netin['dimord'] == 'node,node,time':
-                inputis = 'C'
-
-    elif isinstance(netin, object):
-        if hasattr(netin, 'network'):
-            inputis = 'TN'
-        elif isinstance(netin, pd.DataFrame):
-            inputis = 'DF'
-
-    if rasie_if_undirected == 1 and inputis == 'U':
-        raise ValueError(
-            'Input cannot be identified as graphlet or contact representation')
-
-    return inputis
-
-
 def get_distance_function(requested_metric):
     """
     This function returns a specified distance function.
@@ -574,100 +529,6 @@ def get_distance_function(requested_metric):
         return distance_options[requested_metric]
     else:
         raise ValueError('Distance function cannot be found.')
-
-
-def process_input(netin, allowedformats, outputformat='G', forcesparse=False):
-    """
-    Takes input network and checks what the input is.
-
-    Parameters
-    ----------
-
-    netin : array, dict, or TemporalNetwork
-        Network (graphlet, contact or object)
-    allowedformats : list or str
-        Which format of network objects that are allowed. Options: 'C', 'TN', 'G'.
-    outputformat: str, default=G
-        Target output format. Options: 'C' or 'G'.
-
-
-    Returns
-    -------
-
-    C : dict
-
-    OR
-
-    tnet : array
-        Graphlet representation.
-    netinfo : dict
-        Metainformation about network.
-
-    OR
-
-    tnet : object
-        object of TemporalNetwork class
-
-    """
-    netinfo = {}
-    if outputformat == 'DF':
-        outputformat = 'TN'
-        return_df = True
-        forcesparse = True
-    else:
-        return_df = False
-    inputtype = check_input(netin)
-    if inputtype == 'DF':
-        netin = TemporalNetwork(from_df=netin)
-        inputtype = 'TN'
-    # Convert TN to tnet representation
-    if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
-        if netin.sparse:
-            tnet = netin.df_to_array()
-        else:
-            tnet = netin.network
-        netinfo = {'nettype': netin.nettype, 'netshape': [
-            netin.netshape[0], netin.netshape[0], netin.netshape[1]]}
-    elif inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
-        if not netin.sparse and forcesparse:
-            tnet = TemporalNetwork(from_array=netin.network, forcesparse=True)
-        else:
-            tnet = netin
-    elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'G':
-        tnet = contact2graphlet(netin)
-        netinfo = dict(netin)
-        netinfo.pop('contacts')
-    elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'TN':
-        tnet = TemporalNetwork(from_dict=netin)
-    elif inputtype == 'G' and 'G' in allowedformats and outputformat == 'TN':
-        tnet = TemporalNetwork(from_array=netin, forcesparse=forcesparse)
-    # Get network type if not set yet
-    elif inputtype == 'G' and 'G' in allowedformats:
-        netinfo = {}
-        netinfo['netshape'] = netin.shape
-        netinfo['nettype'] = gen_nettype(netin)
-        tnet = netin
-    elif inputtype == 'C' and outputformat == 'C':
-        pass
-    else:
-        raise ValueError('Input invalid.')
-    if outputformat == 'TN' and isinstance(tnet.network, pd.DataFrame):
-        tnet.network['i'] = tnet.network['i'].astype(int)
-        tnet.network['j'] = tnet.network['j'].astype(int)
-        tnet.network['t'] = tnet.network['t'].astype(int)
-    if outputformat == 'C' or outputformat == 'G':
-        netinfo['inputtype'] = inputtype
-    if inputtype != 'C' and outputformat == 'C':
-        return graphlet2contact(tnet, netinfo)
-    if outputformat == 'G':
-        return tnet, netinfo
-    elif outputformat == 'C':
-        return netin
-    elif outputformat == 'TN':
-        if return_df:
-            return tnet.network
-        else:
-            return tnet
 
 
 def clean_community_indexes(communityID):
@@ -846,20 +707,6 @@ def check_distance_funciton_input(distance_func_name, netinfo):
 
     return distance_func_name
 
-
-def create_traj_ranges(start, stop, N):
-    """
-    Fills in the trajectory range.
-
-    # Adapted from https://stackoverflow.com/a/40624614
-    """
-    steps = (1.0/(N-1)) * (stop - start)
-    if np.isscalar(steps):
-        return steps*np.arange(N) + start
-    else:
-        return steps[:, None]*np.arange(N) + start[:, None]
-
-
 def get_dimord(measure, calc=None, community=None):
     """
     Get the dimension order of a network measure.
@@ -931,8 +778,8 @@ def get_network_when(tnet, i=None, j=None, t=None, ij=None, logic='and', copy=Fa
 
     Parameters
     ----------
-    tnet : df, array or TemporalNetwork
-        TemporalNetwork object or pandas dataframe edgelist
+    tnet : df, array or teneto.TemporalNetwork
+        teneto.TemporalNetwork object or pandas dataframe edgelist
     i : list or int
         get nodes in column i (source nodes in directed networks)
     j : list or int
@@ -1069,7 +916,7 @@ def create_supraadjacency_matrix(tnet, intersliceweight=1):
 
     Parameters
     --------
-    tnet : TemporalNetwork
+    tnet : teneto.TemporalNetwork
         Temporal network (any network type)
     intersliceweight : int
         Weight that links the same node from adjacent time-points
@@ -1096,38 +943,6 @@ def create_supraadjacency_matrix(tnet, intersliceweight=1):
     return supranet
 
 
-def check_TemporalNetwork_input(datain, datatype):
-    """
-    """
-    if datatype == 'edgelist':
-        if not isinstance(datain, list):
-            raise ValueError('edgelist should be list')
-        if all([len(e) == 3 for e in datain]) or all([len(e) == 4 for e in datain]):
-            pass
-        else:
-            raise ValueError(
-                'Each member in edgelist should all be a list of length 3 (i,j,t) or 4 (i,j,t,w)')
-    elif datatype == 'array':
-        if not isinstance(datain, np.ndarray):
-            raise ValueError('Array should be numpy array')
-        if len(datain.shape) == 2 or len(datain.shape) == 3:
-            pass
-        else:
-            raise ValueError('Input array must be 2 or 3 dimensional')
-    elif datatype == 'dict':
-        if not isinstance(datain, dict):
-            raise ValueError('Contact should be dictionary')
-        if 'contacts' not in datain:
-            raise ValueError('Key \'contacts\' should be in dictionary')
-    elif datatype == 'df':
-        if not isinstance(datain, pd.DataFrame):
-            raise ValueError('Input should be Pandas Dataframe')
-        if ('i' and 'j' and 't') not in datain:
-            raise ValueError('Columns must be \'i\' \'j\' and \'t\'')
-    else:
-        raise ValueError('Unknown datatype')
-
-
 def df_drop_ij_duplicates(df):
     """
     """
@@ -1137,3 +952,148 @@ def df_drop_ij_duplicates(df):
     df.reset_index(inplace=True, drop=True)
     df.drop('ij', inplace=True, axis=1)
     return df
+
+
+def check_input(netin, rasie_if_undirected=1, conmat=0):
+    """
+
+    This function checks that netin input is either graphlet (tnet) or contact (C).
+
+    Parameters
+    ----------
+
+    netin : array or dict
+        temporal network, (graphlet or contact).
+    rasie_if_undirected : int, default=1.
+        Options 1 or 0. Error is raised if not found to be tnet or C
+    conmat : int, default=0.
+        Options 1 or 0. If 1, input is allowed to be a 2 dimensional connectivity matrix.
+        Allows output to be 'M'
+
+    Returns
+    -------
+
+    inputtype : str
+        String indicating input type. 'G','C', 'M' or 'U' (unknown).
+        M is special case only allowed when conmat=1 for a 2D connectivity matrix.
+
+    """
+    inputis = 'U'
+    if isinstance(netin, np.ndarray):
+        netShape = netin.shape
+        if len(netShape) == 3 and netShape[0] == netShape[1]:
+            inputis = 'G'
+        elif netShape[0] == netShape[1] and conmat == 1:
+            inputis = 'M'
+
+    elif isinstance(netin, dict):
+        if 'nettype' in netin and 'contacts' in netin and 'dimord' in netin and 'timetype' in netin:
+            if netin['nettype'] in {'bd', 'bu', 'wd', 'wu'} and netin['timetype'] == 'discrete' and netin['dimord'] == 'node,node,time':
+                inputis = 'C'
+
+    elif isinstance(netin, object):
+        if hasattr(netin, 'network'):
+            inputis = 'TN'
+        elif isinstance(netin, pd.DataFrame):
+            inputis = 'DF'
+
+    if rasie_if_undirected == 1 and inputis == 'U':
+        raise ValueError(
+            'Input cannot be identified as graphlet or contact representation')
+
+    return inputis
+
+
+def process_input(netin, allowedformats, outputformat='G', forcesparse=False):
+    """
+    Takes input network and checks what the input is.
+
+    Parameters
+    ----------
+
+    netin : array, dict, or teneto.TemporalNetwork
+        Network (graphlet, contact or object)
+    allowedformats : list or str
+        Which format of network objects that are allowed. Options: 'C', 'TN', 'G'.
+    outputformat: str, default=G
+        Target output format. Options: 'C' or 'G'.
+
+
+    Returns
+    -------
+
+    C : dict
+
+    OR
+
+    tnet : array
+        Graphlet representation.
+    netinfo : dict
+        Metainformation about network.
+
+    OR
+
+    tnet : object
+        object of teneto.TemporalNetwork class
+
+    """
+
+    netinfo = {}
+    if outputformat == 'DF':
+        outputformat = 'TN'
+        return_df = True
+        forcesparse = True
+    else:
+        return_df = False
+    inputtype = check_input(netin)
+    if inputtype == 'DF':
+        netin = teneto.TemporalNetwork(from_df=netin)
+        inputtype = 'TN'
+    # Convert TN to tnet representation
+    if inputtype == 'TN' and 'TN' in allowedformats and outputformat != 'TN':
+        if netin.sparse:
+            tnet = netin.df_to_array()
+        else:
+            tnet = netin.network
+        netinfo = {'nettype': netin.nettype, 'netshape': [
+            netin.netshape[0], netin.netshape[0], netin.netshape[1]]}
+    elif inputtype == 'TN' and 'TN' in allowedformats and outputformat == 'TN':
+        if not netin.sparse and forcesparse:
+            tnet = teneto.TemporalNetwork(from_array=netin.network, forcesparse=True)
+        else:
+            tnet = netin
+    elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'G':
+        tnet = contact2graphlet(netin)
+        netinfo = dict(netin)
+        netinfo.pop('contacts')
+    elif inputtype == 'C' and 'C' in allowedformats and outputformat == 'TN':
+        tnet = teneto.TemporalNetwork(from_dict=netin)
+    elif inputtype == 'G' and 'G' in allowedformats and outputformat == 'TN':
+        tnet = teneto.TemporalNetwork(from_array=netin, forcesparse=forcesparse)
+    # Get network type if not set yet
+    elif inputtype == 'G' and 'G' in allowedformats:
+        netinfo = {}
+        netinfo['netshape'] = netin.shape
+        netinfo['nettype'] = gen_nettype(netin)
+        tnet = netin
+    elif inputtype == 'C' and outputformat == 'C':
+        pass
+    else:
+        raise ValueError('Input invalid.')
+    if outputformat == 'TN' and isinstance(tnet.network, pd.DataFrame):
+        tnet.network['i'] = tnet.network['i'].astype(int)
+        tnet.network['j'] = tnet.network['j'].astype(int)
+        tnet.network['t'] = tnet.network['t'].astype(int)
+    if outputformat == 'C' or outputformat == 'G':
+        netinfo['inputtype'] = inputtype
+    if inputtype != 'C' and outputformat == 'C':
+        return graphlet2contact(tnet, netinfo)
+    if outputformat == 'G':
+        return tnet, netinfo
+    elif outputformat == 'C':
+        return netin
+    elif outputformat == 'TN':
+        if return_df:
+            return tnet.network
+        else:
+            return tnet

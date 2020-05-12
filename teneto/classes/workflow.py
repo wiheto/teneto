@@ -1,11 +1,12 @@
 """TenetoWorkflows are a way of predefining and saving an analysis pipeline using TemporalNetworks or TenetoBIDS."""
 
-import teneto
 import numpy as np
 import matplotlib.pyplot as plt
 import inspect
 import pandas as pd
 import copy
+from . import TemporalNetwork, TenetoBIDS
+from ..utils import get_network_when
 
 
 class TenetoWorkflow():
@@ -24,9 +25,9 @@ class TenetoWorkflow():
         self.nodes = {}
         self.classdicts = {}
         self.classdicts['TemporalNetwork'] = dict(inspect.getmembers(
-            teneto.TemporalNetwork, predicate=inspect.isfunction))
+            TemporalNetwork, predicate=inspect.isfunction))
         self.classdicts['TenetoBIDS'] = dict(inspect.getmembers(
-            teneto.TenetoBIDS, predicate=inspect.isfunction))
+            TenetoBIDS, predicate=inspect.isfunction))
         self.remove_nonterminal_output = remove_nonterminal_output
 
     def add_node(self, nodename, func, depends_on=None, params=None):
@@ -97,7 +98,7 @@ class TenetoWorkflow():
             Name of node that is to be removed.
         """
         self.nodes.pop(nodename)
-        ind = teneto.utils.get_network_when(self.graph, ij=nodename).index
+        ind = get_network_when(self.graph, ij=nodename).index
         self.graph = self.graph.drop(ind).reset_index(drop=True)
         # Could add checks to see if network is broken
 
@@ -111,9 +112,9 @@ class TenetoWorkflow():
         run_level = []
         needed_at = {}
         while len(not_run) > 0:
-            candidate_steps = teneto.utils.get_network_when(
+            candidate_steps = get_network_when(
                 self.graph, i=run, j=not_run, logic='and')['j'].tolist()
-            remove_candidate_steps = teneto.utils.get_network_when(
+            remove_candidate_steps = get_network_when(
                 self.graph, i=not_run, j=candidate_steps, logic='and')['j'].tolist()
             remove_candidate_steps = list(set(remove_candidate_steps))
             _ = [candidate_steps.remove(step)
@@ -122,7 +123,7 @@ class TenetoWorkflow():
                 run.append(step)
                 not_run.remove(step)
                 run_level.append(levels)
-                dependencies = teneto.utils.get_network_when(self.graph, j=step)[
+                dependencies = get_network_when(self.graph, j=step)[
                     'i'].tolist()
                 for d in dependencies:
                     needed_at[d] = levels
@@ -138,8 +139,8 @@ class TenetoWorkflow():
         self.output_ = {}
         self.calc_runorder()
         # Can add multiprocess here over levels
-        root_funcs = {'TemporalNetwork': teneto.TemporalNetwork,
-                      'TenetoBIDS': teneto.TenetoBIDS}
+        root_funcs = {'TemporalNetwork': TemporalNetwork,
+                      'TenetoBIDS': TenetoBIDS}
         level = 0
         for i, step in self.runorder.iterrows():
             if i == 0:
@@ -148,7 +149,7 @@ class TenetoWorkflow():
                 self.pipeline = self.nodes[step['node']]['func']
 
             else:
-                dependent_step = teneto.utils.get_network_when(
+                dependent_step = get_network_when(
                     self.graph, j=step['node'], logic='and')['i'].tolist()
                 # In future this will isolate the primary and auxillary dependent steps when  multiple dependencies are allowed.
                 dependent_step = dependent_step[0]
