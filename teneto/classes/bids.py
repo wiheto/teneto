@@ -2,6 +2,7 @@
 import os
 import inspect
 import json
+import bids
 import numpy as np
 import pandas as pd
 from .. import __path__ as tenetopath
