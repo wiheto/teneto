@@ -1,8 +1,9 @@
 
-from ..utils import check_packages
+# import nilearn
 from ..neuroimagingtools import load_tabular_file
-import pandas as pd
+from ..utils import check_packages
 
+import pandas as pd
 @check_packages(["nilearn"])
 def remove_confounds(timeseries, confounds, confound_selection=None, clean_params=None):
     """
@@ -28,7 +29,6 @@ def remove_confounds(timeseries, confounds, confound_selection=None, clean_param
     ----
     There may be some issues regarding loading non-cleaned data through the TenetoBIDS functions instead of the cleaned data. This depeneds on when you clean the data.
     """
-    import nilearn
 
     index = None
     if isinstance(timeseries, pd.DataFrame):

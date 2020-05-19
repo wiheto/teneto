@@ -1,5 +1,19 @@
-import teneto
+"""Calculate compression of trajectory."""
 import numpy as np
+from ..utils import process_input
+
+
+def create_traj_ranges(start, stop, N):
+    """
+    Fills in the trajectory range.
+
+    # Adapted from https://stackoverflow.com/a/40624614
+    """
+    steps = (1.0/(N-1)) * (stop - start)
+    if np.isscalar(steps):
+        return steps*np.arange(N) + start
+    else:
+        return steps[:, None]*np.arange(N) + start[:, None]
 
 
 def rdp(datin, delta=1, report=10, quiet=True):
@@ -7,7 +21,7 @@ def rdp(datin, delta=1, report=10, quiet=True):
     """
     # This needs to be added to utils for trajectory detection
     # T will be for trajectory or timeseries data, (roi x time).
-    datin, datinfo = teneto.utils.process_input(datin, ['C', 'G', 'TO', 'T'])
+    datin, datinfo = process_input(datin, ['C', 'G', 'TO', 'T'])
     # if network, then make to roi,time shape. If T, nothing needs to be done.
     if len(datin.shape) == 3:
         ind = np.triu_indices(datin.shape[0], k=1)
@@ -22,7 +36,7 @@ def rdp(datin, delta=1, report=10, quiet=True):
     e = datin.shape[-1]
 
     # Create straight line between start and end point
-    trajectory = teneto.utils.create_traj_ranges(
+    trajectory = create_traj_ranges(
         datin[:, s], datin[:, e-1], e-s)
 
     # Create lists of trajectories
@@ -48,10 +62,10 @@ def rdp(datin, delta=1, report=10, quiet=True):
                 traj_end = trajectory_points[i][traj_ind]
                 # Make new trajectories
                 r1 = np.arange(traj_start, ix+1)
-                trajectory[i, r1] = teneto.utils.create_traj_ranges(
+                trajectory[i, r1] = create_traj_ranges(
                     trajectory[i, traj_start], datin[i, ix], len(r1))
                 r2 = np.arange(ix, traj_end+1)
-                trajectory[i, r2] = teneto.utils.create_traj_ranges(
+                trajectory[i, r2] = create_traj_ranges(
                     datin[i, ix], trajectory[i, traj_end], len(r2))
                 # Add new point
                 trajectory_points[i] = np.insert(
@@ -82,3 +96,4 @@ def rdp(datin, delta=1, report=10, quiet=True):
     traj.pop('inputtype')
 
     return traj
+

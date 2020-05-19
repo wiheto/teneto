@@ -4,3 +4,4 @@ python-louvain>=0.13
 pandas>=0.21
 scipy>=1.4.1
 numpy>=1.16.1
+matplotlib>=3.1

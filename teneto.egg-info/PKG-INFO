@@ -1,12 +1,12 @@
 Metadata-Version: 1.2
 Name: teneto
-Version: 0.5.2
+Version: 0.5.2-dev-c
 Summary: Temporal network tools
 Home-page: https://www.github.com/wiheto/teneto
 Author: William Hedley Thompson
 Author-email: hedley@startmail.com
 License: UNKNOWN
-Download-URL: https://github.com/wiheto/teneto/archive/0.5.2.tar.gz
+Download-URL: https://github.com/wiheto/teneto/archive/0.3.3.tar.gz
 Description: Temporal network tools.         A package for deriving, analysing and plotting temporal network representations.         Additional tools for temporal network analysis with neuroimaging contexts.
 Platform: UNKNOWN
 Requires-Python: >3.5
