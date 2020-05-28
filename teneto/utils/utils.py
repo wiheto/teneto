@@ -1,4 +1,5 @@
 """General utility functions."""
+import sys
 import collections
 import itertools
 import operator
@@ -12,7 +13,77 @@ import scipy.spatial.distance as distance
 #from ..classes import teneto.TemporalNetwork
 #from ..trajectory import rdp
 
+# Check packages
+def check_packages(packages, namespace=None, import_into_backend=True, verbose=False):
+    """
+    Decorator to check if packages are available (and import into global namespace)
+    If package is a tuple then imports as follows: ("numpy", "np") where "numpy" is full package name and "np" is abbreviation
+    To import packages into current namespace (use `namespace = globals()`) or in backend (use `import_into_backend=True`)
 
+    Parameters
+    ----------
+
+    packages : str, non-tuple iterable
+        A contact representation. Must include keys: 'dimord', 'netshape', 'nettype', 'contacts' and, if weighted, 'values'.
+    namespace : dict
+        Import the package into a namespace.  The most practical would be to use `globals()` to import the package into current namespace.
+    import_into_backend : bool
+        Import package into the namespace of the backend (e.g. globals() of backend script).
+    verbose : bool
+        Print progress into stderr
+
+    Returns
+    -------
+
+    decorator : function
+        Returns decorator function
+
+    Usage
+    -----
+    @check_packages(["sklearn", "scipy", ("numpy", "np")])
+    def f():
+        pass
+
+    Note
+    ----
+    Adapted from the following source:
+    * soothsayer_utils (https://github.com/jolespin/soothsayer_utils)
+    """
+    
+    # Force packages into sorted non-redundant list
+    if isinstance(packages,(str, tuple)):
+        packages = [packages]
+    packages = set(packages)
+
+    # Set up decorator for package imports   
+    # Wrapper
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            missing_packages = []
+            for pkg in packages:
+                if isinstance(pkg, tuple):
+                    assert len(pkg) == 2, "If a package is tuple type then it must have 2 elements e.g. ('numpy', 'np')"
+                    pkg_name, pkg_variable = pkg
+                else:
+                    pkg_name = pkg_variable = pkg 
+                try:
+                    package = import_module(pkg_name)
+                    if import_into_backend:
+                        globals()[pkg_variable] = package
+                    if namespace is not None:
+                        namespace[pkg_variable] = package
+                    if verbose:
+                        print("Importing {} as {}".format(pkg_name, pkg_variable), True, file=sys.stderr)
+                except ImportError:
+                    missing_packages.append(pkg_name)
+                    if verbose:
+                        print("Cannot import {}:".format(pkg_name), False, file=sys.stderr)
+            assert not missing_packages, "Please install the following packages to use this function:\n{}".format( ", ".join(missing_packages))
+            return func(*args, **kwargs)
+
+        return wrapper
+    return decorator
 
 def graphlet2contact(tnet, params=None):
     """
