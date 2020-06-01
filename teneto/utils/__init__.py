@@ -1,6 +1,6 @@
 """Many helper functions for Teneto"""
 
-from .utils import check_packages, graphlet2contact, contact2graphlet,\
+from .utils import graphlet2contact, contact2graphlet,\
     binarize_percent, binarize_rdp, binarize_magnitude,\
     binarize, set_diagonal, gen_nettype, \
     get_distance_function, \
@@ -11,7 +11,7 @@ from .utils import check_packages, graphlet2contact, contact2graphlet,\
     df_drop_ij_duplicates, is_jsonable,\
     process_input, check_input
 from .io import tnet_to_nx
-__all__ = ['check_packages','graphlet2contact', 'contact2graphlet',
+__all__ = ['graphlet2contact', 'contact2graphlet',
            'binarize_percent', 'binarize_rdp', 'binarize_magnitude',
            'binarize', 'set_diagonal', 'gen_nettype', 'check_input',
            'get_distance_function', 'process_input',

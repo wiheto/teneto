@@ -1,55 +1,16 @@
 """General utility functions."""
-import sys
 import collections
 import itertools
 import operator
 import json
-import functools
 import numpy as np
 import pandas as pd
 import scipy.spatial.distance as distance
-from importlib import import_module
 import teneto
 #from ..classes import teneto.TemporalNetwork
 #from ..trajectory import rdp
 
-# Check packages
-def check_packages(packages):
-    """
-    Decorator to check if packages are available
 
-    Parameters
-    ----------
-
-    packages : str, non-tuple iterable
-
-    Returns
-    -------
-
-    decorator : function
-        Returns decorator function
-
-
-    """
-
-    # Force packages into sorted non-redundant list
-    if isinstance(packages, (str, tuple)):
-        packages = [packages]
-    packages = set(packages)
-
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            missing_packages = []
-            for pkg in packages:
-                try:
-                    package = import_module(pkg)
-                except ImportError:
-                    missing_packages.append(pkg)
-            assert not missing_packages, "Please install the following packages to use this function:\n{}".format( ", ".join(missing_packages))
-            return func(*args, **kwargs)
-        return wrapper
-    return decorator
 
 def graphlet2contact(tnet, params=None):
     """

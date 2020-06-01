@@ -1,14 +1,13 @@
 """
 General utils functions for fMRI analyses. 
 """
+import templateflow.api as tf
 import pandas as pd
+from nilearn.input_data import NiftiLabelsMasker
 from .bidsutils import load_tabular_file
 from ..utils import check_packages
 
-# import templateflow.api as tf
-# from nilearn.input_data import NiftiLabelsMasker
 
-@check_packages(["nilearn", "templateflow"])
 def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=2, parc_params=None, return_meta=False):
     """
     Performs a parcellation which reduces voxel space to regions of interest (brain data).

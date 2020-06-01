@@ -5,6 +5,6 @@ pandas>=0.21
 statsmodels>=0.8.0
 networkx>=2.0
 python-louvain>=0.13
-#pybids==0.9.5
-#nilearn>=0.6.1
-#templateflow>=0.4.1rc5
+pybids==0.9.5
+nilearn>=0.6.1
+templateflow>=0.4.1rc5
