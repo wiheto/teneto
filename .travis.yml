@@ -7,6 +7,9 @@ python:
   - "3.8"
 # command to install dependencies
 install:
+  - pip install pybids==0.9.5
+  - pip install nilearn>=0.6.1
+  - pip install templateflow>=0.4.1rc5
   - pip install -r requirements.txt
   - python setup.py install
   - pip install coveralls

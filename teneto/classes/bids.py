@@ -2,16 +2,21 @@
 import os
 import inspect
 import json
-import bids
+# import bids
 import importlib
 import numpy as np
 import pandas as pd
+from importlib import import_module
 from .. import __path__ as tenetopath
 from .. import __version__ as tenetoversion
+from ..utils import check_packages
 from ..neuroimagingtools import load_tabular_file, get_sidecar
 from .network import TemporalNetwork
 
-# @check_neuro_packages(bids)
+
+neuro_packages_required = ['bids']
+
+@check_packages(neuro_packages_required)
 class TenetoBIDS:
     """
     Class for analysing data in BIDS.
@@ -47,6 +52,9 @@ class TenetoBIDS:
 
     def __init__(self, bids_dir, selected_pipeline, bids_filter=None, bidsvalidator=False,
                  update_pipeline=True, history=None, exist_ok=False, layout=None):
+
+        import bids
+
         if layout is None:
             self.BIDSLayout = bids.BIDSLayout(bids_dir, derivatives=True)
         else:
