@@ -41,6 +41,7 @@ def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_de
     ----
     These functions make use of nilearn. Please cite templateflow and nilearn if used in a publicaiton.
     """
+    
     import templateflow.api as tf
     from nilearn.input_data import NiftiLabelsMasker
 

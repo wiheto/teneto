@@ -8,7 +8,7 @@ Improved sidecar checking.
 
 Added is_jsonable to utils.
 
-Check_packages added (credit to @jolespin)
+Check_packages added (credit to @jolespin). Modified somewhat as importing to globals within wrapper was not working.
 
 ### 0.5.2 Fixes
 
