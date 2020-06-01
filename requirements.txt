@@ -9,3 +9,4 @@ pybids==0.9.5
 scikit-learn>=0.20.3
 nilearn>=0.6.1
 templateflow>=0.4.1rc5
+tables>=3.4.4

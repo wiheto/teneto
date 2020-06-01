@@ -19,7 +19,8 @@ setup(name='teneto',
           'pandas>=0.21',
           'scipy>=1.4.1',
           'numpy>=1.16.1',
-          "matplotlib >=3.1",
+          'matplotlib >=3.1',
+          'tables>=3.4.4'
           ## Optional for neural
           'scikit-learn>=0.20.3'
           'nilearn>=0.6.0',
