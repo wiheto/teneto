@@ -6,6 +6,7 @@ import json
 import importlib
 import numpy as np
 import pandas as pd
+import bids
 from importlib import import_module
 from .. import __path__ as tenetopath
 from .. import __version__ as tenetoversion
@@ -13,10 +14,6 @@ from ..utils import check_packages
 from ..neuroimagingtools import load_tabular_file, get_sidecar
 from .network import TemporalNetwork
 
-
-neuro_packages_required = ['bids']
-
-@check_packages(neuro_packages_required)
 class TenetoBIDS:
     """
     Class for analysing data in BIDS.
