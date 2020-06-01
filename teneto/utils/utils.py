@@ -4,12 +4,12 @@ import collections
 import itertools
 import operator
 import json
-import importlib
 import functools
 import teneto
 import numpy as np
 import pandas as pd
 import scipy.spatial.distance as distance
+from importlib import import_module
 #from ..classes import teneto.TemporalNetwork
 #from ..trajectory import rdp
 
