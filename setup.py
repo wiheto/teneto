@@ -12,20 +12,15 @@ setup(name='teneto',
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],
       install_requires=[
-          ## Optional for neural
-          'nilearn==0.6.2',
+          'nilearn>=0.6.0',
           'pybids>=0.9',
-          'templateflow>=0.4.1',
-          ## Required
           'statsmodels>=0.8.0',
           'networkx>=2.0',
           'python-louvain>=0.13',
           'pandas>=0.21',
           'scipy>=1.4.1',
           'numpy>=1.16.1',
-          'matplotlib >=3.1',
-          'tables>=3.4.4'
-          ],
+          'templateflow>=0.4.1'],
       description='Temporal network tools',
       packages=find_packages(),
       author='William Hedley Thompson',
