@@ -1,9 +1,10 @@
 
-import nilearn
+# import nilearn
 from ..neuroimagingtools import load_tabular_file
+from ..utils import check_packages
+
 import pandas as pd
-
-
+@check_packages(["nilearn"])
 def remove_confounds(timeseries, confounds, confound_selection=None, clean_params=None):
     """
     Removes specified confounds using nilearn.signal.clean
