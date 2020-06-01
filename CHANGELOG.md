@@ -8,6 +8,8 @@ Improved sidecar checking.
 
 Added is_jsonable to utils.
 
+Check_packages added (credit to @jolespin)
+
 ### 0.5.2 Fixes
 
 Fixes the issues when shortest paths were trying to be derived on non existent time points (raised in #60)
@@ -21,6 +23,8 @@ coveralls resynced with travis (pip install python-coveralls replaced with pip i
 ### 0.5.2 Changes
 
 Removing wrong cased variables (e.g. netIN and TN from utils)
+
+Neurorequirements removed from requirements
 
 ## Version 0.5.1
 
