@@ -6,6 +6,7 @@ statsmodels>=0.8.0
 networkx>=2.0
 python-louvain>=0.13
 pybids==0.9.5
+joblib>=0.14
 scikit-learn>=0.20.3
 nilearn>=0.6.1
 templateflow>=0.4.1rc5

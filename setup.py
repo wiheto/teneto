@@ -22,6 +22,7 @@ setup(name='teneto',
           'matplotlib >=3.1',
           'tables>=3.4.4'
           ## Optional for neural
+          'joblib>=0.14'
           'scikit-learn>=0.20.3'
           'nilearn>=0.6.0',
           'pybids>=0.9',
