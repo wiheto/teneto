@@ -5,7 +5,6 @@ import templateflow.api as tf
 import pandas as pd
 from nilearn.input_data import NiftiLabelsMasker
 from .bidsutils import load_tabular_file
-from ..utils import check_packages
 
 
 def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=2, parc_params=None, return_meta=False):
