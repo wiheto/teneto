@@ -12,6 +12,10 @@ setup(name='teneto',
       setup_requires=['pytest-runner'],
       tests_require=['pytest'],
       install_requires=[
+          ## Optional for neural
+          'nilearn==0.6.2',
+          'pybids>=0.9',
+          'templateflow>=0.4.1',
           ## Required
           'statsmodels>=0.8.0',
           'networkx>=2.0',
@@ -21,12 +25,6 @@ setup(name='teneto',
           'numpy>=1.16.1',
           'matplotlib >=3.1',
           'tables>=3.4.4'
-          ## Optional for neural
-          'joblib>=0.14'
-          'scikit-learn>=0.20.3'
-          'nilearn>=0.6.0',
-          'pybids>=0.9',
-          'templateflow>=0.4.1',
           ],
       description='Temporal network tools',
       packages=find_packages(),
