@@ -21,6 +21,7 @@ setup(name='teneto',
           'numpy>=1.16.1',
           "matplotlib >=3.1",
           ## Optional for neural
+          'scikit-learn>=0.20.3'
           'nilearn>=0.6.0',
           'pybids>=0.9',
           'templateflow>=0.4.1',
