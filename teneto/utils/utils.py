@@ -36,16 +36,16 @@ def check_packages(packages):
     if isinstance(packages, (str, tuple)):
         packages = [packages]
     packages = set(packages)
-    
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             missing_packages = []
             for pkg in packages:
                 try:
-                    package = import_module(pkg_name)
+                    package = import_module(pkg)
                 except ImportError:
-                    missing_packages.append(pkg_name)
+                    missing_packages.append(pkg)
             assert not missing_packages, "Please install the following packages to use this function:\n{}".format( ", ".join(missing_packages))
             return func(*args, **kwargs)
         return wrapper
