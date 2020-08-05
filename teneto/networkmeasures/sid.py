@@ -104,9 +104,9 @@ def sid(tnet, communities, axis=0, calc='overtime', decay=0):
     # If nans emerge than there is no connection between networks at time point, so make these 0.
     sid[np.isnan(sid)] = 0
 
-    if calc == 'overtime':
-        return np.sum(np.sum(sid, axis=1), axis=0)
-    elif calc == 'communities_avg':
+    if calc == 'communities_avg':
         return np.sum(sid, axis=axis)
+    elif calc == 'overtime':
+        return np.sum(np.sum(sid, axis=1), axis=0)
     else:
         return sid

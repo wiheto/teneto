@@ -10,6 +10,8 @@ Added is_jsonable to utils.
 
 ~~Check_packages added (credit to @jolespin). Modified somewhat as importing to globals within wrapper was not working. This was accepted then removed.~~
 
+Session in TenetoBids now included, if present.
+
 ### 0.5.2 Fixes
 
 Fixes the issues when shortest paths were trying to be derived on non existent time points (raised in #60)
@@ -21,6 +23,8 @@ Fixing problem with dataframe netshape when starttime !=0 (#61)
 coveralls resynced with travis (pip install python-coveralls replaced with pip install coveralls)
 
 ### 0.5.2 Changes
+
+Connectivity matrices in TenetoBIDS, for memory, are saved as 2D representations ((node,node), time) instead of i,j,t format for memory.
 
 Removing wrong cased variables (e.g. netIN and TN from utils)
 

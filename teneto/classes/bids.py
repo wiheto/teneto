@@ -141,7 +141,9 @@ class TenetoBIDS:
             then then the pipeline the data is saved in is
             teneto-generatetemporalnetwork_jackknife
         update_pipeline : bool
+            If set to True (default), then the selected_pipeline updates to output of function
         exist_ok : bool
+            If set to True, then overwrites direcotry is possible.
         """
         if exist_ok is not None:
             self.exist_ok = exist_ok
@@ -190,6 +192,10 @@ class TenetoBIDS:
             if get_confounds == 1:
                 input_params['confounds'] = self.get_confounds(f)
             data, sidecar = self.load_file(f)
+            # Since networks are currently saved in 2D collapsed arrays, they need to be resized
+            if '_temporalconnectivity.tsv' in f.filename:
+                shape = data.shape
+                data = data.reshape([np.sqrt(shape[0]), np.sqrt(shape[0]), np.sqrt(shape[1])])
             if 'sidecar' in dict(funcparams):
                 input_params['sidecar'] = sidecar
             if data is not None:
@@ -207,7 +213,7 @@ class TenetoBIDS:
                         f_entities['desc'] = output_desc
                     f_entities.update(
                         self.tenetobids_structure[run_func.split('.')[-1]]['output'])
-                    output_pattern = '/sub-{subject}/[ses-{ses}/]func/sub-{subject}[_ses-{ses}][_run-{run}]_task-{task}[_desc-{desc}]_{suffix}.{extension}'
+                    output_pattern = '/sub-{subject}/[ses-{session}/]func/sub-{subject}[_ses-{ses}][_run-{session}]_task-{task}[_desc-{desc}]_{suffix}.{extension}'
                     save_name = self.BIDSLayout.build_path(
                         f_entities, path_patterns=output_pattern, validate=False)
                     save_path = self.bids_dir + '/derivatives/' + output_pipeline
@@ -220,9 +226,12 @@ class TenetoBIDS:
                     # Table needs column header
                     if isinstance(result, np.ndarray):
                         if len(result.shape) == 3:
-                            # THIS CAN BE MADE TO A DENSE HDF5
-                            result = TemporalNetwork(
-                                from_array=result, forcesparse=True).network
+                            # Should be made hdf5 at sometime
+                            # Idea here is to make 3D array to 2D by concatenating node dimensions.
+                            # WHen reloaded, reshape([np.sqrt(shape[0]), np.sqrt(shape[0]), np.sqrt(shape[1])])
+                            shape = result.shape
+                            result = result.reshape([shape[0] * shape[1], shape[2]])
+                            result = pd.DataFrame(result)
                         elif len(result.shape) == 2:
                             result = pd.DataFrame(result)
                         elif len(result.shape) == 1:
