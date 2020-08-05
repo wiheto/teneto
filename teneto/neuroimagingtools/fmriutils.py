@@ -67,7 +67,7 @@ def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_de
     data = region.fit_transform(data_path).transpose()
     data = pd.DataFrame(data=data)
     meta_info = tf.get(template=template, atlas=atlas,
-                       desc=atlas_desc, extension='tsv')
+                       desc=atlas_desc, extension='.tsv')
     if len(str(meta_info)) > 0:
         meta_info = load_tabular_file(str(meta_info))
         data.index = meta_info['name'].values
