@@ -12,6 +12,8 @@ Added is_jsonable to utils.
 
 Session in TenetoBids now included, if present.
 
+Ensuring extensions have leading . when calling pybids for v0.14
+
 ### 0.5.2 Fixes
 
 Fixes the issues when shortest paths were trying to be derived on non existent time points (raised in #60)
@@ -21,6 +23,8 @@ Fixing problem with df_to_array when time indices do not start at 0.
 Fixing problem with dataframe netshape when starttime !=0 (#61)
 
 coveralls resynced with travis (pip install python-coveralls replaced with pip install coveralls)
+
+make_parcellation extension is no .nii.gz instead of nii.gz for later pybids/templateflow versions
 
 ### 0.5.2 Changes
 
