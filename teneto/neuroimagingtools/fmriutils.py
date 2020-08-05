@@ -54,8 +54,6 @@ def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_de
     if atlas_desc is not None:
         tf_get_params['desc'] = atlas_desc
 
-    print(tf_get_params)
-
     file = tf.get(extension='.nii.gz', **tf_get_params)
 
     if isinstance(file, list):

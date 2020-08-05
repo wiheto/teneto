@@ -292,7 +292,7 @@ class TenetoBIDS:
             bids_filter = dict(self.bids_filter)
             self.bids_filter = {}
             bids_filters_allowed = ['subject', 'ses', 'run', 'task']
-            [self.update_bids_filter({'f': bids_filter[f]}) for f in bids_filters_allowed if f in bids_filter.keys()]
+            [self.update_bids_filter({f: bids_filter[f]}) for f in bids_filters_allowed if f in bids_filter.keys()]
         self.update_bids_layout()
 
     def get_selected_files(self, output=None):
@@ -305,7 +305,7 @@ class TenetoBIDS:
             filters = self.tenetobids_structure[output]['input']
         else:
             # input can only be these files
-            filters = {'extension': ['tsv', 'nii', 'nii.gz']}
+            filters = {'extension': ['.tsv', '.nii', '.nii.gz']}
         # Add predefined filters to the check
         filters.update(self.bids_filter)
         files = self.BIDSLayout.get(scope=self.selected_pipeline, **filters)
@@ -365,7 +365,7 @@ class TenetoBIDS:
         file_entities = bidsfile.get_entities()
         # Ensure that the extension and suffix are correct
         file_entities['suffix'] = 'regressors'
-        file_entities['extension'] = 'tsv'
+        file_entities['extension'] = '.tsv'
         if 'desc' in file_entities:
             file_entities.pop('desc')
         confoundsfile = self.BIDSLayout.get(**file_entities)
