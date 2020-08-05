@@ -44,10 +44,14 @@ class TenetoBIDS:
         If False, will raise an error if the output directory already exist_ok.
         If True, will not raise an error.
         This can lead to files being overwritten, if desc is not set.
+    nettsv : str
+        can be nn-t or ijt.
+        nn-t means networks are node-node x time. 
+        ijt means daframs are ijt columns 
     """
 
     def __init__(self, bids_dir, selected_pipeline, bids_filter=None, bidsvalidator=False,
-                 update_pipeline=True, history=None, exist_ok=False, layout=None):
+                 update_pipeline=True, history=None, exist_ok=False, layout=None, nettsv='nn-t'):
 
         import bids
 
@@ -57,6 +61,7 @@ class TenetoBIDS:
             self.BIDSLayout = layout
         self.bids_dir = bids_dir
         self.selected_pipeline = selected_pipeline
+        self.nettsv = nettsv
         if bids_filter is None:
             self.bids_filter = {}
         else:
@@ -193,9 +198,9 @@ class TenetoBIDS:
                 input_params['confounds'] = self.get_confounds(f)
             data, sidecar = self.load_file(f)
             # Since networks are currently saved in 2D collapsed arrays, they need to be resized
-            if '_temporalconnectivity.tsv' in f.filename:
+            if '_temporalconnectivity.tsv' in f.filename and self.nettsv == 'nn-t':
                 shape = data.shape
-                data = data.reshape([np.sqrt(shape[0]), np.sqrt(shape[0]), np.sqrt(shape[1])])
+                data = data.values.reshape([int(np.sqrt(shape[0])), int(np.sqrt(shape[0])), shape[1]])
             if 'sidecar' in dict(funcparams):
                 input_params['sidecar'] = sidecar
             if data is not None:

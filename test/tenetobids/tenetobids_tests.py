@@ -6,7 +6,7 @@ from teneto import __path__ as tenetopath
 # Path of dummy data
 datdir = tenetopath[0] + '/data/testdata/dummybids/'
 tnet = TenetoBIDS(datdir, selected_pipeline='fmriprep', bids_filter={
-                     'subject': '001', 'run': 1, 'task': 'a'}, exist_ok=True)
+                     'subject': '001', 'run': 1, 'task': 'a'}, exist_ok=True, nettsv='ijt')
 tnetoptions = tnet.get_run_options()
 # hardcode truth.
 if tnetoptions != 'exclude_runs, make_parcellation':
