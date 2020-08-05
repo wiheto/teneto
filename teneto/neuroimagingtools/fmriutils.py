@@ -7,7 +7,7 @@ from nilearn.input_data import NiftiLabelsMasker
 from .bidsutils import load_tabular_file
 
 
-def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=2, parc_params=None, return_meta=False):
+def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_desc=None, resolution=1, parc_params=None, return_meta=False):
     """
     Performs a parcellation which reduces voxel space to regions of interest (brain data).
 
@@ -23,7 +23,7 @@ def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_de
     atlas_desc : str
         Specify which description of atlas.
     resolution : int
-        Resolution of atlas. Can be 1 or 2.
+        Resolution of atlas. See templateflow for more information
     parc_params : dict
         **kwargs for nilearn functions.
     return_meta : bool
@@ -54,7 +54,9 @@ def make_parcellation(data_path, atlas, template='MNI152NLin2009cAsym', atlas_de
     if atlas_desc is not None:
         tf_get_params['desc'] = atlas_desc
 
-    file = tf.get(extension='nii.gz', **tf_get_params)
+    print(tf_get_params)
+
+    file = tf.get(extension='.nii.gz', **tf_get_params)
 
     if isinstance(file, list):
         raise ValueError('More than one template file found. Specify the type of file you need (often atlas_desc).\
