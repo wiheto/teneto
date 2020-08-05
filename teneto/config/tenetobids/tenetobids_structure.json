@@ -1,11 +1,11 @@
 {
     "make_parcellation": {
         "input": {
-            "extension": ["nii", "nii.gz"],
+            "extension": [".nii", ".nii.gz"],
             "suffix": "bold"
         },
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "timeseries"},
         "module":
             "neuroimagingtools",
@@ -14,11 +14,11 @@
     },
     "remove_confounds": {
         "input": {
-            "extension": ["tsv"],
+            "extension": [".tsv"],
             "suffix": "timeseries"
         },
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "timeseries"},
         "module":
             "timeseries",
@@ -27,10 +27,10 @@
     },
     "censor_timepoints": {
         "input":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "timeseries"},
         "output":
-                {"extension": "tsv",
+                {"extension": ".tsv",
                 "suffix": "timeseries"},
         "module":
             "neuroimagingtools",
@@ -39,10 +39,10 @@
     },
     "exclude_runs": {
         "input":
-            {"extension": ["tsv", ".nii.gz", ".nii"],
+            {"extension": [".tsv", ".nii.gz", ".nii"],
             "suffix": ["timeseries", "bold"]},
         "output":
-            {"extension": ["tsv", ".nii.gz", ".nii"],
+            {"extension": [".tsv", ".nii.gz", ".nii"],
             "suffix": ["timeseries", "bold"]},
         "module":
             "neuroimagingtools",
@@ -51,10 +51,10 @@
     },
     "derive_temporalnetwork": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "timeseries"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "temporalconnectivity"},
         "module":
             "timeseries",
@@ -63,10 +63,10 @@
     },
     "bursty_coeff": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "burst"},
         "module":
             "networkmeasures",
@@ -75,10 +75,10 @@
     },
     "fluctuability": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "fluct"},
         "module":
             "networkmeasures",
@@ -87,10 +87,10 @@
     },
     "intercontacttimes": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "ict"},
         "module":
             "networkmeasures",
@@ -99,10 +99,10 @@
     },
     "local_variation": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "locvar"},
         "module":
             "networkmeasures",
@@ -111,10 +111,10 @@
     },
     "reachability_latency": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "fluct"},
         "module":
             "networkmeasures",
@@ -123,10 +123,10 @@
     },
     "shortest_temporal_path": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "tpath"},
         "module":
             "networkmeasures",
@@ -135,10 +135,10 @@
     },
     "sid": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "sid"},
         "module":
             "networkmeasures",
@@ -147,10 +147,10 @@
     },
     "temporal_betweenness_centrality": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "bet"},
         "module":
             "networkmeasures",
@@ -159,10 +159,10 @@
     },
     "temporal_cloesnesss_centrality": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "closeness"},
         "module":
             "networkmeasures",
@@ -171,10 +171,10 @@
     },
     "temporal_degree_centrality": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "deg"},
         "module":
             "networkmeasures",
@@ -183,10 +183,10 @@
     },
     "temporal_efficiency": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "eff"},
         "module":
             "networkmeasures",
@@ -195,10 +195,10 @@
     },
     "temporal_participation_coeff": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "part"},
         "module":
             "networkmeasures",
@@ -207,10 +207,10 @@
     },
     "volatility": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "vol"},
         "module":
             "networkmeasures",
@@ -219,10 +219,10 @@
     },
     "binarize": {
         "input":
-            {"extension": ["tsv"],
+            {"extension": [".tsv"],
             "suffix": "temporalconnectivity"},
         "output":
-            {"extension": "tsv",
+            {"extension": ".tsv",
             "suffix": "temporalconnectivity"},
         "module":
             "utils",
