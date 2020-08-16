@@ -135,6 +135,14 @@ The reason for this is simply speed.
 If you do not want a dense network to be created, you can pass a
 forcesparse=True argument when creating the TemporalNetwork.
 
+If teneto is slow, it could be that creating the sparse network
+is taking too much time. So one way to ensure the dense representation
+is forced is to set the parameter *dense_threshold*.
+The default value is 0.1 (i.e. 10%),
+which means that if 10% of the network's connections are present,
+teneto will make the network dense.
+But you can set this to any value. 
+
 The TemporalNetwork functions such as get_network_when()
 still function with the dense representation.
 

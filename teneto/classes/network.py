@@ -53,11 +53,15 @@ class TemporalNetwork:
     hdf5path : str
         Where the h5 files is saved if hdf5 is True. If left unset, the default is ./teneto_temporalnetwork.h5
     forcesparse : bool
-        If importing array, and over 25% edges are present, a dense matrix is created. Can force it to be sparse by making this true.
+        When forsesparse if False (default),
+        if importing array and if dense_threshold% (default%) edges are present, tnet.network is an array.
+        If forsesparse is True, then this inhibts arrays being created.
+    dense_threshold: float
+        If forsesparse == False, what percentage (as a decimal) of edges need to be present in order for representation to be dense.
     """
 
     def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False,
-                 timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None, hdf5=False, hdf5path=None, forcesparse=False):
+                 timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None, hdf5=False, hdf5path=None, forcesparse=False, dense_threshold=0.1):
         # Check inputs
         if nettype:
             if nettype not in ['bu', 'bd', 'wu', 'wd']:
@@ -143,7 +147,7 @@ class TemporalNetwork:
         if from_edgelist is not None:
             self.network_from_edgelist(from_edgelist)
         elif from_array is not None:
-            self.network_from_array(from_array, forcesparse=forcesparse)
+            self.network_from_array(from_array, forcesparse=forcesparse, dense_threshold=dense_threshold)
         elif from_dict is not None:
             self.network_from_dict(from_dict)
 
@@ -191,7 +195,7 @@ class TemporalNetwork:
                 ud = 'd'
             self.nettype = wb + ud
 
-    def network_from_array(self, array, forcesparse=False):
+    def network_from_array(self, array, forcesparse=False, dense_threshold=0.1):
         """
         Defines a network from an array.
 
@@ -201,12 +205,15 @@ class TemporalNetwork:
             3D numpy array.
         forcespace : bool
             If true, will always make the array sparse (can be slow). If false, dense form will be kept
-            if more than 25% of edges are present.
+            if more than dense_threshold% of edges are present.
+        dense_threshold : float
+            Threshold for when array representation is kept as an array instead of sparse.
+            Only done if forcesparse is False.
         """
         if len(array.shape) == 2:
             array = np.array(array, ndmin=3).transpose([1, 2, 0])
         self._check_input(array, 'array')
-        if np.sum([array == 0]) > np.prod(array.shape)*0.75 or forcesparse:
+        if np.sum([array == 0]) > np.prod(array.shape) * (1 - dense_threshold) or forcesparse:
             uvals = np.unique(array)
             if len(uvals) == 2 and 1 in uvals and 0 in uvals:
                 i, j, t = np.where(array == 1)
