@@ -14,14 +14,17 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
     ----------
 
     data : array, dict
-        This is either (1) temporal network input (graphlet or contact) with nettype: 'bu', 'bd'. (2) dictionary of ICTs (output of *intercontacttimes*).
-        A weighted network can be applied if you specify threshold_type and threshold_value which will make it binary.
+        This is either (1) temporal network input with nettype: 'bu', 'bd'.
+        (2) dictionary of ICTs (output of *intercontacttimes*).
+        (3) temporal network input with nettype: 'wu', 'wd'.
+        If weighted, you must also specify threshold_type and threshold_value which will make it binary.
 
     calc : str
-        Caclulate the bursty coeff over what. Options include 'edge': calculate B on all ICTs between node i and j.
+        Caclulate the bursty coeff over what.
+        Options include 'edge': calculate B on all ICTs between node i and j.
         (Default); 'node': caclulate B on all ICTs connected to node i.;
         'communities': calculate B for each communities (argument communities then required);
-        'meanEdgePerNode': first calculate the ICTs between node i and j, then take the mean over all j.
+        'meanEdgePerNode': first calculate ICTs between i and j, then take the mean over all j.
 
     nodes: list or str
         Options: 'all': do for all nodes (default) or list of node indexes to calculate.
@@ -146,7 +149,8 @@ def bursty_coeff(data, calc='edge', nodes='all', communities=None, threshold_typ
 
     if calc == 'communities' and communities is None:
         raise ValueError(
-            "Specified calc='communities' but no communities argument provided (list of clusters/modules)")
+            "Specified calc='communities' but no communities\
+                argument provided (list of clusters/modules)")
 
     ict = 0  # are ict present
     if isinstance(data, dict):

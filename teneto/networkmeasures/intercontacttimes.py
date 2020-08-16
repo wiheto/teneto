@@ -79,7 +79,7 @@ def intercontacttimes(tnet):
     contacts = np.array([[None] * tnet.netshape[0]] * tnet.netshape[0])
 
     if tnet.nettype[1] == 'u':
-        for i in range(0, tnet.netshape[0]):
+        for i in range(tnet.netshape[0]):
             for j in range(i + 1, tnet.netshape[0]):
                 edge_on = tnet.get_network_when(i=i, j=j)['t'].values
                 if len(edge_on) > 0:
@@ -90,8 +90,8 @@ def intercontacttimes(tnet):
                     contacts[i, j] = []
                     contacts[j, i] = []
     elif tnet.nettype[1] == 'd':
-        for i in range(0, tnet.netshape[0]):
-            for j in range(0, tnet.netshape[0]):
+        for i in range(tnet.netshape[0]):
+            for j in range(tnet.netshape[0]):
                 edge_on = tnet.get_network_when(i=i, j=j)['t'].values
                 if len(edge_on) > 0:
                     edge_on_diff = edge_on[1:] - edge_on[:-1]
@@ -99,7 +99,4 @@ def intercontacttimes(tnet):
                 else:
                     contacts[i, j] = []
 
-    out = {}
-    out['intercontacttimes'] = contacts
-    out['nettype'] = tnet.nettype
-    return out
+    return {'intercontacttimes': contacts, 'nettype': tnet.nettype}

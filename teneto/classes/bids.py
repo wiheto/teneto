@@ -7,11 +7,10 @@ import importlib
 import numpy as np
 import pandas as pd
 import bids
-from importlib import import_module
 from .. import __path__ as tenetopath
 from .. import __version__ as tenetoversion
 from ..neuroimagingtools import load_tabular_file, get_sidecar
-from .network import TemporalNetwork
+#from .network import TemporalNetwork
 
 class TenetoBIDS:
     """
@@ -46,14 +45,12 @@ class TenetoBIDS:
         This can lead to files being overwritten, if desc is not set.
     nettsv : str
         can be nn-t or ijt.
-        nn-t means networks are node-node x time. 
-        ijt means daframs are ijt columns 
+        nn-t means networks are node-node x time.
+        ijt means daframs are ijt columns.
     """
 
     def __init__(self, bids_dir, selected_pipeline, bids_filter=None, bidsvalidator=False,
                  update_pipeline=True, history=None, exist_ok=False, layout=None, nettsv='nn-t'):
-
-        import bids
 
         if layout is None:
             self.BIDSLayout = bids.BIDSLayout(bids_dir, derivatives=True)
@@ -62,10 +59,7 @@ class TenetoBIDS:
         self.bids_dir = bids_dir
         self.selected_pipeline = selected_pipeline
         self.nettsv = nettsv
-        if bids_filter is None:
-            self.bids_filter = {}
-        else:
-            self.bids_filter = bids_filter
+        self.bids_filter = {} if bids_filter is None else bids_filter
         if history is not None:
             self.history = {}
         self.exist_ok = exist_ok
@@ -190,7 +184,8 @@ class TenetoBIDS:
                 get_confounds = 1
             else:
                 raise ValueError(
-                    'Expecting one unspecified input argument. Enter all required input arguments in input_params except for the data files.')
+                    'Expecting one unspecified input argument.\
+                    Enter all required input arguments in input_params except for the data files.')
         gf = bf = 0
         for f in input_files:
             f_entities = f.get_entities()
@@ -293,7 +288,8 @@ class TenetoBIDS:
 
         if update_pipeline:
             self.selected_pipeline = output_pipeline
-            # Create new bids_filter dictionary that only contains sub/ses/run/task as other tags are dropped.
+            # Create new bids_filter dictionary that only contains
+            # sub/ses/run/task as other tags are dropped.
             bids_filter = dict(self.bids_filter)
             self.bids_filter = {}
             bids_filters_allowed = ['subject', 'ses', 'run', 'task']
@@ -313,8 +309,7 @@ class TenetoBIDS:
             filters = {'extension': ['.tsv', '.nii', '.nii.gz']}
         # Add predefined filters to the check
         filters.update(self.bids_filter)
-        files = self.BIDSLayout.get(scope=self.selected_pipeline, **filters)
-        return files
+        return self.BIDSLayout.get(scope=self.selected_pipeline, **filters)
 
     def get_run_options(self, for_selected=True):
         """Returns the different function names that can be called using TenetoBIDS.run()
