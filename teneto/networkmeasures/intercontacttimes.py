@@ -68,7 +68,7 @@ def intercontacttimes(tnet):
 
     """
     # Process input
-    tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN')
+    tnet = process_input(tnet, ['C', 'G', 'TN'], 'TN', forcesparse=True)
 
     if tnet.nettype[0] == 'w':
         print('WARNING: assuming connections to be binary when computing intercontacttimes')
@@ -78,25 +78,41 @@ def intercontacttimes(tnet):
     # Finally return back as np array
     contacts = np.array([[None] * tnet.netshape[0]] * tnet.netshape[0])
 
+    def calc_ict(group):
+        return np.array(group['t'][1:].values - group['t'][:-1].values)
+
+    gnet = tnet.network.sort_values('t').groupby(['i', 'j'])
+    contacts_tmp = gnet.apply(calc_ict)
+    index = contacts_tmp.index.to_list()
+    index = np.array(index)
+    contacts[index[:, 0], index[:, 1]] = contacts_tmp.to_numpy()
     if tnet.nettype[1] == 'u':
-        for i in range(tnet.netshape[0]):
-            for j in range(i + 1, tnet.netshape[0]):
-                edge_on = tnet.get_network_when(i=i, j=j)['t'].values
-                if len(edge_on) > 0:
-                    edge_on_diff = edge_on[1:] - edge_on[:-1]
-                    contacts[i, j] = np.array(edge_on_diff)
-                    contacts[j, i] = np.array(edge_on_diff)
-                else:
-                    contacts[i, j] = []
-                    contacts[j, i] = []
-    elif tnet.nettype[1] == 'd':
-        for i in range(tnet.netshape[0]):
-            for j in range(tnet.netshape[0]):
-                edge_on = tnet.get_network_when(i=i, j=j)['t'].values
-                if len(edge_on) > 0:
-                    edge_on_diff = edge_on[1:] - edge_on[:-1]
-                    contacts[i, j] = np.array(edge_on_diff)
-                else:
-                    contacts[i, j] = []
+        contacts[index[:, 1], index[:, 0]] = contacts_tmp.to_numpy()
+
+    # contacts[index[:, 0], index[: 1]]
+    # i = list(zip(*index))
+    # contacts_tmp.to_numpy()
+    # t1 = time.time()
+    # if tnet.nettype[1] == 'u':
+    #     for i in range(tnet.netshape[0]):
+    #         for j in range(i + 1, tnet.netshape[0]):
+    #             edge_on = tnet.get_network_when(i=i, j=j)['t'].values
+    #             if len(edge_on) > 0:
+    #                 edge_on_diff = edge_on[1:] - edge_on[:-1]
+    #                 contacts[i, j] = np.array(edge_on_diff)
+    #                 contacts[j, i] = np.array(edge_on_diff)
+    #             else:
+    #                 contacts[i, j] = []
+    #                 contacts[j, i] = []
+    # print(time.time() - t1)
+    # elif tnet.nettype[1] == 'd':
+    #     for i in range(tnet.netshape[0]):
+    #         for j in range(tnet.netshape[0]):
+    #             edge_on = tnet.get_network_when(i=i, j=j)['t'].values
+    #             if len(edge_on) > 0:
+    #                 edge_on_diff = edge_on[1:] - edge_on[:-1]
+    #                 contacts[i, j] = np.array(edge_on_diff)
+    #             else:
+    #                 contacts[i, j] = []
 
     return {'intercontacttimes': contacts, 'nettype': tnet.nettype}

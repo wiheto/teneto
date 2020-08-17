@@ -14,6 +14,8 @@ Session in TenetoBids now included, if present.
 
 Ensuring extensions have leading . when calling pybids for v0.14
 
+Considerable speed increase to teneto.networkmeasures.intercontacttimes.
+
 ### 0.5.2 Fixes
 
 Fixes the issues when shortest paths were trying to be derived on non existent time points (raised in #60)

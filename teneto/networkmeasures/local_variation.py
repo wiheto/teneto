@@ -123,7 +123,7 @@ def local_variation(data):
     for n in range(len(ind[0])):
         icts = data['intercontacttimes'][ind[0][n], ind[1][n]]
         # make sure there is some contact
-        if len(icts) > 0:
+        if icts is not None:
             lv_nonnorm = np.sum(
                 np.power((icts[:-1] - icts[1:]) / (icts[:-1] + icts[1:]), 2))
             lv[ind[0][n], ind[1][n]] = (3/len(icts)) * lv_nonnorm
