@@ -63,6 +63,7 @@ class TenetoBIDS:
         if history is not None:
             self.history = {}
         self.exist_ok = exist_ok
+        self.update_pipeline=None
 
         with open(tenetopath[0] + '/config/tenetobids/tenetobids_description.json') as f:
             self.tenetobids_description = json.load(f)
@@ -287,13 +288,17 @@ class TenetoBIDS:
         self.report = report
 
         if update_pipeline:
-            self.selected_pipeline = output_pipeline
+            if functype == 'on_data':
+                self.selected_pipeline = output_pipeline
             # Create new bids_filter dictionary that only contains
             # sub/ses/run/task as other tags are dropped.
             bids_filter = dict(self.bids_filter)
             self.bids_filter = {}
             bids_filters_allowed = ['subject', 'ses', 'run', 'task']
-            [self.update_bids_filter({f: bids_filter[f]}) for f in bids_filters_allowed if f in bids_filter.keys()]
+            [self.update_bids_filter({f: bids_filter[f]})
+            for f in bids_filters_allowed
+            if f in bids_filter]
+
         self.update_bids_layout()
 
     def get_selected_files(self, output=None):
