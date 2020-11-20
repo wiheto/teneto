@@ -31,6 +31,8 @@ def sid(tnet, communities, axis=0, calc='overtime', decay=0):
 
         'community_avg' (returns a community x time matrix). Which is the normalized average of each community to all other communities.
 
+        'community_pairs_norm' (returns a community x time matrix). Which is the normalized average of each community pair. Each pair is normalized to the average of both communities in the pair.
+
     decay: int
         if calc = 'community_pairs' or 'community_avg', then decay is possible where the centrality of
         the previous time point is carried over to the next time point but decays
@@ -94,13 +96,19 @@ def sid(tnet, communities, axis=0, calc='overtime', decay=0):
             if netinfo['nettype'][1] == 'd':
                 withinmodulescaling = 1 / \
                     (communities_size[n]*communities_size[n])
+                withinmodulescaling_m = 1 / (communities_size[m]*communities_size[m])
             elif netinfo['nettype'][1] == 'u':
                 withinmodulescaling = 2 / \
                     (communities_size[n]*(communities_size[n]-1))
+                withinmodulescaling_m = 2 / (communities_size[m]*(communities_size[m]-1))
                 if n == m:
                     betweenmodulescaling = withinmodulescaling
-            sid[n, m, :] = withinmodulescaling * \
-                D[n, n, :] - betweenmodulescaling * D[n, m, :]
+            if calc == 'community_pairs_norm':
+                # Here normalize by avg of n and m
+                sid[n, m, :] = ((withinmodulescaling * D[n, n, :]) + (withinmodulescaling_m * D[m, m, :])) / 2 - betweenmodulescaling * D[n, m, :]
+            else:
+                sid[n, m, :] = withinmodulescaling * \
+                    D[n, n, :] - betweenmodulescaling * D[n, m, :]
     # If nans emerge than there is no connection between networks at time point, so make these 0.
     sid[np.isnan(sid)] = 0
 

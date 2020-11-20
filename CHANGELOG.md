@@ -4,6 +4,8 @@
 
 ### 0.5.2 Improvements
 
+Added community_pairs_norm to networkmeasures.sid
+
 Improved sidecar checking.
 
 Added is_jsonable to utils.
