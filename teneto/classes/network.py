@@ -253,6 +253,8 @@ class TemporalNetwork:
             If weighted, should also include \'weight\'. Each row is an edge.
         """
         self._check_input(df, 'df')
+        # Ensure order of columns
+        df = df[['i', 'j', 't']]
         self.network = df
         self._update_network()
 
