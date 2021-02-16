@@ -199,6 +199,6 @@ todo_include_todos = True
 
 numpydoc_show_class_members = False 
 # MOCK MODULESS
-autodoc_mock_imports = ['tables', 'sklearn', 'joblib', 'nilearn']
+autodoc_mock_imports = ['tables', 'scikit-learn', 'joblib', 'nilearn', 'NiftiLabelsMasker']
 
 
