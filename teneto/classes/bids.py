@@ -119,7 +119,7 @@ class TenetoBIDS:
         self.update_bids_layout()
         return output_pipeline
 
-    def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filter=None, update_pipeline=True, exist_ok=None):
+    def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filter=None, update_pipeline=True, exist_ok=None, troubleshoot=False):
         """Runs a runction on the selected files.
 
         Parameters
@@ -149,6 +149,9 @@ class TenetoBIDS:
             If set to True (default), then the selected_pipeline updates to output of function
         exist_ok : bool
             If set to True, then overwrites direcotry is possible.
+        troubleshoot : bool 
+            If True, prints out certain information during running.
+            Useful to run if reporting a bug.
         """
         if exist_ok is not None:
             self.exist_ok = exist_ok
@@ -169,6 +172,8 @@ class TenetoBIDS:
         input_files = self.get_selected_files(run_func.split('.')[-1])
         if not input_files:
             raise ValueError('No input files')
+        if troubleshoot:
+            self.troubleshoot('Initial input files', {'input_files': input_files})
 
         # Check number of required arguments for the function
         funcparams, get_confounds = self._check_run_function_args(func, input_params, functype)
@@ -179,6 +184,9 @@ class TenetoBIDS:
             if get_confounds == 1:
                 input_params['confounds'] = self.get_confounds(f)
             data, sidecar = self.load_file(f)
+            self.troubleshoot('Input file name', {'f': f,
+                                            'f_entities': f_entities,
+                                            'sidecar': sidecar})
             if 'sidecar' in dict(funcparams):
                 input_params['sidecar'] = sidecar
             if data is None:
@@ -203,6 +211,11 @@ class TenetoBIDS:
                     save_name = self.BIDSLayout.build_path(
                         f_entities, path_patterns=output_pattern, validate=False)
                     save_path = self.bids_dir + '/derivatives/' + output_pipeline
+                    if troubleshoot:
+                        self.troubleshoot('File name consruction', {'f_entities': f_entities,
+                                                                    'save_name': save_name,
+                                                                    'save_path': save_path})
+
                     # Exist ok here has to be true, otherwise multiple runs causes an error
                     # Any exist_ok is caught in create pipeline.
                     os.makedirs(
@@ -458,3 +471,16 @@ class TenetoBIDS:
                 data = data.values.reshape([n_nodes, n_nodes, n_time])
                 print(data.shape)
         return data, sidecar
+
+    def troubleshoot(self, stepname, status):
+        """
+        Prints ongoing info to assist with troubleshooting
+        """
+        print('******** TROUBLESHOOT STEP: ' + stepname + ', start ********')
+        for step in status:
+            print('++++++++')
+            print(step)
+            print('------')
+            print(status[step])
+            print('++++++++')
+        print('******** TROUBLESHOOT STEP: ' + stepname + ', end ********')
