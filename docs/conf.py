@@ -18,7 +18,7 @@ import sys
 # -- Project information -----------------------------------------------------
 
 project = 'teneto'
-copyright = '2018, William Hedley Thompson'
+copyright = '2018-2021, William Hedley Thompson'
 author = 'William Hedley Thompson'
 
 version = "../teneto/_version.py"
@@ -199,6 +199,6 @@ todo_include_todos = True
 
 numpydoc_show_class_members = False 
 # MOCK MODULESS
-autodoc_mock_imports = ['tables']
+autodoc_mock_imports = ['tables', 'sklearn.externals.joblib']
 
 
