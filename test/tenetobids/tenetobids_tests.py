@@ -26,11 +26,11 @@ censor_params = {'confound_name': 'confound1',
 tnet.run('censor_timepoints', censor_params)
 tnet.run('derive_temporalnetwork', {'params': {
          'method': 'jackknife', 'postpro': 'standardize'}})
-tnet.run('binarize', {'threshold_type': 'percent', 'threshold_level': 0.1})
+# tnet.run('binarize', {'threshold_type': 'percent', 'threshold_level': 0.1})
 tnet.run('volatility', {})
 vol = tnet.load_data()
 # Hard code truth
-if np.round(np.squeeze(vol['sub-001_run-1_task-a_vol.tsv'].values), 5) != 0.10373:
+if np.round(np.squeeze(vol['sub-001_run-1_task-a_vol.tsv'].values), 3) != 103.874:
     raise AssertionError()
 
 datdir = tenetopath[0] + '/data/testdata/dummybids/'
@@ -42,7 +42,6 @@ tnet.run('make_parcellation', {'atlas': 'Schaefer2018',
 confound_params = {'confound_name': 'confound1',
                    'exclusion_criteria': '>-2'}
 tnet.run('exclude_runs', confound_params)
-
 
 datdir = tenetopath[0] + '/data/testdata/dummybids/'
 tnet = TenetoBIDS(datdir, selected_pipeline='fmriprep', bids_filter={

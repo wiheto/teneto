@@ -61,7 +61,7 @@ class TemporalNetwork:
     """
 
     def __init__(self, N=None, T=None, nettype=None, from_df=None, from_array=None, from_dict=None, from_edgelist=None, timetype=None, diagonal=False,
-                 timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None, hdf5=False, hdf5path=None, forcesparse=False, dense_threshold=0.1):
+                 timeunit=None, desc=None, starttime=None, nodelabels=None, timelabels=None, hdf5=False, hdf5path=None, forcesparse=False, dense_threshold=0.25):
         # Check inputs
         if nettype:
             if nettype not in ['bu', 'bd', 'wu', 'wd']:
@@ -195,7 +195,7 @@ class TemporalNetwork:
                 ud = 'd'
             self.nettype = wb + ud
 
-    def network_from_array(self, array, forcesparse=False, dense_threshold=0.1):
+    def network_from_array(self, array, forcesparse=False, dense_threshold=0.25):
         """
         Defines a network from an array.
 

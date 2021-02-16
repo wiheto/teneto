@@ -43,8 +43,7 @@ class TenetoBIDS:
         If False, will raise an error if the output directory already exist_ok.
         If True, will not raise an error.
         This can lead to files being overwritten, if desc is not set.
-    nettsv : str
-        can be nn-t or ijt.
+    nettsv : str can be nn-t or ijt.
         nn-t means networks are node-node x time.
         ijt means daframs are ijt columns.
     """
@@ -53,7 +52,7 @@ class TenetoBIDS:
                  update_pipeline=True, history=None, exist_ok=False, layout=None, nettsv='nn-t'):
 
         if layout is None:
-            self.BIDSLayout = bids.BIDSLayout(bids_dir, derivatives=True)
+            self.BIDSLayout = bids.BIDSLayout(bids_dir, derivatives=True, validate=bidsvalidator)
         else:
             self.BIDSLayout = layout
         self.bids_dir = bids_dir
@@ -63,7 +62,7 @@ class TenetoBIDS:
         if history is not None:
             self.history = {}
         self.exist_ok = exist_ok
-        self.update_pipeline=None
+        self.update_pipeline = update_pipeline
 
         with open(tenetopath[0] + '/config/tenetobids/tenetobids_description.json') as f:
             self.tenetobids_description = json.load(f)
@@ -76,6 +75,9 @@ class TenetoBIDS:
     #    bids.
 
     def update_bids_layout(self):
+        """
+        Function that upddates to new bids l
+        """
         self.BIDSLayout = bids.BIDSLayout(self.bids_dir, derivatives=True)
 
     def create_output_pipeline(self, runc_func, output_pipeline_name, exist_ok=None):
@@ -123,12 +125,15 @@ class TenetoBIDS:
         Parameters
         ---------------
         run_func : str
-            str should correspond to a teneto function. So to run the funciton teneto.timeseries.derive_temporalnetwork
+            str should correspond to a teneto function.
+            So to run the funciton teneto.timeseries.derive_temporalnetwork
             the input should be: 'timeseries.derive_temporalnetwork'
         input_params : dict
-            keyword and value pairing of arguments.
-            The input data to each function will be located automatically and should not be included.
-            For any other input that needs to be loaded loaded within the teneto_bidsstructure (communities, events, confounds),
+            keyword and value pairing of arguments for the function being run.
+            The input data to each function will be located automatically.
+            This input_params does not need to include the input network.
+            For any other input that needs to be loaded loaded within the teneto_bidsstructure
+            (communities, events, confounds),
             you can pass the value "bids" if they can be found within the current selected_pipeline.
             If they are found within a different selected_pipeline, type "bids_[selected_pipeline]".
         output_desc : str
@@ -136,9 +141,9 @@ class TenetoBIDS:
             If 'keep', then desc is preserved.
             If any other str, desc is set to that string
         output_pipeline_name : str
-            If set, then the data is saved in teneto_[functionname]_[output_pipeline_name]. If run_func is
-            teneto.timeseries.derive_temporalnetwork and output_pipeline_name is jackknife
-            then then the pipeline the data is saved in is
+            If set, then the data is saved in teneto_[functionname]_[output_pipeline_name].
+            If run_func is teneto.timeseries.derive_temporalnetwork and output_pipeline_name
+            is jackknife then then the pipeline the data is saved in is
             teneto-generatetemporalnetwork_jackknife
         update_pipeline : bool
             If set to True (default), then the selected_pipeline updates to output of function
@@ -165,41 +170,21 @@ class TenetoBIDS:
         if not input_files:
             raise ValueError('No input files')
 
-        # Check number of required arguments for the folder
-        sig = inspect.signature(func)
-        funcparams = sig.parameters.items()
-        required_args = 0
-        input_args = 0
-        for p_name, p in funcparams:
-            if p.default == inspect._empty:
-                required_args += 1
-                if p_name in input_params:
-                    input_args += 1
-        get_confounds = 0
-        matched_input_arguments_defecit = 1
-        if 'sidecar' in dict(funcparams) and functype == 'on_data':
-            matched_input_arguments_defecit += 1
-        if required_args - input_args != matched_input_arguments_defecit:
-            if 'confounds' not in input_params and 'confounds' in dict(funcparams) and required_args - input_args == matched_input_arguments_defecit + 1:
-                # Get confounds automatically
-                get_confounds = 1
-            else:
-                raise ValueError(
-                    'Expecting one unspecified input argument.\
-                    Enter all required input arguments in input_params except for the data files.')
-        gf = bf = 0
+        # Check number of required arguments for the function
+        funcparams, get_confounds = self._check_run_function_args(func, input_params, functype)
+
+        good_files = bad_files = 0
         for f in input_files:
             f_entities = f.get_entities()
             if get_confounds == 1:
                 input_params['confounds'] = self.get_confounds(f)
             data, sidecar = self.load_file(f)
-            # Since networks are currently saved in 2D collapsed arrays, they need to be resized
-            if '_temporalconnectivity.tsv' in f.filename and self.nettsv == 'nn-t':
-                shape = data.shape
-                data = data.values.reshape([int(np.sqrt(shape[0])), int(np.sqrt(shape[0])), shape[1]])
             if 'sidecar' in dict(funcparams):
                 input_params['sidecar'] = sidecar
-            if data is not None:
+            if data is None:
+                # Skip if data not found
+                bad_files += 1
+            else:
                 if functype == 'on_data':
                     result = func(data, **input_params)
                     # if sidecar is in input_params, then sidecar is also returned
@@ -214,7 +199,7 @@ class TenetoBIDS:
                         f_entities['desc'] = output_desc
                     f_entities.update(
                         self.tenetobids_structure[run_func.split('.')[-1]]['output'])
-                    output_pattern = '/sub-{subject}/[ses-{session}/]func/sub-{subject}[_ses-{ses}][_run-{session}]_task-{task}[_desc-{desc}]_{suffix}.{extension}'
+                    output_pattern = '/sub-{subject}/[ses-{session}/]func/sub-{subject}[_ses-{ses}][_run-{run}]_task-{task}[_desc-{desc}]_{suffix}.{extension}'
                     save_name = self.BIDSLayout.build_path(
                         f_entities, path_patterns=output_pattern, validate=False)
                     save_path = self.bids_dir + '/derivatives/' + output_pipeline
@@ -229,7 +214,7 @@ class TenetoBIDS:
                         if len(result.shape) == 3:
                             # Should be made hdf5 at sometime
                             # Idea here is to make 3D array to 2D by concatenating node dimensions.
-                            # WHen reloaded, reshape([np.sqrt(shape[0]), np.sqrt(shape[0]), np.sqrt(shape[1])])
+                            # At reload: to ([np.sqrt(shape[0]), np.sqrt(shape[0]), np.sqrt(shape[1])])
                             shape = result.shape
                             result = result.reshape([shape[0] * shape[1], shape[2]])
                             result = pd.DataFrame(result)
@@ -242,11 +227,10 @@ class TenetoBIDS:
                                 'Output was array with more than 3 dimensions (unexpected)')
                     elif isinstance(result, list):
                         result = pd.DataFrame(result)
-                    elif isinstance(result, int) or isinstance(result, float):
+                    elif isinstance(result, (int, float)):
                         result = pd.Series(result)
-                    if isinstance(result, pd.DataFrame) or isinstance(result, pd.Series):
-                        result.to_csv(save_path + save_name,
-                                      sep='\t', header=True)
+                    if isinstance(result, (pd.DataFrame, pd.Series)):
+                        result.to_csv(save_path + save_name, sep='\t', header=True)
                     else:
                         raise ValueError('Unexpected output type')
                     # add information to sidecar
@@ -263,13 +247,13 @@ class TenetoBIDS:
                     # Loop through input params content and make any nparray input to list for sidecar
                     sidecar['TenetoFunction']['Parameters'] = {}
                     for key, value in input_params.items():
-                        if not teneto.utils.is_jsonable(value):
+                        if teneto.utils.is_jsonable(value):
+                            sidecar['TenetoFunction']['Parameters'][key] = input_params[key]
+                        else:
                             if isinstance(input_params[key], np.ndarray):
                                 sidecar['TenetoFunction']['Parameters'][key] = input_params[key].tolist()
                             else:
                                 print('Warning: Dropping input (' + key + ') from sidecar (not JSONable).')
-                        else:
-                            sidecar['TenetoFunction']['Parameters'][key] = input_params[key]
                 elif functype == 'on_sidecar':
                     sidecar = func(**input_params)
                     update_pipeline = False
@@ -278,13 +262,10 @@ class TenetoBIDS:
                 # Save sidecar
                 with open(save_path + save_name.replace('.tsv', '.json'), 'w') as f:
                     json.dump(sidecar, f)
-                gf += 1
-            else:
-                bf += 1
-
+                good_files += 1
         report = '## ' + run_func + '\n'
-        report += str(gf) + ' files were included (' + \
-            str(bf) + ' excluded from run)'
+        report += str(good_files) + ' files were included (' + \
+            str(bad_files) + ' excluded from run)'
         self.report = report
 
         if update_pipeline:
@@ -300,6 +281,49 @@ class TenetoBIDS:
             if f in bids_filter]
 
         self.update_bids_layout()
+
+    def _check_run_function_args(self, func, input_params, functype):
+        """
+        Helper function for TenetoBIDS.run. 
+        
+        Function checks that the input parametes match the function.
+
+        Returns
+        ========
+        funcparams : dict 
+            parameters of the input function
+        get_confounds : bool
+            1 if confound files need to be loaded.
+        """
+        sig = inspect.signature(func)
+        funcparams = sig.parameters.items()
+        required_args = 0
+        input_args = 0
+        for p_name, p in funcparams:
+            if p.default == inspect._empty:
+                required_args += 1
+                if p_name in input_params:
+                    input_args += 1
+        get_confounds = 0
+        expected_arg_defecit = 1
+        if 'sidecar' in dict(funcparams) and functype == 'on_data':
+            expected_arg_defecit += 1
+        # Calculate the different betwee n required and input arguments
+        arg_diff = required_args - input_args
+        if arg_diff != expected_arg_defecit:
+            # Three conditoinals to be met in order to get confounds
+            confounds_not_input = 'confounds' not in input_params
+            confounds_in_func = 'confounds' in  dict(funcparams)
+            arg_needed = arg_diff == expected_arg_defecit + 1
+            if confounds_not_input and confounds_in_func and arg_needed:
+                # Get confounds automatically
+                get_confounds = 1
+            else:
+                raise ValueError(
+                    'Expecting one unspecified input argument.\
+                    Enter all required input arguments in input_params except for the data files.')
+        return funcparams, get_confounds
+
 
     def get_selected_files(self, output=None):
         """
@@ -424,4 +448,13 @@ class TenetoBIDS:
                     bidsfile.dirname + '/' + bidsfile.filename)
         else:
             data = None
+        # Since temporal networks are currently saved in 2D collapsed arrays
+        # The following checks if they should be resized, and resizes
+        if '_temporalconnectivity.tsv' in bidsfile.filename:
+            dimord = sidecar['TenetoFunction']['Parameters']['params']['dimord']
+            if (self.nettsv == 'nn-t' or dimord == 'node,time'):
+                n_nodes = int(np.sqrt(data.shape[0]))
+                n_time = data.shape[1]
+                data = data.values.reshape([n_nodes, n_nodes, n_time])
+                print(data.shape)
         return data, sidecar

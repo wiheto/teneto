@@ -1,5 +1,10 @@
+"""
+Function to calculate volatility
+"""
 import numpy as np
-from ..utils import process_input, check_distance_funciton_input, get_distance_function
+from ..utils import process_input,\
+                    check_distance_funciton_input,\
+                    get_distance_function
 
 
 def volatility(tnet, distance_func='default', calc='overtime', communities=None, event_displacement=None):
