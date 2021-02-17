@@ -3,6 +3,7 @@
 ## Version 0.5.3
 
 ### Improvements
+
 Improved tenetobids loading of temporal network files (reshaped correctly).
 
 Event files in tenetobids
@@ -10,15 +11,17 @@ Event files in tenetobids
 get_aux_file new name of get_confound_files.
 
 ## Fixes
+
 Force order of columns for TemporalNetwork (fixes #73)
 
 Fixing problems regarding documentation and testing
 
 ## Changes
+
 Changed numpy requirement to 1.20.1
 
 
-## Version 0.5.2 
+## Version 0.5.2
 
 ### 0.5.2 Improvements
 
@@ -70,7 +73,7 @@ Changing raiseIfU variable to rasie_if_undirected in check_input
 
 ### 0.5.1 Fixes
 
-Updated requirements and fixed outdated version of scipy being installed on clean install using pip. 
+Updated requirements and fixed outdated version of scipy being installed on clean install using pip.
 
 Fixed header bug in documentation
 
