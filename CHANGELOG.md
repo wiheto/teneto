@@ -1,6 +1,24 @@
 # Changelog
 
-## Version 0.5.2 (In development)
+## Version 0.5.3
+
+### Improvements
+Improved tenetobids loading of temporal network files (reshaped correctly).
+
+Event files in tenetobids
+
+get_aux_file new name of get_confound_files.
+
+## Fixes
+Force order of columns for TemporalNetwork (fixes #73)
+
+Fixing problems regarding documentation and testing
+
+## Changes
+Changed numpy requirement to 1.20.1
+
+
+## Version 0.5.2 
 
 ### 0.5.2 Improvements
 
@@ -10,7 +28,7 @@ Improved sidecar checking.
 
 Added is_jsonable to utils.
 
-~~Check_packages added (credit to @jolespin). Modified somewhat as importing to globals within wrapper was not working. This was accepted then removed.~~
+~~Check_packages added (credit to @jolespin). Modified somewhat as importing to globals within wrapper was not working. This was accepted to main branch then removed.~~
 
 Session in TenetoBids now included, if present.
 

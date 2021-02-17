@@ -170,6 +170,7 @@ class TenetoBIDS:
                 run_func, output_pipeline_name, self.exist_ok)
 
         input_files = self.get_selected_files(run_func.split('.')[-1])
+
         if not input_files:
             raise ValueError('No input files')
         if troubleshoot:
@@ -182,11 +183,12 @@ class TenetoBIDS:
         for f in input_files:
             f_entities = f.get_entities()
             if get_confounds == 1:
-                input_params['confounds'] = self.get_confounds(f)
+                input_params['confounds'] = self.get_aux_file(f, filetype='confounds')
             data, sidecar = self.load_file(f)
-            self.troubleshoot('Input file name', {'f': f,
-                                            'f_entities': f_entities,
-                                            'sidecar': sidecar})
+            if troubleshoot:
+                self.troubleshoot('Input file name', {'f': f,
+                                                    'f_entities': f_entities,
+                                                    'sidecar': sidecar})
             if 'sidecar' in dict(funcparams):
                 input_params['sidecar'] = sidecar
             if data is None:
@@ -393,32 +395,39 @@ class TenetoBIDS:
         """
         self.bids_filter.update(filter_addons)
 
-    def get_confounds(self, bidsfile, confound_filters=None):
-        """Tries to automatically get the confounds file of an input file, and loads it
+    def get_aux_file(self, bidsfile, filetype='confounds'):
+        """Tries to automatically get auxiliary data for input files, and loads it
 
         Paramters
         ==========
         bidsfile : BIDSDataFile or BIDSImageFile
             The BIDS file that the confound file is gong to be matched.
+        filetype : string
+            Can be confounds, events. 
+            Specified if you want to get the confound or events data.
         """
-        if confound_filters is None:
-            confound_filters = {}
+        if filetype == 'confounds':
+            suffix = 'regressors'
+        elif filetype == 'events': 
+            suffix = 'events'
+        else:
+            raise ValueError('unknown file type')
         # Get the entities of the filename
         file_entities = bidsfile.get_entities()
         # Ensure that the extension and suffix are correct
-        file_entities['suffix'] = 'regressors'
+        file_entities['suffix'] = suffix
         file_entities['extension'] = '.tsv'
         if 'desc' in file_entities:
             file_entities.pop('desc')
-        confoundsfile = self.BIDSLayout.get(**file_entities)
-        if len(confoundsfile) == 0:
-            raise ValueError('Non confounds found')
-        elif len(confoundsfile) > 1:
-            raise ValueError('More than one confounds file found')
-        # Load the confounds file
-        confounds = load_tabular_file(
-            confoundsfile[0].dirname + '/' + confoundsfile[0].filename, index_col=False)
-        return confounds
+        auxfile = self.BIDSLayout.get(**file_entities)
+        if len(auxfile) == 0:
+            raise ValueError('Non auxiliary file (type: ' + filetype + ') found')
+        elif len(auxfile) > 1:
+            raise ValueError('More than one auxiliary file (type: ' + filetype + ') found')
+        # Load the aux file
+        aux = load_tabular_file(
+            auxfile[0].dirname + '/' + auxfile[0].filename, index_col=False)
+        return aux
 
     def load_data(self, bids_filter=None):
         """Returns data, default is the input data.
@@ -484,3 +493,13 @@ class TenetoBIDS:
             print(status[step])
             print('++++++++')
         print('******** TROUBLESHOOT STEP: ' + stepname + ', end ********')
+
+    def load_events(self):
+        """
+        Loads event data for selected files
+        """
+        input_files = self.get_selected_files()
+        events = {}
+        for f in input_files:
+            events[f.filename] = self.get_aux_file(f, filetype='events')
+        return events
