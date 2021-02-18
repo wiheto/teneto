@@ -51,7 +51,7 @@ class TenetoBIDS:
     """
 
     def __init__(self, bids_dir, selected_pipeline, bids_filter=None, bidsvalidator=False,
-                 update_pipeline=True, history=None, output_dir=False, exist_ok=False, layout=None, nettsv='nn-t'):
+                 update_pipeline=True, history=None, output_dir=None, exist_ok=False, layout=None, nettsv='nn-t'):
 
         if layout is None:
             self.BIDSLayout = bids.BIDSLayout(bids_dir, derivatives=True, validate=bidsvalidator)
@@ -109,7 +109,7 @@ class TenetoBIDS:
         output_pipeline = output_pipeline.replace('_', '-')
         if output_pipeline_name is not None:
             output_pipeline += '_' + output_pipeline_name
-        if self.output_dir is None: 
+        if self.output_dir is None:
             output_pipeline_path = self.bids_dir + '/derivatives/' + output_pipeline
         else:
             output_pipeline_path = self.output_dir + output_pipeline
@@ -123,7 +123,12 @@ class TenetoBIDS:
         with open(output_pipeline_path + '/dataset_description.json', 'w') as fs:
             json.dump(datainfo, fs)
         self.update_bids_layout()
-        return output_pipeline
+        if troubleshoot:
+            self.troubleshoot('File name consruction', {'f_entities': f_entities,
+                                                        'save_name': save_name,
+                                                        'save_path': save_path})
+
+        return output_pipeline, output_pipeline_path
 
     def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filter=None, update_pipeline=True, exist_ok=None, troubleshoot=False):
         """Runs a runction on the selected files.
@@ -172,7 +177,7 @@ class TenetoBIDS:
 
         # Only set up an output pipeline if the functype is ondata
         if functype == 'on_data':
-            output_pipeline = self.create_output_pipeline(
+            output_pipeline, save_path = self.create_output_pipeline(
                 run_func, output_pipeline_name, self.exist_ok)
 
         input_files = self.get_selected_files(run_func.split('.')[-1])
@@ -218,11 +223,6 @@ class TenetoBIDS:
                     output_pattern = '/sub-{subject}/[ses-{session}/]func/sub-{subject}[_ses-{ses}][_run-{run}]_task-{task}[_desc-{desc}]_{suffix}.{extension}'
                     save_name = self.BIDSLayout.build_path(
                         f_entities, path_patterns=output_pattern, validate=False)
-                    save_path = self.bids_dir + '/derivatives/' + output_pipeline
-                    if troubleshoot:
-                        self.troubleshoot('File name consruction', {'f_entities': f_entities,
-                                                                    'save_name': save_name,
-                                                                    'save_path': save_path})
 
                     # Exist ok here has to be true, otherwise multiple runs causes an error
                     # Any exist_ok is caught in create pipeline.
