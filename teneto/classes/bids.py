@@ -65,7 +65,7 @@ class TenetoBIDS:
             self.history = {}
         self.exist_ok = exist_ok
         self.update_pipeline = update_pipeline
-        self.update_pipeline = output_dir
+        self.output_dir = output_dir
 
         with open(tenetopath[0] + '/config/tenetobids/tenetobids_description.json') as f:
             self.tenetobids_description = json.load(f)
@@ -112,7 +112,7 @@ class TenetoBIDS:
         if self.output_dir is None: 
             output_pipeline_path = self.bids_dir + '/derivatives/' + output_pipeline
         else:
-            output_pipeline_path = self.output_dir + '/derivatives/' + output_pipeline
+            output_pipeline_path = self.output_dir + output_pipeline
         if os.path.exists(output_pipeline_path) and not self.exist_ok:
             raise ValueError(
                 'Output_pipeline already exists. Set exist_ok to True if this is desired behaviour.')
