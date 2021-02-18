@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.5.4
+
+## Improvements 
+
+TenetoBIDS allows for different output_dir to be specified.
+
 ## Version 0.5.3
 
 ### Improvements

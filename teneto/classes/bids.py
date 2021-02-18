@@ -39,6 +39,8 @@ class TenetoBIDS:
     history : bool
     update_pipeline : bool
         If true, the output_pipeline becomes the new selected_pipeline
+    output_dir : str
+        Default None. Specify folder for output if you do not want it to be in bids_dir.
     exist_ok : bool
         If False, will raise an error if the output directory already exist_ok.
         If True, will not raise an error.
@@ -49,7 +51,7 @@ class TenetoBIDS:
     """
 
     def __init__(self, bids_dir, selected_pipeline, bids_filter=None, bidsvalidator=False,
-                 update_pipeline=True, history=None, exist_ok=False, layout=None, nettsv='nn-t'):
+                 update_pipeline=True, history=None, output_dir=False, exist_ok=False, layout=None, nettsv='nn-t'):
 
         if layout is None:
             self.BIDSLayout = bids.BIDSLayout(bids_dir, derivatives=True, validate=bidsvalidator)
@@ -63,6 +65,7 @@ class TenetoBIDS:
             self.history = {}
         self.exist_ok = exist_ok
         self.update_pipeline = update_pipeline
+        self.update_pipeline = output_dir
 
         with open(tenetopath[0] + '/config/tenetobids/tenetobids_description.json') as f:
             self.tenetobids_description = json.load(f)
@@ -106,7 +109,10 @@ class TenetoBIDS:
         output_pipeline = output_pipeline.replace('_', '-')
         if output_pipeline_name is not None:
             output_pipeline += '_' + output_pipeline_name
-        output_pipeline_path = self.bids_dir + '/derivatives/' + output_pipeline
+        if self.output_dir is None: 
+            output_pipeline_path = self.bids_dir + '/derivatives/' + output_pipeline
+        else:
+            output_pipeline_path = self.output_dir + '/derivatives/' + output_pipeline
         if os.path.exists(output_pipeline_path) and not self.exist_ok:
             raise ValueError(
                 'Output_pipeline already exists. Set exist_ok to True if this is desired behaviour.')
