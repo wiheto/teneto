@@ -122,7 +122,7 @@ class TenetoBIDS:
         datainfo['PipelineDescription']['Name'] = output_pipeline
         with open(output_pipeline_path + '/dataset_description.json', 'w') as fs:
             json.dump(datainfo, fs)
-        self.BIDSLayout.add_derivatives(output_pipeline_path)
+        #self.BIDSLayout.add_derivatives(output_pipeline_path)
         return output_pipeline, output_pipeline_path
 
     def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filter=None, update_pipeline=True, exist_ok=None, troubleshoot=False):
