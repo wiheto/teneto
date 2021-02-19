@@ -125,7 +125,7 @@ class TenetoBIDS:
         #self.BIDSLayout.add_derivatives(output_pipeline_path)
         return output_pipeline, output_pipeline_path
 
-    def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filter=None, update_pipeline=True, exist_ok=None, troubleshoot=False):
+    def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filter=None, update_pipeline=True, exist_ok=None, default_bids=True, troubleshoot=False):
         """Runs a runction on the selected files.
 
         Parameters
@@ -155,6 +155,9 @@ class TenetoBIDS:
             If set to True (default), then the selected_pipeline updates to output of function
         exist_ok : bool
             If set to True, then overwrites direcotry is possible.
+        default_bids : bool
+            Default True. If True, uses prespecfied knowns about BIDS structure to select files.
+            If False, does not use in-built BIDS stucture. All selection info should then be included in bids_filter. 
         troubleshoot : bool 
             If True, prints out certain information during running.
             Useful to run if reporting a bug.
@@ -178,7 +181,10 @@ class TenetoBIDS:
             self.troubleshoot('File name consruction', {'save_name': save_name,
                                                         'save_path': save_path})
 
-        input_files = self.get_selected_files(run_func.split('.')[-1])
+        if default_bids: 
+            input_files = self.get_selected_files(run_func.split('.')[-1])
+        else:
+            input_files = self.get_selected_files()
 
         if not input_files:
             raise ValueError('No input files')
