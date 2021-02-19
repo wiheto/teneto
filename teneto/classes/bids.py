@@ -122,12 +122,7 @@ class TenetoBIDS:
         datainfo['PipelineDescription']['Name'] = output_pipeline
         with open(output_pipeline_path + '/dataset_description.json', 'w') as fs:
             json.dump(datainfo, fs)
-        self.update_bids_layout()
-        if troubleshoot:
-            self.troubleshoot('File name consruction', {'f_entities': f_entities,
-                                                        'save_name': save_name,
-                                                        'save_path': save_path})
-
+        self.BIDSLayout.add_derivatives(output_pipeline_path)
         return output_pipeline, output_pipeline_path
 
     def run(self, run_func, input_params, output_desc=None, output_pipeline_name=None, bids_filter=None, update_pipeline=True, exist_ok=None, troubleshoot=False):
@@ -179,6 +174,9 @@ class TenetoBIDS:
         if functype == 'on_data':
             output_pipeline, save_path = self.create_output_pipeline(
                 run_func, output_pipeline_name, self.exist_ok)
+        if troubleshoot:
+            self.troubleshoot('File name consruction', {'save_name': save_name,
+                                                        'save_path': save_path})
 
         input_files = self.get_selected_files(run_func.split('.')[-1])
 
