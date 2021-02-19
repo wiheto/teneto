@@ -112,7 +112,7 @@ class TenetoBIDS:
         if self.output_dir is None:
             output_pipeline_path = self.bids_dir + '/derivatives/' + output_pipeline
         else:
-            output_pipeline_path = self.output_dir + output_pipeline
+            output_pipeline_path = self.output_dir + '/' + output_pipeline
         if os.path.exists(output_pipeline_path) and not self.exist_ok:
             raise ValueError(
                 'Output_pipeline already exists. Set exist_ok to True if this is desired behaviour.')
