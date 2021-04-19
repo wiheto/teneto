@@ -35,7 +35,7 @@ When connections are undirected, it means that both nodes share the connection. 
 Adding a time dimension
 -----------------------
 
-In the above formulation of networks :math:`A_{ij}` only has one edge. In a temporal network, a time-stamp is also included in the edge's tuple. Thus, binary edges are not expressed as 3-tuples (i,j,t) and weighted networks as 4 tuples (i,j,t,w). Connectivity matrices are now three dimensional: :math:`A_{ijt} = 1` in binary and :math:`A_{ijt} = w` in weighted networks.
+In the above formulation of networks :math:`A_{ij}` only has one edge. In a temporal network, a time-stamp is also included in the edge's tuple. Thus, binary edges are now expressed as 3-tuples (i,j,t) and weighted networks as 4 tuples (i,j,t,w). Connectivity matrices are now three dimensional: :math:`A_{ijt} = 1` in binary and :math:`A_{ijt} = w` in weighted networks.
 
 The time indices are an ordered sequence. This ordering can now reveal information about what is occurring in the network through time.
 
