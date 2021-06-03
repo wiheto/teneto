@@ -254,7 +254,12 @@ class TemporalNetwork:
         """
         self._check_input(df, 'df')
         # Ensure order of columns
-        df = df[['i', 'j', 't']]
+        if len(df.columns)==4 :
+            df = df[['i', 'j', 't', 'weight']]
+        elif len(df.columns)==3 :
+            df = df[['i', 'j', 't']]
+        else : 
+            print("Wrong number of columns in df")
         self.network = df
         self._update_network()
 
@@ -319,7 +324,7 @@ class TemporalNetwork:
             n_timepoints = int(self.network.shape[-1])
             self.netshape = (n_nodes, n_timepoints)
         else:
-            n_nodes = self.network[['i', 'j']].max(axis=1).max()+1
+            n_nodes = len(np.unique(self.network[['i', 'j']].values))
             n_timepoints = self.network['t'].max() - self.network['t'].min() + 1
             if self.N > n_nodes:
                 n_nodes = self.N
