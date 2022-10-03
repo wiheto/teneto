@@ -353,7 +353,7 @@ class TenetoBIDS:
             filters = {'extension': ['.tsv', '.nii', '.nii.gz']}
         # Add predefined filters to the check
         filters.update(self.bids_filter)
-        return self.BIDSLayout.get(scope=self.selected_pipeline, **filters)
+        return self.BIDSLayout.derivatives[self.selected_pipeline].get(**filters)
 
     def get_run_options(self, for_selected=True):
         """Returns the different function names that can be called using TenetoBIDS.run()
@@ -419,7 +419,7 @@ class TenetoBIDS:
         file_entities['extension'] = '.tsv'
         if 'desc' in file_entities:
             file_entities.pop('desc')
-        auxfile = self.BIDSLayout.get(**file_entities)
+        auxfile = self.BIDSLayout.derivatives[self.selected_pipeline].get(**file_entities)
         if len(auxfile) == 0:
             raise ValueError('Non auxiliary file (type: ' + filetype + ') found')
         elif len(auxfile) > 1:
@@ -441,7 +441,7 @@ class TenetoBIDS:
         else:
             filters = dict(self.bids_filter)
             filters.update(bids_filter)
-            files = self.BIDSLayout.get(**filters)
+            files = self.BIDSLayout.derivatives[self.selected_pipeline].get(**filters)
         data = {}
         for f in files:
             if f.filename in data:
