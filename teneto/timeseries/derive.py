@@ -2,6 +2,7 @@
 
 
 import numpy as np
+import pandas as pd
 from statsmodels.stats.weightstats import DescrStatsW
 from ..utils import set_diagonal, get_distance_function
 from .postprocess import postpro_pipeline
@@ -174,6 +175,9 @@ def derive_temporalnetwork(data, params):
 
     if params['dimord'] == 'node,time':
         data = data.transpose()
+
+    if isinstance(data, pd.DataFrame):
+        data = data.values
 
     sw_alternatives = ['sliding window', 'slidingwindow']
     tsw_alternatives = ['tapered sliding window', 'taperedslidingwindow']
