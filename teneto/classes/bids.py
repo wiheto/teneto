@@ -416,12 +416,12 @@ class TenetoBIDS:
         # Get the entities of the filename
         file_entities = bidsfile.get_entities()
         # Ensure that the extension and suffix are correct
-        if desc: 
-            file_entities['desc'] = desc
         file_entities['suffix'] = suffix
         file_entities['extension'] = '.tsv'
         if 'desc' in file_entities:
             file_entities.pop('desc')
+        if desc: 
+            file_entities['desc'] = desc
         auxfile = self.BIDSLayout.derivatives[self.selected_pipeline].get(**file_entities)
         if len(auxfile) == 0:
             raise ValueError('Non auxiliary file (type: ' + filetype + ') found')
