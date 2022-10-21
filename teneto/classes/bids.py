@@ -423,7 +423,7 @@ class TenetoBIDS:
             file_entities.pop('desc')
         if desc: 
             file_entities['desc'] = desc
-        if spacee: 
+        if space: 
             file_entities['space'] = space
         auxfile = self.BIDSLayout.derivatives[self.selected_pipeline].get(**file_entities)
         if len(auxfile) == 0:
