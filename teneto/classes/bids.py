@@ -409,7 +409,7 @@ class TenetoBIDS:
         if filetype == 'confounds':
             suffix = 'timeseries'
             desc = 'confounds'
-            space = None
+            file_entities.pop('space')
         elif filetype == 'events': 
             suffix = 'events'
         else:
@@ -423,8 +423,6 @@ class TenetoBIDS:
             file_entities.pop('desc')
         if desc: 
             file_entities['desc'] = desc
-        if space: 
-            file_entities['space'] = space
         auxfile = self.BIDSLayout.derivatives[self.selected_pipeline].get(**file_entities)
         if len(auxfile) == 0:
             raise ValueError('Non auxiliary file (type: ' + filetype + ') found')
