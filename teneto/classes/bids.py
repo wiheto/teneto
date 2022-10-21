@@ -407,7 +407,8 @@ class TenetoBIDS:
             Specified if you want to get the confound or events data.
         """
         if filetype == 'confounds':
-            suffix = 'regressors'
+            suffix = 'timeseries'
+            desc = 'confounds'
         elif filetype == 'events': 
             suffix = 'events'
         else:
@@ -415,6 +416,8 @@ class TenetoBIDS:
         # Get the entities of the filename
         file_entities = bidsfile.get_entities()
         # Ensure that the extension and suffix are correct
+        if desc: 
+            file_entities['desc'] = desc
         file_entities['suffix'] = suffix
         file_entities['extension'] = '.tsv'
         if 'desc' in file_entities:
