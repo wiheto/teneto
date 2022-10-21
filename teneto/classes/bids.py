@@ -409,21 +409,28 @@ class TenetoBIDS:
         if filetype == 'confounds':
             suffix = 'timeseries'
             desc = 'confounds'
-            file_entities.pop('space')
+            derivative = 'fMRIPrep'
         elif filetype == 'events': 
             suffix = 'events'
+            derivative = self.selected_pipeline
         else:
             raise ValueError('unknown file type')
         # Get the entities of the filename
+        print(bidsfile)
         file_entities = bidsfile.get_entities()
         # Ensure that the extension and suffix are correct
         file_entities['suffix'] = suffix
         file_entities['extension'] = '.tsv'
         if 'desc' in file_entities:
             file_entities.pop('desc')
-        if desc: 
+        if filetype == 'confounds':
+            if 'space' in file_entities:
+                file_entities.pop('space')
+            if 'atlas' in file_entities:
+                file_entities.pop('atlas')
             file_entities['desc'] = desc
-        auxfile = self.BIDSLayout.derivatives[self.selected_pipeline].get(**file_entities)
+        print(file_entities)
+        auxfile = self.BIDSLayout.derivatives[derivative].get(**file_entities)
         if len(auxfile) == 0:
             raise ValueError('Non auxiliary file (type: ' + filetype + ') found')
         elif len(auxfile) > 1:
