@@ -52,7 +52,8 @@ class TenetoBIDS:
                  update_pipeline=True, history=None, exist_ok=False, layout=None, nettsv='nn-t'):
 
         if layout is None:
-            self.BIDSLayout = bids.BIDSLayout(bids_dir, derivatives=True, validate=bidsvalidator)
+            self.BIDSLayout = bids.BIDSLayout(bids_dir, validate=bidsvalidator)
+            self.BIDSLayout.add_derivatrive(bids_dir)
         else:
             self.BIDSLayout = layout
         self.bids_dir = bids_dir
