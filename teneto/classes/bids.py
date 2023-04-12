@@ -53,7 +53,7 @@ class TenetoBIDS:
 
         if layout is None:
             self.BIDSLayout = bids.BIDSLayout(bids_dir, validate=bidsvalidator)
-            self.BIDSLayout.add_derivatrive(bids_dir)
+            self.BIDSLayout.add_derivatives(bids_dir)
         else:
             self.BIDSLayout = layout
         self.bids_dir = bids_dir
