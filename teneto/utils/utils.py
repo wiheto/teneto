@@ -516,7 +516,9 @@ def get_distance_function(requested_metric):
         'hamming': distance.hamming,
         'jaccard': distance.jaccard,
         'kulsinski': distance.kulsinski,
-        'matching': distance.matching,
+        # 'distance.matching' is deprecated since scipy version 1.0.0 and was removed in version 1.9.0.
+        # It was an alias of 'distance.hamming', which should be used instead.
+        'matching': distance.hamming,
         'rogerstanimoto': distance.rogerstanimoto,
         'russellrao': distance.russellrao,
         'sokalmichener': distance.sokalmichener,
