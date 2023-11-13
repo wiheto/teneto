@@ -83,7 +83,7 @@ Another concept that is often used within fields such as cognitive neuroscience 
 What is teneto?
 -----------------
 
-Teneto is a python package that can several quantify temporal network measures (more are being added). It can also use methods from time-varying connectivity to derive connectivity estimate from time-series data.
+Teneto is a python package that can quantify several temporal network measures (more are being added). It can also use methods from time-varying connectivity to derive connectivity estimate from time-series data.
 
 Further reading
 ---------------
