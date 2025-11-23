@@ -9,3 +9,4 @@ statsmodels>=0.8.0
 networkx>=2.0
 python-louvain>=0.13
 tables>=3.4.4
+scikit-learn>=1.0

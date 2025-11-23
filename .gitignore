@@ -1,4 +1,3 @@
- 117 lines (94 sloc) 1.32 KB
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -29,5 +28,10 @@ share/python-wheels/
 
 # Sphinx documentation
 docs/_build/
+docs/api/
 
+# IDE/editor metadata
+.vscode/
 
+# macOS Finder artifacts
+teneto/__MACOSX/
