@@ -1,6 +1,13 @@
 teneto.communitydetection
 =================================
 
+Spectral
+----------------------------------------
+
+.. automodule:: teneto.communitydetection.spectral
+    :members:
+    :show-inheritance:
+
 Louvain
 ----------------------------------------
 

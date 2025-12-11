@@ -18,7 +18,7 @@ import sys
 # -- Project information -----------------------------------------------------
 
 project = 'teneto'
-copyright = '2018-2021, William Hedley Thompson'
+copyright = '2018-2025, William Hedley Thompson'
 author = 'William Hedley Thompson'
 
 version = "../teneto/_version.py"
@@ -45,7 +45,6 @@ release = release
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'matplotlib.sphinxext.only_directives',
     'matplotlib.sphinxext.plot_directive',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -56,7 +55,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'm2r',
+    'myst_parser',
     'sphinx_automodapi.automodapi',
     'sphinx.ext.autosectionlabel',
     'nbsphinx',
@@ -79,7 +78,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -200,5 +199,3 @@ todo_include_todos = True
 numpydoc_show_class_members = False 
 # MOCK MODULESS
 autodoc_mock_imports = ['tables', 'scikit-learn', 'joblib', 'nilearn', 'NiftiLabelsMasker']
-
-
